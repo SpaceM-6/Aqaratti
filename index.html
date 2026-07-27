@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عقاراتي | Aqaratti - المنصة العقارية العالمية</title>
+  
+  <!-- استدراج الأيقونات وخط تجول (Tajawal) المعتمد -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- محرك الترجمة الذكية للذكاء الاصطناعي -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ar',
+        includedLanguages: 'ar,en,ru,zh-CN,fr,es,it,de,tr,fa,ur,hi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <style>
+    /* ==================== TURQUOISE & ROYAL GOLD BRANDING ==================== */
+    :root {
+      --primary-turquoise: #00a896;         
+      --primary-turquoise-hover: #008072;   
+      --turquoise-light: #e6f7f5;          
+      
+      --accent-gold: #d4af37;              
+      --accent-gold-hover: #b89528;
+      --gold-bg-light: #fffdf0;            
+      
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f7f9fc;
+      --dubizzle-border: #e4e9f2;
+      --text-dark: #222b45;
+      --text-muted: #8f9bb3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+      background-color: var(--dubizzle-bg);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
+    body { top: 0px !important; }
+    .goog-te-gadget-simple { background-color: transparent !important; border: none !important; font-size: 14px !important; }
+
+    /* 1. الشريط العلوي الهادئ الأنيق */
+    .aqaratti-instant-utility-bar {
+      width: 100%;
+      background: #ffffff;
+      color: var(--dubizzle-navy);
+      padding: 8px 20px;
+      font-size: 14px;
+      font-family: 'Tajawal', sans-serif;
+      border-bottom: 1px solid var(--dubizzle-border);
+      position: relative;
+      z-index: 99999;
+    }
+
+    .utility-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .controls-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    /* 📏 المسافة التي لا تقل عن 2 سم (حوالي 75px-80px) بين اسم الموقع والأيقونات التالية */
+    .brand-logo-royal {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-left: 78px; /* مسافة 2 سم فاصلة تماماً */
+      transition: transform 0.25s ease;
+    }
+
+    .brand-logo-royal:hover { transform: translateY(-1px); }
+
+    .royal-logo-icon {
+      filter: drop-shadow(0 4px 8px rgba(0, 168, 150, 0.3));
+      transition: filter 0.3s ease;
+    }
+
+    .brand-text-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .arabic-brand { font-size: 22px; font-weight: 900; color: var(--primary-turquoise); }
+    .brand-divider { color: #cbd5e1; font-size: 16px; font-weight: 300; }
+    .english-brand { font-size: 18px; font-weight: 800; color: var(--dubizzle-navy); }
+
+    .btn-add-nav {
+      background: var(--primary-turquoise);
+      color: #ffffff !important;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+      margin-left: 12px;
+    }
+
+    .btn-add-nav:hover { background: var(--primary-turquoise-hover); }
+
+    /* زر التسجيل الأنيق */
+    .btn-login-nav {
+      background: #f1f5f9;
+      color: var(--dubizzle-navy) !important;
+      border: 1px solid #cbd5e1;
+      padding: 7px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-login-nav:hover {
+      background: var(--turquoise-light);
+      color: var(--primary-turquoise) !important;
+      border-color: var(--primary-turquoise);
+    }
+
+    /* ☰ أزرار القائمة الثلاثية السريعة */
+    .hamburger-menu-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--dubizzle-navy);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .hamburger-menu-btn:hover {
+      background: var(--turquoise-light);
+      color: var(--primary-turquoise);
+      border-color: var(--primary-turquoise);
+    }
+
+    .instant-dropdown { position: relative; display: inline-block; margin-left: 10px; }
+
+    .instant-btn {
+      background: #f1f5f9;
+      color: var(--dubizzle-navy);
+      border: 1px solid #cbd5e1;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Tajawal', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .instant-btn i { color: var(--dubizzle-navy); }
+    .instant-btn:hover { background: var(--turquoise-light); color: var(--primary-turquoise); border-color: var(--primary-turquoise); }
+
+    .instant-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 6px;
+      background: #ffffff;
+      color: var(--text-dark);
+      min-width: 230px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      z-index: 999999 !important;
+      border: 1px solid var(--dubizzle-border);
+      border-top: 3px solid var(--primary-turquoise);
+    }
+
+    .instant-menu a {
+      color: var(--text-dark);
+      padding: 11px 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Tajawal', sans-serif;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.2s;
+    }
+
+    .instant-menu a:hover { background-color: var(--turquoise-light); color: var(--primary-turquoise); }
+
+    .menu-section-header {
+      background: #f8fafc;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 900;
+      padding: 8px 16px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .search-menu input { width: 90%; margin: 8px 5%; padding: 7px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 13px; }
+    .instant-scroll { max-height: 220px; overflow-y: auto; }
+
+    .unit-pills { display: flex; background: #e2e8f0; border-radius: 6px; padding: 2px; }
+
+    .u-pill {
+      background: transparent;
+      border: none;
+      color: var(--dubizzle-navy);
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .u-pill.active { background: var(--primary-turquoise); color: #ffffff; }
+
+    /* 2. قسم الـ HERO */
+    .aqaratti-light-hero {
+      position: relative;
+      background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), 
+                        url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600');
+      background-position: center 30%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      padding: 45px 20px 55px 20px;
+      color: #ffffff;
+      text-align: center;
+      transition: background-image 0.5s ease-in-out;
+    }
+
+    .hero-light-container { max-width: 1100px; margin: 0 auto; position: relative; z-index: 5; }
+
+    .royal-title {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.2;
+      color: #ffffff;
+      margin-bottom: 22px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .pearl-search-card {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: #ffffff;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .royal-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .royal-tab {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .royal-tab:hover, .royal-tab.active { background: var(--primary-turquoise); color: #ffffff; border-color: var(--primary-turquoise); }
+
+    .royal-tab.gold-tab {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: rgba(212, 175, 55, 0.5);
+      color: #fff8dc;
+    }
+
+    .royal-tab.gold-tab:hover, .royal-tab.gold-tab.active {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-hover));
+      color: var(--dubizzle-navy);
+      border-color: var(--accent-gold);
+    }
+
+    .pearl-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      text-align: right;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 992px) { .pearl-inputs-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 576px) { .pearl-inputs-grid { grid-template-columns: 1fr; } }
+
+    .royal-input-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .royal-label { display: block; font-size: 12px; color: var(--primary-turquoise); font-weight: 900; margin-bottom: 4px; }
+    .royal-input, .royal-select { width: 100%; background: transparent; border: none; color: var(--text-dark); outline: none; font-size: 14px; font-weight: 700; font-family: 'Tajawal', sans-serif; }
+
+    .pearl-action-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+
+    .hero-center-badges { display: flex; gap: 10px; }
+
+    .hero-badge-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .hero-badge-btn.gold {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: var(--accent-gold);
+      color: #fff8dc;
+    }
+
+    .hero-badge-btn:hover { background: var(--primary-turquoise); border-color: var(--primary-turquoise); transform: translateY(-2px); }
+    .hero-badge-btn.gold:hover { background: var(--accent-gold); color: var(--dubizzle-navy); }
+
+    .btn-royal-search {
+      background: var(--primary-turquoise);
+      color: #ffffff;
+      border: none;
+      padding: 12px 36px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 900;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 168, 150, 0.4);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-royal-search:hover { background: var(--primary-turquoise-hover); transform: translateY(-1px); }
+
+    /* 3. شبكة كروت العقارات */
+    .properties-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 22px;
+      color: var(--dubizzle-navy);
+      border-right: 5px solid var(--primary-turquoise);
+      padding-right: 12px;
+    }
+
+    .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+
+    .property-card {
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--dubizzle-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .property-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+    .card-image { position: relative; height: 200px; overflow: hidden; cursor: pointer; }
+    .card-image img { width: 100%; height: 100%; object-fit: cover; }
+
+    .verified-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--dubizzle-navy);
+      color: var(--accent-gold);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid var(--accent-gold);
+    }
+
+    .card-body { padding: 18px; }
+
+    .card-price { font-size: 22px; font-weight: 900; color: var(--primary-turquoise); margin-bottom: 6px; }
+
+    .card-title-text { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-dark); line-height: 1.4; cursor: pointer; }
+
+    .card-features {
+      display: flex;
+      gap: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding-top: 12px;
+      border-top: 1px solid #edf2f7;
+      font-weight: 600;
+    }
+
+    .card-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .btn-card-details {
+      background: var(--turquoise-light);
+      color: var(--primary-turquoise);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .btn-card-delete {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .btn-affiliate-share {
+      width: 100%;
+      margin-top: 12px;
+      padding: 9px;
+      font-size: 13px;
+      background: linear-gradient(135deg, #d4af37, #b89528);
+      color: #192038;
+      border: none;
+      border-radius: 6px;
+      font-weight: 900;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn-affiliate-share:hover { transform: scale(1.02); }
+
+    /* ==================== 💎 ROYAL CUSTOM MODALS ==================== */
+    .royal-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(25, 32, 56, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: fadeInModal 0.25s ease-out;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .royal-modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      overflow: hidden;
+      border: 1px solid var(--dubizzle-border);
+      position: relative;
+    }
+
+    .royal-modal-header {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      border-bottom: 3px solid var(--accent-gold);
+    }
+
+    .royal-modal-header i { font-size: 32px; color: var(--accent-gold); margin-bottom: 8px; }
+    .royal-modal-title { font-size: 20px; font-weight: 900; }
+
+    .royal-modal-body { padding: 24px; text-align: right; }
+
+    .royal-modal-desc {
+      font-size: 14px;
+      color: #475569;
+      font-weight: 700;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .royal-modal-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Tajawal', sans-serif;
+      outline: none;
+      margin-bottom: 14px;
+      text-align: right;
+      transition: border-color 0.2s;
+    }
+
+    .royal-modal-input:focus { border-color: var(--primary-turquoise); }
+
+    .royal-link-box {
+      background: var(--gold-bg-light);
+      border: 1px dashed var(--accent-gold);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--dubizzle-navy);
+      word-break: break-all;
+      font-weight: bold;
+      margin-bottom: 20px;
+      user-select: all;
+    }
+
+    .royal-modal-actions { display: flex; gap: 10px; margin-top: 10px; }
+
+    .btn-modal-confirm {
+      flex: 1;
+      background: var(--primary-turquoise);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-modal-confirm:hover { background: var(--primary-turquoise-hover); }
+
+    .btn-modal-gold {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-hover));
+      color: var(--dubizzle-navy);
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-modal-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="google_translate_element" style="display:none;"></div>
+
+  <!-- ==================== 1. FAST UTILITY HEADER ==================== -->
+  <div class="aqaratti-instant-utility-bar">
+    <div class="utility-container">
+      
+      <div class="controls-wrapper">
+        <!-- 👑 الشعار الملكي الجديد المبتكر مع مسافة 2 سم مريحة للعين -->
+        <a href="index.html" class="brand-logo-royal">
+          <svg class="royal-logo-icon" viewBox="0 0 100 100" width="38" height="38">
+            <defs>
+              <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00c8b3" />
+                <stop offset="100%" stop-color="#008072" />
+              </linearGradient>
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffe066" />
+                <stop offset="50%" stop-color="#d4af37" />
+                <stop offset="100%" stop-color="#997a15" />
+              </linearGradient>
+            </defs>
+            <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)" />
+            <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6" />
+            <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round" />
+            <path d="M68 76 L74 70" stroke="url(#goldGrad)" stroke-width="5" stroke-linecap="round" />
+          </svg>
+
+          <div class="brand-text-group">
+            <span class="arabic-brand">عقاراتي</span>
+            <span class="brand-divider">│</span>
+            <span class="english-brand">Aqaratti</span>
+          </div>
+        </a>
+
+        <a href="add-property.html" class="btn-add-nav">
+          <i class="fas fa-plus-circle"></i> إضافة عقار +
+        </a>
+
+        <!-- قائمة اللغات المستقلة -->
+        <div class="instant-dropdown">
+          <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)">
+            <i class="fas fa-globe"></i> <span id="currentLang">العربية</span>
+          </button>
+          <div class="instant-menu search-menu" id="fastLangList">
+            <input type="text" placeholder="ابحث عن اللغات..." id="langSearchInput" onkeyup="filterFastLanguages()">
+            <div class="instant-scroll" id="fastLangOptions">
+              <a href="javascript:void(0)" onclick="applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('en', 'English', 'ltr')">English</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('ru', 'Русский', 'ltr')">Русский</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('zh-CN', '中文', 'ltr')">中文</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('fr', 'Français', 'ltr')">Français</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('es', 'Español', 'ltr')">Español</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- قائمة العملات المستقلة -->
+        <div class="instant-dropdown">
+          <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)">
+            <i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span>
+          </button>
+          <div class="instant-menu" id="fastCurrencyList">
+            <a href="javascript:void(0)" onclick="applyCurrency('AED', 'د.إ')">AED (د.إ) - الدرهم الإماراتي</a>
+            <a href="javascript:void(0)" onclick="applyCurrency('USD', '$')">USD ($) - الدولار الأمريكي</a>
+            <a href="javascript:void(0)" onclick="applyCurrency('SAR', 'ر.س')">SAR (ر.س) - الريال السعودي</a>
+            <a href="javascript:void(0)" onclick="applyCurrency('EUR', '€')">EUR (€) - اليورو الأوروبي</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- أزرار القائمة الثلاثية وتسجيل الدخول المجاورة -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-login-nav" onclick="openLoginModal()">
+          <i class="fas fa-user"></i> دخول أو سجل الدخول
+        </button>
+
+        <!-- ☰ أيقونة القائمة الثلاثية المنسدلة المكتملة -->
+        <div class="instant-dropdown">
+          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 250px;">
+            <div class="menu-section-header">خدمات منصة عقاراتي</div>
+            <a href="javascript:void(0)" onclick="showMenuContent('marketInfo')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق <i class="fas fa-chevron-left" style="font-size: 10px; color: #cbd5e1;"></i></a>
+            <a href="javascript:void(0)" onclick="showMenuContent('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون <i class="fas fa-chevron-left" style="font-size: 10px; color: #cbd5e1;"></i></a>
+            <a href="javascript:void(0)" onclick="showMenuContent('floorPlans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق <i class="fas fa-chevron-left" style="font-size: 10px; color: #cbd5e1;"></i></a>
+            <a href="javascript:void(0)" onclick="showMenuContent('agentsPortal')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء <i class="fas fa-chevron-left" style="font-size: 10px; color: #cbd5e1;"></i></a>
+            <a href="javascript:void(0)" onclick="showMenuContent('events')"><i class="fas fa-calendar-alt" style="color:var(--primary-turquoise);"></i> الفعاليات <i class="fas fa-chevron-left" style="font-size: 10px; color: #cbd5e1;"></i></a>
+            
+            <div class="menu-section-header">إعدادات العرض والمساحة</div>
+            <div style="padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; font-weight: 700;"><i class="fas fa-ruler"></i> وحدة المساحة:</span>
+              <div class="unit-pills">
+                <button class="u-pill active" id="unit-m2" onclick="applyAreaUnit('m2')">م²</button>
+                <button class="u-pill" id="unit-sqft" onclick="applyAreaUnit('sqft')">قدم²</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== 2. AQARATTI HERO SECTION ==================== -->
+  <section class="aqaratti-light-hero" id="heroSection">
+    <div class="hero-light-container">
+      <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
+
+      <div class="pearl-search-card">
+        <div class="royal-tabs">
+          <button class="royal-tab active" onclick="switchRoyalTab(this, 'buy')"><i class="fas fa-key"></i> للشراء</button>
+          <button class="royal-tab" onclick="switchRoyalTab(this, 'rent')"><i class="fas fa-building"></i> للإيجار</button>
+          <button class="royal-tab gold-tab" onclick="switchRoyalTab(this, 'passport')"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
+          <button class="royal-tab gold-tab" onclick="switchRoyalTab(this, 'invest')"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
+        </div>
+
+        <div class="pearl-inputs-grid">
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-globe-americas"></i> الدولة والمدينة</span>
+            <select class="royal-select" id="countrySelector" onchange="changeCountryBackground(this.value)">
+              <option value="uae" selected>دبي، الإمارات العربية المتحدة</option>
+              <option value="saudi">الرياض، المملكة العربية السعودية</option>
+              <option value="egypt">القاهرة الجديدة والتجمع، مصر</option>
+              <option value="turkey">إسطنبول، تركيا</option>
+              <option value="uk">لندن، المملكة المتحدة</option>
+            </select>
+          </div>
+
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-search-location"></i> المنطقة أو الكلمة</span>
+            <input type="text" id="searchInput" placeholder="مثال: داون تاون، فيلا..." class="royal-input">
+          </div>
+
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-wallet"></i> الحد الأقصى للميزانية</span>
+            <input type="number" id="maxPriceInput" placeholder="ادخل السعر..." class="royal-input">
+          </div>
+
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من (Nearby)</span>
+            <select class="royal-select">
+              <option>اختر المعلم القريب...</option>
+              <option>قريب من مسجد</option>
+              <option>قريب من مدرسة دولية</option>
+              <option>قريب من مستشفى</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pearl-action-bar">
+          <div class="hero-center-badges">
+            <button class="hero-badge-btn gold" onclick="switchRoyalTab(null, 'passport')">
+              <i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة
+            </button>
+            <button class="hero-badge-btn" onclick="alert('جاري تفعيل محرك البحث بالذكاء الاصطناعي...')">
+              <i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي
+            </button>
+          </div>
+          
+          <button class="btn-royal-search" onclick="executeSearch()">
+            <i class="fas fa-search"></i> ابحث عن العقارات الآن
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 3. DYNAMIC PROPERTIES SECTION ==================== -->
+  <section class="properties-section">
+    <h2 class="section-title">العقارات المتاحة حصرياً</h2>
+    
+    <div class="properties-grid" id="properties-container">
+      <p style="text-align: center; color: var(--text-muted); grid-column: 1/-1;">جاري جلب العقارات الحية من السيرفر...</p>
+    </div>
+  </section>
+
+  <!-- ==================== 4. ROYAL MODALS ==================== -->
+  <!-- نافذة خيارات القائمة المنسدلة التفاعلية -->
+  <div class="royal-modal-overlay" id="menuContentModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header">
+        <i id="menuModalIcon" class="fas fa-info-circle"></i>
+        <div class="royal-modal-title" id="menuModalTitle">عنوان الخدمة</div>
+      </div>
+      <div class="royal-modal-body">
+        <p class="royal-modal-desc" id="menuModalBody">تفاصيل الخدمة المعروضة...</p>
+        <div class="royal-modal-actions">
+          <button class="btn-modal-confirm" onclick="closeRoyalModal('menuContentModal')">موافق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة تسجيل الدخول -->
+  <div class="royal-modal-overlay" id="loginModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header">
+        <i class="fas fa-user-shield"></i>
+        <div class="royal-modal-title">تسجيل الدخول إلى عقاراتي</div>
+      </div>
+      <div class="royal-modal-body">
+        <p class="royal-modal-desc">أدخل بيانات حسابك المعتمد لتتمكن من إدارة العقارات ومتابعة أرباحك وعمولاتك:</p>
+        <input type="email" class="royal-modal-input" placeholder="البريد الإلكتروني">
+        <input type="password" class="royal-modal-input" placeholder="كلمة المرور">
+        <div class="royal-modal-actions">
+          <button class="btn-modal-confirm" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">دخول الحساب</button>
+          <button class="btn-modal-cancel" onclick="closeRoyalModal('loginModal')">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة إدخال بيانات المسوق -->
+  <div class="royal-modal-overlay" id="affiliateInputModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header">
+        <i class="fas fa-coins"></i>
+        <div class="royal-modal-title">توليد رابط التسويق بالعمولة</div>
+      </div>
+      <div class="royal-modal-body">
+        <p class="royal-modal-desc">أدخل رقم هاتفك أو اسمك التجاري لربط جميع المبيعات والاستفسارات القادمة باسمك المعتمد:</p>
+        <input type="text" id="affiliateRefInput" class="royal-modal-input" placeholder="مثال: 0501234567 أو اسمك" style="text-align: center;">
+        <div class="royal-modal-actions">
+          <button class="btn-modal-confirm" onclick="confirmGenerateLink()"><i class="fas fa-magic"></i> إنشاء الرابط الآن</button>
+          <button class="btn-modal-cancel" onclick="closeRoyalModal('affiliateInputModal')">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة عرض ونسخ الرابط -->
+  <div class="royal-modal-overlay" id="affiliateSuccessModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #064e3b, #047857);">
+        <i class="fas fa-check-circle" style="color: #6ee7b7;"></i>
+        <div class="royal-modal-title">تم إنشـاء رابطك بنجاح!</div>
+      </div>
+      <div class="royal-modal-body">
+        <p class="royal-modal-desc">تم توليد رابط العمولة المخصص لك. يمكنك الآن مشاركته في مجموعات الواتساب ووسائل التواصل الاجتماعي:</p>
+        <div class="royal-link-box" id="generatedLinkText">...</div>
+        <div class="royal-modal-actions">
+          <button class="btn-modal-gold" onclick="copyGeneratedLink()"><i class="fas fa-copy"></i> نسخ الرابط ومشاركته</button>
+          <button class="btn-modal-cancel" onclick="closeRoyalModal('affiliateSuccessModal')">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. COMPLETE JAVASCRIPT LOGIC ==================== -->
+  <script>
+    const countryBackgrounds = {
+      'uae': 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600',
+      'saudi': 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600',
+      'egypt': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600',
+      'turkey': 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600',
+      'uk': 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1600'
+    };
+
+    function changeCountryBackground(countryKey) {
+      const hero = document.getElementById('heroSection');
+      const imageUrl = countryBackgrounds[countryKey] || countryBackgrounds['uae'];
+      
+      const imgTester = new Image();
+      imgTester.onload = function() {
+        hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${imageUrl}')`;
+      };
+      imgTester.src = imageUrl;
+
+      executeSearch();
+    }
+
+    function openInstantDropdown(menuId, event) {
+      if (event) event.stopPropagation();
+      const targetMenu = document.getElementById(menuId);
+      const isCurrentlyVisible = targetMenu.style.display === 'block';
+
+      document.querySelectorAll('.instant-menu').forEach(menu => menu.style.display = 'none');
+      if (!isCurrentlyVisible) targetMenu.style.display = 'block';
+    }
+
+    function applyAILanguage(langCode, langName, dir) {
+      document.getElementById('currentLang').innerText = langName;
+      document.documentElement.setAttribute('dir', dir);
+      document.getElementById('fastLangList').style.display = 'none';
+
+      const translateSelect = document.querySelector('.goog-te-combo');
+      if (translateSelect) {
+        translateSelect.value = langCode;
+        translateSelect.dispatchEvent(new Event('change'));
+      }
+    }
+
+    function applyCurrency(code, symbol) {
+      document.getElementById('currentCurrency').innerText = `${code} (${symbol})`;
+      document.getElementById('fastCurrencyList').style.display = 'none';
+    }
+
+    const unitFactors = { 'm2': 1, 'sqft': 10.7639 };
+    function applyAreaUnit(unit) {
+      document.querySelectorAll('.u-pill').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`unit-${unit}`).classList.add('active');
+
+      document.querySelectorAll('[data-area-m2]').forEach(elem => {
+        const baseM2 = parseFloat(elem.getAttribute('data-area-m2'));
+        if (!isNaN(baseM2)) {
+          const converted = Math.round(baseM2 * unitFactors[unit]);
+          const unitLabel = unit === 'm2' ? 'م²' : 'قدم²';
+          elem.innerHTML = `<i class="fas fa-ruler-combined"></i> ${converted.toLocaleString()} ${unitLabel}`;
+        }
+      });
+    }
+
+    function filterFastLanguages() {
+      const val = document.getElementById('langSearchInput').value.toLowerCase();
+      const links = document.getElementById('fastLangOptions').getElementsByTagName('a');
+      for (let i = 0; i < links.length; i++) {
+        const text = links[i].innerText || links[i].textContent;
+        links[i].style.display = text.toLowerCase().indexOf(val) > -1 ? "" : "none";
+      }
+    }
+
+    // 💡 دالة تعبئة وعرض صفحات القائمة الجانبية الثلاثية
+    const menuPages = {
+      'marketInfo': {
+        title: 'معلومات وتقارير السوق',
+        icon: 'fas fa-chart-bar',
+        content: 'تطلعك هذه الصفحة على أحدث اتجاهات مؤشرات أسعار العقارات، العائد على الاستثمار (ROI)، ونسب النمو السنوي في المناطق الرئيسية لدعم قراراتك الاستثمارية.'
+      },
+      'guides': {
+        title: 'دليل المستثمر والمرشدون',
+        icon: 'fas fa-user-tie',
+        content: 'مجموعة من المقالات والخدمات الإرشادية التي يقدمها أفضل الخبراء العقاريين لمساعدتك في خطوات الشراء، الاستثمار، وتجهيز العقود الموثوقة.'
+      },
+      'floorPlans': {
+        title: 'مخططات الطوابق الـ 2D/3D',
+        icon: 'fas fa-drafting-compass',
+        content: 'استعرض آلاف مخططات الطوابق والتقسيمات المعمارية ثلاثية الأبعاد للمشاريع العقارية والمنازل قبل إتمام الشراء.'
+      },
+      'agentsPortal': {
+        title: 'بوابة الوكلاء والشركات',
+        icon: 'fas fa-building-user',
+        content: 'منصة مخصصة للشركات والوكلاء العقاريين لإدارة قوائم العقارات، متابعة العملاء المباشرين، وإحصائيات المبيعات والعمولات.'
+      },
+      'events': {
+        title: 'الفعاليات والمعارض العقارية',
+        icon: 'fas fa-calendar-alt',
+        content: 'تابع مواعيد معارض العقارات الدولية، جلسات إطلاق المشاريع الجديدة حصرياً، وندوات الفرص الاستثمارية القادمة.'
+      }
+    };
+
+    function showMenuContent(key) {
+      const data = menuPages[key];
+      if (data) {
+        document.getElementById('menuModalTitle').innerText = data.title;
+        document.getElementById('menuModalIcon').className = data.icon;
+        document.getElementById('menuModalBody').innerText = data.content;
+        document.getElementById('menuContentModal').style.display = 'flex';
+      }
+    }
+
+    function switchRoyalTab(btn, mode) {
+      if (btn) {
+        document.querySelectorAll('.royal-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    }
+
+    async function fetchProperties(query = '') {
+      const container = document.getElementById('properties-container');
+      try {
+        const response = await fetch(`http://localhost:3001/api/properties${query}`);
+        const result = await response.json();
+
+        if (result.status === 'success' && result.data.length > 0) {
+          container.innerHTML = '';
+          result.data.forEach(prop => {
+            const commText = prop.commission ? `عمولة: ${prop.commission}` : 'عمولة مجزية';
+            const cardHTML = `
+              <div class="property-card" id="card-${prop.id}">
+                <div class="card-image" onclick="goToDetails('${prop.id}')">
+                  <img src="${prop.image}" alt="${prop.title}">
+                  ${prop.verified ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> موثوق TruCheck™</span>' : ''}
+                </div>
+                <div class="card-body">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="card-price">${Number(prop.price).toLocaleString()} ${prop.currency || 'AED'}</div>
+                    <span style="background: var(--gold-bg-light); color: var(--accent-gold); font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px; border:1px solid var(--accent-gold);"><i class="fas fa-coins"></i> ${commText}</span>
+                  </div>
+                  <div class="card-title-text" onclick="goToDetails('${prop.id}')">${prop.title}</div>
+                  <div class="card-features">
+                    <span><i class="fas fa-bed"></i> ${prop.bedrooms} غرف</span>
+                    <span><i class="fas fa-bath"></i> ${prop.bathrooms} حمام</span>
+                    <span data-area-m2="${prop.area_m2}"><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</span>
+                  </div>
+                  
+                  <button class="btn-affiliate-share" onclick="openAffiliateModal('${prop.id}')">
+                    <i class="fas fa-share-alt"></i> شارك الإعلان واكسب عمولة 💰
+                  </button>
+
+                  <div class="card-actions-bar">
+                    <a href="property-details.html?id=${prop.id}" class="btn-card-details">التفاصيل <i class="fas fa-arrow-left"></i></a>
+                    <button class="btn-card-delete" onclick="deleteProperty('${prop.id}')"><i class="fas fa-trash"></i> حذف</button>
+                  </div>
+                </div>
+              </div>
+            `;
+            container.innerHTML += cardHTML;
+          });
+        } else {
+          container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1;">لا توجد عقارات متاحة حالياً.</p>';
+        }
+      } catch (err) {
+        console.error('تعذر الاتصال بالسيرفر:', err);
+      }
+    }
+
+    let activePropertyForAffiliate = '';
+
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    function openAffiliateModal(propId) {
+      activePropertyForAffiliate = propId;
+      document.getElementById('affiliateRefInput').value = '';
+      document.getElementById('affiliateInputModal').style.display = 'flex';
+    }
+
+    function closeRoyalModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function confirmGenerateLink() {
+      const ref = document.getElementById('affiliateRefInput').value.trim();
+      if (!ref) {
+        alert('يرجى إدخال رقم هاتفك أو اسمك أولاً!');
+        return;
+      }
+
+      const generatedUrl = `${window.location.origin}/property-details.html?id=${activePropertyForAffiliate}&ref=${encodeURIComponent(ref)}`;
+      
+      closeRoyalModal('affiliateInputModal');
+      document.getElementById('generatedLinkText').innerText = generatedUrl;
+      document.getElementById('affiliateSuccessModal').style.display = 'flex';
+    }
+
+    function copyGeneratedLink() {
+      const linkText = document.getElementById('generatedLinkText').innerText;
+      navigator.clipboard.writeText(linkText);
+      alert('🎉 تم نسخ رابط العمولة الخاص بك بنجاح إلى الحافظة!');
+      closeRoyalModal('affiliateSuccessModal');
+    }
+
+    function executeSearch() {
+      const search = document.getElementById('searchInput').value;
+      const maxPrice = document.getElementById('maxPriceInput').value;
+      const country = document.getElementById('countrySelector').value;
+
+      let query = `?city=${country}`;
+      if (search) query += `&search=${encodeURIComponent(search)}`;
+      if (maxPrice) query += `&maxPrice=${maxPrice}`;
+
+      fetchProperties(query);
+    }
+
+    async function deleteProperty(id) {
+      if (confirm('هل أنت متأكد من حذف هذا العقار؟')) {
+        try {
+          const res = await fetch(`http://localhost:3001/api/properties/${id}`, { method: 'DELETE' });
+          const result = await res.json();
+          if (result.status === 'success') {
+            document.getElementById(`card-${id}`).remove();
+          }
+        } catch (e) {
+          alert('تعذر حذف العقار.');
+        }
+      }
+    }
+
+    function goToDetails(id) {
+      window.location.href = `property-details.html?id=${id}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => fetchProperties());
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.instant-dropdown')) {
+        document.querySelectorAll('.instant-menu').forEach(m => m.style.display = 'none');
+      }
+    });
+  </script>
+
+</body>
+</html>

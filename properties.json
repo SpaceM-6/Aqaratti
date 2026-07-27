@@ -1,0 +1,26 @@
+[
+  {
+    "id": "101",
+    "title": "شقة بنتهاوس فاخرة بإطلالة على برج خليفة",
+    "price": 3850000,
+    "currency": "AED",
+    "bedrooms": 3,
+    "bathrooms": 4,
+    "area_m2": 210,
+    "city": "dubai",
+    "image": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
+    "verified": true
+  },
+  {
+    "id": "102",
+    "title": "فيلا شاطئية مستقلة في نخلة جميرا",
+    "price": 18500000,
+    "currency": "AED",
+    "bedrooms": 6,
+    "bathrooms": 7,
+    "area_m2": 650,
+    "city": "dubai",
+    "image": "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
+    "verified": true
+  }
+]
