@@ -9,6 +9,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
+  <!-- 🚀 سكريبت قراءة اللغة قبل التحميل لمنع الوميض العربي -->
+  <script>
+    (function() {
+      var savedLang = localStorage.getItem('aqaratti_lang_code');
+      if (savedLang && savedLang !== 'ar') {
+        document.cookie = "googtrans=/ar/" + savedLang + "; path=/;";
+        document.cookie = "googtrans=/ar/" + savedLang + "; path=/; domain=" + window.location.hostname;
+      }
+    })();
+  </script>
+
   <!-- محرك الترجمة الذكية Google AI -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -24,17 +35,11 @@
 
   <style>
     /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
-    html {
-      top: 0px !important;
-      padding-top: 0px !important;
-      margin-top: 0px !important;
-    }
-
-    body {
+    html, body {
       top: 0px !important;
       position: static !important;
-      padding-top: 0px !important;
       margin-top: 0px !important;
+      padding-top: 0px !important;
     }
 
     .goog-te-banner-frame,
@@ -58,6 +63,10 @@
       display: none !important;
     }
 
+    .goog-te-gadget-icon, .goog-te-gadget-simple {
+      display: none !important;
+    }
+
     /* ==================== BRANDING & COLOR PALETTE ==================== */
     :root {
       --primary-turquoise: #00a896;         
@@ -73,7 +82,11 @@
       --text-muted: #8f9bb3;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
@@ -83,89 +96,130 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .goog-te-gadget-icon, .goog-te-gadget-simple { display: none !important; }
-
     /* 1. الشريط العلوي */
     .aqaratti-instant-utility-bar {
       width: 100%;
       background: #ffffff;
       color: var(--dubizzle-navy);
-      padding: 10px 20px;
+      padding: 8px 16px;
       font-size: 14px;
       border-bottom: 1px solid var(--dubizzle-border);
       position: relative;
       z-index: 99999;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
     }
 
     .utility-container {
+      width: 100%;
       max-width: 1350px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 12px;
     }
 
     .controls-wrapper {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 12px;
     }
 
-    /* 📏 مسافة 5 سم بين الشعار والأيقونات المجاورة */
     .brand-logo-royal {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       text-decoration: none;
-      margin-left: 190px;
-      transition: transform 0.25s ease;
+      margin-inline-end: 240px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .brand-logo-royal {
+        margin-inline-end: 40px;
+      }
     }
 
     @media (max-width: 992px) {
-      .brand-logo-royal { margin-left: 0; margin-bottom: 8px; }
-      .utility-container { justify-content: center; }
-      .controls-wrapper { justify-content: center; width: 100%; }
+      .brand-logo-royal {
+        margin-inline-end: 0;
+        margin-bottom: 8px;
+      }
+      .utility-container {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .controls-wrapper {
+        justify-content: center;
+        width: 100%;
+      }
     }
 
-    .brand-logo-royal:hover { transform: translateY(-1px); }
-    .royal-logo-icon { filter: drop-shadow(0 4px 8px rgba(0, 168, 150, 0.3)); }
+    .royal-logo-icon {
+      filter: drop-shadow(0 4px 8px rgba(0, 168, 150, 0.3));
+    }
 
-    .brand-text-group { display: flex; align-items: center; gap: 6px; }
-    .arabic-brand { font-size: 24px; font-weight: 900; color: var(--primary-turquoise); }
-    .brand-divider { color: #cbd5e1; font-size: 18px; font-weight: 300; }
-    .english-brand { font-size: 20px; font-weight: 800; color: var(--dubizzle-navy); }
+    .brand-text-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .arabic-brand {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--primary-turquoise);
+    }
+
+    .brand-divider {
+      color: #cbd5e1;
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    .english-brand {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--dubizzle-navy);
+    }
 
     .btn-add-nav {
       background: var(--primary-turquoise);
       color: #ffffff !important;
-      padding: 7px 16px;
+      padding: 6px 14px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 13px;
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
     .btn-fav-nav {
       background: #fff1f2;
       color: #e11d48 !important;
       border: 1px solid #fecdd3;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 13px;
       display: flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
-    .btn-fav-nav:hover { background: #ffe4e6; }
+    .btn-fav-nav:hover {
+      background: #ffe4e6;
+    }
 
     .fav-count-badge {
       background: #e11d48;
@@ -180,40 +234,45 @@
       background: #f1f5f9;
       color: var(--dubizzle-navy) !important;
       border: 1px solid #cbd5e1;
-      padding: 7px 16px;
+      padding: 6px 14px;
       border-radius: 6px;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 13px;
       display: flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .hamburger-menu-btn {
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
       color: var(--dubizzle-navy);
-      padding: 7px 12px;
+      padding: 6px 12px;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
     }
 
-    .instant-dropdown { position: relative; display: inline-block; }
+    .instant-dropdown {
+      position: relative;
+      display: inline-block;
+    }
 
     .instant-btn {
       background: #f1f5f9;
       color: var(--dubizzle-navy);
       border: 1px solid #cbd5e1;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
     .instant-menu {
@@ -224,7 +283,7 @@
       margin-top: 6px;
       background: #ffffff;
       color: var(--text-dark);
-      min-width: 250px;
+      min-width: 220px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
       border-radius: 8px;
       z-index: 999999 !important;
@@ -244,46 +303,50 @@
       border-bottom: 1px solid #f1f5f9;
     }
 
-    .instant-menu a:hover { background-color: var(--turquoise-light); color: var(--primary-turquoise); }
-
-    .search-menu input { width: 90%; margin: 8px 5%; padding: 7px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
-    .instant-scroll { max-height: 250px; overflow-y: auto; }
-
-    .unit-pills { display: flex; background: #e2e8f0; border-radius: 6px; padding: 2px; }
-
-    .u-pill {
-      background: transparent;
-      border: none;
-      color: var(--dubizzle-navy);
-      padding: 5px 12px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 4px;
+    .instant-menu a:hover {
+      background-color: var(--turquoise-light);
+      color: var(--primary-turquoise);
     }
 
-    .u-pill.active { background: var(--primary-turquoise); color: #ffffff; }
+    .search-menu input {
+      width: 90%;
+      margin: 8px 5%;
+      padding: 7px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+    }
 
-    /* 2. HERO SECTION */
+    .instant-scroll {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    /* HERO */
     .aqaratti-light-hero {
       position: relative;
       background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), 
                         url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600');
       background-position: center 30%;
       background-size: cover;
-      padding: 50px 20px 60px 20px;
+      padding: 40px 20px 50px 20px;
       color: #ffffff;
       text-align: center;
       transition: background-image 0.5s ease;
     }
 
-    .hero-light-container { max-width: 1150px; margin: 0 auto; position: relative; z-index: 5; }
+    .hero-light-container {
+      max-width: 1150px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 5;
+    }
 
     .royal-title {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 900;
       color: #ffffff;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     }
 
@@ -297,35 +360,22 @@
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     }
 
-    .tabs-wrapper-container { position: relative; display: flex; align-items: center; margin-bottom: 18px; }
-
-    .scroll-arrow-btn {
-      display: none;
-      background: rgba(0, 168, 150, 0.85);
-      color: white;
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
+    .tabs-wrapper-container {
+      position: relative;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      z-index: 10;
-      flex-shrink: 0;
+      margin-bottom: 18px;
     }
-
-    @media (max-width: 768px) { .scroll-arrow-btn { display: flex; } }
 
     .royal-tabs {
       display: flex;
       gap: 10px;
       overflow-x: auto;
-      scroll-behavior: smooth;
       scrollbar-width: none;
       width: 100%;
     }
 
+    /* 💡 تأثير التوهج الضوئي عند النقر على أيقونات التبويب */
     .royal-tab {
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -336,9 +386,23 @@
       cursor: pointer;
       border-radius: 6px;
       white-space: nowrap;
+      transition: all 0.3s ease;
     }
 
-    .royal-tab.active { background: var(--primary-turquoise); border-color: var(--primary-turquoise); }
+    .royal-tab:hover, .royal-tab:active, .royal-tab.active {
+      background: var(--primary-turquoise) !important;
+      border-color: var(--primary-turquoise) !important;
+      box-shadow: 0 0 15px rgba(0, 168, 150, 0.8), 0 0 25px rgba(0, 168, 150, 0.5) !important;
+      transform: translateY(-2px);
+    }
+
+    .royal-tab i {
+      transition: transform 0.2s ease;
+    }
+
+    .royal-tab:hover i, .royal-tab:active i {
+      transform: scale(1.2);
+    }
 
     .pearl-inputs-grid {
       display: grid;
@@ -348,19 +412,45 @@
       margin-bottom: 18px;
     }
 
-    @media (max-width: 1100px) { .pearl-inputs-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px) { .pearl-inputs-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 576px) { .pearl-inputs-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1100px) {
+      .pearl-inputs-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .pearl-inputs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .pearl-inputs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
     .royal-input-box {
       background: #ffffff;
       border: 1px solid #cbd5e1;
       padding: 8px 12px;
       border-radius: 6px;
+      transition: all 0.3s ease;
     }
 
-    .royal-label { display: block; font-size: 12px; color: var(--primary-turquoise); font-weight: 900; margin-bottom: 4px; }
-    
+    .royal-input-box:focus-within {
+      border-color: var(--primary-turquoise);
+      box-shadow: 0 0 10px rgba(0, 168, 150, 0.3);
+    }
+
+    .royal-label {
+      display: block;
+      font-size: 12px;
+      color: var(--primary-turquoise);
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
     .royal-input, .royal-select {
       width: 100%;
       background: transparent;
@@ -372,9 +462,20 @@
       font-family: 'Tajawal', sans-serif;
     }
 
-    .pearl-action-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .hero-center-badges { display: flex; gap: 10px; }
+    .pearl-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
 
+    .hero-center-badges {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* 💡 تألق الشارات المضيئة عند النقر */
     .hero-badge-btn {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
@@ -387,9 +488,24 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.3s ease;
     }
 
-    .hero-badge-btn.gold { background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc; }
+    .hero-badge-btn:hover, .hero-badge-btn:active {
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .hero-badge-btn.gold {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: var(--accent-gold);
+      color: #fff8dc;
+    }
+
+    .hero-badge-btn.gold:hover, .hero-badge-btn.gold:active {
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.8) !important;
+      background: rgba(212, 175, 55, 0.4) !important;
+    }
 
     .btn-royal-search {
       background: var(--primary-turquoise);
@@ -400,10 +516,20 @@
       font-size: 16px;
       font-weight: 900;
       cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    /* 3. كروت العقارات (الكارت المشاهد بالبرتقالي) */
-    .properties-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+    .btn-royal-search:hover, .btn-royal-search:active {
+      box-shadow: 0 0 20px rgba(0, 168, 150, 0.8);
+      transform: scale(1.03);
+    }
+
+    /* PROPERTIES */
+    .properties-section {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
     .section-title {
       font-size: 26px;
@@ -414,7 +540,11 @@
       padding-right: 12px;
     }
 
-    .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+    }
 
     .property-card {
       background: #ffffff;
@@ -426,15 +556,24 @@
       transition: all 0.3s ease;
     }
 
-    /* 🟧 كارت العقار المشاهد (برتقالي بدون كتابة) */
     .property-card.visited-card {
       background: #fff7ed !important;
       border: 2px solid #f97316 !important;
       box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
     }
 
-    .card-image { position: relative; height: 200px; overflow: hidden; cursor: pointer; }
-    .card-image img { width: 100%; height: 100%; object-fit: cover; }
+    .card-image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
     .btn-card-fav {
       position: absolute;
@@ -462,9 +601,24 @@
       transform: scale(1.1);
     }
 
-    .card-body { padding: 18px; }
-    .card-price { font-size: 22px; font-weight: 900; color: var(--primary-turquoise); margin-bottom: 6px; }
-    .card-title-text { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text-dark); cursor: pointer; }
+    .card-body {
+      padding: 18px;
+    }
+
+    .card-price {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--primary-turquoise);
+      margin-bottom: 6px;
+    }
+
+    .card-title-text {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-dark);
+      cursor: pointer;
+    }
 
     .card-features {
       display: flex;
@@ -495,94 +649,14 @@
       font-size: 13px;
     }
 
-    /* 🤖 AI SEARCH MODAL */
-    .ai-tabs-container {
-      display: flex;
-      background: #f1f5f9;
-      padding: 4px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .ai-tab-btn {
-      flex: 1;
-      padding: 10px 16px;
-      border: none;
-      background: transparent;
-      color: #64748b;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 14px;
-      font-family: 'Tajawal', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .ai-tab-btn.active {
-      background: var(--primary-turquoise);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 168, 150, 0.25);
-    }
-
-    .ai-textarea {
-      width: 100%;
-      height: 110px;
-      padding: 14px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      font-family: 'Tajawal', sans-serif;
-      outline: none;
-      resize: none;
-      color: var(--text-dark);
-      background: #f8fafc;
-      margin-bottom: 18px;
-    }
-
-    .btn-ai-execute {
-      width: 100%;
-      background: linear-gradient(135deg, #8b5cf6, #d946ef);
-      color: #ffffff;
-      border: none;
-      padding: 14px;
-      border-radius: 10px;
-      font-weight: 900;
-      font-size: 16px;
-      font-family: 'Tajawal', sans-serif;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
-    }
-
-    .btn-ai-close {
-      background: transparent;
-      color: #94a3b8;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 14px;
-      font-family: 'Tajawal', sans-serif;
-      cursor: pointer;
-    }
-
-    .mic-recording-btn {
-      width: 75px; height: 75px; border-radius: 50%; background: var(--primary-turquoise); color: white; font-size: 30px; border: none; cursor: pointer; margin: 20px auto; display: flex; align-items: center; justify-content: center;
-    }
-
+    /* MODALS */
     .royal-modal-overlay {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(25, 32, 56, 0.75);
       backdrop-filter: blur(8px);
       z-index: 1000000;
@@ -608,9 +682,64 @@
       border-bottom: 3px solid var(--accent-gold);
     }
 
-    .royal-modal-header i { font-size: 32px; color: var(--accent-gold); margin-bottom: 8px; }
-    .royal-modal-title { font-size: 20px; font-weight: 900; }
-    .royal-modal-body { padding: 24px; text-align: right; }
+    .royal-modal-header i {
+      font-size: 32px;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    .royal-modal-title {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .royal-modal-body {
+      padding: 24px;
+      text-align: right;
+    }
+
+    .royal-link-box {
+      background: var(--gold-bg-light);
+      border: 1px dashed var(--accent-gold);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--dubizzle-navy);
+      word-break: break-all;
+      font-weight: bold;
+      margin-bottom: 20px;
+      user-select: all;
+      text-align: center;
+    }
+
+    /* TABS LOGIN & REGISTER */
+    .auth-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 15px;
+      gap: 4px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      font-weight: 800;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .auth-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-turquoise);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
   </style>
 </head>
 <body>
@@ -623,23 +752,22 @@
       
       <div class="controls-wrapper">
         <a href="index.html" class="brand-logo-royal">
-          <svg class="royal-logo-icon" viewBox="0 0 100 100" width="38" height="38">
+          <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
             <defs>
               <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00c8b3" />
-                <stop offset="100%" stop-color="#008072" />
+                <stop offset="0%" stop-color="#00c8b3"/>
+                <stop offset="100%" stop-color="#008072"/>
               </linearGradient>
               <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ffe066" />
-                <stop offset="50%" stop-color="#d4af37" />
-                <stop offset="100%" stop-color="#997a15" />
+                <stop offset="0%" stop-color="#ffe066"/>
+                <stop offset="50%" stop-color="#d4af37"/>
+                <stop offset="100%" stop-color="#997a15"/>
               </linearGradient>
             </defs>
-            <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)" />
+            <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
             <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6" />
-            <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round" />
-            <path d="M68 76 L74 70" stroke="url(#goldGrad)" stroke-width="5" stroke-linecap="round" />
+            <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
+            <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
           </svg>
 
           <div class="brand-text-group">
@@ -658,33 +786,39 @@
           <i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span>
         </button>
 
-        <!-- 🌐 30 لغة عالمية مع العرض باللسان الأصلي غير القابل للترجمة المحرفة -->
+        <!-- 🌐 20 لغة عالمية -->
         <div class="instant-dropdown">
-          <button class="instant-btn notranslate" onclick="openInstantDropdown('fastLangList', event)">
-            <i class="fas fa-globe"></i> <span id="currentLang" class="skiptranslate">العربية</span>
+          <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)">
+            <i class="fas fa-globe"></i> <span id="currentLang">العربية</span>
           </button>
           <div class="instant-menu search-menu" id="fastLangList">
-            <input type="text" placeholder="ابحث بين 30+ لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
-            <div class="instant-scroll notranslate" id="fastLangOptions">
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('en', 'English', 'ltr')">English</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('fr', 'Français', 'ltr')">Français</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('es', 'Español', 'ltr')">Español</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('de', 'Deutsch', 'ltr')">Deutsch</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('ru', 'Русский', 'ltr')">Русский</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('zh-CN', '中文', 'ltr')">中文</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('tr', 'Türkçe', 'ltr')">Türkçe</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('fa', 'فارسی', 'rtl')">فارسی</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('ur', 'اردو', 'rtl')">اردو</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('hi', 'हिन्दी', 'ltr')">हिन्दी</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('it', 'Italiano', 'ltr')">Italiano</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('ja', '日本語', 'ltr')">日本語</a>
-              <a href="javascript:void(0)" class="skiptranslate" onclick="applyAILanguage('ko', '한국어', 'ltr')">한국어</a>
+            <input type="text" placeholder="ابحث بين 20 لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
+            <div class="instant-scroll" id="fastLangOptions">
+              <a href="javascript:void(0)" onclick="applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('en', 'English', 'ltr')">English</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('fr', 'Français', 'ltr')">Français</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('es', 'Español', 'ltr')">Español</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('de', 'Deutsch', 'ltr')">Deutsch</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('ru', 'Русский', 'ltr')">Русский</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('zh-CN', '中文', 'ltr')">中文</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('tr', 'Türkçe', 'ltr')">Türkçe</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('fa', 'فارسی', 'rtl')">فارسی</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('ur', 'اردو', 'rtl')">اردو</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('hi', 'हिन्दी', 'ltr')">हिन्दी</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('it', 'Italiano', 'ltr')">Italiano</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('pt', 'Português', 'ltr')">Português</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('nl', 'Nederlands', 'ltr')">Nederlands</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('ja', '日本語', 'ltr')">日本語</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('ko', '한국어', 'ltr')">한국어</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('pl', 'Polski', 'ltr')">Polski</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('sv', 'Svenska', 'ltr')">Svenska</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('el', 'Ελληνικά', 'ltr')">Ελληνικά</a>
+              <a href="javascript:void(0)" onclick="applyAILanguage('cs', 'Čeština', 'ltr')">Čeština</a>
             </div>
           </div>
         </div>
 
-        <!-- 💰 العملات -->
+        <!-- 💰 20 عملة عالمية -->
         <div class="instant-dropdown">
           <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)">
             <i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span>
@@ -696,12 +830,27 @@
               <a href="javascript:void(0)" onclick="applyCurrency('SAR', 'ر.س', 1.02)">SAR (ر.س) - الريال السعودي</a>
               <a href="javascript:void(0)" onclick="applyCurrency('EGP', 'ج.م', 13.1)">EGP (ج.م) - الجنيه المصري</a>
               <a href="javascript:void(0)" onclick="applyCurrency('EUR', '€', 0.25)">EUR (€) - اليورو الأوروبي</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('GBP', '£', 0.21)">GBP (£) - الجنيه الاسترليني</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('QAR', 'ر.ق', 0.99)">QAR (ر.ق) - الريال القطري</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('KWD', 'د.ك', 0.083)">KWD (د.ك) - الدينار الكويتي</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('BHD', 'د.ب', 0.10)">BHD (د.ب) - الدينار البحريني</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('OMR', 'ر.ع', 0.10)">OMR (ر.ع) - الريال العماني</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('TRY', '₺', 8.85)">TRY (₺) - الليرة التركية</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('CAD', 'CA$', 0.37)">CAD (CA$) - الدولار الكندي</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('AUD', 'A$', 0.41)">AUD (A$) - الدولار الأسترالي</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('CHF', 'CHF', 0.24)">CHF (CHF) - الفرنك السويسري</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('JPY', '¥', 42.5)">JPY (¥) - الين الياباني</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('CNY', '¥', 1.95)">CNY (¥) - اليوان الصيني</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('INR', '₹', 22.8)">INR (₹) - روبية هندية</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('RUB', '₽', 24.5)">RUB (₽) - الروبل الروسي</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('MAD', 'د.م.', 2.71)">MAD (د.م.) - الدرهم المغربي</a>
+              <a href="javascript:void(0)" onclick="applyCurrency('JOD', 'د.ا', 0.19)">JOD (د.ا) - الدينار الأردني</a>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
         <button class="btn-login-nav" onclick="openLoginModal()">
           <i class="fas fa-user"></i> دخول أو سجل الدخول
         </button>
@@ -712,9 +861,10 @@
           </button>
           <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 240px;">
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
-            <a href="javascript:void(0)" onclick="alert('معلومات وتقارير السوق')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
-            <a href="javascript:void(0)" onclick="alert('دليل المرشدين العقاريين')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
-            <a href="javascript:void(0)" onclick="openFavoritesModal()"><i class="fas fa-heart" style="color:#e11d48;"></i> قائمة المفضلة</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
           </div>
         </div>
       </div>
@@ -730,18 +880,15 @@
       <div class="pearl-search-card">
         
         <div class="tabs-wrapper-container">
-          <button class="scroll-arrow-btn" onclick="scrollTabs('right')"><i class="fas fa-chevron-right"></i></button>
-          
           <div class="royal-tabs" id="royalTabsBar">
             <button class="royal-tab active" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
             <button class="royal-tab" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
             <button class="royal-tab" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
             <button class="royal-tab" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
           </div>
-
-          <button class="scroll-arrow-btn" onclick="scrollTabs('left')"><i class="fas fa-chevron-left"></i></button>
         </div>
 
+        <!-- 🌍 قائمة الدول تترجم آلياً لكل لغات العالم دون استثناء -->
         <div class="pearl-inputs-grid">
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-globe-americas"></i> الدولة</span>
@@ -751,7 +898,13 @@
               <option value="egypt">جمهورية مصر العربية 🇪🇬</option>
               <option value="turkey">تركيا 🇹🇷</option>
               <option value="qatar">قطر 🇶🇦</option>
+              <option value="oman">سلطنة عمان 🇴🇲</option>
               <option value="uk">المملكة المتحدة 🇬🇧</option>
+              <option value="usa">الولايات المتحدة الأمريكية 🇺🇸</option>
+              <option value="france">فرنسا 🇫🇷</option>
+              <option value="spain">إسبانيا 🇪🇸</option>
+              <option value="cyprus">قبرص 🇨🇾</option>
+              <option value="greece">اليونان 🇬🇷</option>
             </select>
           </div>
 
@@ -764,7 +917,7 @@
 
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-search-location"></i> المنطقة / مشروع</span>
-            <input type="text" id="searchInput" placeholder="مثال: داون تاون، فيلا..." class="royal-input">
+            <input type="text" id="searchInput" placeholder="مثال: داون تاون..." class="royal-input">
           </div>
 
           <div class="royal-input-box">
@@ -775,10 +928,9 @@
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
             <select class="royal-select">
-              <option>اختر المعلم القريب...</option>
-              <option>قريب من مسجد</option>
-              <option>قريب من مدرسة دولية</option>
-              <option>قريب من مستشفى</option>
+              <option>اختر المعلم...</option>
+              <option>مسجد</option>
+              <option>مدرسة دولية</option>
             </select>
           </div>
         </div>
@@ -792,11 +944,11 @@
               <i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي
             </button>
           </div>
-          
           <button class="btn-royal-search" onclick="executeSearch()">
             <i class="fas fa-search"></i> ابحث عن العقارات الآن
           </button>
         </div>
+
       </div>
     </div>
   </section>
@@ -804,24 +956,82 @@
   <!-- ==================== 3. DYNAMIC PROPERTIES SECTION ==================== -->
   <section class="properties-section">
     <h2 class="section-title">العقارات المتاحة حصرياً</h2>
-    
-    <div class="properties-grid" id="properties-container">
-      <p style="text-align: center; color: var(--text-muted); grid-column: 1/-1;">جاري تحميل العقارات...</p>
-    </div>
+    <div class="properties-grid" id="properties-container"></div>
   </section>
 
   <!-- ==================== 4. MODALS ==================== -->
+  <div class="royal-modal-overlay" id="affiliateInputModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header">
+        <i class="fas fa-coins"></i>
+        <div class="royal-modal-title">توليد رابط التسويق بالعمولة</div>
+      </div>
+      <div class="royal-modal-body">
+        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:15px;">
+          أدخل رقم هاتفك أو اسمك التجاري لربط الاستفسارات واحتساب عمولتك:
+        </p>
+        <input type="text" id="affiliateRefInput" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:8px; font-weight:bold; text-align:center; font-size:15px; margin-bottom:15px;" placeholder="رقم الهاتف أو الاسم">
+        <div style="display:flex; gap:10px;">
+          <button style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="confirmGenerateLink()">
+            <i class="fas fa-magic"></i> إنشاء الرابط الآن
+          </button>
+          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateInputModal')">
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="affiliateSuccessModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #064e3b, #047857);">
+        <i class="fas fa-check-circle" style="color: #6ee7b7;"></i>
+        <div class="royal-modal-title">تم إنشاء رابطك بنجاح!</div>
+      </div>
+      <div class="royal-modal-body">
+        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:12px;">
+          شارك هذا الرابط في مجموعات الواتساب واكسب عمولتك:
+        </p>
+        <div class="royal-link-box" id="generatedLinkText">...</div>
+        <div style="display:flex; gap:10px;">
+          <button style="flex:1; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="copyGeneratedLink()">
+            <i class="fas fa-copy"></i> نسخ الرابط ومشاركته
+          </button>
+          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateSuccessModal')">
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="serviceModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header">
+        <i class="fas fa-info-circle"></i>
+        <div class="royal-modal-title" id="serviceModalTitle">مركز الخدمات</div>
+      </div>
+      <div class="royal-modal-body">
+        <p id="serviceModalContent" style="font-size:14px; color:#475569; line-height:1.6; font-weight:bold; text-align:center; margin-bottom:20px;"></p>
+        <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('serviceModal')">
+          حسناً
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="royal-modal-overlay" id="favoritesModal">
     <div class="royal-modal-card" style="max-width: 600px;">
       <div class="royal-modal-header" style="background: linear-gradient(135deg, #881337, #be123c);">
         <i class="fas fa-heart" style="color: #fecdd3;"></i>
-        <div class="royal-modal-title">قائمة العقارات المفضلة لديّ</div>
+        <div class="royal-modal-title">قائمة المفضلة</div>
       </div>
       <div class="royal-modal-body">
         <div id="favoritesListContainer" style="max-height: 350px; overflow-y: auto;"></div>
-        <div style="margin-top: 15px; text-align: center;">
-          <button class="btn-ai-close" onclick="closeRoyalModal('favoritesModal')">إغلاق النافذة</button>
-        </div>
+        <button style="width:100%; margin-top:15px; padding:10px; background:#f1f5f9; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('favoritesModal')">
+          إغلاق
+        </button>
       </div>
     </div>
   </div>
@@ -830,47 +1040,58 @@
     <div class="royal-modal-card">
       <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);">
         <i class="fas fa-robot" style="color: #c084fc;"></i>
-        <div class="royal-modal-title">محرك البحث بالذكاء الاصطناعي Aqaratti AI</div>
+        <div class="royal-modal-title">البحث بالذكاء الاصطناعي Aqaratti AI</div>
       </div>
       <div class="royal-modal-body">
-        <div style="display:flex; background:#f1f5f9; padding:4px; border-radius:10px; margin-bottom:15px;">
-          <button class="ai-tab-btn active" id="tabTextBtn" onclick="switchAITab('text')"><i class="fas fa-keyboard"></i> بحث كتابي</button>
-          <button class="ai-tab-btn" id="tabVoiceBtn" onclick="switchAITab('voice')"><i class="fas fa-microphone"></i> بحث صوتي</button>
-        </div>
-
-        <div id="aiTextSection">
-          <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:10px;">اكتب وصف العقار الذي تحلم به باللغة الطبيعيةوسيقوم الذكاء الاصطناعي بتحليله فوراً:</p>
-          <textarea id="aiPromptInput" style="width:100%; height:90px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="مثال: أريد شقة بنتهاوس 3 غرف في دبي بسعر لا يتجاوز 4 مليون درهم..."></textarea>
-          <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-wand-magic-sparkles"></i> تحليل وتطبيق البحث</button>
-        </div>
-
-        <div id="aiVoiceSection" style="display:none; text-align:center;">
-          <p style="font-size:13px; color:#475569; font-weight:bold;">اضغط على زر الميكروفون وتحدث بمواصفات العقار المطلوبة بصوتك المباشر:</p>
-          <button style="width:70px; height:70px; border-radius:50%; background:var(--primary-turquoise); color:white; font-size:26px; border:none; margin:15px auto; cursor:pointer;" id="micBtn" onclick="toggleVoiceRecognition()"><i class="fas fa-microphone"></i></button>
-          <p id="voiceStatusText" style="font-weight:800; color: var(--primary-turquoise); font-size:13px;">اضغط للبدء بالتحدث...</p>
-        </div>
-
-        <div style="margin-top: 15px; text-align: center;">
-          <button class="btn-ai-close" onclick="closeRoyalModal('aiSearchModal')">إلغاء النافذة</button>
-        </div>
+        <textarea id="aiPromptInput" style="width:100%; height:90px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب ما تبحث عنه باللغة الطبيعية..."></textarea>
+        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()">
+          <i class="fas fa-magic"></i> تحليل وتطبيق البحث
+        </button>
+        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">
+          إلغاء
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- 🔒 نافذة دخول المستخدمين مع خيار إنشاء حساب جديد برقم الهاتف والبريد -->
   <div class="royal-modal-overlay" id="loginModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header">
         <i class="fas fa-user-shield"></i>
-        <div class="royal-modal-title">تسجيل الدخول إلى عقاراتي</div>
+        <div class="royal-modal-title" id="authModalTitle">دخول أو تسجيل جديد</div>
       </div>
       <div class="royal-modal-body">
-        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:12px;">أدخل بيانات حسابك المعتمد لتتمكن من إدارة العقارات ومتابعة العمولات:</p>
-        <input type="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
-        <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
-        <div style="display:flex; gap:10px;">
-          <button style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">دخول الحساب</button>
-          <button class="btn-ai-close" onclick="closeRoyalModal('loginModal')">إلغاء</button>
+        
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+          <button class="auth-tab-btn" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
         </div>
+
+        <!-- 1. نموذج الدخول -->
+        <div id="loginAuthForm">
+          <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني أو رقم الهاتف">
+          <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
+          <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">
+            تسجيل الدخول
+          </button>
+        </div>
+
+        <!-- 2. نموذج إنشاء حساب جديد (البريد + رقم الهاتف) -->
+        <div id="registerAuthForm" style="display: none;">
+          <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="الاسم الكامل">
+          <input type="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
+          <input type="tel" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف (مع رمز الدولة)">
+          <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
+          <button style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنشاء حسابك الجديد بنجاح!'); closeRoyalModal('loginModal');">
+            إنشاء الحساب الآن
+          </button>
+        </div>
+
+        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">
+          إلغاء
+        </button>
+
       </div>
     </div>
   </div>
@@ -879,6 +1100,26 @@
   <script>
     let visitedProperties = JSON.parse(localStorage.getItem('aqaratti_visited') || '[]');
     let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
+    let activePropertyForAffiliate = '';
+
+    function switchAuthTab(type) {
+      const loginForm = document.getElementById('loginAuthForm');
+      const registerForm = document.getElementById('registerAuthForm');
+      const btnLogin = document.getElementById('tabLogin');
+      const btnRegister = document.getElementById('tabRegister');
+
+      if (type === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        btnLogin.classList.add('active');
+        btnRegister.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        btnRegister.classList.add('active');
+        btnLogin.classList.remove('active');
+      }
+    }
 
     function markPropertyAsVisited(propId) {
       if (!visitedProperties.includes(propId.toString())) {
@@ -892,13 +1133,11 @@
       if (event) event.stopPropagation();
       const idStr = propId.toString();
       const index = favoriteProperties.indexOf(idStr);
-
       if (index === -1) {
         favoriteProperties.push(idStr);
       } else {
         favoriteProperties.splice(index, 1);
       }
-
       localStorage.setItem('aqaratti_favorites', JSON.stringify(favoriteProperties));
       updateFavBadgeCount();
       fetchProperties();
@@ -908,17 +1147,68 @@
       document.getElementById('favBadge').innerText = favoriteProperties.length;
     }
 
-    // 🌐 دالة الترجمة الفورية باللغات الأصلية مع حمايتها من التغير المحرف
+    function openAffiliateModal(propId) {
+      activePropertyForAffiliate = propId;
+      document.getElementById('affiliateRefInput').value = '';
+      document.getElementById('affiliateInputModal').style.display = 'flex';
+    }
+
+    function confirmGenerateLink() {
+      const ref = document.getElementById('affiliateRefInput').value.trim();
+      if (!ref) {
+        alert('يرجى إدخال رقم هاتفك أو اسمك أولاً!');
+        return;
+      }
+      const generatedUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}property-details.html?id=${activePropertyForAffiliate}&ref=${encodeURIComponent(ref)}`;
+      closeRoyalModal('affiliateInputModal');
+      document.getElementById('generatedLinkText').innerText = generatedUrl;
+      document.getElementById('affiliateSuccessModal').style.display = 'flex';
+    }
+
+    function copyGeneratedLink() {
+      const linkText = document.getElementById('generatedLinkText').innerText;
+      navigator.clipboard.writeText(linkText);
+      alert('🎉 تم نسخ رابط العمولة الخاص بك بنجاح!');
+      closeRoyalModal('affiliateSuccessModal');
+    }
+
+    function showServiceModal(type) {
+      const modal = document.getElementById('serviceModal');
+      const title = document.getElementById('serviceModalTitle');
+      const content = document.getElementById('serviceModalContent');
+
+      if (type === 'market') {
+        title.innerText = "تقرير مؤشرات السوق";
+        content.innerText = "تحليل حقيقي لأسعار المتر وعائد الاستثمار (ROI).";
+      } else if (type === 'guides') {
+        title.innerText = "المرشدون العقاريون";
+        content.innerText = "تواصل مع نخبة الخبراء المعتمدين للاستشارات العقارية.";
+      } else if (type === 'plans') {
+        title.innerText = "مخططات الطوابق 3D";
+        content.innerText = "جولة افتراضية ثلاثية الأبعاد تفاعلية لمساحات العقار.";
+      } else if (type === 'agents') {
+        title.innerText = "بوابة الوكلاء";
+        content.innerText = "لوحة تحكم احترافية لإدارة المشاريع والعمولات.";
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    // 🌐 دالة الترجمة الفورية الفائقة بدون تأخير
     function applyAILanguage(langCode, langName, dir) {
+      localStorage.setItem('aqaratti_lang_code', langCode);
       localStorage.setItem('aqaratti_lang_name', langName);
       localStorage.setItem('aqaratti_lang_dir', dir);
 
-      document.getElementById('currentLang').innerText = langName;
-      document.documentElement.setAttribute('dir', dir);
-      document.getElementById('fastLangList').style.display = 'none';
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
 
-      document.cookie = `googtrans=/ar/${langCode}; path=/; domain=${window.location.hostname}`;
-      document.cookie = `googtrans=/ar/${langCode}; path=/`;
+      document.cookie = "googtrans=/ar/" + langCode + "; path=/;";
+      document.cookie = "googtrans=/ar/" + langCode + "; path=/; domain=" + window.location.hostname;
+
+      const btnLabel = document.getElementById('currentLang');
+      if (btnLabel) btnLabel.innerText = langName;
+      document.documentElement.setAttribute('dir', dir);
 
       const translateCombo = document.querySelector('.goog-te-combo');
       if (translateCombo) {
@@ -929,42 +1219,88 @@
       }
     }
 
-    // استعادة اسم اللغة المحفوظة بلغات أصحابها الاصليين
     function restoreSavedLanguageLabel() {
       const savedName = localStorage.getItem('aqaratti_lang_name');
       const savedDir = localStorage.getItem('aqaratti_lang_dir');
       if (savedName) {
-        document.getElementById('currentLang').innerText = savedName;
+        const btnLabel = document.getElementById('currentLang');
+        if (btnLabel) btnLabel.innerText = savedName;
       }
       if (savedDir) {
         document.documentElement.setAttribute('dir', savedDir);
       }
     }
 
+    // 🖼️ صور الخلفيات المخصصة
     const countryData = {
-      'uae': { name: 'الإمارات العربية المتحدة', bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان'] },
-      'saudi': { name: 'المملكة العربية السعودية', bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600', cities: ['الرياض', 'جدة', 'الخبر', 'مكة المكرمة'] },
-      'egypt': { name: 'جمهورية مصر العربية', bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600', cities: ['القاهرة الجديدة والتجمع', 'العاصمة الإدارية', 'الشيخ زايد'] },
-      'turkey': { name: 'تركيا', bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600', cities: ['إسطنبول', 'أنطاليا', 'بورصة'] }
+      'uae': {
+        bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600',
+        cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان']
+      },
+      'saudi': {
+        bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600',
+        cities: ['الرياض', 'جدة', 'الخبر', 'مكة المكرمة']
+      },
+      'egypt': {
+        bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600',
+        cities: ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد']
+      },
+      'turkey': {
+        bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600',
+        cities: ['إسطنبول', 'أنطاليا', 'بورصة']
+      },
+      'qatar': {
+        bg: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1600',
+        cities: ['الدوحة', 'اللؤلؤة', 'لوسيل']
+      },
+      'oman': {
+        bg: 'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=1600',
+        cities: ['مسقط', 'صلالة']
+      },
+      'uk': {
+        bg: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1600',
+        cities: ['لندن', 'مانشستر']
+      },
+      'usa': {
+        bg: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1600',
+        cities: ['نيويورك', 'ميامي']
+      },
+      'france': {
+        bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1600',
+        cities: ['باريس', 'كان']
+      },
+      'spain': {
+        bg: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=1600',
+        cities: ['مدريد', 'برشلونة']
+      },
+      'cyprus': {
+        bg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1600',
+        cities: ['ليماسول', 'لارنكا']
+      },
+      'greece': {
+        bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1600',
+        cities: ['أثينا', 'سانتوريني']
+      }
     };
 
     function updateCitiesAndBackground(countryKey) {
       const citySelect = document.getElementById('citySelector');
       const hero = document.getElementById('heroSection');
-      const data = countryData[countryKey] || countryData['uae'];
-
+      const data = countryData[countryKey] || { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['المدينة الرئيسية'] };
+      
       citySelect.innerHTML = '<option value="all">كل المدن</option>';
       data.cities.forEach(city => {
         citySelect.innerHTML += `<option value="${city}">${city}</option>`;
       });
-
+      
       const imgTester = new Image();
       imgTester.onload = function() {
         hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${data.bg}')`;
       };
+      imgTester.onerror = function() {
+        hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600')`;
+      };
       imgTester.src = data.bg;
-
-      executeSearch();
     }
 
     let currentCurrencySymbol = 'AED';
@@ -979,8 +1315,8 @@
     }
 
     const rawPropertiesData = [
-      { id: "101", title: "شقة بنتهاوس فاخرة بإطلالة على برج خليفة", priceAED: 3850000, bedrooms: 3, bathrooms: 4, area_m2: 210, image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800", commission: "1.5%", verified: true },
-      { id: "102", title: "فيلا شاطئية مستقلة في نخلة جميرا", priceAED: 18500000, bedrooms: 6, bathrooms: 7, area_m2: 650, image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800", commission: "2.0%", verified: true }
+      { id: "101", title: "شقة بنتهاوس فاخرة بإطلالة على برج خليفة", priceAED: 3850000, bedrooms: 3, bathrooms: 4, area_m2: 210, image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800", commission: "1.5%" },
+      { id: "102", title: "فيلا شاطئية مستقلة في نخلة جميرا", priceAED: 18500000, bedrooms: 6, bathrooms: 7, area_m2: 650, image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800", commission: "2.0%" }
     ];
 
     function renderPropertiesList(list) {
@@ -990,14 +1326,12 @@
         list.forEach(prop => {
           const isVisited = visitedProperties.includes(prop.id.toString());
           const isFav = favoriteProperties.includes(prop.id.toString());
-          const convertedPrice = Math.round(prop.priceAED * currentExchangeRate);
-          const commText = prop.commission ? `عمولة: ${prop.commission}` : 'عمولة مجزية';
+          const convertedPrice = Math.round((prop.priceAED || prop.price || 0) * currentExchangeRate);
 
-          /* 🟧 الكارت المشاهد باللون البرتقالي */
           const cardHTML = `
             <div class="property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
               <div class="card-image" onclick="markPropertyAsVisited('${prop.id}')">
-                <img src="${prop.image}" alt="${prop.title}">
+                <img src="${prop.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800'}" alt="${prop.title}">
                 <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)">
                   <i class="fas fa-heart"></i>
                 </button>
@@ -1005,16 +1339,16 @@
               <div class="card-body">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                   <div class="card-price">${convertedPrice.toLocaleString()} ${currentCurrencySymbol}</div>
-                  <span style="background: var(--gold-bg-light); color: var(--accent-gold); font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px; border:1px solid var(--accent-gold);"><i class="fas fa-coins"></i> ${commText}</span>
+                  <span style="background: var(--gold-bg-light); color: var(--accent-gold); font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px; border:1px solid var(--accent-gold);"><i class="fas fa-coins"></i> عمولة: ${prop.commission || '1.5%'}</span>
                 </div>
                 <div class="card-title-text" onclick="markPropertyAsVisited('${prop.id}')">${prop.title}</div>
                 <div class="card-features">
                   <span><i class="fas fa-bed"></i> ${prop.bedrooms} غرف</span>
                   <span><i class="fas fa-bath"></i> ${prop.bathrooms} حمام</span>
-                  <span data-area-m2="${prop.area_m2}"><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</span>
+                  <span><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</span>
                 </div>
                 
-                <button style="width:100%; margin-top:12px; padding:9px; font-size:13px; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('قم بالدخول لصفحة التفاصيل لنسخ رابط العمولة المخصص!')">
+                <button style="width:100%; margin-top:12px; padding:9px; font-size:13px; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="openAffiliateModal('${prop.id}')">
                   <i class="fas fa-share-alt"></i> شارك الإعلان واكسب عمولة 💰
                 </button>
 
@@ -1027,18 +1361,16 @@
           `;
           container.innerHTML += cardHTML;
         });
-      } else {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1/-1;">لا توجد عقارات مطابقة.</p>';
       }
     }
 
-    async function fetchProperties(query = '') {
+    async function fetchProperties() {
       try {
-        const response = await fetch(`http://localhost:3001/api/properties${query}`);
+        const response = await fetch('http://localhost:3001/api/properties');
         const result = await response.json();
         if (result.status === 'success' && result.data.length > 0) {
           const formatted = result.data.map(p => ({ ...p, priceAED: p.priceAED || p.price }));
-          renderPropertiesList(formatted);
+          renderPropertiesList([...rawPropertiesData, ...formatted]);
         } else {
           renderPropertiesList(rawPropertiesData);
         }
@@ -1047,74 +1379,34 @@
       }
     }
 
-    function openFavoritesModal() {
-      const favContainer = document.getElementById('favoritesListContainer');
-      favContainer.innerHTML = '';
-      const favProps = rawPropertiesData.filter(p => favoriteProperties.includes(p.id.toString()));
-
-      if (favProps.length === 0) {
-        favContainer.innerHTML = '<p style="text-align:center; padding:30px; color:#8f9bb3; font-weight:bold;">لم تقم بإضافة أي عقار للمفضلة بعد.</p>';
-      } else {
-        favProps.forEach(prop => {
-          favContainer.innerHTML += `
-            <div style="display:flex; gap:12px; align-items:center; background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #e2e8f0;">
-              <img src="${prop.image}" style="width:70px; height:60px; object-fit:cover; border-radius:6px;">
-              <div style="flex:1;">
-                <div style="font-weight:bold; font-size:14px; color:var(--dubizzle-navy);">${prop.title}</div>
-                <div style="color:var(--primary-turquoise); font-weight:900; font-size:13px;">${prop.priceAED.toLocaleString()} AED</div>
-              </div>
-              <button onclick="markPropertyAsVisited('${prop.id}')" class="btn-card-details">عرض</button>
-            </div>
-          `;
-        });
-      }
-      document.getElementById('favoritesModal').style.display = 'flex';
-    }
-
-    function openAISearchModal() { document.getElementById('aiSearchModal').style.display = 'flex'; }
-
-    function switchAITab(type) {
-      if (type === 'text') {
-        document.getElementById('aiTextSection').style.display = 'block';
-        document.getElementById('aiVoiceSection').style.display = 'none';
-        document.getElementById('tabTextBtn').classList.add('active');
-        document.getElementById('tabVoiceBtn').classList.remove('active');
-      } else {
-        document.getElementById('aiTextSection').style.display = 'none';
-        document.getElementById('aiVoiceSection').style.display = 'block';
-        document.getElementById('tabVoiceBtn').classList.add('active');
-        document.getElementById('tabTextBtn').classList.remove('active');
-      }
+    function openAISearchModal() {
+      document.getElementById('aiSearchModal').style.display = 'flex';
     }
 
     function openInstantDropdown(menuId, event) {
       if (event) event.stopPropagation();
       const targetMenu = document.getElementById(menuId);
-      const isCurrentlyVisible = targetMenu.style.display === 'block';
-      document.querySelectorAll('.instant-menu').forEach(menu => menu.style.display = 'none');
-      if (!isCurrentlyVisible) targetMenu.style.display = 'block';
+      const isVisible = targetMenu.style.display === 'block';
+      document.querySelectorAll('.instant-menu').forEach(m => m.style.display = 'none');
+      if (!isVisible) targetMenu.style.display = 'block';
     }
 
-    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
-    function closeRoyalModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
 
-    function executeSearch() {
-      const search = document.getElementById('searchInput').value;
-      const maxPrice = document.getElementById('maxPriceInput').value;
-      const country = document.getElementById('countrySelector').value;
-      let query = `?city=${country}`;
-      if (search) query += `&search=${encodeURIComponent(search)}`;
-      if (maxPrice) query += `&maxPrice=${maxPrice}`;
-      fetchProperties(query);
+    function closeRoyalModal(id) {
+      document.getElementById(id).style.display = 'none';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      restoreSavedLanguageLabel();
       updateCitiesAndBackground('uae');
       updateFavBadgeCount();
-      restoreSavedLanguageLabel();
+      fetchProperties();
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', (e) => {
       if (!e.target.closest('.instant-dropdown')) {
         document.querySelectorAll('.instant-menu').forEach(m => m.style.display = 'none');
       }
