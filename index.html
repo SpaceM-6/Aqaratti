@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>عقاراتي | Aqaratti - المنصة العقارية العالمية</title>
   
+  <!-- أيقونات FontAwesome وخط تجول -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
+  <!-- محرك الترجمة الذكية Google AI -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -441,7 +443,7 @@
       font-family: 'Tajawal', sans-serif;
     }
 
-    /* 🚩 قائمة اختيار الدول المصورة بصور الأعلام الملونة الخالصة مع علم الإمارات الصحيح */
+    /* 🚩 قائمة اختيار الدول المصورة بصور الأعلام الملونة */
     .custom-country-btn {
       width: 100%;
       background: transparent;
@@ -782,6 +784,7 @@
 
   <div id="google_translate_element" style="display:none;"></div>
 
+  <!-- ==================== 1. FAST UTILITY HEADER ==================== -->
   <div class="aqaratti-instant-utility-bar">
     <div class="utility-container">
       
@@ -816,10 +819,12 @@
           <i class="fas fa-plus-circle"></i> إضافة عقار +
         </a>
 
+        <!-- ❤️ المفضلة -->
         <button class="btn-fav-nav" onclick="openFavoritesModal()">
           <i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span>
         </button>
 
+        <!-- 🌐 20 لغة عالمية -->
         <div class="instant-dropdown">
           <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)">
             <i class="fas fa-globe"></i> <span id="currentLang">العربية</span>
@@ -851,6 +856,7 @@
           </div>
         </div>
 
+        <!-- 💰 20 عملة عالمية -->
         <div class="instant-dropdown">
           <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)">
             <i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span>
@@ -904,6 +910,7 @@
     </div>
   </div>
 
+  <!-- ==================== 2. AQARATTI HERO SECTION ==================== -->
   <section class="aqaratti-light-hero" id="heroSection">
     <div class="hero-light-container">
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
@@ -920,6 +927,7 @@
         </div>
 
         <div class="pearl-inputs-grid">
+          <!-- 🚩 قائمة اختيار الدول المصورة بأعلم واضحة -->
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-globe-americas"></i> الدولة</span>
             <button class="custom-country-btn" onclick="toggleCustomCountryMenu(event)">
@@ -971,8 +979,9 @@
 
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-city"></i> المدينة</span>
-            <select class="royal-select" id="citySelector">
-              </select>
+            <select class="royal-select" id="citySelector" onchange="updateLandmarksByCity(this.value)">
+              <!-- تعبئة أوتوماتيكية -->
+            </select>
           </div>
 
           <div class="royal-input-box">
@@ -985,22 +994,24 @@
             <input type="number" id="maxPriceInput" placeholder="ادخل السعر..." class="royal-input">
           </div>
 
+          <!-- 📍 قائمة المعالم الديناميكية (مسجد، كنيسة تحتها مباشرة، الحرم المكي/النبوي، مدرسة...) -->
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
-            <select class="royal-select">
-              <option>اختر المعلم القريب...</option>
-              <option>🕌 قريب من مسجد</option>
-              <option>🏫 قريب من مدرسة</option>
-              <option>🏥 قريب من مستشفى</option>
-              <option>🛒 قريب من مول تجاري</option>
-              <option>🥦 قريب من سوبرماركت</option>
-              <option>🏋️ قريب من نادي رياضي</option>
-              <option>🌳 قريب من حديقة عائلية</option>
-              <option>💊 قريب من صيدلية</option>
-              <option>🩺 قريب من مستوصف طبي</option>
-              <option>🏖️ قريب من شاطئ البحر</option>
-              <option>✈️ قريب من المطار</option>
-              <option>🚇 قريب من محطة مترو</option>
+            <select class="royal-select" id="landmarkSelector">
+              <option value="">اختر المعلم القريب...</option>
+              <option value="mosque">🕌 قريب من مسجد</option>
+              <option value="church">⛪ قريب من كنيسة</option>
+              <option value="school">🏫 قريب من مدرسة</option>
+              <option value="hospital">🏥 قريب من مستشفى</option>
+              <option value="mall">🛒 قريب من مول تجاري</option>
+              <option value="supermarket">🥦 قريب من سوبرماركت</option>
+              <option value="gym">🏋️ قريب من نادي رياضي</option>
+              <option value="park">🌳 قريب من حديقة عائلية</option>
+              <option value="pharmacy">💊 قريب من صيدلية</option>
+              <option value="clinic">🩺 قريب من مستوصف طبي</option>
+              <option value="beach">🏖️ قريب من شاطئ البحر</option>
+              <option value="airport">✈️ قريب من المطار</option>
+              <option value="metro">🚇 قريب من محطة مترو</option>
             </select>
           </div>
         </div>
@@ -1023,11 +1034,13 @@
     </div>
   </section>
 
+  <!-- ==================== 3. DYNAMIC PROPERTIES SECTION ==================== -->
   <section class="properties-section">
     <h2 class="section-title">العقارات المتاحة حصرياً</h2>
     <div class="properties-grid" id="properties-container"></div>
   </section>
 
+  <!-- ==================== 4. MODALS ==================== -->
   <div class="royal-modal-overlay" id="affiliateInputModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header">
@@ -1122,6 +1135,7 @@
     </div>
   </div>
 
+  <!-- 🔒 نافذة الدخول وإنشاء الحساب -->
   <div class="royal-modal-overlay" id="loginModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header">
@@ -1161,6 +1175,7 @@
     </div>
   </div>
 
+  <!-- ==================== 5. JAVASCRIPT LOGIC ==================== -->
   <script>
     let visitedProperties = JSON.parse(localStorage.getItem('aqaratti_visited') || '[]');
     let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
@@ -1270,7 +1285,7 @@
       modal.style.display = 'flex';
     }
 
-    // 🌐 دالة الترجمة المباشرة للذكاء الاصطناعي بدون تعليق المحرك
+    // 🌐 دالة الترجمة الفورية باللغات العالمية
     function applyAILanguage(langCode, langName, dir) {
       localStorage.setItem('aqaratti_lang_name', langName);
       localStorage.setItem('aqaratti_lang_dir', dir);
@@ -1284,7 +1299,6 @@
         translateCombo.dispatchEvent(new Event('change'));
       }
 
-      // تحديث الصفحة مباشرة لضمان تحول كافة الأزرار والنصوص فوراً
       setTimeout(() => {
         window.location.reload();
       }, 150);
@@ -1302,7 +1316,7 @@
       }
     }
 
-    // 🖼️ صور الخلفيات المخصصة
+    // 🖼️ صور الخلفيات والمدن والمعالم الحصرية
     const countryData = {
       'uae': {
         bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600',
@@ -1310,7 +1324,7 @@
       },
       'saudi': {
         bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600',
-        cities: ['الرياض', 'جدة', 'الخبر', 'مكة المكرمة']
+        cities: ['مكة المكرمة', 'المدينة المنورة', 'الرياض', 'جدة', 'الخبر']
       },
       'egypt': {
         bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600',
@@ -1372,6 +1386,42 @@
         hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600')`;
       };
       imgTester.src = data.bg;
+
+      updateLandmarksByCity(citySelect.value);
+    }
+
+    // 🕋 دالة إضافة الحرم المكي والحرم النبوي ديناميكيًا حسب المدينة المختارة
+    function updateLandmarksByCity(selectedCity) {
+      const landmarkSelect = document.getElementById('landmarkSelector');
+      
+      // الحفاظ على الخيارات الأساسية
+      let optionsHTML = `
+        <option value="">اختر المعلم القريب...</option>
+        <option value="mosque">🕌 قريب من مسجد</option>
+        <option value="church">⛪ قريب من كنيسة</option>
+      `;
+
+      if (selectedCity === 'مكة المكرمة') {
+        optionsHTML += `<option value="makkah_haram" selected>🕋 قريب من الحرم المكي الشريف</option>`;
+      } else if (selectedCity === 'المدينة المنورة') {
+        optionsHTML += `<option value="madinah_haram" selected>🕌 قريب من الحرم النبوي الشريف</option>`;
+      }
+
+      optionsHTML += `
+        <option value="school">🏫 قريب من مدرسة</option>
+        <option value="hospital">🏥 قريب من مستشفى</option>
+        <option value="mall">🛒 قريب من مول تجاري</option>
+        <option value="supermarket">🥦 قريب من سوبرماركت</option>
+        <option value="gym">🏋️ قريب من نادي رياضي</option>
+        <option value="park">🌳 قريب من حديقة عائلية</option>
+        <option value="pharmacy">💊 قريب من صيدلية</option>
+        <option value="clinic">🩺 قريب من مستوصف طبي</option>
+        <option value="beach">🏖️ قريب من شاطئ البحر</option>
+        <option value="airport">✈️ قريب من المطار</option>
+        <option value="metro">🚇 قريب من محطة مترو</option>
+      `;
+
+      landmarkSelect.innerHTML = optionsHTML;
     }
 
     let currentCurrencySymbol = 'AED';
