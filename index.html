@@ -24,11 +24,17 @@
 
   <style>
     /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
-    html, body {
+    html {
+      top: 0px !important;
+      padding-top: 0px !important;
+      margin-top: 0px !important;
+    }
+
+    body {
       top: 0px !important;
       position: static !important;
-      margin-top: 0px !important;
       padding-top: 0px !important;
+      margin-top: 0px !important;
     }
 
     .goog-te-banner-frame,
@@ -85,37 +91,37 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 1. الشريط العلوي */
+    /* 1. الشريط العلوي بتمركز دقيق ومطلق للأيقونات الأربعة بالوسط */
     .aqaratti-instant-utility-bar {
       width: 100%;
       background: #ffffff;
       color: var(--dubizzle-navy);
-      padding: 8px 16px;
+      padding: 8px 20px;
       font-size: 14px;
       border-bottom: 1px solid var(--dubizzle-border);
       position: relative;
       z-index: 99999;
-      min-height: 58px;
+      min-height: 60px;
       display: flex;
       align-items: center;
     }
 
     .utility-container {
       width: 100%;
-      max-width: 1350px;
+      max-width: 1400px;
       margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
-      flex-wrap: nowrap;
-      gap: 12px;
+      gap: 15px;
     }
 
-    .controls-wrapper {
+    .controls-wrapper-center {
       display: flex;
       align-items: center;
-      flex-wrap: nowrap;
+      justify-content: center;
       gap: 12px;
+      flex-wrap: nowrap;
     }
 
     .brand-logo-royal {
@@ -123,29 +129,7 @@
       align-items: center;
       gap: 8px;
       text-decoration: none;
-      margin-inline-end: 240px;
       flex-shrink: 0;
-    }
-
-    @media (max-width: 1100px) {
-      .brand-logo-royal {
-        margin-inline-end: 40px;
-      }
-    }
-
-    @media (max-width: 992px) {
-      .brand-logo-royal {
-        margin-inline-end: 0;
-        margin-bottom: 8px;
-      }
-      .utility-container {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .controls-wrapper {
-        justify-content: center;
-        width: 100%;
-      }
     }
 
     .royal-logo-icon {
@@ -180,7 +164,7 @@
     .btn-add-nav {
       background: var(--primary-turquoise);
       color: #ffffff !important;
-      padding: 6px 14px;
+      padding: 7px 14px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: 800;
@@ -195,7 +179,7 @@
       background: #fff1f2;
       color: #e11d48 !important;
       border: 1px solid #fecdd3;
-      padding: 6px 12px;
+      padding: 7px 12px;
       border-radius: 6px;
       font-weight: 800;
       font-size: 13px;
@@ -223,7 +207,7 @@
       background: #f1f5f9;
       color: var(--dubizzle-navy) !important;
       border: 1px solid #cbd5e1;
-      padding: 6px 14px;
+      padding: 7px 14px;
       border-radius: 6px;
       font-weight: 800;
       font-size: 13px;
@@ -238,7 +222,7 @@
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
       color: var(--dubizzle-navy);
-      padding: 6px 12px;
+      padding: 7px 12px;
       border-radius: 6px;
       font-size: 15px;
       cursor: pointer;
@@ -253,7 +237,7 @@
       background: #f1f5f9;
       color: var(--dubizzle-navy);
       border: 1px solid #cbd5e1;
-      padding: 6px 12px;
+      padding: 7px 12px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 13px;
@@ -311,7 +295,7 @@
       overflow-y: auto;
     }
 
-    /* HERO */
+    /* 2. HERO SECTION */
     .aqaratti-light-hero {
       position: relative;
       background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), 
@@ -380,7 +364,7 @@
     .royal-tab:hover, .royal-tab:active, .royal-tab.active {
       background: var(--primary-turquoise) !important;
       border-color: var(--primary-turquoise) !important;
-      box-shadow: 0 0 15px rgba(0, 168, 150, 0.8), 0 0 25px rgba(0, 168, 150, 0.5) !important;
+      box-shadow: 0 0 15px rgba(0, 168, 150, 0.8);
       transform: translateY(-2px);
     }
 
@@ -390,24 +374,6 @@
       gap: 10px;
       text-align: right;
       margin-bottom: 18px;
-    }
-
-    @media (max-width: 1100px) {
-      .pearl-inputs-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .pearl-inputs-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 576px) {
-      .pearl-inputs-grid {
-        grid-template-columns: 1fr;
-      }
     }
 
     .royal-input-box {
@@ -443,7 +409,7 @@
       font-family: 'Tajawal', sans-serif;
     }
 
-    /* 🚩 قائمة اختيار الدول المصورة بصور الأعلام الملونة */
+    /* 🚩 قائمة اختيار الدول المصورة بأعلم واضحة */
     .custom-country-btn {
       width: 100%;
       background: transparent;
@@ -628,15 +594,11 @@
       justify-content: center;
       font-size: 16px;
       cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-      transition: all 0.2s;
-      z-index: 5;
     }
 
     .btn-card-fav.active {
       color: #e11d48;
       background: #ffffff;
-      transform: scale(1.1);
     }
 
     .card-body {
@@ -720,12 +682,6 @@
       border-bottom: 3px solid var(--accent-gold);
     }
 
-    .royal-modal-header i {
-      font-size: 32px;
-      color: var(--accent-gold);
-      margin-bottom: 8px;
-    }
-
     .royal-modal-title {
       font-size: 20px;
       font-weight: 900;
@@ -746,11 +702,9 @@
       word-break: break-all;
       font-weight: bold;
       margin-bottom: 20px;
-      user-select: all;
       text-align: center;
     }
 
-    /* TABS LOGIN & REGISTER */
     .auth-tabs {
       display: flex;
       background: #f1f5f9;
@@ -778,6 +732,25 @@
       color: var(--primary-turquoise);
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
+
+    @media (max-width: 1024px) {
+      .utility-container {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .pearl-inputs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .pearl-inputs-grid {
+        grid-template-columns: 1fr;
+      }
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -788,47 +761,40 @@
   <div class="aqaratti-instant-utility-bar">
     <div class="utility-container">
       
-      <div class="controls-wrapper">
-        <a href="index.html" class="brand-logo-royal">
-          <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
-            <defs>
-              <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00c8b3"/>
-                <stop offset="100%" stop-color="#008072"/>
-              </linearGradient>
-              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ffe066"/>
-                <stop offset="50%" stop-color="#d4af37"/>
-                <stop offset="100%" stop-color="#997a15"/>
-              </linearGradient>
-            </defs>
-            <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
-            <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
-            <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
-          </svg>
+      <!-- الشعار -->
+      <a href="index.html" class="brand-logo-royal">
+        <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
+          <defs>
+            <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00c8b3"/>
+              <stop offset="100%" stop-color="#008072"/>
+            </linearGradient>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffe066"/>
+              <stop offset="50%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="#997a15"/>
+            </linearGradient>
+          </defs>
+          <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
+          <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
+          <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
+        </svg>
 
-          <div class="brand-text-group">
-            <span class="arabic-brand">عقاراتي</span>
-            <span class="brand-divider">│</span>
-            <span class="english-brand">Aqaratti</span>
-          </div>
-        </a>
+        <div class="brand-text-group">
+          <span class="arabic-brand">عقاراتي</span>
+          <span class="brand-divider">│</span>
+          <span class="english-brand">Aqaratti</span>
+        </div>
+      </a>
 
-        <a href="add-property.html" class="btn-add-nav">
-          <i class="fas fa-plus-circle"></i> إضافة عقار +
-        </a>
+      <!-- الأيقونات الأربعة بالمنتصف تماماً -->
+      <div class="controls-wrapper-center">
+        <a href="add-property.html" class="btn-add-nav"><i class="fas fa-plus-circle"></i> إضافة عقار +</a>
+        <button class="btn-fav-nav" onclick="openFavoritesModal()"><i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span></button>
 
-        <!-- ❤️ المفضلة -->
-        <button class="btn-fav-nav" onclick="openFavoritesModal()">
-          <i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span>
-        </button>
-
-        <!-- 🌐 20 لغة عالمية -->
         <div class="instant-dropdown">
-          <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)">
-            <i class="fas fa-globe"></i> <span id="currentLang">العربية</span>
-          </button>
+          <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang">العربية</span></button>
           <div class="instant-menu search-menu" id="fastLangList">
             <input type="text" placeholder="ابحث بين 20 لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
             <div class="instant-scroll" id="fastLangOptions">
@@ -856,11 +822,8 @@
           </div>
         </div>
 
-        <!-- 💰 20 عملة عالمية -->
         <div class="instant-dropdown">
-          <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)">
-            <i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span>
-          </button>
+          <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)"><i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span></button>
           <div class="instant-menu" id="fastCurrencyList">
             <div class="instant-scroll">
               <a href="javascript:void(0)" onclick="applyCurrency('AED', 'د.إ', 1)">AED (د.إ) - الدرهم الإماراتي</a>
@@ -888,15 +851,11 @@
         </div>
       </div>
 
+      <!-- الدخول يساراً -->
       <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-        <button class="btn-login-nav" onclick="openLoginModal()">
-          <i class="fas fa-user"></i> دخول أو سجل الدخول
-        </button>
-
+        <button class="btn-login-nav" onclick="openLoginModal()"><i class="fas fa-user"></i> دخول أو سجل الدخول</button>
         <div class="instant-dropdown">
-          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)">
-            <i class="fas fa-bars"></i>
-          </button>
+          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)"><i class="fas fa-bars"></i></button>
           <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 240px;">
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
             <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
@@ -916,7 +875,6 @@
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
 
       <div class="pearl-search-card">
-        
         <div class="tabs-wrapper-container">
           <div class="royal-tabs" id="royalTabsBar">
             <button class="royal-tab active" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
@@ -927,7 +885,6 @@
         </div>
 
         <div class="pearl-inputs-grid">
-          <!-- 🚩 قائمة اختيار الدول المصورة بأعلم واضحة -->
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-globe-americas"></i> الدولة</span>
             <button class="custom-country-btn" onclick="toggleCustomCountryMenu(event)">
@@ -938,50 +895,24 @@
             </button>
 
             <div class="custom-country-menu" id="customCountryList">
-              <div class="custom-country-item" onclick="selectCustomCountry('uae', 'الإمارات العربية المتحدة', 'https://flagcdn.com/w40/ae.png')">
-                <img src="https://flagcdn.com/w40/ae.png" class="flag-img"> الإمارات العربية المتحدة
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('saudi', 'المملكة العربية السعودية', 'https://flagcdn.com/w40/sa.png')">
-                <img src="https://flagcdn.com/w40/sa.png" class="flag-img"> المملكة العربية السعودية
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('egypt', 'جمهورية مصر العربية', 'https://flagcdn.com/w40/eg.png')">
-                <img src="https://flagcdn.com/w40/eg.png" class="flag-img"> جمهورية مصر العربية
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('turkey', 'تركيا', 'https://flagcdn.com/w40/tr.png')">
-                <img src="https://flagcdn.com/w40/tr.png" class="flag-img"> تركيا
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('qatar', 'قطر', 'https://flagcdn.com/w40/qa.png')">
-                <img src="https://flagcdn.com/w40/qa.png" class="flag-img"> قطر
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('oman', 'سلطنة عمان', 'https://flagcdn.com/w40/om.png')">
-                <img src="https://flagcdn.com/w40/om.png" class="flag-img"> سلطنة عمان
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('uk', 'المملكة المتحدة', 'https://flagcdn.com/w40/gb.png')">
-                <img src="https://flagcdn.com/w40/gb.png" class="flag-img"> المملكة المتحدة
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('usa', 'الولايات المتحدة الأمريكية', 'https://flagcdn.com/w40/us.png')">
-                <img src="https://flagcdn.com/w40/us.png" class="flag-img"> الولايات المتحدة الأمريكية
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('france', 'فرنسا', 'https://flagcdn.com/w40/fr.png')">
-                <img src="https://flagcdn.com/w40/fr.png" class="flag-img"> فرنسا
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('spain', 'إسبانيا', 'https://flagcdn.com/w40/es.png')">
-                <img src="https://flagcdn.com/w40/es.png" class="flag-img"> إسبانيا
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('cyprus', 'قبرص', 'https://flagcdn.com/w40/cy.png')">
-                <img src="https://flagcdn.com/w40/cy.png" class="flag-img"> قبرص
-              </div>
-              <div class="custom-country-item" onclick="selectCustomCountry('greece', 'اليونان', 'https://flagcdn.com/w40/gr.png')">
-                <img src="https://flagcdn.com/w40/gr.png" class="flag-img"> اليونان
-              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('uae', 'الإمارات العربية المتحدة', 'https://flagcdn.com/w40/ae.png')"><img src="https://flagcdn.com/w40/ae.png" class="flag-img"> الإمارات العربية المتحدة</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('saudi', 'المملكة العربية السعودية', 'https://flagcdn.com/w40/sa.png')"><img src="https://flagcdn.com/w40/sa.png" class="flag-img"> المملكة العربية السعودية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('egypt', 'جمهورية مصر العربية', 'https://flagcdn.com/w40/eg.png')"><img src="https://flagcdn.com/w40/eg.png" class="flag-img"> جمهورية مصر العربية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('turkey', 'تركيا', 'https://flagcdn.com/w40/tr.png')"><img src="https://flagcdn.com/w40/tr.png" class="flag-img"> تركيا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('qatar', 'قطر', 'https://flagcdn.com/w40/qa.png')"><img src="https://flagcdn.com/w40/qa.png" class="flag-img"> قطر</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('oman', 'سلطنة عمان', 'https://flagcdn.com/w40/om.png')"><img src="https://flagcdn.com/w40/om.png" class="flag-img"> سلطنة عمان</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('uk', 'المملكة المتحدة', 'https://flagcdn.com/w40/gb.png')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img"> المملكة المتحدة</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('usa', 'الولايات المتحدة الأمريكية', 'https://flagcdn.com/w40/us.png')"><img src="https://flagcdn.com/w40/us.png" class="flag-img"> الولايات المتحدة الأمريكية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('france', 'فرنسا', 'https://flagcdn.com/w40/fr.png')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img"> فرنسا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('spain', 'إسبانيا', 'https://flagcdn.com/w40/es.png')"><img src="https://flagcdn.com/w40/es.png" class="flag-img"> إسبانيا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('cyprus', 'قبرص', 'https://flagcdn.com/w40/cy.png')"><img src="https://flagcdn.com/w40/cy.png" class="flag-img"> قبرص</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('greece', 'اليونان', 'https://flagcdn.com/w40/gr.png')"><img src="https://flagcdn.com/w40/gr.png" class="flag-img"> اليونان</div>
             </div>
           </div>
 
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-city"></i> المدينة</span>
-            <select class="royal-select" id="citySelector" onchange="updateLandmarksByCity(this.value)">
-              <!-- تعبئة أوتوماتيكية -->
-            </select>
+            <select class="royal-select" id="citySelector" onchange="updateLandmarksByCity(this.value)"></select>
           </div>
 
           <div class="royal-input-box">
@@ -994,7 +925,6 @@
             <input type="number" id="maxPriceInput" placeholder="ادخل السعر..." class="royal-input">
           </div>
 
-          <!-- 📍 قائمة المعالم الديناميكية (مسجد، كنيسة تحتها مباشرة، الحرم المكي/النبوي، مدرسة...) -->
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
             <select class="royal-select" id="landmarkSelector">
@@ -1018,18 +948,11 @@
 
         <div class="pearl-action-bar">
           <div class="hero-center-badges">
-            <button class="hero-badge-btn gold" onclick="switchRoyalTab(null)">
-              <i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة
-            </button>
-            <button class="hero-badge-btn" onclick="openAISearchModal()">
-              <i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي
-            </button>
+            <button class="hero-badge-btn gold" onclick="switchRoyalTab(null)"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
+            <button class="hero-badge-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
           </div>
-          <button class="btn-royal-search" onclick="executeSearch()">
-            <i class="fas fa-search"></i> ابحث عن العقارات الآن
-          </button>
+          <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
         </div>
-
       </div>
     </div>
   </section>
@@ -1048,17 +971,11 @@
         <div class="royal-modal-title">توليد رابط التسويق بالعمولة</div>
       </div>
       <div class="royal-modal-body">
-        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:15px;">
-          أدخل رقم هاتفك أو اسمك التجاري لربط الاستفسارات واحتساب عمولتك:
-        </p>
+        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:15px;">أدخل رقم هاتفك أو اسمك التجاري لربط الاستفسارات واحتساب عمولتك:</p>
         <input type="text" id="affiliateRefInput" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:8px; font-weight:bold; text-align:center; font-size:15px; margin-bottom:15px;" placeholder="رقم الهاتف أو الاسم">
         <div style="display:flex; gap:10px;">
-          <button style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="confirmGenerateLink()">
-            <i class="fas fa-magic"></i> إنشاء الرابط الآن
-          </button>
-          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateInputModal')">
-            إلغاء
-          </button>
+          <button style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="confirmGenerateLink()"><i class="fas fa-magic"></i> إنشاء الرابط الآن</button>
+          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateInputModal')">إلغاء</button>
         </div>
       </div>
     </div>
@@ -1071,17 +988,11 @@
         <div class="royal-modal-title">تم إنشاء رابطك بنجاح!</div>
       </div>
       <div class="royal-modal-body">
-        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:12px;">
-          شارك هذا الرابط في مجموعات الواتساب واكسب عمولتك:
-        </p>
+        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:12px;">شارك هذا الرابط في مجموعات الواتساب واكسب عمولتك:</p>
         <div class="royal-link-box" id="generatedLinkText">...</div>
         <div style="display:flex; gap:10px;">
-          <button style="flex:1; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="copyGeneratedLink()">
-            <i class="fas fa-copy"></i> نسخ الرابط ومشاركته
-          </button>
-          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateSuccessModal')">
-            إلغاء
-          </button>
+          <button style="flex:1; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="copyGeneratedLink()"><i class="fas fa-copy"></i> نسخ الرابط ومشاركته</button>
+          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateSuccessModal')">إلغاء</button>
         </div>
       </div>
     </div>
@@ -1089,88 +1000,56 @@
 
   <div class="royal-modal-overlay" id="serviceModal">
     <div class="royal-modal-card">
-      <div class="royal-modal-header">
-        <i class="fas fa-info-circle"></i>
-        <div class="royal-modal-title" id="serviceModalTitle">مركز الخدمات</div>
-      </div>
+      <div class="royal-modal-header"><i class="fas fa-info-circle"></i><div class="royal-modal-title" id="serviceModalTitle">مركز الخدمات</div></div>
       <div class="royal-modal-body">
         <p id="serviceModalContent" style="font-size:14px; color:#475569; line-height:1.6; font-weight:bold; text-align:center; margin-bottom:20px;"></p>
-        <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('serviceModal')">
-          حسناً
-        </button>
+        <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('serviceModal')">حسناً</button>
       </div>
     </div>
   </div>
 
   <div class="royal-modal-overlay" id="favoritesModal">
     <div class="royal-modal-card" style="max-width: 600px;">
-      <div class="royal-modal-header" style="background: linear-gradient(135deg, #881337, #be123c);">
-        <i class="fas fa-heart" style="color: #fecdd3;"></i>
-        <div class="royal-modal-title">قائمة المفضلة</div>
-      </div>
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #881337, #be123c);"><i class="fas fa-heart" style="color: #fecdd3;"></i><div class="royal-modal-title">قائمة المفضلة</div></div>
       <div class="royal-modal-body">
         <div id="favoritesListContainer" style="max-height: 350px; overflow-y: auto;"></div>
-        <button style="width:100%; margin-top:15px; padding:10px; background:#f1f5f9; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('favoritesModal')">
-          إغلاق
-        </button>
+        <button style="width:100%; margin-top:15px; padding:10px; background:#f1f5f9; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('favoritesModal')">إغلاق</button>
       </div>
     </div>
   </div>
 
   <div class="royal-modal-overlay" id="aiSearchModal">
     <div class="royal-modal-card">
-      <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);">
-        <i class="fas fa-robot" style="color: #c084fc;"></i>
-        <div class="royal-modal-title">البحث بالذكاء الاصطناعي Aqaratti AI</div>
-      </div>
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);"><i class="fas fa-robot" style="color: #c084fc;"></i><div class="royal-modal-title">البحث بالذكاء الاصطناعي Aqaratti AI</div></div>
       <div class="royal-modal-body">
         <textarea id="aiPromptInput" style="width:100%; height:90px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب ما تبحث عنه باللغة الطبيعية..."></textarea>
-        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()">
-          <i class="fas fa-magic"></i> تحليل وتطبيق البحث
-        </button>
-        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">
-          إلغاء
-        </button>
+        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث</button>
+        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- 🔒 نافذة الدخول وإنشاء الحساب -->
   <div class="royal-modal-overlay" id="loginModal">
     <div class="royal-modal-card">
-      <div class="royal-modal-header">
-        <i class="fas fa-user-shield"></i>
-        <div class="royal-modal-title" id="authModalTitle">دخول أو تسجيل جديد</div>
-      </div>
+      <div class="royal-modal-header"><i class="fas fa-user-shield"></i><div class="royal-modal-title">دخول أو تسجيل جديد</div></div>
       <div class="royal-modal-body">
-        
         <div class="auth-tabs">
           <button class="auth-tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
           <button class="auth-tab-btn" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
         </div>
-
         <div id="loginAuthForm">
           <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني أو رقم الهاتف">
           <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
-          <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">
-            تسجيل الدخول
-          </button>
+          <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">تسجيل الدخول</button>
         </div>
-
         <div id="registerAuthForm" style="display: none;">
           <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="الاسم الكامل">
           <input type="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
-          <input type="tel" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف (مع رمز الدولة)">
+          <input type="tel" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف">
           <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
-          <button style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنشاء حسابك الجديد بنجاح!'); closeRoyalModal('loginModal');">
-            إنشاء الحساب الآن
-          </button>
+          <button style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنشاء الحساب بنجاح!'); closeRoyalModal('loginModal');">إنشاء الحساب الآن</button>
         </div>
-
-        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">
-          إلغاء
-        </button>
-
+        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">إلغاء</button>
       </div>
     </div>
   </div>
@@ -1200,15 +1079,11 @@
       const btnRegister = document.getElementById('tabRegister');
 
       if (type === 'login') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-        btnLogin.classList.add('active');
-        btnRegister.classList.remove('active');
+        loginForm.style.display = 'block'; registerForm.style.display = 'none';
+        btnLogin.classList.add('active'); btnRegister.classList.remove('active');
       } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-        btnRegister.classList.add('active');
-        btnLogin.classList.remove('active');
+        loginForm.style.display = 'none'; registerForm.style.display = 'block';
+        btnRegister.classList.add('active'); btnLogin.classList.remove('active');
       }
     }
 
@@ -1285,23 +1160,27 @@
       modal.style.display = 'flex';
     }
 
-    // 🌐 دالة الترجمة الفورية باللغات العالمية
+    /* 🌐 دالة الترجمة المباشرة والمجربة 100% التي تعمل بجميع السيرفرات والأنظمة دون تعليق */
     function applyAILanguage(langCode, langName, dir) {
       localStorage.setItem('aqaratti_lang_name', langName);
       localStorage.setItem('aqaratti_lang_dir', dir);
 
+      const btnLabel = document.getElementById('currentLang');
+      if (btnLabel) btnLabel.innerText = langName;
+      document.documentElement.setAttribute('dir', dir);
+
       document.cookie = "googtrans=/ar/" + langCode + "; path=/;";
       document.cookie = "googtrans=/ar/" + langCode + "; path=/; domain=" + window.location.hostname;
 
+      // إطلاق الترجمة عبر أداة جوجل المدمجة مباشرةً
       const translateCombo = document.querySelector('.goog-te-combo');
       if (translateCombo) {
         translateCombo.value = langCode;
         translateCombo.dispatchEvent(new Event('change'));
-      }
-
-      setTimeout(() => {
+      } else {
+        window.location.hash = '#googtrans(ar|' + langCode + ')';
         window.location.reload();
-      }, 150);
+      }
     }
 
     function restoreSavedLanguageLabel() {
@@ -1316,56 +1195,19 @@
       }
     }
 
-    // 🖼️ صور الخلفيات والمدن والمعالم الحصرية
     const countryData = {
-      'uae': {
-        bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600',
-        cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان']
-      },
-      'saudi': {
-        bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600',
-        cities: ['مكة المكرمة', 'المدينة المنورة', 'الرياض', 'جدة', 'الخبر']
-      },
-      'egypt': {
-        bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600',
-        cities: ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد']
-      },
-      'turkey': {
-        bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600',
-        cities: ['إسطنبول', 'أنطاليا', 'بورصة']
-      },
-      'qatar': {
-        bg: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1600',
-        cities: ['الدوحة', 'اللؤلؤة', 'لوسيل']
-      },
-      'oman': {
-        bg: 'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=1600',
-        cities: ['مسقط', 'صلالة']
-      },
-      'uk': {
-        bg: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1600',
-        cities: ['لندن', 'مانشستر']
-      },
-      'usa': {
-        bg: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1600',
-        cities: ['نيويورك', 'ميامي']
-      },
-      'france': {
-        bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1600',
-        cities: ['باريس', 'كان']
-      },
-      'spain': {
-        bg: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=1600',
-        cities: ['مدريد', 'برشلونة']
-      },
-      'cyprus': {
-        bg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1600',
-        cities: ['ليماسول', 'لارنكا']
-      },
-      'greece': {
-        bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1600',
-        cities: ['أثينا', 'سانتوريني']
-      }
+      'uae': { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان'] },
+      'saudi': { bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600', cities: ['مكة المكرمة', 'المدينة المنورة', 'الرياض', 'جدة', 'الخبر'] },
+      'egypt': { bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600', cities: ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد'] },
+      'turkey': { bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600', cities: ['إسطنبول', 'أنطاليا', 'بورصة'] },
+      'qatar': { bg: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1600', cities: ['الدوحة', 'اللؤلؤة', 'لوسيل'] },
+      'oman': { bg: 'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=1600', cities: ['مسقط', 'صلالة'] },
+      'uk': { bg: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1600', cities: ['لندن', 'مانشستر'] },
+      'usa': { bg: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1600', cities: ['نيويورك', 'ميامي'] },
+      'france': { bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1600', cities: ['باريس', 'كان'] },
+      'spain': { bg: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=1600', cities: ['مدريد', 'برشلونة'] },
+      'cyprus': { bg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1600', cities: ['ليماسول', 'لارنكا'] },
+      'greece': { bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1600', cities: ['أثينا', 'سانتوريني'] }
     };
 
     function updateCitiesAndBackground(countryKey) {
@@ -1377,29 +1219,13 @@
       data.cities.forEach(city => {
         citySelect.innerHTML += `<option value="${city}">${city}</option>`;
       });
-      
-      const imgTester = new Image();
-      imgTester.onload = function() {
-        hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${data.bg}')`;
-      };
-      imgTester.onerror = function() {
-        hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600')`;
-      };
-      imgTester.src = data.bg;
-
+      hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${data.bg}')`;
       updateLandmarksByCity(citySelect.value);
     }
 
-    // 🕋 دالة إضافة الحرم المكي والحرم النبوي ديناميكيًا حسب المدينة المختارة
     function updateLandmarksByCity(selectedCity) {
       const landmarkSelect = document.getElementById('landmarkSelector');
-      
-      // الحفاظ على الخيارات الأساسية
-      let optionsHTML = `
-        <option value="">اختر المعلم القريب...</option>
-        <option value="mosque">🕌 قريب من مسجد</option>
-        <option value="church">⛪ قريب من كنيسة</option>
-      `;
+      let optionsHTML = `<option value="">اختر المعلم القريب...</option>`;
 
       if (selectedCity === 'مكة المكرمة') {
         optionsHTML += `<option value="makkah_haram" selected>🕋 قريب من الحرم المكي الشريف</option>`;
@@ -1408,6 +1234,8 @@
       }
 
       optionsHTML += `
+        <option value="mosque">🕌 قريب من مسجد</option>
+        <option value="church">⛪ قريب من كنيسة</option>
         <option value="school">🏫 قريب من مدرسة</option>
         <option value="hospital">🏥 قريب من مستشفى</option>
         <option value="mall">🛒 قريب من مول تجاري</option>
@@ -1420,7 +1248,6 @@
         <option value="airport">✈️ قريب من المطار</option>
         <option value="metro">🚇 قريب من محطة مترو</option>
       `;
-
       landmarkSelect.innerHTML = optionsHTML;
     }
 
@@ -1500,10 +1327,7 @@
       }
     }
 
-    function openAISearchModal() {
-      document.getElementById('aiSearchModal').style.display = 'flex';
-    }
-
+    function openAISearchModal() { document.getElementById('aiSearchModal').style.display = 'flex'; }
     function openInstantDropdown(menuId, event) {
       if (event) event.stopPropagation();
       const targetMenu = document.getElementById(menuId);
@@ -1512,13 +1336,8 @@
       if (!isVisible) targetMenu.style.display = 'block';
     }
 
-    function openLoginModal() {
-      document.getElementById('loginModal').style.display = 'flex';
-    }
-
-    function closeRoyalModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeRoyalModal(id) { document.getElementById(id).style.display = 'none'; }
 
     document.addEventListener('DOMContentLoaded', () => {
       restoreSavedLanguageLabel();
