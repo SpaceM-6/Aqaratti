@@ -5,22 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>عقاراتي | Aqaratti - المنصة العقارية العالمية</title>
   
-  <!-- أيقونات FontAwesome وخط تجول -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- 🚀 سكريبت قراءة اللغة قبل التحميل لمنع الوميض العربي -->
-  <script>
-    (function() {
-      var savedLang = localStorage.getItem('aqaratti_lang_code');
-      if (savedLang && savedLang !== 'ar') {
-        document.cookie = "googtrans=/ar/" + savedLang + "; path=/;";
-        document.cookie = "googtrans=/ar/" + savedLang + "; path=/; domain=" + window.location.hostname;
-      }
-    })();
-  </script>
-
-  <!-- محرك الترجمة الذكية Google AI -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -375,7 +362,6 @@
       width: 100%;
     }
 
-    /* 💡 تأثير التوهج الضوئي عند النقر على أيقونات التبويب */
     .royal-tab {
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -394,14 +380,6 @@
       border-color: var(--primary-turquoise) !important;
       box-shadow: 0 0 15px rgba(0, 168, 150, 0.8), 0 0 25px rgba(0, 168, 150, 0.5) !important;
       transform: translateY(-2px);
-    }
-
-    .royal-tab i {
-      transition: transform 0.2s ease;
-    }
-
-    .royal-tab:hover i, .royal-tab:active i {
-      transform: scale(1.2);
     }
 
     .pearl-inputs-grid {
@@ -436,6 +414,7 @@
       padding: 8px 12px;
       border-radius: 6px;
       transition: all 0.3s ease;
+      position: relative;
     }
 
     .royal-input-box:focus-within {
@@ -462,6 +441,64 @@
       font-family: 'Tajawal', sans-serif;
     }
 
+    /* 🚩 قائمة اختيار الدول المصورة بصور الأعلام الملونة الخالصة مع علم الإمارات الصحيح */
+    .custom-country-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-dark);
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'Tajawal', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 2px 0;
+    }
+
+    .custom-country-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      margin-top: 6px;
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 99999;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .custom-country-item {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 700;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .custom-country-item:hover {
+      background: var(--turquoise-light);
+      color: var(--primary-turquoise);
+    }
+
+    .flag-img {
+      width: 24px;
+      height: 16px;
+      object-fit: fill;
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
     .pearl-action-bar {
       display: flex;
       justify-content: space-between;
@@ -475,7 +512,6 @@
       gap: 10px;
     }
 
-    /* 💡 تألق الشارات المضيئة عند النقر */
     .hero-badge-btn {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
@@ -746,7 +782,6 @@
 
   <div id="google_translate_element" style="display:none;"></div>
 
-  <!-- ==================== 1. FAST UTILITY HEADER ==================== -->
   <div class="aqaratti-instant-utility-bar">
     <div class="utility-container">
       
@@ -781,12 +816,10 @@
           <i class="fas fa-plus-circle"></i> إضافة عقار +
         </a>
 
-        <!-- ❤️ المفضلة -->
         <button class="btn-fav-nav" onclick="openFavoritesModal()">
           <i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span>
         </button>
 
-        <!-- 🌐 20 لغة عالمية -->
         <div class="instant-dropdown">
           <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)">
             <i class="fas fa-globe"></i> <span id="currentLang">العربية</span>
@@ -818,7 +851,6 @@
           </div>
         </div>
 
-        <!-- 💰 20 عملة عالمية -->
         <div class="instant-dropdown">
           <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)">
             <i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span>
@@ -872,7 +904,6 @@
     </div>
   </div>
 
-  <!-- ==================== 2. AQARATTI HERO SECTION ==================== -->
   <section class="aqaratti-light-hero" id="heroSection">
     <div class="hero-light-container">
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
@@ -888,31 +919,60 @@
           </div>
         </div>
 
-        <!-- 🌍 قائمة الدول تترجم آلياً لكل لغات العالم دون استثناء -->
         <div class="pearl-inputs-grid">
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-globe-americas"></i> الدولة</span>
-            <select class="royal-select" id="countrySelector" onchange="updateCitiesAndBackground(this.value)">
-              <option value="uae" selected>الإمارات العربية المتحدة 🇦🇪</option>
-              <option value="saudi">المملكة العربية السعودية 🇸🇦</option>
-              <option value="egypt">جمهورية مصر العربية 🇪🇬</option>
-              <option value="turkey">تركيا 🇹🇷</option>
-              <option value="qatar">قطر 🇶🇦</option>
-              <option value="oman">سلطنة عمان 🇴🇲</option>
-              <option value="uk">المملكة المتحدة 🇬🇧</option>
-              <option value="usa">الولايات المتحدة الأمريكية 🇺🇸</option>
-              <option value="france">فرنسا 🇫🇷</option>
-              <option value="spain">إسبانيا 🇪🇸</option>
-              <option value="cyprus">قبرص 🇨🇾</option>
-              <option value="greece">اليونان 🇬🇷</option>
-            </select>
+            <button class="custom-country-btn" onclick="toggleCustomCountryMenu(event)">
+              <span id="selectedCountryLabel" style="display:flex; align-items:center; gap:8px;">
+                <img src="https://flagcdn.com/w40/ae.png" class="flag-img" alt="الإمارات"> الإمارات العربية المتحدة
+              </span>
+              <i class="fas fa-chevron-down" style="font-size: 11px; color: #94a3b8;"></i>
+            </button>
+
+            <div class="custom-country-menu" id="customCountryList">
+              <div class="custom-country-item" onclick="selectCustomCountry('uae', 'الإمارات العربية المتحدة', 'https://flagcdn.com/w40/ae.png')">
+                <img src="https://flagcdn.com/w40/ae.png" class="flag-img"> الإمارات العربية المتحدة
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('saudi', 'المملكة العربية السعودية', 'https://flagcdn.com/w40/sa.png')">
+                <img src="https://flagcdn.com/w40/sa.png" class="flag-img"> المملكة العربية السعودية
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('egypt', 'جمهورية مصر العربية', 'https://flagcdn.com/w40/eg.png')">
+                <img src="https://flagcdn.com/w40/eg.png" class="flag-img"> جمهورية مصر العربية
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('turkey', 'تركيا', 'https://flagcdn.com/w40/tr.png')">
+                <img src="https://flagcdn.com/w40/tr.png" class="flag-img"> تركيا
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('qatar', 'قطر', 'https://flagcdn.com/w40/qa.png')">
+                <img src="https://flagcdn.com/w40/qa.png" class="flag-img"> قطر
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('oman', 'سلطنة عمان', 'https://flagcdn.com/w40/om.png')">
+                <img src="https://flagcdn.com/w40/om.png" class="flag-img"> سلطنة عمان
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('uk', 'المملكة المتحدة', 'https://flagcdn.com/w40/gb.png')">
+                <img src="https://flagcdn.com/w40/gb.png" class="flag-img"> المملكة المتحدة
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('usa', 'الولايات المتحدة الأمريكية', 'https://flagcdn.com/w40/us.png')">
+                <img src="https://flagcdn.com/w40/us.png" class="flag-img"> الولايات المتحدة الأمريكية
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('france', 'فرنسا', 'https://flagcdn.com/w40/fr.png')">
+                <img src="https://flagcdn.com/w40/fr.png" class="flag-img"> فرنسا
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('spain', 'إسبانيا', 'https://flagcdn.com/w40/es.png')">
+                <img src="https://flagcdn.com/w40/es.png" class="flag-img"> إسبانيا
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('cyprus', 'قبرص', 'https://flagcdn.com/w40/cy.png')">
+                <img src="https://flagcdn.com/w40/cy.png" class="flag-img"> قبرص
+              </div>
+              <div class="custom-country-item" onclick="selectCustomCountry('greece', 'اليونان', 'https://flagcdn.com/w40/gr.png')">
+                <img src="https://flagcdn.com/w40/gr.png" class="flag-img"> اليونان
+              </div>
+            </div>
           </div>
 
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-city"></i> المدينة</span>
             <select class="royal-select" id="citySelector">
-              <!-- تعبئة أوتوماتيكية -->
-            </select>
+              </select>
           </div>
 
           <div class="royal-input-box">
@@ -928,9 +988,19 @@
           <div class="royal-input-box">
             <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
             <select class="royal-select">
-              <option>اختر المعلم...</option>
-              <option>مسجد</option>
-              <option>مدرسة دولية</option>
+              <option>اختر المعلم القريب...</option>
+              <option>🕌 قريب من مسجد</option>
+              <option>🏫 قريب من مدرسة</option>
+              <option>🏥 قريب من مستشفى</option>
+              <option>🛒 قريب من مول تجاري</option>
+              <option>🥦 قريب من سوبرماركت</option>
+              <option>🏋️ قريب من نادي رياضي</option>
+              <option>🌳 قريب من حديقة عائلية</option>
+              <option>💊 قريب من صيدلية</option>
+              <option>🩺 قريب من مستوصف طبي</option>
+              <option>🏖️ قريب من شاطئ البحر</option>
+              <option>✈️ قريب من المطار</option>
+              <option>🚇 قريب من محطة مترو</option>
             </select>
           </div>
         </div>
@@ -953,13 +1023,11 @@
     </div>
   </section>
 
-  <!-- ==================== 3. DYNAMIC PROPERTIES SECTION ==================== -->
   <section class="properties-section">
     <h2 class="section-title">العقارات المتاحة حصرياً</h2>
     <div class="properties-grid" id="properties-container"></div>
   </section>
 
-  <!-- ==================== 4. MODALS ==================== -->
   <div class="royal-modal-overlay" id="affiliateInputModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header">
@@ -1054,7 +1122,6 @@
     </div>
   </div>
 
-  <!-- 🔒 نافذة دخول المستخدمين مع خيار إنشاء حساب جديد برقم الهاتف والبريد -->
   <div class="royal-modal-overlay" id="loginModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header">
@@ -1068,7 +1135,6 @@
           <button class="auth-tab-btn" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
         </div>
 
-        <!-- 1. نموذج الدخول -->
         <div id="loginAuthForm">
           <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني أو رقم الهاتف">
           <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
@@ -1077,7 +1143,6 @@
           </button>
         </div>
 
-        <!-- 2. نموذج إنشاء حساب جديد (البريد + رقم الهاتف) -->
         <div id="registerAuthForm" style="display: none;">
           <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="الاسم الكامل">
           <input type="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
@@ -1096,11 +1161,22 @@
     </div>
   </div>
 
-  <!-- ==================== 5. JAVASCRIPT LOGIC ==================== -->
   <script>
     let visitedProperties = JSON.parse(localStorage.getItem('aqaratti_visited') || '[]');
     let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
     let activePropertyForAffiliate = '';
+
+    function toggleCustomCountryMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('customCountryList');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function selectCustomCountry(key, name, flagUrl) {
+      document.getElementById('selectedCountryLabel').innerHTML = `<img src="${flagUrl}" class="flag-img" alt="${name}"> ${name}`;
+      document.getElementById('customCountryList').style.display = 'none';
+      updateCitiesAndBackground(key);
+    }
 
     function switchAuthTab(type) {
       const loginForm = document.getElementById('loginAuthForm');
@@ -1194,29 +1270,24 @@
       modal.style.display = 'flex';
     }
 
-    // 🌐 دالة الترجمة الفورية الفائقة بدون تأخير
+    // 🌐 دالة الترجمة المباشرة للذكاء الاصطناعي بدون تعليق المحرك
     function applyAILanguage(langCode, langName, dir) {
-      localStorage.setItem('aqaratti_lang_code', langCode);
       localStorage.setItem('aqaratti_lang_name', langName);
       localStorage.setItem('aqaratti_lang_dir', dir);
 
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-
       document.cookie = "googtrans=/ar/" + langCode + "; path=/;";
       document.cookie = "googtrans=/ar/" + langCode + "; path=/; domain=" + window.location.hostname;
-
-      const btnLabel = document.getElementById('currentLang');
-      if (btnLabel) btnLabel.innerText = langName;
-      document.documentElement.setAttribute('dir', dir);
 
       const translateCombo = document.querySelector('.goog-te-combo');
       if (translateCombo) {
         translateCombo.value = langCode;
         translateCombo.dispatchEvent(new Event('change'));
-      } else {
-        window.location.reload();
       }
+
+      // تحديث الصفحة مباشرة لضمان تحول كافة الأزرار والنصوص فوراً
+      setTimeout(() => {
+        window.location.reload();
+      }, 150);
     }
 
     function restoreSavedLanguageLabel() {
@@ -1407,8 +1478,10 @@
     });
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.instant-dropdown')) {
+      if (!e.target.closest('.instant-dropdown') && !e.target.closest('.royal-input-box')) {
         document.querySelectorAll('.instant-menu').forEach(m => m.style.display = 'none');
+        const customList = document.getElementById('customCountryList');
+        if (customList) customList.style.display = 'none';
       }
     });
   </script>
