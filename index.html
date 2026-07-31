@@ -1165,13 +1165,13 @@
       document.getElementById('affiliateInputModal').style.display = 'flex';
     }
 
-    /* 📲 دالة توليد الرسالة الشاملة للواتساب والتسويق بالعمولة */
+    /* 📲 دالة توليد الرسالة الشاملة للواتساب والتسويق بالعمولة (محدثة بحيث تأخذ رقم المسوق ديناميكياً) */
     function confirmGenerateLink() {
-      const ref = document.getElementById('affiliateRefInput').value.trim() || '201030110959';
+      const ref = document.getElementById('affiliateRefInput').value.trim() || 'مباشر';
       
       const allProps = [...rawPropertiesData, ...loadedScrapedList];
       const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
-      const broker = property.broker || { name: "أحمد المنصوري", agency: "إعمار العقارية" };
+      const broker = property.broker || { name: "الوسيط المعتمد", agency: "شركة عقارية معتمدة" };
       const propertyUrl = `https://spacem-6.github.io/Aqaratti/property-details.html?id=${property.id}&ref=${ref}`;
 
       const shareText = 
@@ -1187,7 +1187,7 @@
 
 🤝 *بيانات المسوق المشارك للرابط (صاحب العمولة):*
 • كود المرجع (Ref): ${ref}
-• رقم التواصل: 201030110959
+• رقم التواصل مع المسوق: ${ref}
 • نسبة العمولة المستحقة: ${property.commission || "1.5%"}
 
 🔗 *رابط المعاينة والتفاصيل الكاملة:*
