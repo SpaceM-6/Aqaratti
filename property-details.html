@@ -3,302 +3,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تفاصيل العقار | Aqaratti - المنصة العقارية العالمية</title>
-
-  <!-- ==================== Open Graph / OG Tags لمعاينة وسائل التواصل ==================== -->
-  <meta property="og:title" id="ogTitle" content="تفاصيل العقار المميز | منصة عقاراتي Aqaratti">
-  <meta property="og:description" id="ogDesc" content="استكشف هذا العقار الفاخر عبر منصة عقاراتي، وتواصل للحجز والاستفسار المباشر.">
-  <meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800">
-  <meta property="og:type" content="website">
-
-  <!-- استدراج الأيقونات وخط تجول (Tajawal) المعتمد -->
+  <title>تفاصيل العقار | Aqaratti</title>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* ==================== BRANDING & ROYAL STYLING ==================== */
     :root {
       --primary-turquoise: #00a896;
-      --primary-turquoise-hover: #008072;
-      --turquoise-light: #e6f7f5;
+      --bayut-green: #28a745;
       --dubizzle-navy: #192038;
       --dubizzle-bg: #f7f9fc;
       --dubizzle-border: #e4e9f2;
       --text-dark: #222b45;
-      --accent-gold: #d4af37;
-      --gold-bg-light: #fffdf0;
+      --text-muted: #64748b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: var(--text-dark); }
 
-    body {
-      font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
-      background-color: var(--dubizzle-bg);
-      color: var(--text-dark);
-      padding: 30px 20px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .details-wrapper {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .btn-back-home {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 20px;
-      color: var(--primary-turquoise);
-      text-decoration: none;
-      font-weight: 800;
-      font-size: 15px;
-      transition: transform 0.2s;
-    }
-
-    .btn-back-home:hover {
-      transform: translateX(4px);
-    }
-
-    .container {
+    /* الهيدر العلوي */
+    .navbar {
       background: #ffffff;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--dubizzle-border);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    }
-
-    .image-container {
-      position: relative;
-      width: 100%;
-      max-height: 480px;
-      overflow: hidden;
-      background: #0f172a;
-    }
-
-    .details-img {
-      width: 100%;
-      height: 100%;
-      max-height: 480px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .verified-badge-large {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: var(--dubizzle-navy);
-      color: var(--accent-gold);
-      padding: 6px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 800;
-      border: 1px solid var(--accent-gold);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .details-body {
-      padding: 32px;
-    }
-
-    /* شارة المسوق بالعمولة */
-    .affiliate-badge {
-      background: var(--gold-bg-light);
-      border: 1px solid #fce788;
-      color: #856404;
-      padding: 14px 18px;
-      border-radius: 10px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 15px;
-      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1);
-    }
-
-    .price-bar {
+      padding: 14px 40px;
+      border-bottom: 1px solid var(--dubizzle-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    .price {
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--primary-turquoise);
-    }
+    .brand-logo { font-size: 22px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
 
-    .commission-tag {
-      background: var(--gold-bg-light);
-      color: var(--accent-gold);
-      font-size: 13px;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid var(--accent-gold);
-    }
+    .container { max-width: 1200px; margin: 25px auto; padding: 0 15px; }
 
-    .title {
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--dubizzle-navy);
-      margin-bottom: 24px;
-      line-height: 1.3;
-    }
-
-    .features-grid {
+    /* شبكة تفاصيل العقار */
+    .details-layout {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      background: #f8fafc;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      text-align: center;
-      border: 1px solid #edf2f7;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 25px;
     }
 
-    @media (max-width: 576px) {
-      .features-grid { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .details-layout { grid-template-columns: 1fr; }
     }
 
-    .feature-item {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text-dark);
+    /* معرض الصور بحسب الفيديو */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 8px;
+      height: 420px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
     }
 
-    .feature-item i {
-      color: var(--primary-turquoise);
-      margin-left: 8px;
-      font-size: 18px;
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+    .gallery-sub { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
+    .gallery-sub img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+
+    /* المحتوى الرئيسي */
+    .property-card-box {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid var(--dubizzle-border);
+      margin-bottom: 25px;
     }
 
-    .btn-whatsapp {
+    .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .price-val { font-size: 30px; font-weight: 900; color: var(--dubizzle-navy); }
+
+    .prop-title { font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #1e293b; }
+
+    .specs-strip {
       display: flex;
-      justify-content: center;
+      gap: 25px;
+      background: #f8fafc;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    /* كارت الوسيط الجانبي المثبت */
+    .sidebar-card {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: sticky;
+      top: 90px;
+    }
+
+    .broker-header {
+      display: flex;
       align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .broker-img {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-turquoise);
+    }
+
+    .broker-name { font-weight: 900; font-size: 16px; color: var(--dubizzle-navy); }
+    .broker-agency { font-size: 13px; color: var(--text-muted); }
+
+    .btn-contact {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       gap: 10px;
       width: 100%;
-      background: #25d366;
-      color: #ffffff;
-      text-align: center;
-      padding: 16px;
+      padding: 12px;
       border-radius: 8px;
+      font-weight: 800;
       text-decoration: none;
-      font-weight: 900;
-      font-size: 18px;
-      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
-      transition: background 0.2s, transform 0.2s;
+      margin-bottom: 10px;
+      transition: all 0.2s;
     }
 
-    .btn-whatsapp:hover {
-      background: #1eb954;
-      transform: translateY(-2px);
+    .btn-call { background: var(--primary-turquoise); color: #fff; }
+    .btn-wa { background: #25d366; color: #fff; }
+
+    /* حاسبة الرهن العقاري المماثلة لبيوت */
+    .calculator-box {
+      background: #f8fafc;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    /* الشريط السفلي الاحترافي (Footer) */
+    footer {
+      background: #111827;
+      color: #9ca3af;
+      padding: 50px 0 20px 0;
+      margin-top: 60px;
+      font-size: 14px;
+    }
+
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      padding: 0 20px;
+      margin-bottom: 40px;
+    }
+
+    .footer-col h4 { color: #ffffff; font-size: 16px; margin-bottom: 15px; font-weight: 800; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { color: #9ca3af; text-decoration: none; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--primary-turquoise); }
+
+    .footer-bottom {
+      border-top: 1px solid #1f2937;
+      text-align: center;
+      padding-top: 20px;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
 
-  <div class="details-wrapper">
-    <a href="index.html" class="btn-back-home">
-      <i class="fas fa-arrow-right"></i> العودة لقائمة العقارات الرئيسية
-    </a>
+  <nav class="navbar">
+    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" style="text-decoration:none; font-weight:800; color:var(--primary-turquoise);"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+  </nav>
 
-    <div class="container" id="detailsContainer">
-      <p style="padding: 50px; text-align: center; color: #8f9bb3; font-weight: bold;">
-        جاري جلب تفاصيل العقار من السيرفر...
-      </p>
+  <div class="container">
+    <div class="details-layout">
+      <main>
+        <div class="gallery-grid" id="galleryContainer">
+          </div>
+
+        <div class="property-card-box">
+          <div class="price-row">
+            <div class="price-val" id="propPrice">0 AED</div>
+            <span style="background: #e6f7f5; color: var(--primary-turquoise); padding: 5px 12px; border-radius: 20px; font-weight:bold; font-size:13px;">Check موثق</span>
+          </div>
+
+          <h1 class="prop-title" id="propTitle">عنوان العقار</h1>
+
+          <div class="specs-strip" id="propSpecs">
+            </div>
+
+          <h3 style="margin-bottom: 10px; font-weight:800;">عن هذا العقار</h3>
+          <p id="propDesc" style="line-height: 1.8; color: #475569; margin-bottom: 20px;">
+            جاري تحميل تفاصيل العقار...
+          </p>
+
+          <div class="calculator-box">
+            <h4 style="margin-bottom: 15px; color: var(--dubizzle-navy); font-weight: 800;"><i class="fas fa-calculator"></i> حاسبة الرهن العقاري التقديرية</h4>
+            <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
+              <span>القسط الشهري التقديري:</span>
+              <strong style="color:var(--primary-turquoise); font-size:18px;" id="monthlyCalc">2,649 AED / شهر</strong>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <aside>
+        <div class="sidebar-card">
+          <div class="broker-header" id="brokerClickArea">
+            <img src="" id="brokerImg" class="broker-img" alt="الوسيط">
+            <div>
+              <div class="broker-name" id="brokerName">اسم الوسيط</div>
+              <div class="broker-agency" id="brokerAgency">اسم الشركة</div>
+              <span style="font-size:11px; color:var(--primary-turquoise); font-weight:bold;">عرض جميع إعلانات الوسيط 🔗</span>
+            </div>
+          </div>
+
+          <a href="#" id="waBtn" target="_blank" class="btn-contact btn-wa">
+            <i class="fab fa-whatsapp"></i> تواصل عبر الواتساب
+          </a>
+          <a href="#" id="callBtn" class="btn-contact btn-call">
+            <i class="fas fa-phone"></i> اتصال مباشر
+          </a>
+        </div>
+      </aside>
     </div>
   </div>
 
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>عن عقاراتي</h4>
+        <ul>
+          <li><a href="#">من نحن</a></li>
+          <li><a href="#">وظائف</a></li>
+          <li><a href="#">مشاريع عقاراتي</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>الدول والأقاليم</h4>
+        <ul>
+          <li><a href="#">عقارات دبي</a></li>
+          <li><a href="#">عقارات أبوظبي</a></li>
+          <li><a href="#">عقارات الشارقة</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>خدمات المسوقين</h4>
+        <ul>
+          <li><a href="#">برنامج العمولات</a></li>
+          <li><a href="#">لوحة تحكم الوسيط</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>حمل التطبيق</h4>
+        <p style="margin-bottom:10px;">متوفر على iOS وأندرويد</p>
+        <div style="display:flex; gap:10px;">
+          <i class="fab fa-apple fa-2x"></i>
+          <i class="fab fa-google-play fa-2x"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      جميع الحقوق محفوظة © 2026 - منصة Aqaratti العقارية
+    </div>
+  </footer>
+
   <script>
-    async function loadPropertyDetails() {
+    document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const propId = urlParams.get('id');
-      const ref = urlParams.get('ref'); // معرف المسوق بالعمولة
-      const container = document.getElementById('detailsContainer');
 
-      if (!propId) {
-        container.innerHTML = '<p style="padding: 40px; text-align: center; font-weight: bold; color: #dc2626;">لم يتم العثور على معرّف العقار المطلوبة!</p>';
-        return;
-      }
-
+      let properties = [];
       try {
-        const fetchUrl = ref 
-          ? `http://localhost:3001/api/properties/${propId}?ref=${encodeURIComponent(ref)}` 
-          : `http://localhost:3001/api/properties/${propId}`;
+        const res = await fetch('./properties.json');
+        properties = await res.json();
+      } catch (e) {}
 
-        const res = await fetch(fetchUrl);
-        const result = await res.json();
+      const prop = properties.find(p => p.id === propId) || properties[0];
+      const broker = prop.broker || {
+        brokerId: "agent-101",
+        name: "أمل مازن",
+        agency: "إعمار العقارية",
+        whatsapp: "201030110959",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200"
+      };
 
-        if (result.status === 'success' && result.data) {
-          const prop = result.data;
+      // عرض البيانات
+      document.getElementById('propTitle').innerText = prop.title;
+      document.getElementById('propPrice').innerText = prop.priceAED.toLocaleString() + ' AED';
+      document.getElementById('propDesc').innerText = prop.description;
+      document.getElementById('propSpecs').innerHTML = `
+        <div><i class="fas fa-bed"></i> ${prop.bedrooms} غرف نوم</div>
+        <div><i class="fas fa-bath"></i> ${prop.bathrooms} حمامات</div>
+        <div><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</div>
+      `;
 
-          // تحديث Open Graph Tags تلقائياً لمعاينة المشاركة في الواتساب وفيسبوك
-          document.getElementById('ogTitle').setAttribute('content', `${prop.title} | عقاراتي`);
-          document.getElementById('ogDesc').setAttribute('content', `بسعر ${Number(prop.price).toLocaleString()} ${prop.currency || 'AED'} - ${prop.bedrooms} غرف نوم - مساحة ${prop.area_m2} م²`);
-          if (prop.image) {
-            document.getElementById('ogImage').setAttribute('content', prop.image);
-          }
+      // المعرض
+      const gallery = prop.imagesList || [prop.image];
+      document.getElementById('galleryContainer').innerHTML = `
+        <div class="gallery-main"><img src="${gallery[0]}" alt="صورة"></div>
+        <div class="gallery-sub">
+          <img src="${gallery[1] || gallery[0]}" alt="صورة">
+          <img src="${gallery[2] || gallery[0]}" alt="صورة">
+        </div>
+      `;
 
-          let affiliateHTML = '';
-          let waMessage = `مرحباً، أود الاستفسار عن حجز العقار: (${prop.title})`;
+      // بيانات الوسيط
+      document.getElementById('brokerName').innerText = broker.name;
+      document.getElementById('brokerAgency').innerText = broker.agency;
+      document.getElementById('brokerImg').src = broker.avatar;
 
-          if (ref) {
-            affiliateHTML = `
-              <div class="affiliate-badge">
-                <i class="fas fa-user-check" style="color: var(--accent-gold); font-size: 22px;"></i> 
-                <span>أهلاً بك! تم توجيهك لهذا العقار بواسطة المسوق المعتمد: <strong>${ref}</strong></span>
-              </div>
-            `;
-            waMessage += `\n(عن طريق المسوق: ${ref})`;
-          }
+      // عند الضغط على الوسيط الانتقال لصفحته الشخصية
+      document.getElementById('brokerClickArea').onclick = () => {
+        window.location.href = `broker-profile.html?id=${broker.brokerId}`;
+      };
 
-          const commText = prop.commission ? `عمولة المسوق: ${prop.commission}` : 'عمولة مجزية';
-
-          container.innerHTML = `
-            <div class="image-container">
-              <img src="${prop.image}" class="details-img" alt="${prop.title}">
-              ${prop.verified ? '<span class="verified-badge-large"><i class="fas fa-check-circle"></i> موثوق TruCheck™</span>' : ''}
-            </div>
-
-            <div class="details-body">
-              ${affiliateHTML}
-
-              <div class="price-bar">
-                <div class="price">${Number(prop.price).toLocaleString()} ${prop.currency || 'AED'}</div>
-                <span class="commission-tag"><i class="fas fa-coins"></i> ${commText}</span>
-              </div>
-
-              <h1 class="title">${prop.title}</h1>
-
-              <div class="features-grid">
-                <div class="feature-item"><i class="fas fa-bed"></i> ${prop.bedrooms} غرف نوم</div>
-                <div class="feature-item"><i class="fas fa-bath"></i> ${prop.bathrooms} حمامات</div>
-                <div class="feature-item"><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</div>
-              </div>
-
-              <a href="https://wa.me/?text=${encodeURIComponent(waMessage)}" target="_blank" class="btn-whatsapp">
-                <i class="fab fa-whatsapp" style="font-size: 24px;"></i> تواصل مع الوكيل وحجز العقار عبر واتساب
-              </a>
-            </div>
-          `;
-        } else {
-          container.innerHTML = '<p style="padding: 40px; text-align: center; font-weight: bold; color: #dc2626;">عذراً، هذا العقار غير موجود أو تم حذفه.</p>';
-        }
-      } catch (e) {
-        console.error('خطأ في تحميل العقار:', e);
-        container.innerHTML = '<p style="padding: 40px; text-align: center; font-weight: bold; color: #dc2626;">تعذر الاتصال بالسيرفر. تأكد من تشغيل node server.js</p>';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadPropertyDetails);
+      // روابط التواصل
+      document.getElementById('waBtn').href = `https://wa.me/${broker.whatsapp}?text=${encodeURIComponent('مرحباً أود الاستفسار عن ' + prop.title)}`;
+      document.getElementById('callBtn').href = `tel:${broker.whatsapp}`;
+    });
   </script>
 </body>
 </html>
