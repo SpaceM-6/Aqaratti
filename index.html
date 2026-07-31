@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>عقاراتي | Aqaratti - المنصة العقارية العالمية</title>
   
-  <!-- أيقونات FontAwesome وخط تجول -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- محرك الترجمة الذكية Google AI -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -804,11 +802,9 @@
 
   <div id="google_translate_element" style="display:none;"></div>
 
-  <!-- ==================== 1. FAST UTILITY HEADER ==================== -->
   <div class="aqaratti-instant-utility-bar">
     <div class="utility-container">
       
-      <!-- الشعار -->
       <a href="index.html" class="brand-logo-royal">
         <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
           <defs>
@@ -828,7 +824,6 @@
         </div>
       </a>
 
-      <!-- الأيقونات الأربعة أفقية تماماً مستقيمة في اللابتوب وتنظم في أسطر في الجوال -->
       <div class="controls-wrapper-center">
         
         <div class="mobile-row-fav-add">
@@ -897,7 +892,6 @@
 
       </div>
 
-      <!-- الدخول يساراً -->
       <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
         <button class="btn-login-nav" onclick="openLoginModal()"><i class="fas fa-user"></i> دخول أو سجل الدخول</button>
         <div class="instant-dropdown">
@@ -915,14 +909,12 @@
     </div>
   </div>
 
-  <!-- ==================== 2. AQARATTI HERO SECTION ==================== -->
   <section class="aqaratti-light-hero" id="heroSection">
     <div class="hero-light-container">
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
 
       <div class="pearl-search-card">
         
-        <!-- شريط الأقسام مع السهمين للجوال -->
         <div class="tabs-wrapper-container">
           <div class="scroll-arrow right"><i class="fas fa-chevron-right"></i></div>
           <div class="royal-tabs" id="royalTabsBar">
@@ -1007,13 +999,11 @@
     </div>
   </section>
 
-  <!-- ==================== 3. DYNAMIC PROPERTIES SECTION ==================== -->
   <section class="properties-section">
     <h2 class="section-title">العقارات المتاحة حصرياً</h2>
     <div class="properties-grid" id="properties-container"></div>
   </section>
 
-  <!-- ==================== 4. MODALS ==================== -->
   <div class="royal-modal-overlay" id="affiliateInputModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header">
@@ -1072,7 +1062,13 @@
     <div class="royal-modal-card">
       <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);"><i class="fas fa-robot" style="color: #c084fc;"></i><div class="royal-modal-title">البحث بالذكاء الاصطناعي Aqaratti AI</div></div>
       <div class="royal-modal-body">
-        <textarea id="aiPromptInput" style="width:100%; height:90px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب ما تبحث عنه باللغة الطبيعية..."></textarea>
+        <textarea id="aiPromptInput" style="width:100%; height:80px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب مواصفات عقارك أو تحدث بالصوت..."></textarea>
+        
+        <button id="voiceBtn" onclick="startVoiceRecognition()" style="width:100%; margin-top:10px; background:#f1f5f9; color:#1e293b; border:1px solid #cbd5e1; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fas fa-microphone" id="micIcon" style="color:var(--primary-turquoise); font-size:18px;"></i>
+          <span id="voiceStatusText">اضغط هنا للتحدث بالصوت 🎙️</span>
+        </button>
+
         <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث</button>
         <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">إلغاء</button>
       </div>
@@ -1104,11 +1100,11 @@
     </div>
   </div>
 
-  <!-- ==================== 5. JAVASCRIPT LOGIC ==================== -->
   <script>
     let visitedProperties = JSON.parse(localStorage.getItem('aqaratti_visited') || '[]');
     let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
     let activePropertyForAffiliate = '';
+    let loadedScrapedList = [];
 
     function toggleCustomCountryMenu(e) {
       if (e) e.stopPropagation();
@@ -1169,16 +1165,36 @@
       document.getElementById('affiliateInputModal').style.display = 'flex';
     }
 
+    /* 📲 دالة توليد الرسالة الشاملة للواتساب والتسويق بالعمولة */
     function confirmGenerateLink() {
-      const ref = document.getElementById('affiliateRefInput').value.trim();
-      if (!ref) {
-        alert('يرجى إدخال رقم هاتفك أو اسمك أولاً!');
-        return;
-      }
-      const generatedUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}property-details.html?id=${activePropertyForAffiliate}&ref=${encodeURIComponent(ref)}`;
+      const ref = document.getElementById('affiliateRefInput').value.trim() || '201030110959';
+      
+      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+      const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
+      const broker = property.broker || { name: "أحمد المنصوري", agency: "إعمار العقارية" };
+      const propertyUrl = `https://spacem-6.github.io/Aqaratti/property-details.html?id=${property.id}&ref=${ref}`;
+
+      const shareText = 
+`🏡 *فرصة عقارية ممتازة عبر منصة Aqaratti* 🏡
+
+📌 *العقار:* ${property.title}
+💰 *السعر:* ${property.priceAED.toLocaleString()} AED
+📐 *المساحة:* ${property.area_m2} م² | 🛏️ ${property.bedrooms} غرف
+
+👤 *بيانات الوسيط المعلن الأصلي:*
+• الاسم: ${broker.name}
+• الشركة: ${broker.agency || "شركة عقارية معتمدة"}
+
+🤝 *بيانات المسوق المشارك للرابط (صاحب العمولة):*
+• كود المرجع (Ref): ${ref}
+• رقم التواصل: 201030110959
+• نسبة العمولة المستحقة: ${property.commission || "1.5%"}
+
+🔗 *رابط المعاينة والتفاصيل الكاملة:*
+${propertyUrl}`;
+
       closeRoyalModal('affiliateInputModal');
-      document.getElementById('generatedLinkText').innerText = generatedUrl;
-      document.getElementById('affiliateSuccessModal').style.display = 'flex';
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
     }
 
     function copyGeneratedLink() {
@@ -1222,7 +1238,6 @@
       document.cookie = "googtrans=/ar/" + langCode + "; path=/;";
       document.cookie = "googtrans=/ar/" + langCode + "; path=/; domain=" + window.location.hostname;
 
-      // إطلاق الترجمة عبر أداة جوجل المدمجة مباشرةً
       const translateCombo = document.querySelector('.goog-te-combo');
       if (translateCombo) {
         translateCombo.value = langCode;
@@ -1362,25 +1377,65 @@
       }
     }
 
-async function fetchProperties() {
+    async function fetchProperties() {
       try {
-        // 1. جلب البيانات المسحوبة أوتوماتيكياً من ملف properties.json
-        const response = await fetch('./properties.json');
+        const response = await fetch('./properties.json?v=' + Date.now());
         const scrapedData = await response.json();
 
         if (scrapedData && scrapedData.length > 0) {
-          // دمج العقارات المسحوبة مع البيانات الأساسية وعرضها
+          loadedScrapedList = scrapedData;
           renderPropertiesList([...rawPropertiesData, ...scrapedData]);
         } else {
           renderPropertiesList(rawPropertiesData);
         }
       } catch (err) {
-        // في حال تعذر قراءة الملف يتم عرض البيانات الافتراضية
         renderPropertiesList(rawPropertiesData);
       }
     }
 
     function openAISearchModal() { document.getElementById('aiSearchModal').style.display = 'flex'; }
+    
+    /* 🎙️ خدمة البحث الصوتي المباشر */
+    function startVoiceRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("متصفحك لا يدعم خاصية التحدث الصوتي المباشر، يمكنك كتابة طلبك بالكلمات.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA';
+      const statusText = document.getElementById('voiceStatusText');
+      const micIcon = document.getElementById('micIcon');
+
+      statusText.innerText = "جاري الاستماع إليك... تحدث الآن";
+      micIcon.style.color = "#e11d48";
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('aiPromptInput').value = transcript;
+        statusText.innerText = "تم التقاط صوتك بنجاح! ✨";
+        micIcon.style.color = "var(--primary-turquoise)";
+      };
+
+      recognition.onerror = () => {
+        statusText.innerText = "تعذر التقط الصوت، أعد المحاولة.";
+        micIcon.style.color = "var(--primary-turquoise)";
+      };
+    }
+
+    function executeAISearch() {
+      const query = document.getElementById('aiPromptInput').value.trim();
+      if (!query) {
+        alert('يرجى كتابة أو التحدث بمواصفات العقار الذي تبحث عنه أولاً!');
+        return;
+      }
+      alert(`🤖 تم تحليل طلبك بالذكاء الاصطناعي: "${query}" وجاري عرض أقرب العقارات لك!`);
+      closeRoyalModal('aiSearchModal');
+    }
+
     function openInstantDropdown(menuId, event) {
       if (event) event.stopPropagation();
       const targetMenu = document.getElementById(menuId);
