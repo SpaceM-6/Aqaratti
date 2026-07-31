@@ -1362,17 +1362,20 @@
       }
     }
 
-    async function fetchProperties() {
+async function fetchProperties() {
       try {
-        const response = await fetch('http://localhost:3001/api/properties');
-        const result = await response.json();
-        if (result.status === 'success' && result.data.length > 0) {
-          const formatted = result.data.map(p => ({ ...p, priceAED: p.priceAED || p.price }));
-          renderPropertiesList([...rawPropertiesData, ...formatted]);
+        // 1. جلب البيانات المسحوبة أوتوماتيكياً من ملف properties.json
+        const response = await fetch('./properties.json');
+        const scrapedData = await response.json();
+
+        if (scrapedData && scrapedData.length > 0) {
+          // دمج العقارات المسحوبة مع البيانات الأساسية وعرضها
+          renderPropertiesList([...rawPropertiesData, ...scrapedData]);
         } else {
           renderPropertiesList(rawPropertiesData);
         }
       } catch (err) {
+        // في حال تعذر قراءة الملف يتم عرض البيانات الافتراضية
         renderPropertiesList(rawPropertiesData);
       }
     }
