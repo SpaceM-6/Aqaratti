@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملف الشخصي للوسيط | Aqaratti</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f7f9fc;
+      --dubizzle-border: #e4e9f2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: #222b45; }
+
+    .navbar {
+      background: #ffffff;
+      padding: 14px 40px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+
+    /* كارت البروفايل المماثل لـ بيوت */
+    .profile-card {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px;
+      padding: 35px;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .avatar-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-turquoise);
+    }
+
+    .broker-details h1 { font-size: 26px; font-weight: 900; margin-bottom: 5px; }
+    .agency-name { color: #64748b; font-weight: 700; margin-bottom: 15px; }
+
+    .stats-row { display: flex; gap: 20px; font-weight: 800; }
+    .stat-badge { background: #e6f7f5; color: var(--primary-turquoise); padding: 6px 14px; border-radius: 20px; font-size: 13px; }
+
+    /* قائمة العقارات الخاصة بالوسيط */
+    .section-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; border-right: 4px solid var(--primary-turquoise); padding-right: 10px; }
+
+    .properties-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .prop-card {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 10px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .prop-card img { width: 100%; height: 180px; object-fit: cover; }
+    .prop-card-body { padding: 15px; }
+    .prop-price { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" style="font-size: 22px; font-weight: 900; color: var(--primary-turquoise); text-decoration:none;">عقاراتي │ Aqaratti</a>
+    <a href="index.html" style="text-decoration:none; font-weight:800; color:var(--primary-turquoise);"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+  </nav>
+
+  <div class="container">
+    <div class="profile-card">
+      <img id="bAvatar" src="" class="avatar-large" alt="صورة الوسيط">
+      <div class="broker-details">
+        <h1 id="bName">اسم الوسيط</h1>
+        <div class="agency-name" id="bAgency">اسم الشركة العقارية</div>
+        
+        <div class="stats-row">
+          <span class="stat-badge"><i class="fas fa-building"></i> عقارات معروضة: <strong id="bCount">0</strong></span>
+          <span class="stat-badge"><i class="fas fa-star"></i> وسيط معتمد وموثوق</span>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">إعلانات عقارية خاصة بالوسيط</h2>
+    <div class="properties-grid" id="brokerPropertiesContainer">
+      </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const brokerId = urlParams.get('id');
+
+      let properties = [];
+      try {
+        const res = await fetch('./properties.json');
+        properties = await res.json();
+      } catch (e) {}
+
+      // تصفية عقارات الوسيط المحدثة
+      const brokerProps = properties.filter(p => p.broker && p.broker.brokerId === brokerId);
+      const currentBroker = brokerProps.length > 0 ? brokerProps[0].broker : {
+        name: "أمل مازن",
+        agency: "إعمار العقارية",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200"
+      };
+
+      document.getElementById('bName').innerText = currentBroker.name;
+      document.getElementById('bAgency').innerText = currentBroker.agency;
+      document.getElementById('bAvatar').src = currentBroker.avatar;
+      document.getElementById('bCount').innerText = brokerProps.length;
+
+      const container = document.getElementById('brokerPropertiesContainer');
+      const propsToShow = brokerProps.length > 0 ? brokerProps : properties.slice(0, 4);
+
+      container.innerHTML = propsToShow.map(p => `
+        <a href="property-details.html?id=${p.id}" class="prop-card">
+          <img src="${p.image}" alt="${p.title}">
+          <div class="prop-card-body">
+            <div class="prop-price">${p.priceAED.toLocaleString()} AED</div>
+            <h3 style="font-size:15px; margin: 8px 0; font-weight:800;">${p.title}</h3>
+            <div style="font-size:13px; color:#64748b;">${p.bedrooms} غرف نوم │ ${p.area_m2} م²</div>
+          </div>
+        </a>
+      `).join('');
+    });
+  </script>
+</body>
+</html>
