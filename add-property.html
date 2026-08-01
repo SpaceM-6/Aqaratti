@@ -20,6 +20,8 @@
       --dubizzle-border: #e4e9f2;
       --text-dark: #222b45;
       --text-muted: #64748b;
+      --discount-red: #e11d48;
+      --savings-green: #16a34a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -73,11 +75,14 @@
       background: #ffffff;
       border: 2px solid var(--dubizzle-border);
       border-radius: 14px;
-      padding: 22px 18px;
+      padding: 24px 18px;
       text-align: center;
       position: relative;
       transition: all 0.3s ease;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .pricing-card.selected {
@@ -105,7 +110,30 @@
       white-space: nowrap;
     }
 
-    .plan-name { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; }
+    .plan-name { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 8px; }
+    
+    .price-details-wrapper { min-height: 55px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+    .old-price-box {
+      font-size: 13px;
+      color: var(--discount-red);
+      text-decoration: line-through;
+      font-weight: 800;
+      margin-bottom: 2px;
+      direction: ltr;
+    }
+
+    .save-badge {
+      display: inline-block;
+      background: #dcfce7;
+      color: var(--savings-green);
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
     .plan-price { 
       font-size: 22px; 
       font-weight: 900; 
@@ -114,6 +142,7 @@
       direction: ltr; 
       display: inline-block; 
     }
+
     .plan-target { font-size: 12px; font-weight: 700; color: var(--text-muted); min-height: 36px; margin-bottom: 15px; }
 
     .btn-select-plan {
@@ -268,38 +297,53 @@
       <p>اختر الباقة المناسبة لاحتياجاتك وانشر عقاراتك لتصل إلى آلاف المشتريين والمستثمرين فوراً</p>
     </div>
 
-    <!-- 💳 1. باقات الاشتراك الـ 4 المحدثة بأسعارها وتنسيقها الدقيق -->
+    <!-- 💳 1. باقات الاشتراك الـ 4 المصححة بدقة -->
     <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
     <div class="pricing-grid">
       
-      <!-- باقة الإعلان الواحد (50 درهم) -->
+      <!-- 1. باقة الإعلان الواحد (خصم من 75 إلى 50) -->
       <div class="pricing-card" onclick="selectPlan('single', '50 AED / إعلان', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
+        <div class="price-details-wrapper">
+          <div class="old-price-box">75 AED</div>
+          <div class="save-badge">خصم 33% 🏷️</div>
+        </div>
         <div class="plan-price">50 AED</div>
         <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- الباقة الشهرية (500 درهم) -->
+      <!-- 2. الباقة الشهرية (500 درهم ثابتة بدون خصم) -->
       <div class="pricing-card" onclick="selectPlan('monthly', '500 AED / شهر', this)">
         <div class="plan-name">الباقة الشهرية</div>
+        <div class="price-details-wrapper">
+          <span style="font-size:12px; color:#64748b; font-weight:800;">باقة قياسية ممتازة</span>
+        </div>
         <div class="plan-price">500 AED / شهر</div>
         <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- الباقة نصف السنوية (2500 درهم / 6 أشهر) -->
+      <!-- 3. الباقة نصف السنوية (توفير 500 درهم: 2,500 بدل 3,000) -->
       <div class="pricing-card" onclick="selectPlan('semi', '2,500 AED / 6 أشهر', this)">
         <div class="plan-name">الباقة نصف السنوية</div>
+        <div class="price-details-wrapper">
+          <div class="old-price-box">3,000 AED</div>
+          <div class="save-badge">توفير 500 درهم 🔥</div>
+        </div>
         <div class="plan-price">2,500 AED / 6 أشهر</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- الباقة السنوية (3999 درهم / سنة) -->
+      <!-- 4. الباقة السنوية (توفير 2,001 درهم: 3,999 بدل 6,000) -->
       <div class="pricing-card best-value" onclick="selectPlan('yearly', '3,999 AED / سنة', this)">
         <div class="badge-best">🌟 الأكثر توفيراً</div>
         <div class="plan-name">الباقة السنوية</div>
+        <div class="price-details-wrapper">
+          <div class="old-price-box">6,000 AED</div>
+          <div class="save-badge">توفير 2,001 درهم 🎉</div>
+        </div>
         <div class="plan-price">3,999 AED / سنة</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء للاستخدام المتواصل</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
