@@ -54,7 +54,6 @@
     .hero-banner h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
     .hero-banner p { font-size: 15px; color: #cbd5e1; }
 
-    /* شبكة الباقات */
     .pricing-section-title {
       text-align: center;
       font-size: 22px;
@@ -107,7 +106,14 @@
     }
 
     .plan-name { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; }
-    .plan-price { font-size: 24px; font-weight: 900; color: var(--primary-turquoise); margin-bottom: 8px; }
+    .plan-price { 
+      font-size: 22px; 
+      font-weight: 900; 
+      color: var(--primary-turquoise); 
+      margin-bottom: 8px; 
+      direction: ltr; 
+      display: inline-block; 
+    }
     .plan-target { font-size: 12px; font-weight: 700; color: var(--text-muted); min-height: 36px; margin-bottom: 15px; }
 
     .btn-select-plan {
@@ -128,7 +134,6 @@
       border-color: var(--primary-turquoise);
     }
 
-    /* النموذج */
     .form-card {
       background: #ffffff;
       border-radius: 14px;
@@ -203,7 +208,6 @@
     .image-preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .image-preview-item { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; border: 1px solid #cbd5e1; }
 
-    /* منطقة الدفع واختيار الباقة */
     .payment-notice-box {
       background: #fff7ed;
       border: 1px dashed #f97316;
@@ -264,36 +268,36 @@
       <p>اختر الباقة المناسبة لاحتياجاتك وانشر عقاراتك لتصل إلى آلاف المشتريين والمستثمرين فوراً</p>
     </div>
 
-    <!-- 💳 1. قسم باقات الاشتراك الـ 4 -->
+    <!-- 💳 1. باقات الاشتراك الـ 4 المحدثة بأسعارها وتنسيقها الدقيق -->
     <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
     <div class="pricing-grid">
       
-      <!-- باقة الإعلان الواحد -->
-      <div class="pricing-card" onclick="selectPlan('single', '20 درهم', this)">
+      <!-- باقة الإعلان الواحد (50 درهم) -->
+      <div class="pricing-card" onclick="selectPlan('single', '50 AED / إعلان', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
-        <div class="plan-price">20 AED</div>
+        <div class="plan-price">50 AED</div>
         <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- الباقة الشهرية -->
-      <div class="pricing-card" onclick="selectPlan('monthly', '500 درهم/شهر', this)">
+      <!-- الباقة الشهرية (500 درهم) -->
+      <div class="pricing-card" onclick="selectPlan('monthly', '500 AED / شهر', this)">
         <div class="plan-name">الباقة الشهرية</div>
         <div class="plan-price">500 AED / شهر</div>
         <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- الباقة نصف السنوية -->
-      <div class="pricing-card" onclick="selectPlan('semi', '2,500 درهم/6 أشهر', this)">
+      <!-- الباقة نصف السنوية (2500 درهم / 6 أشهر) -->
+      <div class="pricing-card" onclick="selectPlan('semi', '2,500 AED / 6 أشهر', this)">
         <div class="plan-name">الباقة نصف السنوية</div>
         <div class="plan-price">2,500 AED / 6 أشهر</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- الباقة السنوية (الأكثر توفيراً) -->
-      <div class="pricing-card best-value" onclick="selectPlan('yearly', '3,999 درهم/سنة', this)">
+      <!-- الباقة السنوية (3999 درهم / سنة) -->
+      <div class="pricing-card best-value" onclick="selectPlan('yearly', '3,999 AED / سنة', this)">
         <div class="badge-best">🌟 الأكثر توفيراً</div>
         <div class="plan-name">الباقة السنوية</div>
         <div class="plan-price">3,999 AED / سنة</div>
@@ -353,7 +357,6 @@
             </div>
           </div>
 
-          <!-- 🏢 تحديد نوع العقار التفصيلي -->
           <div class="form-group">
             <label>فئة ونوع العقار *</label>
             <select id="propertyCategoryInput" required>
@@ -468,7 +471,6 @@
             ⚠️ يرجى اختيار إحدى باقات الاشتراك في الأعلى أولاً ليظهر زر الدفع والنشر!
           </div>
           
-          <!-- زر الدفع والنشر الذي يظهر فقط بعد تحديد الباقة -->
           <button type="submit" id="submitBtn" class="btn-submit" style="display: none;">
             <i class="fas fa-credit-card"></i> الدفع واشترك الآن ونشر العقار (<span id="selectedPriceText"></span>)
           </button>
