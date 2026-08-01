@@ -784,6 +784,23 @@
         justify-content: center !important;
       }
 
+      /* 📱 إصلاح استجابة وإظهار قائمة اللغات في وضع LTR والجوال بوضوح تام */
+      .instant-menu {
+        left: 0 !important;
+        right: auto !important;
+        max-width: 90vw !important;
+      }
+
+      html[dir="ltr"] .instant-menu {
+        left: 0 !important;
+        right: auto !important;
+      }
+
+      html[dir="rtl"] .instant-menu {
+        right: 0 !important;
+        left: auto !important;
+      }
+
       .scroll-arrow {
         display: flex !important;
       }
@@ -827,7 +844,7 @@
       <div class="controls-wrapper-center">
         
         <div class="mobile-row-fav-add">
-          <a href="add-property.html" class="btn-add-nav"><i class="fas fa-plus-circle"></i> إضافة عقار +</a>
+          <a href="add-property.html" class="btn-add-nav"><i class="fas fa-plus-circle"></i> الاشتراك وإضافة عقار +</a>
           <button class="btn-fav-nav" onclick="openFavoritesModal()"><i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span></button>
         </div>
 
@@ -1434,6 +1451,29 @@ ${propertyUrl}`;
       }
       alert(`🤖 تم تحليل طلبك بالذكاء الاصطناعي: "${query}" وجاري عرض أقرب العقارات لك!`);
       closeRoyalModal('aiSearchModal');
+    }
+
+    /* 🔍 دالة تنفيذ البحث الفعلي وتصفية العقارات عند الضغط على زر ابحث عن العقارات الآن */
+    function executeSearch() {
+      const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
+      const selectedCity = document.getElementById('citySelector').value;
+
+      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+
+      const filtered = allProps.filter(p => {
+        const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
+        const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice;
+        const matchesCity = !selectedCity || selectedCity === 'all' || (p.city && p.city.includes(selectedCity));
+        return matchesKeyword && matchesPrice && matchesCity;
+      });
+
+      renderPropertiesList(filtered);
+
+      const propSection = document.querySelector('.properties-section');
+      if (propSection) {
+        propSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
     function openInstantDropdown(menuId, event) {
