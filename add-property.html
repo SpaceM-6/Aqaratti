@@ -258,6 +258,11 @@
       font-size: 18px;
       font-weight: 900;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-turquoise-hover);
     }
 
     footer {
@@ -297,11 +302,9 @@
       <p>اختر الباقة المناسبة لاحتياجاتك وانشر عقاراتك لتصل إلى آلاف المشتريين والمستثمرين فوراً</p>
     </div>
 
-    <!-- 💳 1. باقات الاشتراك الـ 4 المصححة بدقة -->
     <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
     <div class="pricing-grid">
       
-      <!-- 1. باقة الإعلان الواحد (خصم من 75 إلى 50) -->
       <div class="pricing-card" onclick="selectPlan('single', '50 AED / إعلان', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
         <div class="price-details-wrapper">
@@ -313,7 +316,6 @@
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- 2. الباقة الشهرية (500 درهم ثابتة بدون خصم) -->
       <div class="pricing-card" onclick="selectPlan('monthly', '500 AED / شهر', this)">
         <div class="plan-name">الباقة الشهرية</div>
         <div class="price-details-wrapper">
@@ -324,7 +326,6 @@
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- 3. الباقة نصف السنوية (توفير 500 درهم: 2,500 بدل 3,000) -->
       <div class="pricing-card" onclick="selectPlan('semi', '2,500 AED / 6 أشهر', this)">
         <div class="plan-name">الباقة نصف السنوية</div>
         <div class="price-details-wrapper">
@@ -336,7 +337,6 @@
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <!-- 4. الباقة السنوية (توفير 2,001 درهم: 3,999 بدل 6,000) -->
       <div class="pricing-card best-value" onclick="selectPlan('yearly', '3,999 AED / سنة', this)">
         <div class="badge-best">🌟 الأكثر توفيراً</div>
         <div class="plan-name">الباقة السنوية</div>
@@ -351,11 +351,9 @@
 
     </div>
 
-    <!-- 📝 2. نموذج إضافة العقار -->
     <div class="form-card">
       <form id="addPropertyForm" onsubmit="handlePropertySubmit(event)">
         
-        <!-- 👤 صفة المعلن وبياناته أولاً -->
         <div class="form-section-title">
           <i class="fas fa-user-tag"></i> صفة المعلن وبيانات التواصل
         </div>
@@ -387,7 +385,6 @@
           </div>
         </div>
 
-        <!-- 🏡 تفاصيل ونوع العقار -->
         <div class="form-section-title" style="margin-top: 15px;">
           <i class="fas fa-building"></i> مواصفات ونوع العقار
         </div>
@@ -423,7 +420,6 @@
           </div>
         </div>
 
-        <!-- 🌍 الدولة والمدينة -->
         <div class="grid-2">
           <div class="form-group">
             <label>الدولة *</label>
@@ -483,7 +479,6 @@
           </div>
         </div>
 
-        <!-- 📸 صور العقار -->
         <div class="form-section-title" style="margin-top: 15px;">
           <i class="fas fa-camera"></i> صور العقار
         </div>
@@ -509,14 +504,13 @@
           <textarea id="descInput" rows="4" placeholder="اكتب تفاصيل العقار المميزة..."></textarea>
         </div>
 
-        <!-- 🔒 قسم الاشتراك والدفع المباشر -->
         <div id="paymentArea">
           <div class="payment-notice-box" id="paymentNotice">
-            ⚠️ يرجى اختيار إحدى باقات الاشتراك في الأعلى أولاً ليظهر زر الدفع والنشر!
+            ⚠️ يرجى اختيار إحدى باقات الاشتراك في الأعلى أولاً ليظهر زر الاشتراك والنشر!
           </div>
           
           <button type="submit" id="submitBtn" class="btn-submit" style="display: none;">
-            <i class="fas fa-credit-card"></i> الدفع واشترك الآن ونشر العقار (<span id="selectedPriceText"></span>)
+            <i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText"></span>)
           </button>
         </div>
 
