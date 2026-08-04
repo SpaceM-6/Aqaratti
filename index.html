@@ -773,20 +773,31 @@
     .broker-mini-name { font-size: 12px; font-weight: 900; color: var(--dubizzle-navy); }
     .broker-mini-agency { font-size: 10px; font-weight: 700; color: var(--text-muted); }
 
-    .card-action-buttons { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    /* 🎯 توحيد حجم وأبعاد أزرار كرت العقار بالكامل */
+    .card-action-buttons { 
+      display: flex; 
+      gap: 8px; 
+      align-items: center; 
+      flex-wrap: nowrap; 
+    }
 
     .btn-card-cta {
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 900;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      text-decoration: none;
-      transition: all 0.2s ease;
+      height: 36px !important;
+      min-width: 36px !important;
+      padding: 0 14px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+      font-weight: 900 !important;
+      border: none !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      text-decoration: none !important;
+      box-sizing: border-border-box !important;
+      transition: all 0.2s ease !important;
+      white-space: nowrap !important;
     }
 
     .btn-cta-view { background: var(--turquoise-light); color: var(--primary-turquoise); }
@@ -795,10 +806,10 @@
     .btn-cta-call { background: var(--primary-turquoise); color: white; }
     .btn-cta-call:hover { background: var(--primary-turquoise-hover); }
 
-    .btn-cta-whatsapp { background: #25d366; color: white; }
+    .btn-cta-whatsapp { background: #25d366; color: white; padding: 0 12px !important; }
     .btn-cta-whatsapp:hover { background: #1eb954; }
 
-    .btn-cta-share { background: var(--gold-bg-light); color: var(--dubizzle-navy); border: 1px solid var(--accent-gold); }
+    .btn-cta-share { background: var(--gold-bg-light); color: var(--dubizzle-navy); border: 1px solid var(--accent-gold) !important; }
 
     .bayut-sidebar-ads {
       position: sticky;
@@ -977,7 +988,7 @@
       font-size: 18px;
     }
 
-    /* ==================== 📱📱 إصلاح وضبط إظهار قائمة اللغات والدول بالجوال ==================== */
+    /* ==================== 📱📱 إصلاح وتنسيق الجوال واللابتوب ==================== */
     @media (max-width: 992px) {
       .bayut-main-content-layout {
         grid-template-columns: 1fr !important;
@@ -993,12 +1004,20 @@
         display: flex !important;
       }
 
+      /* 📌 جعل القائمة المنسدلة (أيقونة الخطوط الثلاثة) في أعلى اليسار بجوار الاسم */
       .utility-container {
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important;
-        gap: 12px !important;
+        align-items: stretch !important;
+        gap: 10px !important;
         padding: 5px 0 !important;
+      }
+
+      .mobile-header-top-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
       }
 
       .controls-wrapper-center {
@@ -1016,22 +1035,6 @@
         width: 100% !important;
       }
 
-      .brand-logo-royal {
-        order: 1 !important;
-        margin: 0 auto !important;
-        justify-content: center !important;
-      }
-
-      .utility-container > div:last-child {
-        order: 2 !important;
-        width: 100% !important;
-        justify-content: center !important;
-      }
-
-      .controls-wrapper-center {
-        order: 3 !important;
-      }
-
       .mobile-row-lang-curr .instant-dropdown,
       .mobile-row-fav-add .btn-fav-nav,
       .mobile-row-fav-add .btn-add-nav {
@@ -1040,12 +1043,12 @@
         justify-content: center !important;
       }
 
-      .instant-btn, .btn-fav-nav, .btn-add-nav, .btn-login-nav, .custom-country-btn {
+      .instant-btn, .btn-fav-nav, .btn-add-nav, .custom-country-btn {
         width: 100% !important;
         justify-content: center !important;
       }
 
-      /* 🌐 رؤية شفافة وواضحة لقوائم الجوال */
+      /* 🌐 القوائم المنسدلة للجوال */
       .instant-menu, .custom-country-menu {
         position: fixed !important;
         top: 65px !important;
@@ -1062,10 +1065,6 @@
       .instant-scroll {
         max-height: 55vh !important;
         overflow-y: auto !important;
-      }
-
-      .scroll-arrow {
-        display: flex !important;
       }
 
       .pearl-inputs-grid {
@@ -1089,6 +1088,8 @@
       .card-action-buttons {
         width: 100% !important;
         justify-content: space-between !important;
+        display: flex !important;
+        gap: 6px !important;
       }
 
       .btn-card-cta {
@@ -1105,24 +1106,43 @@
   <div class="aqaratti-instant-utility-bar">
     <div class="utility-container">
       
-      <a href="index.html" class="brand-logo-royal">
-        <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
-          <defs>
-            <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8b3"/><stop offset="100%" stop-color="#008072"/></linearGradient>
-            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe066"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#997a15"/></linearGradient>
-          </defs>
-          <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
-          <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
-          <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
-        </svg>
+      <!-- 📌 هيدر الجوال السريع: الاسم على اليمين والأيقونة الثلاثية بجواره أعلى اليسار -->
+      <div class="mobile-header-top-row">
+        <a href="index.html" class="brand-logo-royal">
+          <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
+            <defs>
+              <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8b3"/><stop offset="100%" stop-color="#008072"/></linearGradient>
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe066"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#997a15"/></linearGradient>
+            </defs>
+            <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
+            <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
+            <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
+          </svg>
 
-        <div class="brand-text-group">
-          <span class="arabic-brand">عقاراتي</span>
-          <span class="brand-divider">│</span>
-          <span class="english-brand">Aqaratti</span>
+          <div class="brand-text-group">
+            <span class="arabic-brand">عقاراتي</span>
+            <span class="brand-divider">│</span>
+            <span class="english-brand">Aqaratti</span>
+          </div>
+        </a>
+
+        <!-- أزرار الهامبرغر والقائمة أعلى اليسار بالجوال -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="instant-dropdown">
+            <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)"><i class="fas fa-bars"></i></button>
+            <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 240px;">
+              <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+              
+              <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
+              <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
+              <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
+              <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+              <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
+            </div>
+          </div>
         </div>
-      </a>
+      </div>
 
       <div class="controls-wrapper-center">
         
@@ -1133,7 +1153,7 @@
 
         <div class="mobile-row-lang-curr">
           
-          <!-- 🌐 1. أيقونة اختيار الدولة بأسماء قصيرة ومباشرة -->
+          <!-- 🌐 1. أيقونة اختيار الدولة -->
           <div class="instant-dropdown">
             <button class="custom-country-btn" onclick="toggleCustomCountryMenu(event)">
               <span id="selectedCountryLabel" style="display:flex; align-items:center; gap:6px;">
@@ -1219,22 +1239,6 @@
 
         </div>
 
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-        <div class="instant-dropdown">
-          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)"><i class="fas fa-bars"></i></button>
-          <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 240px;">
-            <!-- 🔑 نقل خيار الدخول كأول قائمة هنا -->
-            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
-            
-            <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
-            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
-          </div>
-        </div>
       </div>
 
     </div>
