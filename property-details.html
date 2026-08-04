@@ -22,7 +22,8 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; width: 100%; overflow-x: hidden; }
+    html, body { width: 100%; overflow-x: hidden; }
+    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
 
     /* الهيدر العلوي */
     .navbar {
@@ -52,6 +53,7 @@
       margin-bottom: 15px;
       flex-wrap: wrap;
       gap: 8px;
+      width: 100%;
     }
     .breadcrumbs-bar a { color: var(--primary-turquoise); text-decoration: none; }
 
@@ -149,6 +151,7 @@
       overflow-x: auto;
       scrollbar-width: thin;
       -webkit-overflow-scrolling: touch;
+      width: 100%;
     }
 
     .thumb-img {
@@ -171,6 +174,7 @@
       grid-template-columns: 1fr 340px;
       gap: 20px;
       align-items: start;
+      width: 100%;
     }
 
     /* أشرطة التنقل الداخلية */
@@ -185,6 +189,7 @@
       overflow-x: auto;
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
+      width: 100%;
     }
 
     .sub-tab-item {
@@ -203,9 +208,9 @@
     }
 
     /* تفاصيل السعر والعنوان */
-    .property-header-box { margin-bottom: 20px; }
+    .property-header-box { margin-bottom: 20px; width: 100%; }
     .main-price-text { font-size: 28px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 4px; }
-    .property-sub-title { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.4; }
+    .property-sub-title { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.4; word-break: break-word; }
 
     .quick-specs-bar {
       display: flex;
@@ -219,6 +224,7 @@
       border: 1px solid var(--dubizzle-border);
       margin-bottom: 20px;
       flex-wrap: wrap;
+      width: 100%;
     }
 
     .info-section-card {
@@ -227,6 +233,7 @@
       border: 1px solid var(--dubizzle-border);
       padding: 20px;
       margin-bottom: 20px;
+      width: 100%;
     }
 
     .info-card-title {
@@ -243,6 +250,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       font-size: 13px;
+      width: 100%;
     }
 
     .table-row-item {
@@ -251,10 +259,11 @@
       padding: 8px 0;
       border-bottom: 1px solid #f1f5f9;
       font-weight: 700;
+      gap: 10px;
     }
 
     .table-label { color: var(--text-muted); }
-    .table-value { color: var(--dubizzle-navy); font-weight: 800; }
+    .table-value { color: var(--dubizzle-navy); font-weight: 800; text-align: left; }
 
     .amenities-list-grid {
       display: grid;
@@ -263,6 +272,7 @@
       font-size: 13px;
       font-weight: 700;
       color: #334155;
+      width: 100%;
     }
 
     .amenity-item-bullet { display: flex; align-items: center; gap: 8px; }
@@ -277,6 +287,7 @@
       position: sticky;
       top: 80px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      width: 100%;
     }
 
     .trubroker-header-bg {
@@ -298,7 +309,7 @@
     .broker-tags-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
     .broker-tag { background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; }
 
-    .broker-contact-buttons { display: flex; flex-direction: column; gap: 8px; }
+    .broker-contact-buttons { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 
     .btn-broker-action {
       width: 100%;
@@ -322,12 +333,12 @@
     .btn-inspection-bg { background: var(--dubizzle-navy); color: white; }
 
     /* حاسبة الرهن العقاري */
-    .calculator-box { background: #f8fafc; border-radius: 8px; padding: 15px; border: 1px solid var(--dubizzle-border); }
+    .calculator-box { background: #f8fafc; border-radius: 8px; padding: 15px; border: 1px solid var(--dubizzle-border); width: 100%; }
     .calc-row-input { margin-bottom: 10px; }
     .calc-row-input label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; }
     .calc-row-input input { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: 'Tajawal'; font-weight: 700; font-size: 13px; }
 
-    /* النوافذ المنبثقة الأنيقة Mapped Modals */
+    /* النوافذ المنبثقة */
     .royal-modal-overlay {
       display: none;
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -344,7 +355,7 @@
 
     .form-input-modal { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; margin-bottom: 10px; font-family: 'Tajawal'; font-weight: 700; font-size: 13px; }
 
-    /* نافذة تكبير الصور ملء الشاشة (Lightbox Modal) */
+    /* Lightbox Modal */
     .lightbox-modal-overlay {
       display: none;
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -361,14 +372,14 @@
       color: white; font-size: 28px; cursor: pointer; font-weight: bold;
     }
 
-    /* 📱📱 التكيف والتجاوب التام والكامل مع الجوالات والتابلت */
+    /* 📱📱 التكيف والتجاوب التام مع شاشات الجوال والتابلت */
     @media (max-width: 900px) {
       .details-layout-grid {
         grid-template-columns: 1fr !important;
         display: flex !important;
         flex-direction: column !important;
       }
-      .main-image-viewer-container { height: 260px !important; }
+      .main-image-viewer-container { height: 280px !important; }
       .nav-arrow-btn { width: 34px !important; height: 34px !important; font-size: 14px !important; }
       .details-table-grid { grid-template-columns: 1fr !important; gap: 4px !important; }
       .trubroker-sidebar-card { position: static !important; width: 100% !important; margin-top: 15px !important; }
@@ -576,7 +587,7 @@
 
   </div>
 
-  <!-- 📞 1. النافذة المنبثقة الأنيقة لكشف هاتف وإيميل الوسيط -->
+  <!-- 📞 1. النافذة المنبثقة لكشف هاتف وإيميل الوسيط -->
   <div class="royal-modal-overlay" id="phoneInfoModal">
     <div class="royal-modal-card">
       <div style="text-align:center;">
