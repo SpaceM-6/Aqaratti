@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>تفاصيل العقار | Aqaratti</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,7 +24,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
 
-    /* الهيدر العلوي */
+    /* الهيدر العلوي المتجاوب */
     .navbar {
       background: #ffffff;
       padding: 14px 40px;
@@ -54,7 +54,7 @@
     }
     .breadcrumbs-bar a { color: var(--primary-turquoise); text-decoration: none; }
 
-    /* 🖼️ معرض الصور المطور الحديث (صورة رئيسية كبيرة + أسهم + مصغرات) */
+    /* 🖼️ معرض الصور المطور السلس المتجاوب */
     .gallery-slider-box {
       position: relative;
       width: 100%;
@@ -143,7 +143,7 @@
 
     .expand-image-badge:hover { background: var(--primary-turquoise); }
 
-    /* شريط الصور المصغرة لأسفل العرض الرئيسي */
+    /* شريط الصور المصغرة بالأسفل */
     .thumbnails-strip {
       display: flex;
       gap: 10px;
@@ -167,7 +167,7 @@
 
     .thumb-img.active, .thumb-img:hover { opacity: 1; border-color: var(--primary-turquoise); transform: translateY(-2px); }
 
-    /* تخطيط الصفحة الرئيسي (محتوى التفاصيل + كارت الوسيط) */
+    /* تخطيط الصفحة الرئيسي */
     .details-layout-grid {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -175,7 +175,7 @@
       align-items: start;
     }
 
-    /* أشرطة التنقل الداخلية داخل الصفحة */
+    /* أشرطة التنقل الداخلية */
     .sub-nav-tabs {
       display: flex;
       gap: 15px;
@@ -362,14 +362,28 @@
       color: white; font-size: 30px; cursor: pointer; font-weight: bold;
     }
 
-    /*📱 تجاوب حقيقي ومثالي للجوال والتابلت */
+    /* 📱📱 تجاوب حقيقي ومثالي للجوال والتابلت بمختلف القياسات */
     @media (max-width: 900px) {
       .navbar { padding: 12px 20px; }
+      .brand-logo { font-size: 20px; }
       .details-layout-grid { grid-template-columns: 1fr; }
-      .main-image-viewer-container { height: 280px; }
-      .details-table-grid { grid-template-columns: 1fr; }
+      .main-image-viewer-container { height: 260px; }
+      .nav-arrow-btn { width: 36px; height: 36px; font-size: 14px; }
+      .details-table-grid { grid-template-columns: 1fr; gap: 5px; }
       .trubroker-sidebar-card { position: static; margin-top: 20px; }
-      .quick-specs-bar { gap: 10px; font-size: 13px; }
+      .quick-specs-bar { gap: 10px; font-size: 13px; padding: 12px; }
+      .main-price-text { font-size: 28px; }
+      .property-sub-title { font-size: 17px; }
+      .info-section-card { padding: 18px; }
+      .royal-modal-card { padding: 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 10px; }
+      .main-image-viewer-container { height: 210px; }
+      .thumb-img { width: 70px; height: 50px; }
+      .expand-image-badge span { display: none; }
+      .expand-image-badge i { font-size: 16px; }
     }
   </style>
 </head>
@@ -667,7 +681,7 @@
     </div>
   </div>
 
-  <!-- 🔍 5. نافذة تكبير الصور ملء الشاشة (Lightbox Modal) مع أسهم يمين ويسار -->
+  <!-- 🔍 5. نافذة تكبير الصور ملء الشاشة (Lightbox Modal) -->
   <div class="lightbox-modal-overlay" id="lightboxModal">
     <span class="lightbox-close-btn" onclick="closeLightboxModal()">&times;</span>
     
@@ -702,7 +716,6 @@
       document.getElementById('mainPropImg').src = activeUrl;
       document.getElementById('lightboxImgTarget').src = activeUrl;
 
-      // تحديث حالة المصغرات النشطة
       document.querySelectorAll('.thumb-img').forEach((t, i) => {
         if (i === currentImgIndex) t.classList.add('active');
         else t.classList.remove('active');
@@ -761,12 +774,10 @@
       document.getElementById('calcResultText').innerText = Math.round(monthly).toLocaleString() + " درهم / شهرياً";
     }
 
-    // 🔗 تحميل ومطابقة جميع بيانات العقار وصوره من البحث
     async function loadPropertyDetails() {
       const urlParams = new URLSearchParams(window.location.search);
       const propId = urlParams.get('id') || '101';
 
-      // قراءة الصور المتعددة المسجلة للعقار المختار
       const savedImgs = JSON.parse(localStorage.getItem(`aqaratti_prop_imgs_${propId}`) || '[]');
       
       if (savedImgs.length > 0) {
@@ -781,7 +792,6 @@
 
       document.getElementById('imgsCountText').innerText = propertyImagesList.length;
 
-      // إنشاء شريط المصغرات لكل صور العقار
       const thumbStrip = document.getElementById('thumbnailsContainer');
       thumbStrip.innerHTML = propertyImagesList.map((imgUrl, idx) => `
         <img src="${imgUrl}" class="thumb-img ${idx === 0 ? 'active' : ''}" onclick="updateGalleryImage(${idx})">
@@ -789,7 +799,6 @@
 
       updateGalleryImage(0);
 
-      // تحديث البيانات بحسب العقار المختار
       if (propId === '102') {
         document.getElementById('propTitle').innerText = "فيلا شاطئية مستقلة في نخلة جميرا";
         document.getElementById('propPrice').innerText = "18,500,000 درهم";
