@@ -21,14 +21,31 @@
       --text-muted: #64748b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; overflow-x: hidden !important; }
-    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
+    * { 
+      box-sizing: border-box !important; 
+      margin: 0; 
+      padding: 0; 
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    html, body { 
+      width: 100% !important; 
+      overflow-x: hidden !important; 
+    }
+
+    body { 
+      font-family: 'Tajawal', sans-serif; 
+      background-color: var(--dubizzle-bg); 
+      color: var(--text-dark); 
+      line-height: 1.6; 
+    }
 
     /* الهيدر العلوي */
     .navbar {
       background: #ffffff;
-      padding: 12px 20px;
+      padding: 12px 15px;
       border-bottom: 1px solid var(--dubizzle-border);
       display: flex;
       justify-content: space-between;
@@ -37,41 +54,41 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.03);
       width: 100%;
     }
-    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
-    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+    .brand-logo { font-size: 18px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; white-space: nowrap; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 12px; white-space: nowrap; }
 
-    .container { max-width: 1200px; margin: 15px auto; padding: 0 12px; width: 100%; }
+    .container { max-width: 1200px; margin: 10px auto; padding: 0 10px; width: 100%; }
 
     /* شريط المسار Breadcrumbs */
     .breadcrumbs-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       font-weight: 700;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
     }
     .breadcrumbs-bar a { color: var(--primary-turquoise); text-decoration: none; }
 
-    /* 🖼️ معرض الصور المتجاوب للجوال واللابتوب */
+    /* 🖼️ معرض الصور المطور المتجاوب 100% */
     .gallery-slider-box {
       position: relative;
       width: 100%;
       background: #0f172a;
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     }
 
     .main-image-viewer-container {
       position: relative;
       width: 100%;
-      height: 420px;
+      height: 380px;
       background: #000;
       display: flex;
       align-items: center;
@@ -83,10 +100,8 @@
       height: 100%;
       object-fit: cover;
       cursor: pointer;
-      transition: opacity 0.3s ease;
     }
 
-    /* أسهم التنقل فوق الصورة الرئيسية */
     .nav-arrow-btn {
       position: absolute;
       top: 50%;
@@ -94,59 +109,56 @@
       background: rgba(255, 255, 255, 0.9);
       color: var(--dubizzle-navy);
       border: none;
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
       z-index: 10;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .nav-arrow-btn.prev-btn { right: 10px; }
-    .nav-arrow-btn.next-btn { left: 10px; }
+    .nav-arrow-btn.prev-btn { right: 8px; }
+    .nav-arrow-btn.next-btn { left: 8px; }
 
     .gallery-badge-trucheck {
       position: absolute;
-      top: 12px; right: 12px;
+      top: 10px; right: 10px;
       background: rgba(255, 255, 255, 0.95);
       color: #16a34a;
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       z-index: 5;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
     .expand-image-badge {
       position: absolute;
-      bottom: 12px; right: 12px;
+      bottom: 10px; right: 10px;
       background: rgba(25, 32, 56, 0.85);
       color: white;
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       z-index: 5;
     }
 
-    /* شريط الصور المصغرة بالأسفل */
     .thumbnails-strip {
       display: flex;
-      gap: 8px;
-      padding: 10px;
+      gap: 6px;
+      padding: 8px;
       background: #1e293b;
       overflow-x: auto;
       scrollbar-width: thin;
@@ -155,14 +167,13 @@
     }
 
     .thumb-img {
-      width: 80px;
-      height: 55px;
+      width: 70px;
+      height: 48px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
       opacity: 0.6;
       border: 2px solid transparent;
-      transition: all 0.2s ease;
       flex-shrink: 0;
     }
 
@@ -171,20 +182,19 @@
     /* تخطيط الصفحة الرئيسي */
     .details-layout-grid {
       display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 20px;
+      grid-template-columns: 1fr 320px;
+      gap: 15px;
       align-items: start;
       width: 100%;
     }
 
-    /* أشرطة التنقل الداخلية */
     .sub-nav-tabs {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       border-bottom: 2px solid var(--dubizzle-border);
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       background: #ffffff;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 8px;
       overflow-x: auto;
       white-space: nowrap;
@@ -193,13 +203,12 @@
     }
 
     .sub-tab-item {
-      padding: 6px 10px;
-      font-size: 14px;
+      padding: 5px 8px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--text-muted);
       cursor: pointer;
       border-bottom: 3px solid transparent;
-      transition: all 0.2s;
     }
 
     .sub-tab-item.active {
@@ -207,22 +216,21 @@
       border-bottom-color: var(--primary-turquoise);
     }
 
-    /* تفاصيل السعر والعنوان */
-    .property-header-box { margin-bottom: 20px; width: 100%; }
-    .main-price-text { font-size: 28px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 4px; }
-    .property-sub-title { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; line-height: 1.4; word-break: break-word; }
+    .property-header-box { margin-bottom: 15px; width: 100%; }
+    .main-price-text { font-size: 26px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 4px; }
+    .property-sub-title { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; line-height: 1.4; }
 
     .quick-specs-bar {
       display: flex;
-      gap: 12px;
-      font-size: 13px;
+      gap: 8px;
+      font-size: 12px;
       font-weight: 800;
       color: #475569;
       background: #ffffff;
-      padding: 12px 15px;
+      padding: 10px;
       border-radius: 8px;
       border: 1px solid var(--dubizzle-border);
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       flex-wrap: wrap;
       width: 100%;
     }
@@ -231,100 +239,97 @@
       background: #ffffff;
       border-radius: 12px;
       border: 1px solid var(--dubizzle-border);
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 15px;
+      margin-bottom: 15px;
       width: 100%;
     }
 
     .info-card-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       color: var(--dubizzle-navy);
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       border-right: 4px solid var(--primary-turquoise);
       padding-right: 8px;
     }
 
     .details-table-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
       width: 100%;
     }
 
     .table-row-item {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
+      padding: 6px 0;
       border-bottom: 1px solid #f1f5f9;
       font-weight: 700;
-      gap: 10px;
+      gap: 8px;
+      width: 100%;
     }
 
-    .table-label { color: var(--text-muted); }
+    .table-label { color: var(--text-muted); white-space: nowrap; }
     .table-value { color: var(--dubizzle-navy); font-weight: 800; text-align: left; }
 
     .amenities-list-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 10px;
-      font-size: 13px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      font-size: 12px;
       font-weight: 700;
       color: #334155;
       width: 100%;
     }
 
-    .amenity-item-bullet { display: flex; align-items: center; gap: 8px; }
-    .amenity-item-bullet i { color: var(--primary-turquoise); font-size: 11px; }
+    .amenity-item-bullet { display: flex; align-items: center; gap: 6px; }
+    .amenity-item-bullet i { color: var(--primary-turquoise); font-size: 10px; }
 
-    /* 👤 كارت الوسيط الجانبي (TruBroker™) */
+    /* كارت الوسيط الجانبي */
     .trubroker-sidebar-card {
       background: #ffffff;
       border: 1px solid var(--dubizzle-border);
       border-radius: 12px;
-      padding: 18px;
-      position: sticky;
-      top: 80px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      padding: 15px;
       width: 100%;
     }
 
     .trubroker-header-bg {
       background: linear-gradient(135deg, #064e3b, #047857);
       color: white;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
-    .broker-profile-center { text-align: center; margin-bottom: 15px; }
-    .broker-avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-turquoise); margin-bottom: 8px; }
-    .broker-name-heading { font-size: 16px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 2px; }
+    .broker-profile-center { text-align: center; margin-bottom: 12px; }
+    .broker-avatar-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-turquoise); margin-bottom: 6px; }
+    .broker-name-heading { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 2px; }
     
-    .broker-tags-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
-    .broker-tag { background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; }
+    .broker-tags-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+    .broker-tag { background: #e0f2fe; color: #0369a1; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
 
     .broker-contact-buttons { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 
     .btn-broker-action {
       width: 100%;
-      padding: 11px;
+      padding: 10px;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 900;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       text-decoration: none;
-      transition: all 0.2s;
     }
 
     .btn-whatsapp-bg { background: #25d366; color: white; }
@@ -332,80 +337,53 @@
     .btn-email-bg { background: #f1f5f9; color: var(--dubizzle-navy); border: 1px solid #cbd5e1; }
     .btn-inspection-bg { background: var(--dubizzle-navy); color: white; }
 
-    /* حاسبة الرهن العقاري */
-    .calculator-box { background: #f8fafc; border-radius: 8px; padding: 15px; border: 1px solid var(--dubizzle-border); width: 100%; }
-    .calc-row-input { margin-bottom: 10px; }
-    .calc-row-input label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; }
-    .calc-row-input input { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: 'Tajawal'; font-weight: 700; font-size: 13px; }
+    .calculator-box { background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid var(--dubizzle-border); width: 100%; }
+    .calc-row-input { margin-bottom: 8px; }
+    .calc-row-input label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 3px; }
+    .calc-row-input input { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: 'Tajawal'; font-weight: 700; font-size: 12px; }
 
-    /* النوافذ المنبثقة */
+    /* Modals */
     .royal-modal-overlay {
       display: none;
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px);
-      z-index: 100000; justify-content: center; align-items: center; padding: 15px;
+      z-index: 100000; justify-content: center; align-items: center; padding: 12px;
     }
 
     .royal-modal-card {
-      background: white; padding: 22px; border-radius: 14px; max-width: 450px; width: 100%; text-align: right;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: popupAnim 0.25s ease-out;
+      background: white; padding: 18px; border-radius: 12px; max-width: 400px; width: 100%; text-align: right;
     }
 
-    @keyframes popupAnim { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .form-input-modal { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 2px; margin-bottom: 8px; font-family: 'Tajawal'; font-weight: 700; font-size: 12px; }
 
-    .form-input-modal { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 4px; margin-bottom: 10px; font-family: 'Tajawal'; font-weight: 700; font-size: 13px; }
-
-    /* Lightbox Modal */
     .lightbox-modal-overlay {
       display: none;
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 200000;
+      background: rgba(0, 0, 0, 0.95); z-index: 200000;
       justify-content: center; align-items: center;
     }
 
     .lightbox-img-box { position: relative; max-width: 95vw; max-height: 80vh; }
-    .lightbox-img-box img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 6px; }
+    .lightbox-img-box img { max-width: 100%; max-height: 80vh; object-fit: contain; }
+    .lightbox-close-btn { position: absolute; top: 12px; right: 15px; color: white; font-size: 24px; cursor: pointer; }
 
-    .lightbox-close-btn {
-      position: absolute; top: 15px; right: 20px;
-      color: white; font-size: 28px; cursor: pointer; font-weight: bold;
-    }
-
-    /* 📱📱 التكيف والتجاوب التام مع شاشات الجوال والتابلت (معدل ومضمون 100%) */
+    /* 📱📱 التكيف الجذري لشاشات الجوال الصغيرة والضيقة (من 300px لـ 900px) */
     @media (max-width: 900px) {
-      .navbar { padding: 10px 15px !important; }
-      .container { padding: 0 10px !important; margin: 10px auto !important; }
-
       .details-layout-grid {
         grid-template-columns: 1fr !important;
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
       }
-
-      .main-image-viewer-container { height: 250px !important; }
-      .nav-arrow-btn { width: 32px !important; height: 32px !important; font-size: 13px !important; }
-      
-      .details-table-grid { grid-template-columns: 1fr !important; gap: 2px !important; }
-      .trubroker-sidebar-card { position: static !important; width: 100% !important; margin-top: 15px !important; }
-      
-      .main-price-text { font-size: 22px !important; }
-      .property-sub-title { font-size: 15px !important; }
-      .info-section-card { padding: 12px !important; margin-bottom: 12px !important; }
-      .amenities-list-grid { grid-template-columns: repeat(2, 1fr) !important; font-size: 12px !important; }
-      
-      .quick-specs-bar { font-size: 11px !important; gap: 6px !important; padding: 10px !important; }
-      .sub-nav-tabs { padding: 6px !important; gap: 5px !important; margin-bottom: 12px !important; }
-      .sub-tab-item { font-size: 12px !important; padding: 4px 8px !important; }
+      .main-image-viewer-container { height: 230px !important; }
+      .trubroker-sidebar-card { position: static !important; margin-top: 10px !important; }
     }
 
-    @media (max-width: 480px) {
-      .main-image-viewer-container { height: 210px !important; }
-      .thumb-img { width: 60px !important; height: 42px !important; }
-      .expand-image-badge span { display: none !important; }
+    @media (max-width: 400px) {
+      .main-image-viewer-container { height: 190px !important; }
       .amenities-list-grid { grid-template-columns: 1fr !important; }
-      .table-row-item { font-size: 12px !important; }
+      .main-price-text { font-size: 22px !important; }
+      .property-sub-title { font-size: 14px !important; }
     }
   </style>
 </head>
@@ -419,50 +397,45 @@
 
   <div class="container">
     
-    <!-- المسار Breadcrumb -->
     <div class="breadcrumbs-bar">
       <div>
-        <a href="index.html">الرئيسية</a> ❯ <a href="index.html">عقارات للبيع في دبي</a> ❯ <span id="breadArea">مثلث قرية جميرا (JVT)</span>
+        <a href="index.html">الرئيسية</a> ❯ <a href="index.html">دبي</a> ❯ <span id="breadArea">مثلث قرية جميرا</span>
       </div>
-      <div>الرقم المرجعي: <span id="refCodeText">Aqaratti-103218</span></div>
+      <div>مرجع: <span id="refCodeText">103218</span></div>
     </div>
 
-    <!-- 🖼️ معرض الصور المطور المتجاوب مع أسهم يمين ويسار ومصغرات بالأسفل -->
+    <!-- المعرض المتجاوب -->
     <div class="gallery-slider-box">
       <span class="gallery-badge-trucheck"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
       
       <div class="main-image-viewer-container">
         <button class="nav-arrow-btn prev-btn" onclick="prevPropertyImage()"><i class="fas fa-chevron-right"></i></button>
-        
         <img id="mainPropImg" src="" onclick="openLightboxModal()" alt="صورة العقار">
-        
         <button class="nav-arrow-btn next-btn" onclick="nextPropertyImage()"><i class="fas fa-chevron-left"></i></button>
       </div>
 
       <div class="expand-image-badge" onclick="openLightboxModal()">
-        <i class="fas fa-expand"></i> <span>تكبير ومشاهدة جميع الصور (<span id="imgsCountText">1</span>)</span>
+        <i class="fas fa-expand"></i> <span>تكبير (<span id="imgsCountText">1</span>)</span>
       </div>
 
       <div class="thumbnails-strip" id="thumbnailsContainer"></div>
     </div>
 
-    <!-- التخطيط الرئيسي المرن للجوال -->
+    <!-- التخطيط العام -->
     <div class="details-layout-grid">
       
-      <!-- التفاصيل والمواصفات -->
       <div>
-        
         <div class="sub-nav-tabs">
           <div class="sub-tab-item active" onclick="scrollToSection('secDetails')"><i class="fas fa-list"></i> التفاصيل</div>
-          <div class="sub-tab-item" onclick="scrollToSection('secPlans')"><i class="fas fa-drafting-compass"></i> المخططات الطابقية</div>
+          <div class="sub-tab-item" onclick="scrollToSection('secPlans')"><i class="fas fa-drafting-compass"></i> المخططات</div>
           <div class="sub-tab-item" onclick="scrollToSection('secMortgage')"><i class="fas fa-calculator"></i> رهن عقاري</div>
-          <div class="sub-tab-item" onclick="scrollToSection('secAmenities')"><i class="fas fa-concierge-bell"></i> المزايا والخدمات</div>
+          <div class="sub-tab-item" onclick="scrollToSection('secAmenities')"><i class="fas fa-concierge-bell"></i> الخدمات</div>
         </div>
 
         <div class="property-header-box" id="secDetails">
           <div class="main-price-text" id="propPrice">645,000 درهم</div>
           <h1 class="property-sub-title" id="propTitle">بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي</h1>
-          <p style="color:var(--primary-turquoise); font-weight:800; font-size:13px;">استوديو سكاي لاين │ إطلالة على المسبح والمنتزه</p>
+          <p style="color:var(--primary-turquoise); font-weight:800; font-size:12px;">استوديو سكاي لاين │ إطلالة على المسبح والمنتزه</p>
         </div>
 
         <div class="quick-specs-bar">
@@ -470,9 +443,9 @@
           <span>│</span>
           <span id="quickBaths"><i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> 1 حمام</span>
           <span>│</span>
-          <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> <span id="propArea">336</span> قدم مربع</span>
+          <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> <span id="propArea">336</span> قدم²</span>
           <span>│</span>
-          <span><i class="fas fa-couch" style="color:var(--primary-turquoise);"></i> مفروشة بالكامل</span>
+          <span><i class="fas fa-couch" style="color:var(--primary-turquoise);"></i> مفروشة</span>
         </div>
 
         <div class="info-section-card">
@@ -485,7 +458,7 @@
             <div class="table-row-item"><span class="table-label">الرقم المرجعي:</span> <span class="table-value">Aqaratti-103218</span></div>
             <div class="table-row-item"><span class="table-label">تاريخ الإضافة:</span> <span class="table-value">4 أغسطس 2026</span></div>
             <div class="table-row-item"><span class="table-label">حالة البناء:</span> <span class="table-value">قيد الإنشاء / تسليم 2027</span></div>
-            <div class="table-row-item"><span class="table-label">الملكية العقارية:</span> <span class="table-value">تملك حر 100%</span></div>
+            <div class="table-row-item"><span class="table-label">الملكية:</span> <span class="table-value">تملك حر 100%</span></div>
           </div>
         </div>
 
@@ -507,29 +480,29 @@
 
         <div class="info-section-card">
           <div class="info-card-title">وصف العقار التفصيلي</div>
-          <p style="color:#334155; font-weight:700; font-size:13px; line-height:1.8;" id="propFullDesc">
+          <p style="color:#334155; font-weight:700; font-size:12px; line-height:1.7;" id="propFullDesc">
             هذه الشقة السكنية الاستوديو للبيع في مشروع Binghatti Luxuria بمثلث قرية جميرا JVT دبي، تقدم تصميماً مدمجاً وفعالاً مثالياً للمقيمين أو المستثمرين. تقع الوحدة في مشروع حديث مرتفع مع مساحات لوبي متعددة وتطل على مناطق المجتمع ذات المناظر الطبيعية والإطلالات المباشرة على أفق المدينة.
           </p>
         </div>
 
         <div class="info-section-card" id="secPlans">
           <div class="info-card-title">المخططات الطابقية 3D & 2D</div>
-          <div style="text-align:center; padding:15px; background:#f1f5f9; border-radius:10px;">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" style="max-width:100%; border-radius:8px; height:200px; object-fit:cover;" alt="المخطط الطابقي">
-            <p style="margin-top:10px; font-weight:800; font-size:13px; color:var(--dubizzle-navy);">عرض ثلاثي الأبعاد تفاعلي لمخطط الطابق المساحي</p>
+          <div style="text-align:center; padding:10px; background:#f1f5f9; border-radius:8px;">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" style="max-width:100%; border-radius:6px; height:180px; object-fit:cover;" alt="المخطط الطابقي">
+            <p style="margin-top:8px; font-weight:800; font-size:12px; color:var(--dubizzle-navy);">عرض ثلاثي الأبعاد تفاعلي لمخطط الطابق</p>
           </div>
         </div>
 
         <div class="info-section-card" id="secMortgage">
-          <div class="info-card-title">رهن عقاري - قم بحساب قيمة القسط الشهري</div>
+          <div class="info-card-title">رهن عقاري - حساب القسط الشهرى</div>
           <div class="calculator-box">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:5px;">
-              <span style="font-size:18px; font-weight:900; color:var(--primary-turquoise);" id="calcResultText">2,653 درهم / شهرياً</span>
-              <span style="font-size:11px; font-weight:800; background:#e2e8f0; padding:4px 8px; border-radius:4px;">مقيم في الإمارات</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:4px;">
+              <span style="font-size:16px; font-weight:900; color:var(--primary-turquoise);" id="calcResultText">2,653 درهم / شهرياً</span>
+              <span style="font-size:10px; font-weight:800; background:#e2e8f0; padding:2px 6px; border-radius:4px;">مقيم للإمارات</span>
             </div>
 
             <div class="calc-row-input">
-              <label>السعر الإجمالي للعقار (AED)</label>
+              <label>السعر الإجمالي (AED)</label>
               <input type="number" id="calcPrice" value="645000" onchange="calculateMortgage()">
             </div>
             <div class="calc-row-input">
@@ -545,20 +518,20 @@
 
       </div>
 
-      <!-- كارت الوسيط الجانبي -->
+      <!-- كارت الوسيط -->
       <div>
         <div class="trubroker-sidebar-card">
           <div class="trubroker-header-bg">
             <span><i class="fas fa-shield-alt"></i> TruBroker™</span>
-            <span>معتمد موثوق</span>
+            <span>معتمد</span>
           </div>
 
           <div class="broker-profile-center">
             <img id="brokerAvatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" class="broker-avatar-img" alt="صورة الوسيط">
             <h3 class="broker-name-heading" id="brokerName">إبراهيم عبد العاطي إبراهيم</h3>
-            <p style="font-size:12px; color:var(--text-muted); font-weight:800;" id="brokerAgency">سكويا العقارية SEQUOIA</p>
+            <p style="font-size:11px; color:var(--text-muted); font-weight:800;" id="brokerAgency">سكويا العقارية SEQUOIA</p>
             
-            <div style="margin-top:6px; font-size:12px; font-weight:800; color:var(--primary-turquoise);">
+            <div style="margin-top:4px; font-size:11px; font-weight:800; color:var(--primary-turquoise);">
               <i class="fas fa-envelope"></i> <span id="brokerEmailText">ibrahim.broker@aqaratti.com</span>
             </div>
           </div>
@@ -570,11 +543,11 @@
 
           <div class="broker-contact-buttons">
             <button class="btn-broker-action btn-whatsapp-bg" onclick="openBrokerWhatsApp()">
-              <i class="fab fa-whatsapp" style="font-size:18px;"></i> واتساب سريع
+              <i class="fab fa-whatsapp" style="font-size:16px;"></i> واتساب سريع
             </button>
 
             <button class="btn-broker-action btn-call-bg" onclick="openModal('phoneInfoModal')">
-              <i class="fas fa-phone-alt"></i> اتصل بالوسيط المباشر
+              <i class="fas fa-phone-alt"></i> اتصل بالوسيط
             </button>
 
             <button class="btn-broker-action btn-email-bg" onclick="openModal('emailModal')">
@@ -582,13 +555,13 @@
             </button>
 
             <button class="btn-broker-action btn-inspection-bg" onclick="openModal('inspectorModal')">
-              <i class="fas fa-calendar-check"></i> تحديد موعد معاينة ميدانية
+              <i class="fas fa-calendar-check"></i> تحديد موعد معاينة
             </button>
           </div>
 
-          <div style="margin-top:15px; text-align:center; border-top:1px solid #f1f5f9; padding-top:10px;">
-            <a href="broker-profile.html?id=b1" style="font-size:13px; font-weight:900; color:var(--primary-turquoise); text-decoration:none;">
-              عرض جميع عقارات هذا الوسيط ❯
+          <div style="margin-top:12px; text-align:center; border-top:1px solid #f1f5f9; padding-top:8px;">
+            <a href="broker-profile.html?id=b1" style="font-size:12px; font-weight:900; color:var(--primary-turquoise); text-decoration:none;">
+              عرض جميع عقارات الوسيط ❯
             </a>
           </div>
         </div>
@@ -598,25 +571,25 @@
 
   </div>
 
-  <!-- 📞 1. النافذة المنبثقة لكشف هاتف وإيميل الوسيط -->
+  <!-- Modals -->
   <div class="royal-modal-overlay" id="phoneInfoModal">
     <div class="royal-modal-card">
       <div style="text-align:center;">
-        <i class="fas fa-phone-volume" style="font-size:38px; color:var(--primary-turquoise); margin-bottom:10px;"></i>
-        <h3 style="font-size:18px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:6px;">بيانات التواصل المباشر مع الوسيط</h3>
-        <p style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">يمكنك الاتصال المباشر أو التواصل عبر البريد الإلكتروني مع المالك/الوسيط:</p>
+        <i class="fas fa-phone-volume" style="font-size:32px; color:var(--primary-turquoise); margin-bottom:8px;"></i>
+        <h3 style="font-size:16px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:4px;">بيانات التواصل المباشر</h3>
+        <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:12px;">يمكنك الاتصال المباشر مع المالك/الوسيط:</p>
 
-        <div style="background:#f1f5f9; padding:12px; border-radius:10px; margin-bottom:10px; font-weight:900;">
-          <div style="font-size:11px; color:var(--text-muted);">رقم الهاتف المباشر:</div>
-          <div style="font-size:20px; color:var(--primary-turquoise);" id="modalPhoneVal">0501234567</div>
+        <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px; font-weight:900;">
+          <div style="font-size:10px; color:var(--text-muted);">رقم الهاتف:</div>
+          <div style="font-size:18px; color:var(--primary-turquoise);" id="modalPhoneVal">0501234567</div>
         </div>
 
-        <div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:15px; font-weight:800; font-size:12px; color:var(--dubizzle-navy);">
+        <div style="background:#f1f5f9; padding:8px; border-radius:8px; margin-bottom:12px; font-weight:800; font-size:11px; color:var(--dubizzle-navy);">
           <i class="fas fa-envelope" style="color:var(--primary-turquoise);"></i> البريد الإلكتروني: <br>
           <strong id="modalEmailVal">ibrahim.broker@aqaratti.com</strong>
         </div>
 
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:6px;">
           <a id="directCallAnchor" href="tel:0501234567" class="btn-broker-action btn-call-bg" style="flex:1;">
             <i class="fas fa-phone-alt"></i> اتصل الآن
           </a>
@@ -624,83 +597,60 @@
             <i class="fas fa-copy"></i> نسخ الرقم
           </button>
         </div>
-        <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="closeModal('phoneInfoModal')">إلغاء</button>
+        <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:8px; cursor:pointer;" onclick="closeModal('phoneInfoModal')">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- ✉️ 2. النافذة المنبثقة لإرسال الإيميل للوسيط -->
   <div class="royal-modal-overlay" id="emailModal">
     <div class="royal-modal-card">
-      <h3 style="margin-bottom:6px; color:var(--dubizzle-navy); font-size:16px;">✉️ أرسل إيميل للوكيل لمزيد من المعلومات</h3>
-      <p style="font-size:11px; color:#64748b; font-weight:bold; margin-bottom:12px;">سيتم إرسال بريد إلكتروني مباشر إلى (<span id="modalEmailTarget">ibrahim.broker@aqaratti.com</span>):</p>
+      <h3 style="margin-bottom:4px; color:var(--dubizzle-navy); font-size:15px;">✉️ أرسل إيميل للوكيل</h3>
+      <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">إرسال مباشر إلى (<span id="modalEmailTarget">ibrahim.broker@aqaratti.com</span>):</p>
 
       <form onsubmit="handleEmailSubmit(event)">
-        <label style="font-size:11px; font-weight:800;">الاسم بالكامل *</label>
-        <input type="text" class="form-input-modal" required placeholder="أدخل اسمك">
+        <input type="text" class="form-input-modal" required placeholder="الاسم الكريم">
+        <input type="email" class="form-input-modal" required placeholder="البريد الإلكتروني">
+        <input type="tel" class="form-input-modal" required placeholder="رقم الهاتف">
+        <textarea style="width:100%; height:60px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Tajawal'; font-weight:700; margin-bottom:10px; font-size:11px;" required>مرحباً، أرغب بالاستفسار عن العقار. أرجو الاتصال بي.</textarea>
 
-        <label style="font-size:11px; font-weight:800;">بريدك الإلكتروني *</label>
-        <input type="email" class="form-input-modal" required placeholder="example@mail.com">
-
-        <label style="font-size:11px; font-weight:800;">رقم الهاتف</label>
-        <input type="tel" class="form-input-modal" required placeholder="+971501234567">
-
-        <label style="font-size:11px; font-weight:800;">نص الرسالة</label>
-        <textarea style="width:100%; height:70px; padding:8px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Tajawal'; font-weight:700; margin-bottom:12px; font-size:12px;" required>مرحباً، أرغب بالاستفسار عن العقار. أرجو الاتصال بي في أقرب وقت.</textarea>
-
-        <button type="submit" class="btn-broker-action btn-call-bg" style="width:100%;">
-          <i class="fas fa-paper-plane"></i> إرسال بريد إلكتروني
-        </button>
-        <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:8px; cursor:pointer;" onclick="closeModal('emailModal')">إلغاء</button>
+        <button type="submit" class="btn-broker-action btn-call-bg" style="width:100%;">إرسال البريد</button>
+        <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:6px; cursor:pointer;" onclick="closeModal('emailModal')">إلغاء</button>
       </form>
     </div>
   </div>
 
-  <!-- ✅ 3. النافذة المنبثقة الأنيقة لتأكيد إرسال البريد -->
   <div class="royal-modal-overlay" id="emailSuccessModal">
     <div class="royal-modal-card" style="text-align:center;">
-      <i class="fas fa-check-circle" style="font-size:42px; color:#16a34a; margin-bottom:10px;"></i>
-      <h3 style="font-size:18px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:6px;">تم إرسال البريد بنجاح!</h3>
-      <p style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">تم إرسال رسالتك البريدية إلى الوسيط بنجاح وسيتواصل معك خلال دقائق معدودة.</p>
+      <i class="fas fa-check-circle" style="font-size:36px; color:#16a34a; margin-bottom:8px;"></i>
+      <h3 style="font-size:16px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:4px;">تم الإرسال بنجاح!</h3>
+      <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:12px;">تم إرسال رسالتك البريدية وسيتواصل معك الوسيط قريباً.</p>
       <button class="btn-broker-action btn-call-bg" style="width:100%;" onclick="closeModal('emailSuccessModal')">حسناً</button>
     </div>
   </div>
 
-  <!-- 👁️ 4. النافذة المنبثقة لتحديد موعد المعاينة الميدانية مع الوسيط -->
   <div class="royal-modal-overlay" id="inspectorModal">
     <div class="royal-modal-card">
-      <h3 style="margin-bottom:6px; color:var(--dubizzle-navy); font-size:16px;">👁️ حجز موعد معاينة ميدانية مع الوسيط</h3>
-      <p style="font-size:11px; color:#64748b; font-weight:bold; margin-bottom:12px;">أدخل بياناتك والموعد المناسب لربطك تلقائياً بمسؤول المعاينة والوسيط عبر الواتساب:</p>
+      <h3 style="margin-bottom:4px; color:var(--dubizzle-navy); font-size:15px;">👁️ حجز موعد معاينة ميدانية</h3>
+      <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">أدخل الموعد المناسب لربطك بالوسيط عبر الواتساب:</p>
 
       <form onsubmit="handleInspectorSubmit(event)">
-        <label style="font-size:11px; font-weight:800;">الاسم بالكامل *</label>
-        <input type="text" id="inspectorBuyerName" class="form-input-modal" required placeholder="أدخل اسمك الكريم">
-
-        <label style="font-size:11px; font-weight:800;">رقم الواتساب للتواصل *</label>
-        <input type="tel" id="inspectorBuyerPhone" class="form-input-modal" required placeholder="مثال: 0501234567">
-
-        <label style="font-size:11px; font-weight:800;">تاريخ ووقت المعاينة المناسب لك *</label>
+        <input type="text" id="inspectorBuyerName" class="form-input-modal" required placeholder="الاسم الكامل">
+        <input type="tel" id="inspectorBuyerPhone" class="form-input-modal" required placeholder="رقم الواتساب">
         <input type="datetime-local" id="inspectionDateTime" class="form-input-modal" required>
 
-        <button type="submit" class="btn-broker-action btn-call-bg" style="width:100%; margin-top:8px;">
-          <i class="fab fa-whatsapp"></i> تأكيد وإرسال موعد المعاينة
-        </button>
-        <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:8px; cursor:pointer;" onclick="closeModal('inspectorModal')">إلغاء</button>
+        <button type="submit" class="btn-broker-action btn-call-bg" style="width:100%; margin-top:6px;">تأكيد موعد المعاينة</button>
+        <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:6px; cursor:pointer;" onclick="closeModal('inspectorModal')">إلغاء</button>
       </form>
     </div>
   </div>
 
-  <!-- 🔍 5. نافذة تكبير الصور ملء الشاشة (Lightbox Modal) -->
   <div class="lightbox-modal-overlay" id="lightboxModal">
     <span class="lightbox-close-btn" onclick="closeLightboxModal()">&times;</span>
-    
-    <button class="nav-arrow-btn prev-btn" style="right:15px;" onclick="prevLightboxImage()"><i class="fas fa-chevron-right"></i></button>
-    
+    <button class="nav-arrow-btn prev-btn" style="right:10px;" onclick="prevLightboxImage()"><i class="fas fa-chevron-right"></i></button>
     <div class="lightbox-img-box">
       <img id="lightboxImgTarget" src="" alt="صورة مكبرة">
     </div>
-
-    <button class="nav-arrow-btn next-btn" style="left:15px;" onclick="nextLightboxImage()"><i class="fas fa-chevron-left"></i></button>
+    <button class="nav-arrow-btn next-btn" style="left:10px;" onclick="nextLightboxImage()"><i class="fas fa-chevron-left"></i></button>
   </div>
 
   <script>
@@ -745,7 +695,7 @@
 
     function copyPhoneToClipboard() {
       navigator.clipboard.writeText(currentBrokerPhone);
-      alert('🎉 تم نسخ رقم هاتف الوسيط المباشر بنجاح!');
+      alert('🎉 تم نسخ رقم هاتف الوسيط بنجاح!');
     }
 
     function openBrokerWhatsApp() {
@@ -846,16 +796,14 @@
       const ref = getSavedAffiliateRef();
 
       const message = 
-`🏡 *طلب معاينة ميدانية جديد مع الوسيط المباشر - منصة عقاراتي*
+`🏡 *طلب معاينة ميدانية جديد - منصة عقاراتي*
 
 👤 *اسم المشتري:* ${buyerName}
 📞 *رقم المشتري:* ${buyerPhone}
-📅 *الموعد المقترح للمعاينة:* ${formattedDateTime}
+📅 *الموعد المقترح:* ${formattedDateTime}
 
-🏢 *العقار المطلوب:* ${propTitle}
-🤝 *كود المسوق (Ref):* ${ref}
-
-نرجو التأكيد على التواجد وتنسيق الدخول للعقار.`;
+🏢 *العقار:* ${propTitle}
+🤝 *كود المرجع (Ref):* ${ref}`;
 
       closeModal('inspectorModal');
       window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(message)}`, '_blank');
