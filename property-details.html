@@ -40,6 +40,7 @@
       background-color: var(--dubizzle-bg); 
       color: var(--text-dark); 
       line-height: 1.6; 
+      padding-bottom: 75px;
     }
 
     /* الهيدر العلوي */
@@ -74,7 +75,7 @@
     }
     .breadcrumbs-bar a { color: var(--primary-turquoise); text-decoration: none; }
 
-    /* 🖼️ معرض الصور المطور المتجاوب 100% */
+    /* 🖼️ معرض الصور المطور */
     .gallery-slider-box {
       position: relative;
       width: 100%;
@@ -367,8 +368,42 @@
     .lightbox-img-box img { max-width: 100%; max-height: 80vh; object-fit: contain; }
     .lightbox-close-btn { position: absolute; top: 12px; right: 15px; color: white; font-size: 24px; cursor: pointer; }
 
+    /* 📱📱 الشريط السفلي المباشر للتواصل بالجوال */
+    .mobile-sticky-contact-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      background: #ffffff;
+      border-top: 1px solid var(--dubizzle-border);
+      padding: 10px 12px;
+      z-index: 9999999;
+      gap: 8px;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
+    }
+
+    .btn-mobile-contact {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .btn-mob-call { background: var(--primary-turquoise); }
+    .btn-mob-wa { background: #25d366; }
+
     /* 📱📱 التكيف الجذري لشاشات الجوال الصغيرة والضيقة (من 300px لـ 900px) */
     @media (max-width: 900px) {
+      .mobile-sticky-contact-bar { display: flex !important; }
+      
       .details-layout-grid {
         grid-template-columns: 1fr !important;
         display: flex !important;
@@ -569,6 +604,16 @@
 
     </div>
 
+  </div>
+
+  <!-- 📱 شريط أزرار اتصل وواتساب مثبت بأسفل الجوال لتسهيل التواصل -->
+  <div class="mobile-sticky-contact-bar">
+    <a href="tel:0501234567" class="btn-mobile-contact btn-mob-call">
+      <i class="fas fa-phone-alt"></i> اتصل بالوسيط
+    </a>
+    <a href="https://api.whatsapp.com/send?phone=971501234567" class="btn-mobile-contact btn-mob-wa">
+      <i class="fab fa-whatsapp"></i> واتساب
+    </a>
   </div>
 
   <!-- Modals -->
