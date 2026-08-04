@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الملف الشخصي للوسيط | Aqaratti</title>
+  <title>الملف الشخصي للوكيل | Aqaratti</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -11,14 +11,20 @@
   <style>
     :root {
       --primary-turquoise: #00a896;
+      --primary-turquoise-hover: #008072;
+      --turquoise-light: #e6f7f5;
+      --accent-gold: #d4af37;
       --dubizzle-navy: #192038;
       --dubizzle-bg: #f7f9fc;
       --dubizzle-border: #e4e9f2;
+      --text-dark: #222b45;
+      --text-muted: #64748b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: #222b45; }
+    body { font-family: 'Tajawal', sans-serif; background-color: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
 
+    /* الهيدر العلوي */
     .navbar {
       background: #ffffff;
       padding: 14px 40px;
@@ -26,123 +32,472 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
+    .brand-logo { font-size: 22px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 14px; }
 
-    .container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+    .container { max-width: 1200px; margin: 25px auto; padding: 0 15px; }
 
-    /* كارت البروفايل المماثل لـ بيوت */
-    .profile-card {
+    /* هيدر بروفايل الوكيل TruBroker الشبيه بـ Bayut */
+    .trubroker-header-card {
       background: #ffffff;
       border: 1px solid var(--dubizzle-border);
-      border-radius: 12px;
-      padding: 35px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .trubroker-cover-banner {
+      background: linear-gradient(135deg, #0f172a, #064e3b);
+      height: 110px;
+      padding: 20px 30px;
+      color: white;
       display: flex;
-      gap: 30px;
-      align-items: center;
-      margin-bottom: 30px;
+      justify-content: space-between;
+      align-items: flex-start;
     }
 
-    .avatar-large {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--primary-turquoise);
+    .trubroker-cover-banner .logo-badge {
+      font-size: 22px; font-weight: 900; font-family: sans-serif; letter-spacing: 1px;
     }
 
-    .broker-details h1 { font-size: 26px; font-weight: 900; margin-bottom: 5px; }
-    .agency-name { color: #64748b; font-weight: 700; margin-bottom: 15px; }
-
-    .stats-row { display: flex; gap: 20px; font-weight: 800; }
-    .stat-badge { background: #e6f7f5; color: var(--primary-turquoise); padding: 6px 14px; border-radius: 20px; font-size: 13px; }
-
-    /* قائمة العقارات الخاصة بالوسيط */
-    .section-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; border-right: 4px solid var(--primary-turquoise); padding-right: 10px; }
-
-    .properties-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    .trubroker-body-content {
+      padding: 0 35px 25px 35px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      margin-top: -55px;
+      flex-wrap: wrap;
       gap: 20px;
     }
 
-    .prop-card {
-      background: #ffffff;
-      border: 1px solid var(--dubizzle-border);
-      border-radius: 10px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
+    .broker-info-side { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+    
+    .broker-avatar-circle {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ffffff;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      background: white;
     }
 
-    .prop-card img { width: 100%; height: 180px; object-fit: cover; }
-    .prop-card-body { padding: 15px; }
-    .prop-price { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); }
+    .broker-text-details h1 { font-size: 26px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 4px; }
+    .agency-link-text { font-size: 15px; font-weight: 800; color: var(--primary-turquoise); text-decoration: none; display: flex; align-items: center; gap: 6px; }
+
+    .broker-action-pills { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    /* الشارات القابلة للنقر (Badges) */
+    .badge-pill-btn {
+      background: #f1f5f9;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--dubizzle-navy);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s;
+    }
+
+    .badge-pill-btn:hover { background: #e2e8f0; }
+
+    .btn-trubroker-main {
+      background: #064e3b;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .btn-contact-action-header {
+      background: var(--primary-turquoise);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-contact-action-header:hover { background: var(--primary-turquoise-hover); }
+
+    /* تخطيط الصفحة (نبذة الوكيل + الإعلانات) */
+    .broker-layout-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 25px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .navbar { padding: 12px 20px; }
+      .broker-layout-grid { grid-template-columns: 1fr; }
+      .trubroker-body-content { margin-top: -40px; justify-content: center; text-align: center; }
+      .broker-info-side { flex-direction: column; align-items: center; }
+    }
+
+    /* كارت "عن الوكيل" الجانبي */
+    .about-broker-card {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .about-card-title { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 15px; border-right: 4px solid var(--primary-turquoise); padding-right: 8px; }
+    .about-desc-p { font-size: 13px; color: #475569; font-weight: 700; line-height: 1.7; margin-bottom: 15px; }
+
+    .broker-stats-table { font-size: 13px; }
+    .broker-stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #f1f5f9; font-weight: 800; }
+    .stat-label { color: var(--text-muted); }
+    .stat-val { color: var(--dubizzle-navy); }
+
+    .agency-logo-box {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .agency-logo-box img { max-width: 140px; height: auto; }
+
+    /* كروت العقارات الفعالة */
+    .properties-list-container { display: flex; flex-direction: column; gap: 20px; }
+
+    .bayut-prop-card-horizontal {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      transition: transform 0.2s;
+    }
+
+    .bayut-prop-card-horizontal:hover { transform: translateY(-2px); }
+
+    .prop-card-img-box { position: relative; height: 100%; min-height: 200px; }
+    .prop-card-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+    .prop-card-details-box { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+    .prop-price-text { font-size: 24px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 4px; }
+    .prop-title-text { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; }
+
+    .prop-specs-row { display: flex; gap: 15px; font-size: 13px; font-weight: 800; color: var(--text-muted); margin-bottom: 15px; flex-wrap: wrap; }
+
+    .prop-card-actions-row { display: flex; gap: 10px; }
+    .btn-card-action { padding: 8px 16px; border-radius: 6px; font-weight: 900; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; text-decoration: none; }
+    .btn-card-call { background: var(--turquoise-light); color: var(--primary-turquoise); }
+    .btn-card-wa { background: #dcfce7; color: #15803d; }
+
+    @media (max-width: 768px) {
+      .bayut-prop-card-horizontal { grid-template-columns: 1fr; }
+      .prop-card-img-box { height: 200px; }
+    }
+
+    /* Modal / Popups لشرح الشارات والأيميل ورقم الهاتف الفاخرة */
+    .bayut-modal-overlay {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px);
+      z-index: 100000; justify-content: center; align-items: center; padding: 20px;
+    }
+
+    .bayut-modal-card {
+      background: white; border-radius: 16px; max-width: 480px; width: 100%;
+      overflow: hidden; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .bayut-modal-header-badge {
+      background: var(--turquoise-light); padding: 25px; display: flex; justify-content: center; align-items: center;
+    }
+
+    .bayut-modal-body { padding: 25px; text-align: center; }
+    .bayut-modal-body h3 { font-size: 20px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; }
+    .bayut-modal-body p { font-size: 14px; color: var(--text-muted); font-weight: 700; line-height: 1.6; }
+
+    .form-input-email { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 12px; font-family: 'Tajawal'; font-weight: 700; text-align: right; }
   </style>
 </head>
 <body>
 
+  <!-- الهيدر -->
   <nav class="navbar">
-    <a href="index.html" style="font-size: 22px; font-weight: 900; color: var(--primary-turquoise); text-decoration:none;">عقاراتي │ Aqaratti</a>
-    <a href="index.html" style="text-decoration:none; font-weight:800; color:var(--primary-turquoise);"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للبحث</a>
   </nav>
 
   <div class="container">
-    <div class="profile-card">
-      <img id="bAvatar" src="" class="avatar-large" alt="صورة الوسيط">
-      <div class="broker-details">
-        <h1 id="bName">اسم الوسيط</h1>
-        <div class="agency-name" id="bAgency">اسم الشركة العقارية</div>
-        
-        <div class="stats-row">
-          <span class="stat-badge"><i class="fas fa-building"></i> عقارات معروضة: <strong id="bCount">0</strong></span>
-          <span class="stat-badge"><i class="fas fa-star"></i> وسيط معتمد وموثوق</span>
+    
+    <!-- 👤 كارت الهيدر الخاص بالوكيل TruBroker™ -->
+    <div class="trubroker-header-card">
+      <div class="trubroker-cover-banner">
+        <div class="logo-badge">TruBroker™</div>
+        <div style="font-size:12px; font-weight:800; opacity:0.8;">وكيل معتمد وموثوق عبر منصة عقاراتي</div>
+      </div>
+
+      <div class="trubroker-body-content">
+        <div class="broker-info-side">
+          <img id="brokerAvatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300" class="broker-avatar-circle" alt="صورة الوكيل">
+          <div class="broker-text-details">
+            <h1 id="brokerName">Ibrahim Abdelaaty Ibrahim</h1>
+            <a href="#" class="agency-link-text"><i class="fas fa-building"></i> <span id="brokerAgency">سكويا العقارية SEQUOIA</span> ❯</a>
+          </div>
+        </div>
+
+        <!-- الشارات التفاعلية -->
+        <div class="broker-action-pills">
+          <div class="badge-pill-btn" onclick="openBadgeModal('highQualityModal')">
+            <i class="fas fa-gem" style="color:#0284c7;"></i> معلن بجودة عالية
+          </div>
+          <div class="badge-pill-btn" onclick="openBadgeModal('fastResponseModal')">
+            <i class="fas fa-bolt" style="color:#a855f7;"></i> سريع الاستجابة
+          </div>
+          <span class="btn-trubroker-main">TruBroker™</span>
+
+          <button class="btn-contact-action-header" onclick="openBadgeModal('emailModal')">
+            <i class="fas fa-envelope"></i> الإيميل
+          </button>
+          <button class="btn-contact-action-header" style="background:#16a34a;" onclick="openBadgeModal('phoneModal')">
+            <i class="fas fa-phone-alt"></i> اتصل
+          </button>
         </div>
       </div>
     </div>
 
-    <h2 class="section-title">إعلانات عقارية خاصة بالوسيط</h2>
-    <div class="properties-grid" id="brokerPropertiesContainer">
+    <!-- التخطيط الرئيسي -->
+    <div class="broker-layout-grid">
+      
+      <!-- العمود الأيمن الجانبي -->
+      <div>
+        <div class="agency-logo-box">
+          <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=300" alt="شعار سكويا العقارية SEQUOIA">
+          <div style="font-size:14px; font-weight:900; color:var(--dubizzle-navy); margin-top:8px;">سكويا العقارية SEQUOIA</div>
+        </div>
+
+        <div class="about-broker-card">
+          <div class="about-card-title">عن Ibrahim</div>
+          <p class="about-desc-p">
+            مستشار عقاري متخصص في دبي، أقدم استشارات متكاملة في الأسواق الأولية (على الخارطة) والثانوية (الجاهزة). ملتزم بتقديم النصائح الشفافة والحلول المخصصة لرحلة عقارية سلسة من البداية للنهاية.
+          </p>
+          <div style="font-size:12px; font-weight:800; color:var(--primary-turquoise);"><i class="fas fa-language"></i> يتحدث الإنجليزية و العربي</div>
+        </div>
+
+        <div class="about-broker-card">
+          <div class="about-card-title">تفاصيل وسجلات الوكيل</div>
+          <div class="broker-stats-table">
+            <div class="broker-stat-row"><span class="stat-label">الممارسات:</span> <span class="stat-val">بيع وتأجير العقارات السكنية والتجارية</span></div>
+            <div class="broker-stat-row"><span class="stat-label">مناطق الاختصاص:</span> <span class="stat-val">دبي، أبوظبي، الشارقة، رأس الخيمة</span></div>
+            <div class="broker-stat-row"><span class="stat-label">عقارات فعالة:</span> <span class="stat-val" style="color:var(--primary-turquoise); font-size:16px;">46 للبيع</span></div>
+            <div class="broker-stat-row"><span class="stat-label">رقم BRN:</span> <span class="stat-val">95313</span></div>
+            <div class="broker-stat-row"><span class="stat-label">الخبرة:</span> <span class="stat-val">5 سنوات</span></div>
+          </div>
+        </div>
       </div>
+
+      <!-- العمود الأيسر: الإعلانات العقارية الفعالة -->
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+          <h2 style="font-size:20px; font-weight:900; color:var(--dubizzle-navy);">إعلانات عقارية فعالة (46)</h2>
+          <span style="font-size:13px; font-weight:800; color:var(--text-muted);">عرض 1 - 10 من 46 عقار مرتبة حسب الأكثر مشاهدة</span>
+        </div>
+
+        <div class="properties-list-container" id="brokerPropertiesContainer"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 📞 1. النافذة المنبثقة الأنيقة لرقم هاتف الوكيل المباشر -->
+  <div class="bayut-modal-overlay" id="phoneModal">
+    <div class="bayut-modal-card">
+      <div style="padding: 28px;">
+        <i class="fas fa-phone-volume" style="font-size:45px; color:var(--primary-turquoise); margin-bottom:12px;"></i>
+        <h3 style="font-size:20px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:6px;">التواصل المباشر مع الوكيل</h3>
+        <p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:20px;">يمكنك الاتصال الفوري أو نسخ الرقم للتواصل بشأن العقارات:</p>
+
+        <div style="background:#f1f5f9; border:1px solid var(--dubizzle-border); padding:16px; border-radius:12px; margin-bottom:20px;">
+          <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:4px;">رقم الهاتف المباشر:</div>
+          <div style="font-size:24px; font-weight:900; color:var(--primary-turquoise);" id="modalBrokerPhone">0501234567</div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <a id="phoneDirectCallLink" href="tel:0501234567" style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:12px; border-radius:8px; font-weight:900; font-size:14px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fas fa-phone-alt"></i> اتصل الآن
+          </a>
+          <button style="flex:1; background:#f1f5f9; color:var(--dubizzle-navy); border:1px solid #cbd5e1; padding:12px; border-radius:8px; font-weight:900; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="copyPhoneToClipboard()">
+            <i class="fas fa-copy"></i> نسخ الرقم
+          </button>
+        </div>
+        <button style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:14px; cursor:pointer;" onclick="closeBadgeModal('phoneModal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💎 2. نافذة شرح شارة "معلن بجودة عالية" -->
+  <div class="bayut-modal-overlay" id="highQualityModal">
+    <div class="bayut-modal-card">
+      <div class="bayut-modal-header-badge">
+        <span style="background:#e0f2fe; color:#0369a1; padding:8px 18px; border-radius:20px; font-weight:900; font-size:15px;"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
+      </div>
+      <div class="bayut-modal-body">
+        <h3>معلن بجودة عالية</h3>
+        <p>أثبت الوكلاء الحاصلون على شارة "معلن بجودة عالية" التزامهم بنشر إعلانات حقيقية وموثوقة 100%.</p>
+        <button style="margin-top:20px; background:var(--primary-turquoise); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeBadgeModal('highQualityModal')">حسناً</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚡ 3. نافذة شرح شارة "سريع الاستجابة" -->
+  <div class="bayut-modal-overlay" id="fastResponseModal">
+    <div class="bayut-modal-card">
+      <div class="bayut-modal-header-badge" style="background:#f3e8ff;">
+        <span style="background:#faf5ff; color:#a855f7; padding:8px 18px; border-radius:20px; font-weight:900; font-size:15px;"><i class="fas fa-bolt"></i> سريع الاستجابة</span>
+      </div>
+      <div class="bayut-modal-body">
+        <h3>سريع الاستجابة</h3>
+        <p>أثبت الوكلاء الذين يحملون شارة سريع الاستجابة أنه يمكن الوصول إليهم بسهولة، كما أنهم سريعو الاستجابة ومتاحون دائماً.</p>
+        <button style="margin-top:20px; background:var(--primary-turquoise); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeBadgeModal('fastResponseModal')">حسناً</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✉️ 4. نافذة "أرسل إيميل للوكيل لمزيد من المعلومات" -->
+  <div class="bayut-modal-overlay" id="emailModal">
+    <div class="bayut-modal-card">
+      <div style="padding:24px; text-align:right;">
+        <h3 style="font-size:18px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:15px;">أرسل إيميل للوكيل لمزيد من المعلومات</h3>
+        
+        <form onsubmit="handleEmailSubmit(event)">
+          <input type="text" class="form-input-email" required placeholder="أدخل الاسم*">
+          <input type="email" class="form-input-email" required placeholder="أدخل الإيميل*">
+          
+          <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <input type="text" value="+971" readonly style="width:70px; text-align:center; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-weight:bold;">
+            <input type="tel" class="form-input-email" style="margin-bottom:0; flex:1;" required placeholder="رقم الهاتف">
+          </div>
+
+          <textarea style="width:100%; height:90px; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-family:'Tajawal'; font-weight:700; margin-bottom:15px; text-align:right;" id="emailTextMsg">مرحباً، أرغب بالاستفسار عن عقاراتك المعروضة. أرجو منك الاتصال بي في أقرب وقت ممكن.</textarea>
+
+          <button type="submit" style="width:100%; background:#064e3b; color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fas fa-paper-plane"></i> إرسال بريد إلكتروني
+          </button>
+          <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="closeBadgeModal('emailModal')">إلغاء</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script>
+    let activePhone = "0501234567";
+
+    function openBadgeModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeBadgeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function copyPhoneToClipboard() {
+      navigator.clipboard.writeText(activePhone);
+      alert('🎉 تم نسخ رقم هاتف الوكيل بنجاح!');
+    }
+
+    function handleEmailSubmit(e) {
+      e.preventDefault();
+      alert("📧 تم إرسال رسالتك البريدية للوكيل بنجاح وسيتواصل معك قريباً جداً!");
+      closeBadgeModal('emailModal');
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const brokerId = urlParams.get('id');
 
-      let properties = [];
-      try {
-        const res = await fetch('./properties.json');
-        properties = await res.json();
-      } catch (e) {}
+      let properties = [
+        {
+          id: "101",
+          title: "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
+          priceAED: 645000,
+          bedrooms: 1,
+          area_m2: 336,
+          image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
+          broker: { brokerId: "b1", name: "Ibrahim Abdelaaty Ibrahim", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
+        },
+        {
+          id: "102",
+          title: "فيلا شاطئية مستقلة في نخلة جميرا",
+          priceAED: 18500000,
+          bedrooms: 6,
+          area_m2: 650,
+          image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
+          broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
+        }
+      ];
 
-      // تصفية عقارات الوسيط المحدثة
       const brokerProps = properties.filter(p => p.broker && p.broker.brokerId === brokerId);
-      const currentBroker = brokerProps.length > 0 ? brokerProps[0].broker : {
-        name: "أمل مازن",
-        agency: "إعمار العقارية",
-        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200"
-      };
+      const currentBroker = brokerProps.length > 0 ? brokerProps[0].broker : properties[0].broker;
 
-      document.getElementById('bName').innerText = currentBroker.name;
-      document.getElementById('bAgency').innerText = currentBroker.agency;
-      document.getElementById('bAvatar').src = currentBroker.avatar;
-      document.getElementById('bCount').innerText = brokerProps.length;
+      document.getElementById('brokerName').innerText = currentBroker.name || "Ibrahim Abdelaaty Ibrahim";
+      document.getElementById('brokerAgency').innerText = currentBroker.agency || "سكويا العقارية SEQUOIA";
+      if (currentBroker.avatar) document.getElementById('brokerAvatar').src = currentBroker.avatar;
+      
+      activePhone = currentBroker.phone || "0501234567";
+      document.getElementById('modalBrokerPhone').innerText = activePhone;
+      document.getElementById('phoneDirectCallLink').href = `tel:${activePhone}`;
 
       const container = document.getElementById('brokerPropertiesContainer');
-      const propsToShow = brokerProps.length > 0 ? brokerProps : properties.slice(0, 4);
+      const propsToShow = brokerProps.length > 0 ? brokerProps : properties;
 
       container.innerHTML = propsToShow.map(p => `
-        <a href="property-details.html?id=${p.id}" class="prop-card">
-          <img src="${p.image}" alt="${p.title}">
-          <div class="prop-card-body">
-            <div class="prop-price">${p.priceAED.toLocaleString()} AED</div>
-            <h3 style="font-size:15px; margin: 8px 0; font-weight:800;">${p.title}</h3>
-            <div style="font-size:13px; color:#64748b;">${p.bedrooms} غرف نوم │ ${p.area_m2} م²</div>
+        <div class="bayut-prop-card-horizontal">
+          <div class="prop-card-img-box">
+            <img src="${p.image}" alt="${p.title}">
+            <span style="position:absolute; top:10px; right:10px; background:#16a34a; color:white; font-size:10px; font-weight:900; padding:3px 8px; border-radius:12px;">TruCheck™</span>
           </div>
-        </a>
+
+          <div class="prop-card-details-box">
+            <div>
+              <div class="prop-price-text">${p.priceAED.toLocaleString()} درهم</div>
+              <div class="prop-title-text">${p.title}</div>
+              <div class="prop-specs-row">
+                <span><i class="fas fa-bed"></i> استوديو / ${p.bedrooms} غرف</span>
+                <span>│</span>
+                <span><i class="fas fa-bath"></i> 1 حمام</span>
+                <span>│</span>
+                <span><i class="fas fa-ruler-combined"></i> ${p.area_m2} قدم مربع</span>
+              </div>
+            </div>
+
+            <div class="prop-card-actions-row">
+              <a href="property-details.html?id=${p.id}" class="btn-card-action btn-card-call"><i class="fas fa-arrow-left"></i> مشاهدة العقار والتفاصيل</a>
+              <button class="btn-card-action btn-card-wa" onclick="openBadgeModal('phoneModal')"><i class="fas fa-phone-alt"></i> اتصل</button>
+            </div>
+          </div>
+        </div>
       `).join('');
     });
   </script>
+
 </body>
 </html>
