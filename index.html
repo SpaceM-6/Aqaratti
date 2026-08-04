@@ -73,6 +73,7 @@
       --dubizzle-border: #e4e9f2;
       --text-dark: #222b45;
       --text-muted: #8f9bb3;
+      --accent-green: #16a34a;
     }
 
     * {
@@ -89,7 +90,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 1. الشريط العلوي ثابت ومستقيم أفقياً في اللابتوب */
+    /* 1. الشريط العلوي */
     .aqaratti-instant-utility-bar {
       width: 100%;
       background: #ffffff;
@@ -316,7 +317,7 @@
     }
 
     .hero-light-container {
-      max-width: 1150px;
+      max-width: 1250px;
       margin: 0 auto;
       position: relative;
       z-index: 5;
@@ -502,6 +503,7 @@
       gap: 10px;
     }
 
+    /* ✨ تأثيرات التوهج والإضاءة للزرين عند اللمس/التحويم */
     .hero-badge-btn {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
@@ -514,8 +516,28 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.3s ease;
     }
 
+    /* زر الذكاء الاصطناعي الضوئي */
+    .hero-badge-btn.ai-btn:hover, .hero-badge-btn.ai-btn:active {
+      background: linear-gradient(135deg, #a855f7, #ec4899) !important;
+      border-color: #f0abfc !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 35px rgba(236, 72, 153, 0.5);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    /* زر الجنسية والإقامة الذهبي الضوئي */
+    .hero-badge-btn.gold:hover, .hero-badge-btn.gold:active {
+      background: linear-gradient(135deg, #d4af37, #f59e0b) !important;
+      border-color: #fef08a !important;
+      color: #192038 !important;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 0 35px rgba(245, 158, 11, 0.6);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    /* ✨ زر ابحث عن العقارات الآن الضوئي */
     .btn-royal-search {
       background: var(--primary-turquoise);
       color: #ffffff;
@@ -525,17 +547,25 @@
       font-size: 16px;
       font-weight: 900;
       cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 168, 150, 0.3);
     }
 
-    /* PROPERTIES */
+    .btn-royal-search:hover, .btn-royal-search:active {
+      background: #00c8b3 !important;
+      box-shadow: 0 0 25px rgba(0, 200, 179, 0.9), 0 0 40px rgba(0, 168, 150, 0.6);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    /* PROPERTIES SECTION */
     .properties-section {
       padding: 40px 20px;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
     .section-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
       margin-bottom: 22px;
       color: var(--dubizzle-navy);
@@ -543,75 +573,120 @@
       padding-right: 12px;
     }
 
-    .properties-grid {
+    .bayut-main-content-layout {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 22px;
+      grid-template-columns: 1fr 280px;
+      gap: 25px;
+      align-items: start;
     }
 
-    .property-card {
+    .properties-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .bayut-property-card {
       background: #ffffff;
-      border-radius: 12px;
-      overflow: hidden;
       border: 1px solid var(--dubizzle-border);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-radius: 14px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+      transition: all 0.25s ease;
       position: relative;
-      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .property-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    .bayut-property-card:hover {
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+      border-color: #cbd5e1;
     }
 
-    .property-card.visited-card {
+    .bayut-property-card.visited-card {
       background: #fff7ed !important;
       border: 2px solid #f97316 !important;
     }
 
-    .card-image {
+    .card-media-box {
       position: relative;
-      height: 210px;
+      width: 100%;
+      height: 100%;
+      max-height: 240px;
+      background: #0f172a;
       overflow: hidden;
-      cursor: pointer;
     }
 
-    .card-image img {
+    .card-media-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      aspect-ratio: 16 / 10;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
     }
 
-    /* شارات موقع "بيوت" Bayut Badges */
-    .bayut-badge-verified {
+    .card-img-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--dubizzle-navy);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      transition: all 0.2s ease;
+    }
+
+    .card-img-arrow:hover {
+      background: #ffffff;
+      color: var(--primary-turquoise);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .card-img-arrow.prev { right: 8px; }
+    .card-img-arrow.next { left: 8px; }
+
+    .badge-trucheck-tag {
       position: absolute;
       top: 12px;
       right: 12px;
-      background: #16a34a;
-      color: white;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--accent-green);
       font-size: 11px;
       font-weight: 900;
       padding: 4px 10px;
       border-radius: 20px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      gap: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 5;
     }
 
-    .bayut-badge-3d {
+    .badge-quality-tag {
       position: absolute;
-      top: 12px;
-      right: 120px;
-      background: #1e293b;
-      color: #38bdf8;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #ffffff;
       font-size: 11px;
-      font-weight: 900;
+      font-weight: 800;
       padding: 4px 10px;
-      border-radius: 20px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       gap: 4px;
+      z-index: 5;
     }
 
     .btn-card-fav {
@@ -629,6 +704,8 @@
       justify-content: center;
       font-size: 16px;
       cursor: pointer;
+      transition: all 0.2s;
+      z-index: 5;
     }
 
     .btn-card-fav.active {
@@ -636,65 +713,158 @@
       background: #ffffff;
     }
 
-    .card-body {
-      padding: 18px;
+    .card-info-content {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .card-price {
+    .card-top-details { margin-bottom: 10px; }
+
+    .property-price-tag {
       font-size: 22px;
       font-weight: 900;
-      color: var(--primary-turquoise);
-      margin-bottom: 6px;
+      color: var(--dubizzle-navy);
+      margin-bottom: 2px;
     }
 
-    .card-title-text {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 12px;
+    .property-title-heading {
+      font-size: 15px;
+      font-weight: 800;
       color: var(--text-dark);
+      margin-bottom: 10px;
+      line-height: 1.4;
       cursor: pointer;
     }
 
-    .card-features {
-      display: flex;
-      gap: 14px;
-      font-size: 13px;
-      color: var(--text-muted);
-      padding-top: 12px;
-      border-top: 1px solid #edf2f7;
-      font-weight: 600;
-    }
-
-    .broker-mini-row {
+    .property-specs-list {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px dashed #e2e8f0;
+      gap: 12px;
       font-size: 12px;
       font-weight: 800;
-      color: var(--dubizzle-navy);
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
-    .card-actions-bar {
+    .property-type-pill {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .card-broker-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .btn-card-details {
-      background: var(--turquoise-light);
-      color: var(--primary-turquoise);
+    .broker-mini-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       text-decoration: none;
-      padding: 7px 16px;
-      border-radius: 6px;
-      font-weight: 800;
-      font-size: 13px;
+      color: inherit;
     }
 
-    /* MODALS */
+    .broker-mini-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-turquoise);
+    }
+
+    .broker-mini-name { font-size: 12px; font-weight: 900; color: var(--dubizzle-navy); }
+    .broker-mini-agency { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+
+    .card-action-buttons { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+    .btn-card-cta {
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-cta-view { background: var(--turquoise-light); color: var(--primary-turquoise); }
+    .btn-cta-view:hover { background: var(--primary-turquoise); color: white; }
+
+    .btn-cta-call { background: var(--primary-turquoise); color: white; }
+    .btn-cta-call:hover { background: var(--primary-turquoise-hover); }
+
+    .btn-cta-whatsapp { background: #25d366; color: white; }
+    .btn-cta-whatsapp:hover { background: #1eb954; }
+
+    .btn-cta-share { background: var(--gold-bg-light); color: var(--dubizzle-navy); border: 1px solid var(--accent-gold); }
+
+    .bayut-sidebar-ads {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .ad-banner-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--dubizzle-border);
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      transition: transform 0.2s;
+    }
+
+    .ad-banner-card:hover { transform: translateY(-3px); }
+
+    .ad-banner-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .ad-banner-body {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .ad-title { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 6px; }
+    .ad-subtitle { font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 12px; }
+    
+    .btn-ad-action {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: var(--dubizzle-navy);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 900;
+      border-radius: 6px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .btn-ad-action:hover { background: var(--primary-turquoise); }
+
+    /* MODALS & POPUPS */
     .royal-modal-overlay {
       display: none;
       position: fixed;
@@ -713,10 +883,17 @@
     .royal-modal-card {
       background: #ffffff;
       width: 100%;
-      max-width: 520px;
-      border-radius: 14px;
+      max-width: 480px;
+      border-radius: 16px;
       overflow: hidden;
       border: 1px solid var(--dubizzle-border);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .royal-modal-header {
@@ -778,7 +955,17 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    /* ==================== 📱 تنسيق حقيقي مخصص لوضع الجوال فقط ==================== */
+    /* ==================== 📱 تنسيق حقيقي مخصص لوضع الجوال والتابلت ==================== */
+    @media (max-width: 992px) {
+      .bayut-main-content-layout {
+        grid-template-columns: 1fr !important;
+      }
+      .bayut-sidebar-ads {
+        position: static;
+        order: 2;
+      }
+    }
+
     @media (max-width: 768px) {
       .utility-container {
         display: flex !important;
@@ -846,8 +1033,28 @@
         grid-template-columns: 1fr !important;
       }
 
-      .properties-grid {
+      .bayut-property-card {
         grid-template-columns: 1fr !important;
+      }
+
+      .card-media-box {
+        height: 200px !important;
+        min-height: auto !important;
+      }
+
+      .card-broker-footer {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+
+      .card-action-buttons {
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+
+      .btn-card-cta {
+        flex: 1 !important;
+        justify-content: center !important;
       }
     }
   </style>
@@ -969,7 +1176,6 @@
 
       <div class="pearl-search-card">
         
-        <!-- 🔘 التبويبات الفعالة الديناميكية بالكامل -->
         <div class="tabs-wrapper-container">
           <div class="scroll-arrow right"><i class="fas fa-chevron-right"></i></div>
           <div class="royal-tabs" id="royalTabsBar">
@@ -1046,7 +1252,7 @@
         <div class="pearl-action-bar">
           <div class="hero-center-badges">
             <button class="hero-badge-btn gold" onclick="triggerGoldenPassportFilter()"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
-            <button class="hero-badge-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
+            <button class="hero-badge-btn ai-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
           </div>
           <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
         </div>
@@ -1054,10 +1260,68 @@
     </div>
   </section>
 
+  <!-- 📊 قسم المحتوى التفاعلي (عرض العقارات على اليمين + الإعلانات على اليسار) -->
   <section class="properties-section">
     <h2 class="section-title" id="resultsSectionTitle">العقارات المتاحة حصرياً</h2>
-    <div class="properties-grid" id="properties-container"></div>
+    
+    <div class="bayut-main-content-layout">
+
+      <!-- 🏢 العمود الأكبر على اليمين: قائمة العقارات بتصميم بيوت -->
+      <div class="properties-grid" id="properties-container"></div>
+
+      <!-- 📢 العمود الأيسر: الشريط الجانبي للإعلانات المميزة والرعايات الحصرية -->
+      <div class="bayut-sidebar-ads">
+        
+        <!-- إعلان بن غاطي مرسيدس بنز -->
+        <div class="ad-banner-card">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=600" class="ad-banner-img" alt="إعلان مرسيدس بنز ريزيدنس">
+          <div class="ad-banner-body">
+            <div class="ad-title">Mercedes-Benz Places</div>
+            <div class="ad-subtitle">أول مدينة في العالم بتوقيع مرسيدس بنز 🏎️</div>
+            <a href="property-details.html?id=101" class="btn-ad-action">استفسر الآن ❯</a>
+          </div>
+        </div>
+
+        <!-- إعلان الاستثمار الحصري -->
+        <div class="ad-banner-card" style="background: linear-gradient(135deg, #192038, #0f172a); color: white;">
+          <div class="ad-banner-body" style="color:white;">
+            <i class="fas fa-crown" style="font-size: 28px; color: var(--accent-gold); margin-bottom: 8px;"></i>
+            <div class="ad-title" style="color:white;">عقارات الإقامة الذهبية</div>
+            <div class="ad-subtitle" style="color:#cbd5e1;">احصل على الإقامة الدائمة والجنسية عبر الاستثمار العقاري الموثوق</div>
+            <a href="javascript:void(0)" onclick="triggerGoldenPassportFilter()" class="btn-ad-action" style="background: var(--accent-gold); color: var(--dubizzle-navy);">استكشف الفرص 💎</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
   </section>
+
+  <!-- 📞 النافذة المنبثقة الفاخرة لكشف هاتف وإيميل الوسيط -->
+  <div class="royal-modal-overlay" id="phoneCallModal">
+    <div class="royal-modal-card" style="text-align:center;">
+      <div style="padding: 25px;">
+        <i class="fas fa-phone-volume" style="font-size:45px; color:var(--primary-turquoise); margin-bottom:12px;"></i>
+        <h3 style="font-size:20px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:6px;" id="modalBrokerTitle">التواصل المباشر مع الوسيط</h3>
+        <p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:20px;">يمكنك الاتصال المباشر أو نسَخ الرقم بالتفاصيل التالية:</p>
+
+        <div style="background:#f1f5f9; border:1px solid var(--dubizzle-border); padding:15px; border-radius:12px; margin-bottom:15px;">
+          <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:4px;">رقم المالك / الوسيط المباشر:</div>
+          <div style="font-size:24px; font-weight:900; color:var(--primary-turquoise);" id="modalBrokerPhoneNum">0501234567</div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <a id="modalDirectCallLink" href="tel:0501234567" class="btn-card-cta btn-cta-call" style="flex:1; justify-content:center; padding:12px;">
+            <i class="fas fa-phone-alt"></i> اتصل الآن
+          </a>
+          <button class="btn-card-cta btn-cta-view" style="flex:1; justify-content:center; padding:12px;" onclick="copyPhoneNumToClipboard()">
+            <i class="fas fa-copy"></i> نسخ الرقم
+          </button>
+        </div>
+        <button style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:14px; cursor:pointer;" onclick="closeRoyalModal('phoneCallModal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
   <div class="royal-modal-overlay" id="affiliateInputModal">
     <div class="royal-modal-card">
@@ -1161,21 +1425,23 @@
     let activePropertyForAffiliate = '';
     let loadedScrapedList = [];
     let currentTabType = 'sale'; // sale, rent, golden, roi
+    let propertyCardImageIndices = {};
+    let activeCallPhone = "0501234567";
 
-    // 🏆 البيانات الأساسية الشاملة والمطابقة لموقع "بيوت" Bayut
     const rawPropertiesData = [
       {
         id: "101",
-        title: "شقة بنتهاوس فاخرة بإطلالة على برج خليفة",
-        priceAED: 3850000,
+        title: "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
+        priceAED: 645000,
         dealType: "sale",
         isGolden: true,
         roiPercent: "8.5%",
-        bedrooms: 3,
-        bathrooms: 4,
-        area_m2: 210,
+        bedrooms: 1,
+        bathrooms: 1,
+        area_m2: 336,
         isVerified: true,
         has3DTour: true,
+        propertyType: "شقة سكنية / استوديو",
         image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
         images: [
           "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200",
@@ -1183,11 +1449,11 @@
           "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600"
         ],
         commission: "1.5%",
-        broker: { name: "أحمد المنصوري", agency: "إعمار العقارية EMAAR", phone: "0501234567" }
+        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
       },
       {
         id: "102",
-        title: "فيلا شاطئية مستقلة في نخلة جميرا",
+        title: "فيلا شاطئية مستقلة مع واجهة مائية في نخلة جميرا",
         priceAED: 18500000,
         dealType: "sale",
         isGolden: true,
@@ -1197,6 +1463,7 @@
         area_m2: 650,
         isVerified: true,
         has3DTour: true,
+        propertyType: "فيلا مستقلة",
         image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
         images: [
           "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1200",
@@ -1204,7 +1471,7 @@
           "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=600"
         ],
         commission: "2.0%",
-        broker: { name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543" }
+        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
       },
       {
         id: "103",
@@ -1218,13 +1485,14 @@
         area_m2: 130,
         isVerified: true,
         has3DTour: false,
+        propertyType: "شقة سكنية",
         image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800",
         images: [
           "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
           "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600"
         ],
         commission: "5%",
-        broker: { name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433" }
+        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
       }
     ];
 
@@ -1255,7 +1523,6 @@
       }
     }
 
-    // 🔘 مفتاح تبديل الأزرار الرئيسية الفعالة
     function switchRoyalTab(el) {
       document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
       el.classList.add('active');
@@ -1335,6 +1602,19 @@ ${propertyUrl}`;
       navigator.clipboard.writeText(linkText);
       alert('🎉 تم نسخ رابط العمولة الخاص بك بنجاح!');
       closeRoyalModal('affiliateSuccessModal');
+    }
+
+    function openBrokerCallModal(brokerName, phoneNum) {
+      activeCallPhone = phoneNum || "0501234567";
+      document.getElementById('modalBrokerTitle').innerText = `التواصل مع ${brokerName || 'الوسيط'}`;
+      document.getElementById('modalBrokerPhoneNum').innerText = activeCallPhone;
+      document.getElementById('modalDirectCallLink').href = `tel:${activeCallPhone}`;
+      document.getElementById('phoneCallModal').style.display = 'flex';
+    }
+
+    function copyPhoneNumToClipboard() {
+      navigator.clipboard.writeText(activeCallPhone);
+      alert('🎉 تم نسخ رقم الهاتف بنجاح!');
     }
 
     function showServiceModal(type) {
@@ -1459,6 +1739,30 @@ ${propertyUrl}`;
       fetchProperties();
     }
 
+    function navigateCardImage(propId, direction, imagesArrayJson, event) {
+      if (event) event.stopPropagation();
+      
+      const imagesList = JSON.parse(decodeURIComponent(imagesArrayJson));
+      if (!imagesList || imagesList.length <= 1) return;
+
+      if (!propertyCardImageIndices[propId]) {
+        propertyCardImageIndices[propId] = 0;
+      }
+
+      if (direction === 'next') {
+        propertyCardImageIndices[propId] = (propertyCardImageIndices[propId] + 1) % imagesList.length;
+      } else if (direction === 'prev') {
+        propertyCardImageIndices[propId] = (propertyCardImageIndices[propId] - 1 + imagesList.length) % imagesList.length;
+      }
+
+      const newImgUrl = imagesList[propertyCardImageIndices[propId]];
+      const targetImgEl = document.getElementById(`card-img-${propId}`);
+      if (targetImgEl) {
+        targetImgEl.src = newImgUrl;
+      }
+    }
+
+    /* 🏢 دالة عرض العقارات الأفقية */
     function renderPropertiesList(list) {
       const container = document.getElementById('properties-container');
       container.innerHTML = '';
@@ -1470,43 +1774,59 @@ ${propertyUrl}`;
           
           const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
           localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
+          const encodedImgsJson = encodeURIComponent(JSON.stringify(propertyImages));
+
+          const brokerInfo = prop.broker || { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" };
 
           const cardHTML = `
-            <div class="property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
-              <div class="card-image" onclick="markPropertyAsVisited('${prop.id}')">
-                <img src="${prop.image || propertyImages[0]}" alt="${prop.title}">
+            <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
+              <div class="card-media-box">
+                ${propertyImages.length > 1 ? `
+                  <button class="card-img-arrow prev" onclick="navigateCardImage('${prop.id}', 'prev', '${encodedImgsJson}', event)"><i class="fas fa-chevron-right"></i></button>
+                  <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', '${encodedImgsJson}', event)"><i class="fas fa-chevron-left"></i></button>
+                ` : ''}
+
+                <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" onclick="markPropertyAsVisited('${prop.id}')">
                 
-                ${prop.isVerified ? `<span class="bayut-badge-verified"><i class="fas fa-check-circle"></i> موثوق Verified</span>` : ''}
-                ${prop.has3DTour ? `<span class="bayut-badge-3d"><i class="fas fa-vr-cardboard"></i> جولة 3D</span>` : ''}
+                <span class="badge-trucheck-tag"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
+                <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
 
                 <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)">
                   <i class="fas fa-heart"></i>
                 </button>
               </div>
-              <div class="card-body">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <div class="card-price">${convertedPrice.toLocaleString()} ${currentCurrencySymbol} ${prop.dealType === 'rent' ? '/ سنوياً' : ''}</div>
-                  <span style="background: var(--gold-bg-light); color: var(--accent-gold); font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px; border:1px solid var(--accent-gold);"><i class="fas fa-coins"></i> عمولة: ${prop.commission || '1.5%'}</span>
-                </div>
-                <div class="card-title-text" onclick="markPropertyAsVisited('${prop.id}')">${prop.title}</div>
-                <div class="card-features">
-                  <span><i class="fas fa-bed"></i> ${prop.bedrooms} غرف</span>
-                  <span><i class="fas fa-bath"></i> ${prop.bathrooms} حمام</span>
-                  <span><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</span>
+
+              <div class="card-info-content">
+                <div class="card-top-details">
+                  <div class="property-price-tag">AED ${convertedPrice.toLocaleString()} ${prop.dealType === 'rent' ? '/ سنوياً' : ''}</div>
+                  <h3 class="property-title-heading" onclick="markPropertyAsVisited('${prop.id}')">${prop.title}</h3>
+                  
+                  <div class="property-specs-list">
+                    <span><i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${prop.bedrooms} غرف نوم</span>
+                    <span>│</span>
+                    <span><i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${prop.bathrooms || 1} حمام</span>
+                    <span>│</span>
+                    <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> ${prop.area_m2} قدم مربع</span>
+                  </div>
+
+                  <span class="property-type-pill">${prop.propertyType || 'شقة سكنية / استوديو'}</span>
                 </div>
 
-                <div class="broker-mini-row">
-                  <span>👤 ${prop.broker ? prop.broker.name : 'الوسيط المعتمد'}</span>
-                  <span style="color:var(--primary-turquoise);"><i class="fas fa-building"></i> ${prop.broker ? prop.broker.agency : 'إعمار العقارية'}</span>
-                </div>
-                
-                <button style="width:100%; margin-top:12px; padding:9px; font-size:13px; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="openAffiliateModal('${prop.id}')">
-                  <i class="fas fa-share-alt"></i> شارك الإعلان واكسب عمولة 💰
-                </button>
+                <div class="card-broker-footer">
+                  <a href="broker-profile.html?id=${brokerInfo.brokerId || 'b1'}" class="broker-mini-profile">
+                    <img src="${brokerInfo.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'}" class="broker-mini-avatar" alt="${brokerInfo.name}">
+                    <div>
+                      <div class="broker-mini-name">${brokerInfo.name}</div>
+                      <div class="broker-mini-agency">${brokerInfo.agency}</div>
+                    </div>
+                  </a>
 
-                <div class="card-actions-bar">
-                  <a href="javascript:void(0)" onclick="markPropertyAsVisited('${prop.id}')" class="btn-card-details">التفاصيل الكاملة <i class="fas fa-arrow-left"></i></a>
-                  <button style="background:#fee2e2; color:#dc2626; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="this.closest('.property-card').remove()"><i class="fas fa-trash"></i> حذف</button>
+                  <div class="card-action-buttons">
+                    <button class="btn-card-cta btn-cta-share" onclick="openAffiliateModal('${prop.id}')"><i class="fas fa-share-alt"></i> عمولة 💰</button>
+                    <a href="javascript:void(0)" onclick="markPropertyAsVisited('${prop.id}')" class="btn-card-cta btn-cta-view"><i class="fas fa-arrow-left"></i> التفاصيل</a>
+                    <button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${brokerInfo.name}', '${brokerInfo.phone || '0501234567'}')"><i class="fas fa-phone-alt"></i> اتصل</button>
+                    <a href="https://api.whatsapp.com/send?phone=${(brokerInfo.phone || '0501234567').replace(/^0/, '971')}" target="_blank" class="btn-card-cta btn-cta-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1514,7 +1834,7 @@ ${propertyUrl}`;
           container.innerHTML += cardHTML;
         });
       } else {
-        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث الحالية، يرجى تغيير الفلاتر.</div>`;
+        container.innerHTML = `<div style="text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث الحالية، يرجى تغيير الفلاتر.</div>`;
       }
     }
 
@@ -1575,7 +1895,6 @@ ${propertyUrl}`;
       closeRoyalModal('aiSearchModal');
     }
 
-    /* 🔍 دالة تنفيذ البحث الفعلي وتصفية العقارات عند الضغط على زر ابحث عن العقارات الآن */
     function executeSearch() {
       const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
       const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
