@@ -88,6 +88,7 @@
       color: var(--text-dark);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      padding-bottom: 75px;
     }
 
     /* 1. الشريط العلوي */
@@ -209,21 +210,6 @@
       padding: 1px 6px;
       border-radius: 10px;
       font-weight: 900;
-    }
-
-    .btn-login-nav {
-      background: #f1f5f9;
-      color: var(--dubizzle-navy) !important;
-      border: 1px solid #cbd5e1;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-weight: 800;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      white-space: nowrap;
     }
 
     .hamburger-menu-btn {
@@ -953,6 +939,44 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
+    /* 📱📱 الشريط السفلي المثبت للجوال */
+    .mobile-bottom-app-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      border-top: 1px solid var(--dubizzle-border);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      z-index: 9999999;
+      padding: 8px 12px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mob-app-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .mob-app-item.active, .mob-app-item:hover {
+      color: var(--primary-turquoise);
+    }
+
+    .mob-app-item i {
+      font-size: 18px;
+    }
+
     /* ==================== 📱📱 إصلاح وضبط إظهار قائمة اللغات والدول بالجوال ==================== */
     @media (max-width: 992px) {
       .bayut-main-content-layout {
@@ -965,6 +989,10 @@
     }
 
     @media (max-width: 768px) {
+      .mobile-bottom-app-bar {
+        display: flex !important;
+      }
+
       .utility-container {
         display: flex !important;
         flex-direction: column !important;
@@ -1194,10 +1222,12 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-        <button class="btn-login-nav" onclick="openLoginModal()"><i class="fas fa-user"></i> دخول أو سجل الدخول</button>
         <div class="instant-dropdown">
           <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)"><i class="fas fa-bars"></i></button>
           <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 240px;">
+            <!-- 🔑 نقل خيار الدخول كأول قائمة هنا -->
+            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+            
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
             <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
             <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
@@ -1311,6 +1341,30 @@
 
     </div>
   </section>
+
+  <!-- 📱📱 الشريط السفلي المثبت للجوال -->
+  <div class="mobile-bottom-app-bar">
+    <a href="index.html" class="mob-app-item active">
+      <i class="fas fa-home"></i>
+      <span>الرئيسية</span>
+    </a>
+    <button class="mob-app-item" onclick="openFavoritesModal()">
+      <i class="fas fa-heart"></i>
+      <span>المفضلة</span>
+    </button>
+    <a href="add-property.html" class="mob-app-item" style="color:var(--primary-turquoise);">
+      <i class="fas fa-plus-circle" style="font-size:22px;"></i>
+      <span>إضافة عقار</span>
+    </a>
+    <button class="mob-app-item" onclick="openAISearchModal()">
+      <i class="fas fa-brain"></i>
+      <span>Aqaratti AI</span>
+    </button>
+    <button class="mob-app-item" onclick="openLoginModal()">
+      <i class="fas fa-user"></i>
+      <span>حسابي</span>
+    </button>
+  </div>
 
   <!-- 📞 النافذة المنبثقة الفاخرة لكشف هاتف وإيميل الوسيط -->
   <div class="royal-modal-overlay" id="phoneCallModal">
@@ -1439,7 +1493,7 @@
     let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
     let activePropertyForAffiliate = '';
     let loadedScrapedList = [];
-    let currentTabType = 'sale'; // sale, rent, golden, roi
+    let currentTabType = 'sale';
     let propertyCardImageIndices = {};
     let activeCallPhone = "0501234567";
 
