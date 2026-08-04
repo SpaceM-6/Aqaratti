@@ -398,7 +398,6 @@
       transform: translateY(-2px);
     }
 
-    /* تحديث كارت المدخلات بـ 4 أسطر بعد نقل الدولة أفقياً للشريط العلوي */
     .pearl-inputs-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -461,7 +460,7 @@
       border-radius: 8px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       z-index: 999999 !important;
-      min-width: 220px;
+      min-width: 180px;
       max-height: 250px;
       overflow-y: auto;
       border-top: 3px solid var(--primary-turquoise);
@@ -954,7 +953,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    /* ==================== 📱📱 إصلاح وضبط إظهار قائمة اللغات برؤية جليّة في الجوال ==================== */
+    /* ==================== 📱📱 إصلاح وضبط إظهار قائمة اللغات والدول بالجوال ==================== */
     @media (max-width: 992px) {
       .bayut-main-content-layout {
         grid-template-columns: 1fr !important;
@@ -1013,12 +1012,12 @@
         justify-content: center !important;
       }
 
-      .instant-btn, .btn-fav-nav, .btn-add-nav, .btn-login-nav {
+      .instant-btn, .btn-fav-nav, .btn-add-nav, .btn-login-nav, .custom-country-btn {
         width: 100% !important;
         justify-content: center !important;
       }
 
-      /* 🌐 الحل الشامل لإظهار قائمة اللغات والدول المنسدلة في الجوال برؤية كاملة واضحة */
+      /* 🌐 رؤية شفافة وواضحة لقوائم الجوال */
       .instant-menu, .custom-country-menu {
         position: fixed !important;
         top: 65px !important;
@@ -1106,24 +1105,24 @@
 
         <div class="mobile-row-lang-curr">
           
-          <!-- 🌐 1. أيقونة وقائمة اختيار الدولة المنقولة للشريط العلوي -->
+          <!-- 🌐 1. أيقونة اختيار الدولة بأسماء قصيرة ومباشرة -->
           <div class="instant-dropdown">
             <button class="custom-country-btn" onclick="toggleCustomCountryMenu(event)">
               <span id="selectedCountryLabel" style="display:flex; align-items:center; gap:6px;">
-                <img src="https://flagcdn.com/w40/ae.png" class="flag-img" alt="الإمارات"> الإمارات العربية المتحدة
+                <img src="https://flagcdn.com/w40/ae.png" class="flag-img" alt="الإمارات"> الإمارات
               </span>
               <i class="fas fa-chevron-down" style="font-size: 10px; color: #94a3b8;"></i>
             </button>
 
             <div class="custom-country-menu" id="customCountryList">
-              <div class="custom-country-item" onclick="selectCustomCountry('uae', 'الإمارات العربية المتحدة', 'https://flagcdn.com/w40/ae.png')"><img src="https://flagcdn.com/w40/ae.png" class="flag-img"> الإمارات العربية المتحدة</div>
-              <div class="custom-country-item" onclick="selectCustomCountry('saudi', 'المملكة العربية السعودية', 'https://flagcdn.com/w40/sa.png')"><img src="https://flagcdn.com/w40/sa.png" class="flag-img"> المملكة العربية السعودية</div>
-              <div class="custom-country-item" onclick="selectCustomCountry('egypt', 'جمهورية مصر العربية', 'https://flagcdn.com/w40/eg.png')"><img src="https://flagcdn.com/w40/eg.png" class="flag-img"> جمهورية مصر العربية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('uae', 'الإمارات', 'https://flagcdn.com/w40/ae.png')"><img src="https://flagcdn.com/w40/ae.png" class="flag-img"> الإمارات</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('saudi', 'السعودية', 'https://flagcdn.com/w40/sa.png')"><img src="https://flagcdn.com/w40/sa.png" class="flag-img"> السعودية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('egypt', 'مصر', 'https://flagcdn.com/w40/eg.png')"><img src="https://flagcdn.com/w40/eg.png" class="flag-img"> مصر</div>
               <div class="custom-country-item" onclick="selectCustomCountry('turkey', 'تركيا', 'https://flagcdn.com/w40/tr.png')"><img src="https://flagcdn.com/w40/tr.png" class="flag-img"> تركيا</div>
               <div class="custom-country-item" onclick="selectCustomCountry('qatar', 'قطر', 'https://flagcdn.com/w40/qa.png')"><img src="https://flagcdn.com/w40/qa.png" class="flag-img"> قطر</div>
-              <div class="custom-country-item" onclick="selectCustomCountry('oman', 'سلطنة عمان', 'https://flagcdn.com/w40/om.png')"><img src="https://flagcdn.com/w40/om.png" class="flag-img"> سلطنة عمان</div>
-              <div class="custom-country-item" onclick="selectCustomCountry('uk', 'المملكة المتحدة', 'https://flagcdn.com/w40/gb.png')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img"> المملكة المتحدة</div>
-              <div class="custom-country-item" onclick="selectCustomCountry('usa', 'الولايات المتحدة الأمريكية', 'https://flagcdn.com/w40/us.png')"><img src="https://flagcdn.com/w40/us.png" class="flag-img"> الولايات المتحدة الأمريكية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('oman', 'عُمان', 'https://flagcdn.com/w40/om.png')"><img src="https://flagcdn.com/w40/om.png" class="flag-img"> عُمان</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('uk', 'بريطانيا', 'https://flagcdn.com/w40/gb.png')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img"> بريطانيا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('usa', 'أمريكا', 'https://flagcdn.com/w40/us.png')"><img src="https://flagcdn.com/w40/us.png" class="flag-img"> أمريكا</div>
               <div class="custom-country-item" onclick="selectCustomCountry('france', 'فرنسا', 'https://flagcdn.com/w40/fr.png')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img"> فرنسا</div>
               <div class="custom-country-item" onclick="selectCustomCountry('spain', 'إسبانيا', 'https://flagcdn.com/w40/es.png')"><img src="https://flagcdn.com/w40/es.png" class="flag-img"> إسبانيا</div>
               <div class="custom-country-item" onclick="selectCustomCountry('cyprus', 'قبرص', 'https://flagcdn.com/w40/cy.png')"><img src="https://flagcdn.com/w40/cy.png" class="flag-img"> قبرص</div>
@@ -1131,7 +1130,7 @@
             </div>
           </div>
 
-          <!-- 🌐 2. قائمة اختيار اللغات المحدثة -->
+          <!-- 🌐 2. قائمة اللغات -->
           <div class="instant-dropdown">
             <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang">العربية</span></button>
             <div class="instant-menu search-menu" id="fastLangList">
@@ -1161,7 +1160,7 @@
             </div>
           </div>
 
-          <!-- 💰 3. قائمة اختيار العملات -->
+          <!-- 💰 3. قائمة العملات -->
           <div class="instant-dropdown">
             <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)"><i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span></button>
             <div class="instant-menu" id="fastCurrencyList">
