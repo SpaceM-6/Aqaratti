@@ -256,6 +256,7 @@
       white-space: nowrap;
     }
 
+    /* 🌐 إعدادات القوائم المنسدلة للغات والعملات مع ضبط الرؤية */
     .instant-menu {
       display: none;
       position: absolute;
@@ -265,7 +266,7 @@
       background: #ffffff;
       color: var(--text-dark);
       min-width: 220px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       border-radius: 8px;
       z-index: 999999 !important;
       border: 1px solid var(--dubizzle-border);
@@ -292,10 +293,11 @@
     .search-menu input {
       width: 90%;
       margin: 8px 5%;
-      padding: 7px;
+      padding: 8px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 13px;
+      outline: none;
     }
 
     .instant-scroll {
@@ -503,7 +505,6 @@
       gap: 10px;
     }
 
-    /* ✨ تأثيرات التوهج والإضاءة للزرين عند اللمس/التحويم */
     .hero-badge-btn {
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
@@ -519,7 +520,6 @@
       transition: all 0.3s ease;
     }
 
-    /* زر الذكاء الاصطناعي الضوئي */
     .hero-badge-btn.ai-btn:hover, .hero-badge-btn.ai-btn:active {
       background: linear-gradient(135deg, #a855f7, #ec4899) !important;
       border-color: #f0abfc !important;
@@ -528,7 +528,6 @@
       transform: translateY(-2px) scale(1.03);
     }
 
-    /* زر الجنسية والإقامة الذهبي الضوئي */
     .hero-badge-btn.gold:hover, .hero-badge-btn.gold:active {
       background: linear-gradient(135deg, #d4af37, #f59e0b) !important;
       border-color: #fef08a !important;
@@ -537,7 +536,6 @@
       transform: translateY(-2px) scale(1.03);
     }
 
-    /* ✨ زر ابحث عن العقارات الآن الضوئي */
     .btn-royal-search {
       background: var(--primary-turquoise);
       color: #ffffff;
@@ -955,7 +953,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    /* ==================== 📱 تنسيق حقيقي مخصص لوضع الجوال والتابلت ==================== */
+    /* ==================== 📱📱 إصلاح وضبط إظهار قائمة اللغات برؤية جليّة في الجوال ==================== */
     @media (max-width: 992px) {
       .bayut-main-content-layout {
         grid-template-columns: 1fr !important;
@@ -1019,10 +1017,23 @@
         justify-content: center !important;
       }
 
+      /* 🌐 الحل الشامل لإظهار قائمة اللغات المنسدلة في الجوال برؤية كاملة واضحة */
       .instant-menu {
-        left: 0 !important;
-        right: auto !important;
-        max-width: 90vw !important;
+        position: fixed !important;
+        top: 60px !important;
+        left: 5% !important;
+        right: 5% !important;
+        width: 90vw !important;
+        max-width: 360px !important;
+        margin: 0 auto !important;
+        max-height: 75vh !important;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3) !important;
+        z-index: 9999999 !important;
+      }
+
+      .instant-scroll {
+        max-height: 55vh !important;
+        overflow-y: auto !important;
       }
 
       .scroll-arrow {
@@ -1093,6 +1104,7 @@
         </div>
 
         <div class="mobile-row-lang-curr">
+          <!-- 🌐 قائمة اختيار اللغات المحدثة بالجوال -->
           <div class="instant-dropdown">
             <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang">العربية</span></button>
             <div class="instant-menu search-menu" id="fastLangList">
