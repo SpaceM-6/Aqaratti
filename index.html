@@ -545,17 +545,23 @@
 
     .properties-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 22px;
     }
 
     .property-card {
       background: #ffffff;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--dubizzle-border);
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .property-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
 
     .property-card.visited-card {
@@ -565,7 +571,7 @@
 
     .card-image {
       position: relative;
-      height: 200px;
+      height: 210px;
       overflow: hidden;
       cursor: pointer;
     }
@@ -574,6 +580,38 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    /* شارات موقع "بيوت" Bayut Badges */
+    .bayut-badge-verified {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #16a34a;
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .bayut-badge-3d {
+      position: absolute;
+      top: 12px;
+      right: 120px;
+      background: #1e293b;
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .btn-card-fav {
@@ -627,20 +665,30 @@
       font-weight: 600;
     }
 
+    .broker-mini-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--dubizzle-navy);
+    }
+
     .card-actions-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px dashed #e2e8f0;
     }
 
     .btn-card-details {
       background: var(--turquoise-light);
       color: var(--primary-turquoise);
       text-decoration: none;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 6px;
       font-weight: 800;
       font-size: 13px;
@@ -784,21 +832,10 @@
         justify-content: center !important;
       }
 
-      /* 📱 إصلاح استجابة وإظهار قائمة اللغات في وضع LTR والجوال بوضوح تام */
       .instant-menu {
         left: 0 !important;
         right: auto !important;
         max-width: 90vw !important;
-      }
-
-      html[dir="ltr"] .instant-menu {
-        left: 0 !important;
-        right: auto !important;
-      }
-
-      html[dir="rtl"] .instant-menu {
-        right: 0 !important;
-        left: auto !important;
       }
 
       .scroll-arrow {
@@ -932,13 +969,14 @@
 
       <div class="pearl-search-card">
         
+        <!-- 🔘 التبويبات الفعالة الديناميكية بالكامل -->
         <div class="tabs-wrapper-container">
           <div class="scroll-arrow right"><i class="fas fa-chevron-right"></i></div>
           <div class="royal-tabs" id="royalTabsBar">
-            <button class="royal-tab active" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
-            <button class="royal-tab" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
-            <button class="royal-tab" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
-            <button class="royal-tab" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
+            <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
+            <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
+            <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
+            <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
           </div>
           <div class="scroll-arrow left"><i class="fas fa-chevron-left"></i></div>
         </div>
@@ -1007,7 +1045,7 @@
 
         <div class="pearl-action-bar">
           <div class="hero-center-badges">
-            <button class="hero-badge-btn gold" onclick="switchRoyalTab(null)"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
+            <button class="hero-badge-btn gold" onclick="triggerGoldenPassportFilter()"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
             <button class="hero-badge-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
           </div>
           <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
@@ -1017,7 +1055,7 @@
   </section>
 
   <section class="properties-section">
-    <h2 class="section-title">العقارات المتاحة حصرياً</h2>
+    <h2 class="section-title" id="resultsSectionTitle">العقارات المتاحة حصرياً</h2>
     <div class="properties-grid" id="properties-container"></div>
   </section>
 
@@ -1122,6 +1160,73 @@
     let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
     let activePropertyForAffiliate = '';
     let loadedScrapedList = [];
+    let currentTabType = 'sale'; // sale, rent, golden, roi
+
+    // 🏆 البيانات الأساسية الشاملة والمطابقة لموقع "بيوت" Bayut
+    const rawPropertiesData = [
+      {
+        id: "101",
+        title: "شقة بنتهاوس فاخرة بإطلالة على برج خليفة",
+        priceAED: 3850000,
+        dealType: "sale",
+        isGolden: true,
+        roiPercent: "8.5%",
+        bedrooms: 3,
+        bathrooms: 4,
+        area_m2: 210,
+        isVerified: true,
+        has3DTour: true,
+        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200",
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600",
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600"
+        ],
+        commission: "1.5%",
+        broker: { name: "أحمد المنصوري", agency: "إعمار العقارية EMAAR", phone: "0501234567" }
+      },
+      {
+        id: "102",
+        title: "فيلا شاطئية مستقلة في نخلة جميرا",
+        priceAED: 18500000,
+        dealType: "sale",
+        isGolden: true,
+        roiPercent: "9.2%",
+        bedrooms: 6,
+        bathrooms: 7,
+        area_m2: 650,
+        isVerified: true,
+        has3DTour: true,
+        image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1200",
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600",
+          "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=600"
+        ],
+        commission: "2.0%",
+        broker: { name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543" }
+      },
+      {
+        id: "103",
+        title: "شقة مودرن مفروشة بالكامل للإيجار السنوي - دبي مارينا",
+        priceAED: 120000,
+        dealType: "rent",
+        isGolden: false,
+        roiPercent: "6.0%",
+        bedrooms: 2,
+        bathrooms: 2,
+        area_m2: 130,
+        isVerified: true,
+        has3DTour: false,
+        image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+          "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600"
+        ],
+        commission: "5%",
+        broker: { name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433" }
+      }
+    ];
 
     function toggleCustomCountryMenu(e) {
       if (e) e.stopPropagation();
@@ -1148,6 +1253,19 @@
         loginForm.style.display = 'none'; registerForm.style.display = 'block';
         btnRegister.classList.add('active'); btnLogin.classList.remove('active');
       }
+    }
+
+    // 🔘 مفتاح تبديل الأزرار الرئيسية الفعالة
+    function switchRoyalTab(el) {
+      document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
+      el.classList.add('active');
+      currentTabType = el.getAttribute('data-type');
+      executeSearch();
+    }
+
+    function triggerGoldenPassportFilter() {
+      const goldenTab = document.querySelector('.royal-tab[data-type="golden"]');
+      if (goldenTab) switchRoyalTab(goldenTab);
     }
 
     function markPropertyAsVisited(propId) {
@@ -1182,10 +1300,8 @@
       document.getElementById('affiliateInputModal').style.display = 'flex';
     }
 
-    /* 📲 دالة توليد الرسالة الشاملة للواتساب والتسويق بالعمولة (محدثة بحيث تأخذ رقم المسوق ديناميكياً) */
     function confirmGenerateLink() {
       const ref = document.getElementById('affiliateRefInput').value.trim() || 'مباشر';
-      
       const allProps = [...rawPropertiesData, ...loadedScrapedList];
       const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
       const broker = property.broker || { name: "الوسيط المعتمد", agency: "شركة عقارية معتمدة" };
@@ -1243,7 +1359,6 @@ ${propertyUrl}`;
       modal.style.display = 'flex';
     }
 
-    /* 🌐 دالة الترجمة المباشرة والمجربة 100% التي تعمل بجميع السيرفرات والأنظمة دون تعليق */
     function applyAILanguage(langCode, langName, dir) {
       localStorage.setItem('aqaratti_lang_name', langName);
       localStorage.setItem('aqaratti_lang_dir', dir);
@@ -1344,11 +1459,6 @@ ${propertyUrl}`;
       fetchProperties();
     }
 
-    const rawPropertiesData = [
-      { id: "101", title: "شقة بنتهاوس فاخرة بإطلالة على برج خليفة", priceAED: 3850000, bedrooms: 3, bathrooms: 4, area_m2: 210, image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800", commission: "1.5%" },
-      { id: "102", title: "فيلا شاطئية مستقلة في نخلة جميرا", priceAED: 18500000, bedrooms: 6, bathrooms: 7, area_m2: 650, image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800", commission: "2.0%" }
-    ];
-
     function renderPropertiesList(list) {
       const container = document.getElementById('properties-container');
       container.innerHTML = '';
@@ -1357,18 +1467,25 @@ ${propertyUrl}`;
           const isVisited = visitedProperties.includes(prop.id.toString());
           const isFav = favoriteProperties.includes(prop.id.toString());
           const convertedPrice = Math.round((prop.priceAED || prop.price || 0) * currentExchangeRate);
+          
+          const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+          localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
 
           const cardHTML = `
             <div class="property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
               <div class="card-image" onclick="markPropertyAsVisited('${prop.id}')">
-                <img src="${prop.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800'}" alt="${prop.title}">
+                <img src="${prop.image || propertyImages[0]}" alt="${prop.title}">
+                
+                ${prop.isVerified ? `<span class="bayut-badge-verified"><i class="fas fa-check-circle"></i> موثوق Verified</span>` : ''}
+                ${prop.has3DTour ? `<span class="bayut-badge-3d"><i class="fas fa-vr-cardboard"></i> جولة 3D</span>` : ''}
+
                 <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)">
                   <i class="fas fa-heart"></i>
                 </button>
               </div>
               <div class="card-body">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <div class="card-price">${convertedPrice.toLocaleString()} ${currentCurrencySymbol}</div>
+                  <div class="card-price">${convertedPrice.toLocaleString()} ${currentCurrencySymbol} ${prop.dealType === 'rent' ? '/ سنوياً' : ''}</div>
                   <span style="background: var(--gold-bg-light); color: var(--accent-gold); font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px; border:1px solid var(--accent-gold);"><i class="fas fa-coins"></i> عمولة: ${prop.commission || '1.5%'}</span>
                 </div>
                 <div class="card-title-text" onclick="markPropertyAsVisited('${prop.id}')">${prop.title}</div>
@@ -1377,13 +1494,18 @@ ${propertyUrl}`;
                   <span><i class="fas fa-bath"></i> ${prop.bathrooms} حمام</span>
                   <span><i class="fas fa-ruler-combined"></i> ${prop.area_m2} م²</span>
                 </div>
+
+                <div class="broker-mini-row">
+                  <span>👤 ${prop.broker ? prop.broker.name : 'الوسيط المعتمد'}</span>
+                  <span style="color:var(--primary-turquoise);"><i class="fas fa-building"></i> ${prop.broker ? prop.broker.agency : 'إعمار العقارية'}</span>
+                </div>
                 
                 <button style="width:100%; margin-top:12px; padding:9px; font-size:13px; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="openAffiliateModal('${prop.id}')">
                   <i class="fas fa-share-alt"></i> شارك الإعلان واكسب عمولة 💰
                 </button>
 
                 <div class="card-actions-bar">
-                  <a href="javascript:void(0)" onclick="markPropertyAsVisited('${prop.id}')" class="btn-card-details">التفاصيل <i class="fas fa-arrow-left"></i></a>
+                  <a href="javascript:void(0)" onclick="markPropertyAsVisited('${prop.id}')" class="btn-card-details">التفاصيل الكاملة <i class="fas fa-arrow-left"></i></a>
                   <button style="background:#fee2e2; color:#dc2626; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="this.closest('.property-card').remove()"><i class="fas fa-trash"></i> حذف</button>
                 </div>
               </div>
@@ -1391,6 +1513,8 @@ ${propertyUrl}`;
           `;
           container.innerHTML += cardHTML;
         });
+      } else {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث الحالية، يرجى تغيير الفلاتر.</div>`;
       }
     }
 
@@ -1398,7 +1522,6 @@ ${propertyUrl}`;
       try {
         const response = await fetch('./properties.json?v=' + Date.now());
         const scrapedData = await response.json();
-
         if (scrapedData && scrapedData.length > 0) {
           loadedScrapedList = scrapedData;
           renderPropertiesList([...rawPropertiesData, ...scrapedData]);
@@ -1412,7 +1535,6 @@ ${propertyUrl}`;
 
     function openAISearchModal() { document.getElementById('aiSearchModal').style.display = 'flex'; }
     
-    /* 🎙️ خدمة البحث الصوتي المباشر */
     function startVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
@@ -1462,13 +1584,25 @@ ${propertyUrl}`;
       const allProps = [...rawPropertiesData, ...loadedScrapedList];
 
       const filtered = allProps.filter(p => {
+        let matchesTab = true;
+        if (currentTabType === 'sale') matchesTab = (p.dealType === 'sale' || !p.dealType);
+        else if (currentTabType === 'rent') matchesTab = (p.dealType === 'rent');
+        else if (currentTabType === 'golden') matchesTab = (p.isGolden === true);
+        else if (currentTabType === 'roi') matchesTab = (parseFloat(p.roiPercent || '0') >= 7.0);
+
         const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
         const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice;
         const matchesCity = !selectedCity || selectedCity === 'all' || (p.city && p.city.includes(selectedCity));
-        return matchesKeyword && matchesPrice && matchesCity;
+        return matchesTab && matchesKeyword && matchesPrice && matchesCity;
       });
 
       renderPropertiesList(filtered);
+
+      const titleEl = document.getElementById('resultsSectionTitle');
+      if (currentTabType === 'sale') titleEl.innerText = 'عقارات مخصصة للشراء 🔑';
+      else if (currentTabType === 'rent') titleEl.innerText = 'عقارات مخصصة للإيجار 🏢';
+      else if (currentTabType === 'golden') titleEl.innerText = 'عقارات مؤهلة للإقامة الذهبية والجنسية 🏆';
+      else if (currentTabType === 'roi') titleEl.innerText = 'أعلى فرص الاستثمار العقاري عائداً (ROI) 📈';
 
       const propSection = document.querySelector('.properties-section');
       if (propSection) {
