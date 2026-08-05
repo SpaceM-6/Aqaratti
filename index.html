@@ -91,17 +91,17 @@
       padding-bottom: 75px;
     }
 
-    /* 1. الشريط العلوي */
+    /* 1. الشريط العلوي - جعل سمكه رفيعاً وتسوية العناصر */
     .aqaratti-instant-utility-bar {
       width: 100%;
       background: #ffffff;
       color: var(--dubizzle-navy);
-      padding: 8px 20px;
-      font-size: 14px;
+      padding: 4px 20px; /* تقليل الحواف لجعل الشريط رفيعاً */
+      font-size: 13px;
       border-bottom: 1px solid var(--dubizzle-border);
       position: relative;
       z-index: 99999;
-      min-height: 60px;
+      min-height: 48px; /* ترفيع سمك الشريط */
       display: flex;
       align-items: center;
     }
@@ -110,25 +110,27 @@
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 15px;
     }
 
+    /* توسيط الأيقونات الخمسة في المنتصف تماماً بعيداً عن اسم الموقع */
     .controls-wrapper-center {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: nowrap;
       flex-direction: row;
+      margin: 0 auto; /* يضمن التمركز في المنتصف في وضع الكمبيوتر */
     }
 
     .mobile-row-lang-curr, .mobile-row-fav-add {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: nowrap;
       flex-direction: row;
     }
@@ -136,36 +138,36 @@
     .brand-logo-royal {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       text-decoration: none;
       flex-shrink: 0;
     }
 
     .royal-logo-icon {
-      filter: drop-shadow(0 4px 8px rgba(0, 168, 150, 0.3));
+      filter: drop-shadow(0 2px 5px rgba(0, 168, 150, 0.3));
     }
 
     .brand-text-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
     }
 
     .arabic-brand {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       color: var(--primary-turquoise);
     }
 
     .brand-divider {
       color: #cbd5e1;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 300;
     }
 
     .english-brand {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--dubizzle-navy);
     }
@@ -173,14 +175,14 @@
     .btn-add-nav {
       background: var(--primary-turquoise);
       color: #ffffff !important;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
     }
 
@@ -188,13 +190,13 @@
       background: #fff1f2;
       color: #e11d48 !important;
       border: 1px solid #fecdd3;
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       white-space: nowrap;
     }
@@ -206,8 +208,8 @@
     .fav-count-badge {
       background: #e11d48;
       color: white;
-      font-size: 11px;
-      padding: 1px 6px;
+      font-size: 10px;
+      padding: 1px 5px;
       border-radius: 10px;
       font-weight: 900;
     }
@@ -216,10 +218,28 @@
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
       color: var(--dubizzle-navy);
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
+    }
+
+    /* إظهار قائمة الكمبيوتر في أقصى اليسار وإخفاؤها للجوال */
+    .desktop-left-menu-box {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+      margin-left: 0;
+    }
+
+    .mobile-logo-menu-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-logo-menu-group .instant-dropdown {
+      display: none; /* مخفي بالكمبيوتر */
     }
 
     .instant-dropdown {
@@ -231,14 +251,14 @@
       background: #f1f5f9;
       color: var(--dubizzle-navy);
       border: 1px solid #cbd5e1;
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
     }
 
@@ -246,7 +266,7 @@
       display: none;
       position: absolute;
       top: 100%;
-      right: 0;
+      left: 0;
       margin-top: 6px;
       background: #ffffff;
       color: var(--text-dark);
@@ -297,7 +317,7 @@
                         url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600');
       background-position: center 30%;
       background-size: cover;
-      padding: 40px 20px 50px 20px;
+      padding: 35px 20px 45px 20px;
       color: #ffffff;
       text-align: center;
       transition: background-image 0.5s ease;
@@ -311,10 +331,10 @@
     }
 
     .royal-title {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 900;
       color: #ffffff;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     }
 
@@ -323,7 +343,7 @@
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 12px;
-      padding: 22px 26px;
+      padding: 20px 24px;
       color: #ffffff;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     }
@@ -368,8 +388,8 @@
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.25);
       color: #ffffff;
-      padding: 10px 20px;
-      font-size: 15px;
+      padding: 9px 18px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       border-radius: 6px;
@@ -415,7 +435,7 @@
       border: none;
       color: var(--text-dark);
       outline: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif;
     }
@@ -424,10 +444,10 @@
       background: #f1f5f9;
       color: var(--dubizzle-navy);
       border: 1px solid #cbd5e1;
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -495,9 +515,9 @@
       background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 9px 16px;
+      padding: 8px 15px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
@@ -506,29 +526,13 @@
       transition: all 0.3s ease;
     }
 
-    .hero-badge-btn.ai-btn:hover, .hero-badge-btn.ai-btn:active {
-      background: linear-gradient(135deg, #a855f7, #ec4899) !important;
-      border-color: #f0abfc !important;
-      color: #ffffff !important;
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 35px rgba(236, 72, 153, 0.5);
-      transform: translateY(-2px) scale(1.03);
-    }
-
-    .hero-badge-btn.gold:hover, .hero-badge-btn.gold:active {
-      background: linear-gradient(135deg, #d4af37, #f59e0b) !important;
-      border-color: #fef08a !important;
-      color: #192038 !important;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 0 35px rgba(245, 158, 11, 0.6);
-      transform: translateY(-2px) scale(1.03);
-    }
-
     .btn-royal-search {
       background: var(--primary-turquoise);
       color: #ffffff;
       border: none;
-      padding: 12px 36px;
+      padding: 10px 32px;
       border-radius: 6px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -538,20 +542,20 @@
     .btn-royal-search:hover, .btn-royal-search:active {
       background: #00c8b3 !important;
       box-shadow: 0 0 25px rgba(0, 200, 179, 0.9), 0 0 40px rgba(0, 168, 150, 0.6);
-      transform: translateY(-3px) scale(1.02);
+      transform: translateY(-2px);
     }
 
     /* PROPERTIES SECTION */
     .properties-section {
-      padding: 40px 20px;
+      padding: 35px 20px;
       max-width: 1280px;
       margin: 0 auto;
     }
 
     .section-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       color: var(--dubizzle-navy);
       border-right: 5px solid var(--primary-turquoise);
       padding-right: 12px;
@@ -559,7 +563,7 @@
 
     .bayut-main-content-layout {
       display: grid;
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 1fr 300px;
       gap: 25px;
       align-items: start;
     }
@@ -629,12 +633,6 @@
       z-index: 10;
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
       transition: all 0.2s ease;
-    }
-
-    .card-img-arrow:hover {
-      background: #ffffff;
-      color: var(--primary-turquoise);
-      transform: translateY(-50%) scale(1.1);
     }
 
     .card-img-arrow.prev { right: 8px; }
@@ -773,7 +771,7 @@
     .broker-mini-name { font-size: 12px; font-weight: 900; color: var(--dubizzle-navy); }
     .broker-mini-agency { font-size: 10px; font-weight: 700; color: var(--text-muted); }
 
-    /* 🎯 توحيد حجم وأبعاد أزرار كرت العقار بالكامل */
+    /* 🎯 توحيد حجم وأبعاد أزرار كرت العقار وتكبير أيقونة الواتساب */
     .card-action-buttons { 
       display: flex; 
       gap: 8px; 
@@ -782,8 +780,8 @@
     }
 
     .btn-card-cta {
-      height: 36px !important;
-      min-width: 36px !important;
+      height: 38px !important;
+      min-width: 38px !important;
       padding: 0 14px !important;
       border-radius: 6px !important;
       font-size: 12px !important;
@@ -795,7 +793,7 @@
       justify-content: center !important;
       gap: 6px !important;
       text-decoration: none !important;
-      box-sizing: border-border-box !important;
+      box-sizing: border-box !important;
       transition: all 0.2s ease !important;
       white-space: nowrap !important;
     }
@@ -806,17 +804,32 @@
     .btn-cta-call { background: var(--primary-turquoise); color: white; }
     .btn-cta-call:hover { background: var(--primary-turquoise-hover); }
 
-    .btn-cta-whatsapp { background: #25d366; color: white; padding: 0 12px !important; }
+    .btn-cta-whatsapp { 
+      background: #25d366; 
+      color: white; 
+      padding: 0 14px !important; 
+    }
+    
+    .btn-cta-whatsapp i {
+      font-size: 18px !important;
+      line-height: 1 !important;
+    }
+
     .btn-cta-whatsapp:hover { background: #1eb954; }
 
     .btn-cta-share { background: var(--gold-bg-light); color: var(--dubizzle-navy); border: 1px solid var(--accent-gold) !important; }
 
+    /* 📢 4. جعل الشريط الجانبي للإعلانات المميزة متجاور وقابل للتمرير المستقل لأسفل */
     .bayut-sidebar-ads {
       position: sticky;
-      top: 80px;
+      top: 70px;
       display: flex;
       flex-direction: column;
       gap: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding-left: 5px;
+      scrollbar-width: thin;
     }
 
     .ad-banner-card {
@@ -996,6 +1009,7 @@
       .bayut-sidebar-ads {
         position: static;
         order: 2;
+        max-height: none !important;
       }
     }
 
@@ -1004,13 +1018,22 @@
         display: flex !important;
       }
 
-      /* 📌 جعل القائمة المنسدلة (أيقونة الخطوط الثلاثة) في أعلى اليسار بجوار الاسم */
+      /* إخفاء القائمة العادية من أقصى اليسار في وضع الجوال */
+      .desktop-left-menu-box {
+        display: none !important;
+      }
+
+      /* إظهار قائمة الجوال فقط بجوار اللوجو */
+      .mobile-logo-menu-group .instant-dropdown {
+        display: inline-block !important;
+      }
+
       .utility-container {
         display: flex !important;
         flex-direction: column !important;
         align-items: stretch !important;
-        gap: 10px !important;
-        padding: 5px 0 !important;
+        gap: 8px !important;
+        padding: 3px 0 !important;
       }
 
       .mobile-header-top-row {
@@ -1024,14 +1047,15 @@
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
-        gap: 8px !important;
+        gap: 6px !important;
+        margin: 0 !important;
       }
 
       .mobile-row-lang-curr, .mobile-row-fav-add {
         display: flex !important;
         flex-direction: row !important;
         justify-content: center !important;
-        gap: 8px !important;
+        gap: 6px !important;
         width: 100% !important;
       }
 
@@ -1051,7 +1075,7 @@
       /* 🌐 القوائم المنسدلة للجوال */
       .instant-menu, .custom-country-menu {
         position: fixed !important;
-        top: 65px !important;
+        top: 60px !important;
         left: 5% !important;
         right: 5% !important;
         width: 90vw !important;
@@ -1097,6 +1121,63 @@
         justify-content: center !important;
       }
     }
+    /* 📌 الشريط العلوي معتدل الجمال (~70px) */
+.aqaratti-instant-utility-bar {
+  min-height: 70px !important;
+  padding: 10px 20px !important;
+}
+
+/* 📌 ترتيب الأزرار الأربعة وتكبير الواتساب ومحاذاتها المباشرة */
+.card-broker-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.card-action-buttons {
+  display: flex !important;
+  gap: 8px !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+}
+
+.btn-card-cta {
+  height: 38px !important;
+  flex: 1 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.btn-cta-whatsapp i {
+  font-size: 18px !important;
+}
+
+/* 🌟 إضاءة أزرار الجنسية والذكاء الاصطناعي بالذهبي والبنفسجي عند التحديد */
+.hero-badge-btn.gold.active, .hero-badge-btn.gold:focus {
+  background: linear-gradient(135deg, #d4af37, #f59e0b) !important;
+  border-color: #fef08a !important;
+  color: #192038 !important;
+  box-shadow: 0 0 22px rgba(212, 175, 55, 0.95), 0 0 35px rgba(245, 158, 11, 0.7) !important;
+}
+
+.hero-badge-btn.ai-btn.active, .hero-badge-btn.ai-btn:focus {
+  background: linear-gradient(135deg, #a855f7, #ec4899) !important;
+  border-color: #f0abfc !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.95), 0 0 35px rgba(236, 72, 153, 0.7) !important;
+}
+
+/* 📢 الشريط الجانبي للإعلانات القابل للتمرير والنزول بمرونة */
+.bayut-sidebar-ads {
+  position: sticky !important;
+  top: 80px !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}
   </style>
 </head>
 <body>
@@ -1106,32 +1187,32 @@
   <div class="aqaratti-instant-utility-bar">
     <div class="utility-container">
       
-      <!-- 📌 هيدر الجوال السريع: الاسم على اليمين والأيقونة الثلاثية بجواره أعلى اليسار -->
+      <!-- 📌 1. هيدر الجوال السريع: اللوجو وأيقونة الجوال بجواره -->
       <div class="mobile-header-top-row">
-        <a href="index.html" class="brand-logo-royal">
-          <svg class="royal-logo-icon" viewBox="0 0 100 100" width="36" height="36">
-            <defs>
-              <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8b3"/><stop offset="100%" stop-color="#008072"/></linearGradient>
-              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe066"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#997a15"/></linearGradient>
-            </defs>
-            <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
-            <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
-            <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
-          </svg>
+        <div class="mobile-logo-menu-group">
+          <a href="index.html" class="brand-logo-royal">
+            <svg class="royal-logo-icon" viewBox="0 0 100 100" width="34" height="34">
+              <defs>
+                <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8b3"/><stop offset="100%" stop-color="#008072"/></linearGradient>
+                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe066"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#997a15"/></linearGradient>
+              </defs>
+              <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
+              <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
+              <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
+            </svg>
 
-          <div class="brand-text-group">
-            <span class="arabic-brand">عقاراتي</span>
-            <span class="brand-divider">│</span>
-            <span class="english-brand">Aqaratti</span>
-          </div>
-        </a>
+            <div class="brand-text-group">
+              <span class="arabic-brand">عقاراتي</span>
+              <span class="brand-divider">│</span>
+              <span class="english-brand">Aqaratti</span>
+            </div>
+          </a>
 
-        <!-- أزرار الهامبرغر والقائمة أعلى اليسار بالجوال -->
-        <div style="display: flex; align-items: center; gap: 8px;">
+          <!-- قائمة الجوال المنسدلة المجاورة للوجو للجوال فقط -->
           <div class="instant-dropdown">
-            <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdown', event)"><i class="fas fa-bars"></i></button>
-            <div class="instant-menu" id="mainMenuDropdown" style="left: 0; right: auto; width: 240px;">
+            <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownMobile', event)"><i class="fas fa-bars"></i></button>
+            <div class="instant-menu" id="mainMenuDropdownMobile" style="left: 0; right: auto; width: 240px;">
               <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
               
               <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
@@ -1144,6 +1225,7 @@
         </div>
       </div>
 
+      <!-- 📌 2. الأيقونات الخمسة متمركزة في المنتصف تماماً بعيداً عن اسم الموقع -->
       <div class="controls-wrapper-center">
         
         <div class="mobile-row-fav-add">
@@ -1241,6 +1323,22 @@
 
       </div>
 
+      <!-- 📌 3. جعل زر القائمة في أقصى يسار النافذة للكمبيوتر فقط -->
+      <div class="desktop-left-menu-box">
+        <div class="instant-dropdown">
+          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownDesktop', event)"><i class="fas fa-bars"></i></button>
+          <div class="instant-menu" id="mainMenuDropdownDesktop" style="left: 0; right: auto; width: 240px;">
+            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+            
+            <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
+            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1318,7 +1416,7 @@
       <!-- 🏢 العمود الأكبر على اليمين: قائمة العقارات بتصميم بيوت -->
       <div class="properties-grid" id="properties-container"></div>
 
-      <!-- 📢 العمود الأيسر: الشريط الجانبي للإعلانات المميزة والرعايات الحصرية -->
+      <!-- 📢 العمود الأيسر: الشريط الجانبي للإعلانات المميزة والرعايات الحصرية (قابل للتمرير والنزول) -->
       <div class="bayut-sidebar-ads">
         
         <!-- إعلان بن غاطي مرسيدس بنز -->
@@ -1338,6 +1436,16 @@
             <div class="ad-title" style="color:white;">عقارات الإقامة الذهبية</div>
             <div class="ad-subtitle" style="color:#cbd5e1;">احصل على الإقامة الدائمة والجنسية عبر الاستثمار العقاري الموثوق</div>
             <a href="javascript:void(0)" onclick="triggerGoldenPassportFilter()" class="btn-ad-action" style="background: var(--accent-gold); color: var(--dubizzle-navy);">استكشف الفرص 💎</a>
+          </div>
+        </div>
+
+        <!-- إعلان العقارات الدولية -->
+        <div class="ad-banner-card">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600" class="ad-banner-img" alt="استثمار عقاري دولي">
+          <div class="ad-banner-body">
+            <div class="ad-title">استثمار عقاري في لندن وباريس</div>
+            <div class="ad-subtitle">فرص عائد استثماري متزايد يصل إلى 10% 📈</div>
+            <a href="javascript:void(0)" onclick="selectCustomCountry('uk', 'بريطانيا', 'https://flagcdn.com/w40/gb.png')" class="btn-ad-action">شاهد مشاريع أوروبا ❯</a>
           </div>
         </div>
 
@@ -1454,14 +1562,14 @@
     <div class="royal-modal-card">
       <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);"><i class="fas fa-robot" style="color: #c084fc;"></i><div class="royal-modal-title">البحث بالذكاء الاصطناعي Aqaratti AI</div></div>
       <div class="royal-modal-body">
-        <textarea id="aiPromptInput" style="width:100%; height:80px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب مواصفات عقارك أو تحدث بالصوت..."></textarea>
+        <textarea id="aiPromptInput" style="width:100%; height:80px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب مواصفات عقارك أو تحدث بالصوت (مثال: شقة للبيع في دبي بنفس مواصفات بن غاطي)..."></textarea>
         
         <button id="voiceBtn" onclick="startVoiceRecognition()" style="width:100%; margin-top:10px; background:#f1f5f9; color:#1e293b; border:1px solid #cbd5e1; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
           <i class="fas fa-microphone" id="micIcon" style="color:var(--primary-turquoise); font-size:18px;"></i>
           <span id="voiceStatusText">اضغط هنا للتحدث بالصوت 🎙️</span>
         </button>
 
-        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث</button>
+        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث فوراً</button>
         <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">إلغاء</button>
       </div>
     </div>
@@ -1501,6 +1609,7 @@
     let propertyCardImageIndices = {};
     let activeCallPhone = "0501234567";
 
+    /* 📌 مطابقة مصفوفة بيانات العقارات والوسيط مع صفحة تفاصيل العقار */
     const rawPropertiesData = [
       {
         id: "101",
@@ -1522,7 +1631,7 @@
           "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600"
         ],
         commission: "1.5%",
-        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
+        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", email: "ibrahim.broker@aqaratti.com", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
       },
       {
         id: "102",
@@ -1544,7 +1653,7 @@
           "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=600"
         ],
         commission: "2.0%",
-        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
+        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", email: "sara.falasi@damacproperties.com", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
       },
       {
         id: "103",
@@ -1565,7 +1674,7 @@
           "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600"
         ],
         commission: "5%",
-        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
+        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433", email: "mazen.khaledi@aqaratti.com", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
       }
     ];
 
@@ -1835,80 +1944,98 @@ ${propertyUrl}`;
       }
     }
 
-    function renderPropertiesList(list) {
-      const container = document.getElementById('properties-container');
-      container.innerHTML = '';
-      if (list && list.length > 0) {
-        list.forEach(prop => {
-          const isVisited = visitedProperties.includes(prop.id.toString());
-          const isFav = favoriteProperties.includes(prop.id.toString());
-          const convertedPrice = Math.round((prop.priceAED || prop.price || 0) * currentExchangeRate);
-          
-          const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
-          localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
-          const encodedImgsJson = encodeURIComponent(JSON.stringify(propertyImages));
+    /* 📌 دالة حفظ وتمرير بيانات العقار والوسيط بصفحة التفاصيل */
+function goToPropertyDetails(propId) {
+  const allProps = [...rawPropertiesData, ...loadedScrapedList];
+  const selectedProp = allProps.find(p => p.id.toString() === propId.toString()) || allProps[0];
+  
+  // حفظ بيانات العقار والوسيط بالذاكرة لصفحة التفاصيل
+  localStorage.setItem('aqaratti_selected_property', JSON.stringify(selectedProp));
+  window.location.href = `property-details.html?id=${propId}`;
+}
+function renderPropertiesList(list) {
+  const container = document.getElementById('properties-container');
+  container.innerHTML = '';
+  if (list && list.length > 0) {
+    list.forEach((prop, index) => {
+      const isVisited = visitedProperties.includes(prop.id.toString());
+      const isFav = favoriteProperties.includes(prop.id.toString());
+      const convertedPrice = Math.round((prop.priceAED || prop.price || 0) * currentExchangeRate);
+      
+      const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+      localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
 
-          const brokerInfo = prop.broker || { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" };
+      /* 📌 جلب ومطابقة بيانات الوسيط الخاصة بهذا العقار تحديداً */
+      const brokerInfo = prop.broker || { 
+        brokerId: "b1", 
+        name: "إبراهيم عبد العاطي إبراهيم", 
+        agency: "سكويا العقارية SEQUOIA", 
+        phone: "0501234567", 
+        email: "ibrahim.broker@aqaratti.com",
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" 
+      };
 
-          const cardHTML = `
-            <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
-              <div class="card-media-box">
-                ${propertyImages.length > 1 ? `
-                  <button class="card-img-arrow prev" onclick="navigateCardImage('${prop.id}', 'prev', '${encodedImgsJson}', event)"><i class="fas fa-chevron-right"></i></button>
-                  <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', '${encodedImgsJson}', event)"><i class="fas fa-chevron-left"></i></button>
-                ` : ''}
+      const brokerProfileUrl = `broker-profile.html?id=${brokerInfo.brokerId || 'b1'}&name=${encodeURIComponent(brokerInfo.name)}&agency=${encodeURIComponent(brokerInfo.agency)}&phone=${brokerInfo.phone}&avatar=${encodeURIComponent(brokerInfo.avatar)}`;
 
-                <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" onclick="markPropertyAsVisited('${prop.id}')">
-                
-                <span class="badge-trucheck-tag"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
-                <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
+      const cardHTML = `
+        <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
+          <div class="card-media-box">
+            <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" onclick="goToPropertyDetails('${prop.id}')">
+            <span class="badge-trucheck-tag"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
+            <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
+            <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)"><i class="fas fa-heart"></i></button>
+          </div>
 
-                <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)">
-                  <i class="fas fa-heart"></i>
-                </button>
+          <div class="card-info-content">
+            <div class="card-top-details">
+              <div class="property-price-tag">AED ${convertedPrice.toLocaleString()}</div>
+              <h3 class="property-title-heading" onclick="goToPropertyDetails('${prop.id}')">${prop.title}</h3>
+              <div class="property-specs-list">
+                <span><i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${prop.bedrooms} غرف نوم</span>
+                <span>│</span>
+                <span><i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${prop.bathrooms || 1} حمام</span>
+                <span>│</span>
+                <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> ${prop.area_m2} قدم مربع</span>
               </div>
+              <span class="property-type-pill">${prop.propertyType || 'شقة سكنية / استوديو'}</span>
+            </div>
 
-              <div class="card-info-content">
-                <div class="card-top-details">
-                  <div class="property-price-tag">AED ${convertedPrice.toLocaleString()} ${prop.dealType === 'rent' ? '/ سنوياً' : ''}</div>
-                  <h3 class="property-title-heading" onclick="markPropertyAsVisited('${prop.id}')">${prop.title}</h3>
-                  
-                  <div class="property-specs-list">
-                    <span><i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${prop.bedrooms} غرف نوم</span>
-                    <span>│</span>
-                    <span><i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${prop.bathrooms || 1} حمام</span>
-                    <span>│</span>
-                    <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> ${prop.area_m2} قدم مربع</span>
-                  </div>
-
-                  <span class="property-type-pill">${prop.propertyType || 'شقة سكنية / استوديو'}</span>
+            <div class="card-broker-footer">
+              <a href="${brokerProfileUrl}" class="broker-mini-profile">
+                <img src="${brokerInfo.avatar}" class="broker-mini-avatar" alt="${brokerInfo.name}">
+                <div>
+                  <div class="broker-mini-name">${brokerInfo.name}</div>
+                  <div class="broker-mini-agency">${brokerInfo.agency}</div>
                 </div>
+              </a>
 
-                <div class="card-broker-footer">
-                  <a href="broker-profile.html?id=${brokerInfo.brokerId || 'b1'}" class="broker-mini-profile">
-                    <img src="${brokerInfo.avatar || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'}" class="broker-mini-avatar" alt="${brokerInfo.name}">
-                    <div>
-                      <div class="broker-mini-name">${brokerInfo.name}</div>
-                      <div class="broker-mini-agency">${brokerInfo.agency}</div>
-                    </div>
-                  </a>
-
-                  <div class="card-action-buttons">
-                    <button class="btn-card-cta btn-cta-share" onclick="openAffiliateModal('${prop.id}')"><i class="fas fa-share-alt"></i> عمولة 💰</button>
-                    <a href="javascript:void(0)" onclick="markPropertyAsVisited('${prop.id}')" class="btn-card-cta btn-cta-view"><i class="fas fa-arrow-left"></i> التفاصيل</a>
-                    <button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${brokerInfo.name}', '${brokerInfo.phone || '0501234567'}')"><i class="fas fa-phone-alt"></i> اتصل</button>
-                    <a href="https://api.whatsapp.com/send?phone=${(brokerInfo.phone || '0501234567').replace(/^0/, '971')}" target="_blank" class="btn-card-cta btn-cta-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                  </div>
-                </div>
+              <div class="card-action-buttons">
+                <button class="btn-card-cta btn-cta-share" onclick="openAffiliateModal('${prop.id}')"><i class="fas fa-share-alt"></i> عمولة 💰</button>
+                <a href="javascript:void(0)" onclick="goToPropertyDetails('${prop.id}')" class="btn-card-cta btn-cta-view"><i class="fas fa-arrow-left"></i> التفاصيل</a>
+                <button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${brokerInfo.name}', '${brokerInfo.phone}')"><i class="fas fa-phone-alt"></i> اتصل</button>
+                <a href="https://api.whatsapp.com/send?phone=${(brokerInfo.phone || '0501234567').replace(/^0/, '971')}" target="_blank" class="btn-card-cta btn-cta-whatsapp"><i class="fab fa-whatsapp"></i></a>
               </div>
             </div>
-          `;
-          container.innerHTML += cardHTML;
-        });
-      } else {
-        container.innerHTML = `<div style="text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث الحالية، يرجى تغيير الفلاتر.</div>`;
+          </div>
+        </div>
+      `;
+      container.innerHTML += cardHTML;
+
+      /* إدراج إعلان كل 5 عقارات */
+      if ((index + 1) % 5 === 0) {
+        container.innerHTML += `
+          <div style="background: linear-gradient(135deg, #0f172a, #192038); color: white; padding: 18px; border-radius: 12px; border: 2px solid var(--accent-gold); text-align: center; margin: 10px 0;">
+            <h3 style="font-size: 16px; color: var(--accent-gold); font-weight: 900;"><i class="fas fa-globe-europe"></i> مشاريع الاستثمار الدولي للإقامة الذهبية</h3>
+            <p style="font-size: 12px; color: #e2e8f0; margin: 6px 0;">فرص ممتازة لتملك العقارات في أوروبا بعائد استثماري مضمون!</p>
+            <button onclick="executeSearch()" style="background: var(--accent-gold); color: #192038; font-weight: 900; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 12px;">استكشف العروض الان ❯</button>
+          </div>
+        `;
       }
-    }
+    });
+  } else {
+    container.innerHTML = `<div style="text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث.</div>`;
+  }
+}
 
     async function fetchProperties() {
       try {
@@ -1957,14 +2084,34 @@ ${propertyUrl}`;
       };
     }
 
+    /* 🤖 2. تفعيل دالة البحث بالذكاء الاصطناعي للتصفية المباشرة فوراً */
     function executeAISearch() {
-      const query = document.getElementById('aiPromptInput').value.trim();
+      const query = (document.getElementById('aiPromptInput').value || '').trim().toLowerCase();
       if (!query) {
         alert('يرجى كتابة أو التحدث بمواصفات العقار الذي تبحث عنه أولاً!');
         return;
       }
-      alert(`🤖 تم تحليل طلبك بالذكاء الاصطناعي: "${query}" وجاري عرض أقرب العقارات لك!`);
+
+      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+
+      const filtered = allProps.filter(p => {
+        const fullText = `${p.title} ${p.description || ''} ${p.propertyType || ''} ${p.dealType || ''}`.toLowerCase();
+        const words = query.split(' ');
+        return words.some(w => w.length > 2 && fullText.includes(w));
+      });
+
       closeRoyalModal('aiSearchModal');
+
+      if (filtered.length > 0) {
+        renderPropertiesList(filtered);
+        document.getElementById('resultsSectionTitle').innerText = `🤖 نتائج البحث بالذكاء الاصطناعي بناءً على: "${query}"`;
+      } else {
+        renderPropertiesList(allProps);
+        alert(`🤖 تم تحليل طلبك: "${query}". عرضنا لك أفضل العروض الحصرية القريبة من طلبك!`);
+      }
+
+      const propSection = document.querySelector('.properties-section');
+      if (propSection) propSection.scrollIntoView({ behavior: 'smooth' });
     }
 
     function executeSearch() {
