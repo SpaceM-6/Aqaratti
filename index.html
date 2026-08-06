@@ -1,0 +1,2595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>عقاراتي | Aqaratti - المنصة العقارية العالمية</title>
+
+  <!-- 📱 إعدادات تطبيق الويب التقدمي (PWA) -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="عقاراتي">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ar',
+        includedLanguages: 'ar,en,ru,zh-CN,fr,es,it,de,tr,fa,ur,hi,sq,bs,bg,hr,cs,da,nl,fil,fi,el,hu,id,ja,ko,no,pl,pt,ro,sv,th,uk,vi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <style>
+    /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
+    html {
+      top: 0px !important;
+      padding-top: 0px !important;
+      margin-top: 0px !important;
+    }
+
+    body {
+      top: 0px !important;
+      position: static !important;
+      padding-top: 0px !important;
+      margin-top: 0px !important;
+    }
+
+    .goog-te-banner-frame,
+    .goog-te-banner,
+    .VIpgJd-yA0Tfe-BN215c,
+    iframe.skiptranslate,
+    iframe.goog-te-banner-frame {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0px !important;
+      width: 0px !important;
+      border: none !important;
+    }
+
+    .goog-text-highlight {
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    #goog-gt-tt, .goog-te-balloon-frame {
+      display: none !important;
+    }
+
+    .goog-te-gadget-icon, .goog-te-gadget-simple {
+      display: none !important;
+    }
+
+    /* ==================== BRANDING & COLOR PALETTE ==================== */
+    :root {
+      --primary-turquoise: #00a896;         
+      --primary-turquoise-hover: #008072;   
+      --turquoise-light: #e6f7f5;          
+      --accent-gold: #d4af37;              
+      --accent-gold-hover: #b89528;
+      --gold-bg-light: #fffdf0;            
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f7f9fc;
+      --dubizzle-border: #e4e9f2;
+      --text-dark: #222b45;
+      --text-muted: #8f9bb3;
+      --accent-green: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+      background-color: var(--dubizzle-bg);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 75px;
+    }
+
+    /* 1. الشريط العلوي - جعل سمكه رفيعاً وتسوية العناصر */
+    .aqaratti-instant-utility-bar {
+      width: 100%;
+      background: #ffffff;
+      color: var(--dubizzle-navy);
+      padding: 4px 20px; /* تقليل الحواف لجعل الشريط رفيعاً */
+      font-size: 13px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      position: relative;
+      z-index: 99999;
+      min-height: 48px; /* ترفيع سمك الشريط */
+      display: flex;
+      align-items: center;
+    }
+
+    .utility-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* توسيط الأيقونات الخمسة في المنتصف تماماً بعيداً عن اسم الموقع */
+    .controls-wrapper-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      margin: 0 auto; /* يضمن التمركز في المنتصف في وضع الكمبيوتر */
+    }
+
+    .mobile-row-lang-curr, .mobile-row-fav-add {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+      flex-direction: row;
+    }
+
+    .brand-logo-royal {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .royal-logo-icon {
+      filter: drop-shadow(0 2px 5px rgba(0, 168, 150, 0.3));
+    }
+
+    .brand-text-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .arabic-brand {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--primary-turquoise);
+    }
+
+    .brand-divider {
+      color: #cbd5e1;
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .english-brand {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--dubizzle-navy);
+    }
+
+    .btn-add-nav {
+      background: var(--primary-turquoise);
+      color: #ffffff !important;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn-fav-nav {
+      background: #fff1f2;
+      color: #e11d48 !important;
+      border: 1px solid #fecdd3;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-fav-nav:hover {
+      background: #ffe4e6;
+    }
+
+    .fav-count-badge {
+      background: #e11d48;
+      color: white;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 10px;
+      font-weight: 900;
+    }
+
+    .hamburger-menu-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--dubizzle-navy);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* إظهار قائمة الكمبيوتر في أقصى اليسار وإخفاؤها للجوال */
+    .desktop-left-menu-box {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+      margin-left: 0;
+    }
+
+    .mobile-logo-menu-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .instant-dropdown.mobile-hamburger-group {
+      display: none; /* مخفي بالكمبيوتر، ويظهر فقط مرة واحدة في الجوال */
+    }
+
+    .instant-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .instant-btn {
+      background: #f1f5f9;
+      color: var(--dubizzle-navy);
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .instant-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 6px;
+      background: #ffffff;
+      color: var(--text-dark);
+      min-width: 220px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      z-index: 999999 !important;
+      border: 1px solid var(--dubizzle-border);
+      border-top: 3px solid var(--primary-turquoise);
+    }
+
+    .instant-menu a {
+      color: var(--text-dark);
+      padding: 10px 14px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .instant-menu a:hover {
+      background-color: var(--turquoise-light);
+      color: var(--primary-turquoise);
+    }
+
+    .search-menu input {
+      width: 90%;
+      margin: 8px 5%;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .instant-scroll {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    /* 2. HERO SECTION */
+    .aqaratti-light-hero {
+      position: relative;
+      background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), 
+                        url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600');
+      background-position: center 30%;
+      background-size: cover;
+      padding: 35px 20px 45px 20px;
+      color: #ffffff;
+      text-align: center;
+      transition: background-image 0.5s ease;
+    }
+
+    .hero-light-container {
+      max-width: 1250px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 5;
+    }
+
+    .royal-title {
+      font-size: 30px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .pearl-search-card {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: #ffffff;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .tabs-wrapper-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .scroll-arrow {
+      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      color: #ffffff;
+      font-size: 13px;
+      background: rgba(0, 168, 150, 0.85);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+      pointer-events: none;
+    }
+
+    .scroll-arrow.right { right: 2px; }
+    .scroll-arrow.left { left: 2px; }
+
+    .royal-tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      width: 100%;
+    }
+
+    .royal-tab {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 9px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .royal-tab:hover, .royal-tab:active, .royal-tab.active {
+      background: var(--primary-turquoise) !important;
+      border-color: var(--primary-turquoise) !important;
+      box-shadow: 0 0 15px rgba(0, 168, 150, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .pearl-inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      text-align: right;
+      margin-bottom: 18px;
+    }
+
+    .royal-input-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .royal-label {
+      display: block;
+      font-size: 12px;
+      color: var(--primary-turquoise);
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .royal-input, .royal-select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-dark);
+      outline: none;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .custom-country-btn {
+      background: #f1f5f9;
+      color: var(--dubizzle-navy);
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .custom-country-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 6px;
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      z-index: 999999 !important;
+      min-width: 180px;
+      max-height: 250px;
+      overflow-y: auto;
+      border-top: 3px solid var(--primary-turquoise);
+    }
+
+    .custom-country-item {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 700;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .custom-country-item:hover {
+      background: var(--turquoise-light);
+      color: var(--primary-turquoise);
+    }
+
+    .flag-img {
+      width: 22px;
+      height: 15px;
+      object-fit: fill;
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .pearl-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-center-badges {
+      display: flex;
+      gap: 10px;
+    }
+
+    .hero-badge-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-royal-search {
+      background: var(--primary-turquoise);
+      color: #ffffff;
+      border: none;
+      padding: 10px 32px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 168, 150, 0.3);
+    }
+
+    .btn-royal-search:hover, .btn-royal-search:active {
+      background: #00c8b3 !important;
+      box-shadow: 0 0 25px rgba(0, 200, 179, 0.9), 0 0 40px rgba(0, 168, 150, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* PROPERTIES SECTION */
+    .properties-section {
+      padding: 35px 20px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      color: var(--dubizzle-navy);
+      border-right: 5px solid var(--primary-turquoise);
+      padding-right: 12px;
+    }
+
+    .bayut-main-content-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 25px;
+      align-items: start;
+    }
+
+    .properties-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .bayut-property-card {
+      background: #ffffff;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .bayut-property-card:hover {
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+      border-color: #cbd5e1;
+    }
+
+    .bayut-property-card.visited-card {
+      background: #fff7ed !important;
+      border: 2px solid #f97316 !important;
+    }
+
+    .card-media-box {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-height: 240px;
+      background: #0f172a;
+      overflow: hidden;
+    }
+
+    .card-media-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      aspect-ratio: 16 / 10;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card-img-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--dubizzle-navy);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      transition: all 0.2s ease;
+    }
+
+    .card-img-arrow.prev { right: 8px; }
+    .card-img-arrow.next { left: 8px; }
+
+    .badge-trucheck-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      background: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 5;
+    }
+
+    .badge-trucheck-tag i {
+      color: var(--accent-green);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .badge-quality-tag {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 5;
+    }
+
+    .btn-card-fav {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #cbd5e1;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 5;
+    }
+
+    .btn-card-fav.active {
+      color: #e11d48;
+      background: #ffffff;
+    }
+
+    .card-info-content {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-top-details { margin-bottom: 10px; }
+
+    .property-price-tag {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--dubizzle-navy);
+      margin-bottom: 2px;
+    }
+
+    .property-title-heading {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .property-specs-list {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .property-type-pill {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .card-broker-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .broker-mini-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .broker-mini-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-turquoise);
+    }
+
+    .broker-mini-name { font-size: 12px; font-weight: 900; color: var(--dubizzle-navy); }
+    .broker-mini-agency { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+
+    /* 🎯 توحيد حجم وأبعاد أزرار كرت العقار وتكبير أيقونة الواتساب */
+    .card-action-buttons { 
+      display: flex; 
+      gap: 8px; 
+      align-items: center; 
+      flex-wrap: nowrap; 
+    }
+
+    .btn-card-cta {
+      height: 38px !important;
+      min-width: 38px !important;
+      padding: 0 14px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+      font-weight: 900 !important;
+      border: none !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      text-decoration: none !important;
+      box-sizing: border-box !important;
+      transition: all 0.2s ease !important;
+      white-space: nowrap !important;
+    }
+
+    .btn-cta-view { background: var(--turquoise-light); color: var(--primary-turquoise); }
+    .btn-cta-view:hover { background: var(--primary-turquoise); color: white; }
+
+    .btn-cta-call { background: var(--primary-turquoise); color: white; }
+    .btn-cta-call:hover { background: var(--primary-turquoise-hover); }
+
+    .btn-cta-whatsapp { 
+      background: #25d366; 
+      color: white; 
+      padding: 0 14px !important; 
+    }
+    
+    .btn-cta-whatsapp i {
+      font-size: 18px !important;
+      line-height: 1 !important;
+    }
+
+    .btn-cta-whatsapp:hover { background: #1eb954; }
+
+    .btn-cta-share { background: var(--gold-bg-light); color: var(--dubizzle-navy); border: 1px solid var(--accent-gold) !important; }
+
+    /* 📢 4. جعل الشريط الجانبي للإعلانات المميزة متجاور وقابل للتمرير المستقل لأسفل */
+    .bayut-sidebar-ads {
+      position: sticky;
+      top: 70px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding-left: 5px;
+      scrollbar-width: thin;
+    }
+
+    .ad-banner-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--dubizzle-border);
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      transition: transform 0.2s;
+    }
+
+    .ad-banner-card:hover { transform: translateY(-3px); }
+
+    .ad-banner-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .ad-banner-body {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .ad-title { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 6px; }
+    .ad-subtitle { font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 12px; }
+    
+    .btn-ad-action {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: var(--dubizzle-navy);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 900;
+      border-radius: 6px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .btn-ad-action:hover { background: var(--primary-turquoise); }
+
+    /* MODALS & POPUPS */
+    .royal-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(25, 32, 56, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .royal-modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--dubizzle-border);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .royal-modal-header {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--accent-gold);
+    }
+
+    .royal-modal-title {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .royal-modal-body {
+      padding: 24px;
+      text-align: right;
+    }
+
+    .royal-link-box {
+      background: var(--gold-bg-light);
+      border: 1px dashed var(--accent-gold);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--dubizzle-navy);
+      word-break: break-all;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 15px;
+      gap: 4px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      font-weight: 800;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Tajawal';
+    }
+
+    .auth-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-turquoise);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* 📱📱 الشريط السفلي المثبت للجوال */
+    .mobile-bottom-app-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #ffffff;
+      border-top: 1px solid var(--dubizzle-border);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      z-index: 9999999;
+      padding: 8px 12px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mob-app-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .mob-app-item.active, .mob-app-item:hover {
+      color: var(--primary-turquoise);
+    }
+
+    .mob-app-item i {
+      font-size: 18px;
+    }
+
+    /* ==================== 📱📱 إصلاح وتنسيق الجوال واللابتوب ==================== */
+    @media (max-width: 992px) {
+      .bayut-main-content-layout {
+        grid-template-columns: 1fr !important;
+      }
+      .bayut-sidebar-ads {
+        position: static;
+        order: 2;
+        max-height: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-bottom-app-bar {
+        display: flex !important;
+      }
+
+      /* إخفاء القائمة العادية من أقصى اليسار في وضع الجوال */
+      .desktop-left-menu-box {
+        display: none !important;
+      }
+
+      /* إظهار قائمة الجوال في أقصى اليسار للجوال فقط */
+      .mobile-hamburger-group {
+        display: inline-block !important;
+      }
+
+      .utility-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 3px 0 !important;
+      }
+
+      .mobile-header-top-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+      }
+
+      .controls-wrapper-center {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 6px !important;
+        margin: 0 !important;
+      }
+
+      .mobile-row-lang-curr, .mobile-row-fav-add {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+
+      .mobile-row-lang-curr .instant-dropdown,
+      .mobile-row-fav-add .btn-fav-nav,
+      .mobile-row-fav-add .btn-add-nav {
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
+
+      .instant-btn, .btn-fav-nav, .btn-add-nav, .custom-country-btn {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+
+      /* 🌐 القوائم المنسدلة للجوال */
+      .instant-menu, .custom-country-menu {
+        position: fixed !important;
+        top: 60px !important;
+        left: 5% !important;
+        right: 5% !important;
+        width: 90vw !important;
+        max-width: 360px !important;
+        margin: 0 auto !important;
+        max-height: 75vh !important;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3) !important;
+        z-index: 9999999 !important;
+      }
+
+      .instant-scroll {
+        max-height: 55vh !important;
+        overflow-y: auto !important;
+      }
+
+      .pearl-inputs-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .bayut-property-card {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+      }
+
+      .card-media-box {
+        width: 100% !important;
+        height: 200px !important;
+        min-height: auto !important;
+        flex-shrink: 0 !important;
+      }
+
+      .card-info-content {
+        width: 100% !important;
+        padding: 14px !important;
+        overflow: hidden !important;
+      }
+
+      .property-title-heading,
+      .broker-mini-name,
+      .broker-mini-agency {
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+      }
+
+      .card-broker-footer {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+
+      .card-action-buttons {
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-content: space-between !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+      }
+
+      .btn-card-cta {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        justify-content: center !important;
+        padding: 0 4px !important;
+        font-size: 10.5px !important;
+        gap: 3px !important;
+        overflow: hidden !important;
+      }
+
+      /* ⬅➡ إظهار أسهم التنقل في شريط تبويبات البحث (للإيجار/الشراء/الجنسية/الاستثمار) */
+      .tabs-wrapper-container {
+        padding: 0 30px !important;
+      }
+
+      .royal-tabs {
+        scroll-behavior: smooth !important;
+      }
+
+      .scroll-arrow {
+        display: flex !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+      }
+
+      .scroll-arrow.right { right: 0 !important; }
+      .scroll-arrow.left { left: 0 !important; }
+    }
+    /* 📌 الشريط العلوي معتدل الجمال (~70px) */
+.aqaratti-instant-utility-bar {
+  min-height: 70px !important;
+  padding: 10px 20px !important;
+}
+
+/* 📌 ترتيب الأزرار الأربعة وتكبير الواتساب ومحاذاتها المباشرة */
+.card-broker-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.card-action-buttons {
+  display: flex !important;
+  gap: 8px !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+}
+
+.btn-card-cta {
+  height: 38px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.btn-cta-whatsapp i {
+  font-size: 18px !important;
+}
+
+/* 🌟 إضاءة أزرار الجنسية والذكاء الاصطناعي بالذهبي والبنفسجي عند اللمس/الضغط/التحديد */
+.hero-badge-btn.gold.active,
+.hero-badge-btn.gold:focus,
+.hero-badge-btn.gold:hover,
+.hero-badge-btn.gold:active {
+  background: linear-gradient(135deg, #d4af37, #f59e0b) !important;
+  border-color: #fef08a !important;
+  color: #192038 !important;
+  box-shadow: 0 0 22px rgba(212, 175, 55, 0.95), 0 0 35px rgba(245, 158, 11, 0.7) !important;
+}
+
+.hero-badge-btn.ai-btn.active,
+.hero-badge-btn.ai-btn:focus,
+.hero-badge-btn.ai-btn:hover,
+.hero-badge-btn.ai-btn:active {
+  background: linear-gradient(135deg, #a855f7, #ec4899) !important;
+  border-color: #f0abfc !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.95), 0 0 35px rgba(236, 72, 153, 0.7) !important;
+}
+
+/* 📢 الشريط الجانبي للإعلانات القابل للتمرير والنزول بمرونة */
+.bayut-sidebar-ads {
+  position: sticky !important;
+  top: 80px !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}
+
+/* 📱 ضبط دقيق لحجم وتنسيق الهيرو وشريط البحث والأزرار في جميع الجوالات */
+@media (max-width: 768px) {
+  .aqaratti-light-hero {
+    padding: 22px 14px 30px 14px !important;
+  }
+  .royal-title {
+    font-size: 21px !important;
+    margin-bottom: 12px !important;
+  }
+  .pearl-search-card {
+    padding: 14px 12px !important;
+  }
+  .royal-tab {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+  .pearl-action-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .hero-center-badges {
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .hero-badge-btn {
+    flex: 1 !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    padding: 9px 6px !important;
+    white-space: nowrap !important;
+  }
+  .btn-royal-search {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+  .brand-text-group {
+    gap: 3px !important;
+  }
+  .arabic-brand { font-size: 17px !important; }
+  .english-brand { font-size: 13px !important; }
+
+  /* 🧩 منع اختفاء جزء من مربع العقار: السماح لأزرار البطاقة الأربعة بالانكماش داخل عرض البطاقة بدل تجاوزه */
+  .bayut-property-card {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .card-action-buttons {
+    gap: 4px !important;
+  }
+  .btn-card-cta {
+    min-width: 0 !important;
+    padding: 0 4px !important;
+    font-size: 10.5px !important;
+    gap: 3px !important;
+    overflow: hidden !important;
+  }
+}
+
+/* 📱 تحسين إضافي للشاشات الصغيرة جداً (أقل من 400px) لتناسب كافة أحجام الجوالات */
+@media (max-width: 400px) {
+  .arabic-brand { font-size: 15px !important; }
+  .english-brand { font-size: 12px !important; }
+  .brand-divider { display: none !important; }
+  .royal-title { font-size: 18px !important; }
+  .property-price-tag { font-size: 18px !important; }
+  .btn-add-nav, .btn-fav-nav {
+    font-size: 10.5px !important;
+    padding: 6px 6px !important;
+  }
+  .hero-badge-btn {
+    font-size: 10px !important;
+    padding: 8px 4px !important;
+  }
+  .card-media-box { height: 170px !important; }
+}
+
+/* 📲 بنر تثبيت تطبيق عقاراتي (PWA) */
+.pwa-install-banner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: linear-gradient(120deg, #00c8b3, #00a896 45%, #d4af37);
+  color: #ffffff;
+  padding: 10px 18px;
+  position: relative;
+  z-index: 100000;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+}
+
+.pwa-install-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pwa-install-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pwa-install-icon img { display: block; width: 22px; height: 22px; }
+
+.pwa-install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.pwa-install-text strong {
+  font-size: 13.5px;
+  font-weight: 900;
+}
+
+.pwa-install-text span {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pwa-install-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pwa-install-btn {
+  background: #ffffff;
+  color: #00796b;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 900;
+  font-size: 12.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.pwa-install-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+
+.pwa-install-close {
+  background: rgba(255,255,255,0.18);
+  color: #ffffff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.pwa-install-close:hover { background: rgba(255,255,255,0.32); }
+
+/* 📱 إظهار إجباري وواضح وأنيق لبنر التثبيت في الشاشات الصغيرة والجوالات: صف للمعلومات وصف كامل العرض لزر التثبيت */
+@media (max-width: 768px) {
+  .pwa-install-banner {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 12px 14px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+  }
+
+  .pwa-install-content {
+    padding-left: 34px;
+    align-items: flex-start;
+  }
+
+  .pwa-install-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .pwa-install-icon img { width: 24px; height: 24px; }
+
+  .pwa-install-text strong {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .pwa-install-text span {
+    display: block;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    font-size: 11.5px;
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .pwa-install-actions {
+    width: 100%;
+  }
+
+  .pwa-install-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 13.5px;
+  }
+
+  .pwa-install-close {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+  }
+}
+
+/* 🚫 إخفاء البنر عند تشغيل الموقع كتطبيق مثبَّت بالفعل (Standalone)، حتى في الشاشات الصغيرة */
+@media (display-mode: standalone) {
+  .pwa-install-banner { display: none !important; }
+}
+
+/* ✋ إخفاء إجباري عبر الإغلاق اليدوي أو بعد التثبيت الفعلي: له الأولوية المطلقة على أي إظهار إجباري أعلاه */
+.pwa-install-banner.pwa-banner-hidden {
+  display: none !important;
+}
+  </style>
+</head>
+<body>
+
+  <!-- 📲 بنر دعوة تثبيت تطبيق عقاراتي (يظهر تلقائياً عند توفر إمكانية التثبيت) -->
+  <div id="pwaInstallBanner" class="pwa-install-banner">
+    <div class="pwa-install-content">
+      <div class="pwa-install-icon"><img src="icons/icon.svg" alt="أيقونة تطبيق عقاراتي"></div>
+      <div class="pwa-install-text">
+        <strong>ثبّت تطبيق عقاراتي على هاتفك</strong>
+        <span>تجربة أسرع وتصفح دون إنترنت، بنقرة واحدة فقط!</span>
+      </div>
+    </div>
+    <div class="pwa-install-actions">
+      <button class="pwa-install-btn" onclick="installAqarattiApp()"><i class="fas fa-download"></i> تثبيت الآن</button>
+      <button class="pwa-install-close" onclick="dismissInstallBanner()" aria-label="إغلاق"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <div id="google_translate_element" style="display:none;"></div>
+
+  <div class="aqaratti-instant-utility-bar">
+    <div class="utility-container">
+      
+      <!-- 📌 1. هيدر الجوال السريع: اللوجو وأيقونة الجوال بجواره -->
+      <div class="mobile-header-top-row">
+        <div class="mobile-logo-menu-group">
+          <a href="index.html" class="brand-logo-royal">
+            <svg class="royal-logo-icon" viewBox="0 0 100 100" width="34" height="34">
+              <defs>
+                <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8b3"/><stop offset="100%" stop-color="#008072"/></linearGradient>
+                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe066"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#997a15"/></linearGradient>
+              </defs>
+              <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
+              <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
+              <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+
+            <div class="brand-text-group">
+              <span class="arabic-brand">عقاراتي</span>
+              <span class="brand-divider">│</span>
+              <span class="english-brand">Aqaratti</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- قائمة الجوال المنسدلة في أقصى اليسار للجوال فقط -->
+        <div class="instant-dropdown mobile-hamburger-group">
+          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownMobile', event)"><i class="fas fa-bars"></i></button>
+          <div class="instant-menu" id="mainMenuDropdownMobile" style="left: 0; right: auto; width: 240px;">
+            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+
+            <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
+            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 📌 2. الأيقونات الخمسة متمركزة في المنتصف تماماً بعيداً عن اسم الموقع -->
+      <div class="controls-wrapper-center">
+        
+        <div class="mobile-row-fav-add">
+          <a href="add-property.html" class="btn-add-nav"><i class="fas fa-plus-circle"></i> الاشتراك وإضافة عقار +</a>
+          <button class="btn-fav-nav" onclick="openFavoritesModal()"><i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span></button>
+        </div>
+
+        <div class="mobile-row-lang-curr">
+          
+          <!-- 🌐 1. أيقونة اختيار الدولة -->
+          <div class="instant-dropdown">
+            <button class="custom-country-btn" onclick="toggleCustomCountryMenu(event)">
+              <span id="selectedCountryLabel" style="display:flex; align-items:center; gap:6px;">
+                <img src="https://flagcdn.com/w40/ae.png" class="flag-img" alt="الإمارات"> الإمارات
+              </span>
+              <i class="fas fa-chevron-down" style="font-size: 10px; color: #94a3b8;"></i>
+            </button>
+
+            <div class="custom-country-menu" id="customCountryList">
+              <div class="custom-country-item" onclick="selectCustomCountry('uae', 'الإمارات', 'https://flagcdn.com/w40/ae.png')"><img src="https://flagcdn.com/w40/ae.png" class="flag-img"> الإمارات</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('saudi', 'السعودية', 'https://flagcdn.com/w40/sa.png')"><img src="https://flagcdn.com/w40/sa.png" class="flag-img"> السعودية</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('egypt', 'مصر', 'https://flagcdn.com/w40/eg.png')"><img src="https://flagcdn.com/w40/eg.png" class="flag-img"> مصر</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('turkey', 'تركيا', 'https://flagcdn.com/w40/tr.png')"><img src="https://flagcdn.com/w40/tr.png" class="flag-img"> تركيا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('qatar', 'قطر', 'https://flagcdn.com/w40/qa.png')"><img src="https://flagcdn.com/w40/qa.png" class="flag-img"> قطر</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('oman', 'عُمان', 'https://flagcdn.com/w40/om.png')"><img src="https://flagcdn.com/w40/om.png" class="flag-img"> عُمان</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('uk', 'بريطانيا', 'https://flagcdn.com/w40/gb.png')"><img src="https://flagcdn.com/w40/gb.png" class="flag-img"> بريطانيا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('usa', 'أمريكا', 'https://flagcdn.com/w40/us.png')"><img src="https://flagcdn.com/w40/us.png" class="flag-img"> أمريكا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('france', 'فرنسا', 'https://flagcdn.com/w40/fr.png')"><img src="https://flagcdn.com/w40/fr.png" class="flag-img"> فرنسا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('spain', 'إسبانيا', 'https://flagcdn.com/w40/es.png')"><img src="https://flagcdn.com/w40/es.png" class="flag-img"> إسبانيا</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('cyprus', 'قبرص', 'https://flagcdn.com/w40/cy.png')"><img src="https://flagcdn.com/w40/cy.png" class="flag-img"> قبرص</div>
+              <div class="custom-country-item" onclick="selectCustomCountry('greece', 'اليونان', 'https://flagcdn.com/w40/gr.png')"><img src="https://flagcdn.com/w40/gr.png" class="flag-img"> اليونان</div>
+            </div>
+          </div>
+
+          <!-- 🌐 2. قائمة اللغات -->
+          <div class="instant-dropdown">
+            <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang">العربية</span></button>
+            <div class="instant-menu search-menu" id="fastLangList">
+              <input type="text" placeholder="ابحث بين 20 لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
+              <div class="instant-scroll" id="fastLangOptions">
+                <a href="javascript:void(0)" onclick="applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('en', 'English', 'ltr')">English</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('fr', 'Français', 'ltr')">Français</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('es', 'Español', 'ltr')">Español</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('de', 'Deutsch', 'ltr')">Deutsch</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('ru', 'Русский', 'ltr')">Русский</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('zh-CN', '中文', 'ltr')">中文</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('tr', 'Türkçe', 'ltr')">Türkçe</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('fa', 'فارسی', 'rtl')">فارسی</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('ur', 'اردو', 'rtl')">اردو</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('hi', 'हिन्दी', 'ltr')">हिन्दी</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('it', 'Italiano', 'ltr')">Italiano</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('pt', 'Português', 'ltr')">Português</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('nl', 'Nederlands', 'ltr')">Nederlands</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('ja', '日本語', 'ltr')">日本語</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('ko', '한국어', 'ltr')">한국어</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('pl', 'Polski', 'ltr')">Polski</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('sv', 'Svenska', 'ltr')">Svenska</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('el', 'Ελληνικά', 'ltr')">Ελληνικά</a>
+                <a href="javascript:void(0)" onclick="applyAILanguage('cs', 'Čeština', 'ltr')">Čeština</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 💰 3. قائمة العملات -->
+          <div class="instant-dropdown">
+            <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)"><i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span></button>
+            <div class="instant-menu" id="fastCurrencyList">
+              <div class="instant-scroll">
+                <a href="javascript:void(0)" onclick="applyCurrency('AED', 'د.إ', 1)">AED (د.إ) - الدرهم الإماراتي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('USD', '$', 0.27)">USD ($) - الدولار الأمريكي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('SAR', 'ر.س', 1.02)">SAR (ر.س) - الريال السعودي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('EGP', 'ج.م', 13.1)">EGP (ج.م) - الجنيه المصري</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('EUR', '€', 0.25)">EUR (€) - اليورو الأوروبي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('GBP', '£', 0.21)">GBP (£) - الجنيه الاسترليني</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('QAR', 'ر.ق', 0.99)">QAR (ر.ق) - الريال القطري</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('KWD', 'د.ك', 0.083)">KWD (د.ك) - الدينار الكويتي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('BHD', 'د.ب', 0.10)">BHD (د.ب) - الدينار البحريني</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('OMR', 'ر.ع', 0.10)">OMR (ر.ع) - الريال العماني</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('TRY', '₺', 8.85)">TRY (₺) - الليرة التركية</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('CAD', 'CA$', 0.37)">CAD (CA$) - الدولار الكندي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('AUD', 'A$', 0.41)">AUD (A$) - الدولار الأسترالي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('CHF', 'CHF', 0.24)">CHF (CHF) - الفرنك السويسري</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('JPY', '¥', 42.5)">JPY (¥) - الين الياباني</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('CNY', '¥', 1.95)">CNY (¥) - اليوان الصيني</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('INR', '₹', 22.8)">INR (₹) - روبية هندية</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('RUB', '₽', 24.5)">RUB (₽) - الروبل الروسي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('MAD', 'د.م.', 2.71)">MAD (د.م.) - الدرهم المغربي</a>
+                <a href="javascript:void(0)" onclick="applyCurrency('JOD', 'د.ا', 0.19)">JOD (د.ا) - الدينار الأردني</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 📌 3. جعل زر القائمة في أقصى يسار النافذة للكمبيوتر فقط -->
+      <div class="desktop-left-menu-box">
+        <div class="instant-dropdown">
+          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownDesktop', event)"><i class="fas fa-bars"></i></button>
+          <div class="instant-menu" id="mainMenuDropdownDesktop" style="left: 0; right: auto; width: 240px;">
+            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+            
+            <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
+            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <section class="aqaratti-light-hero" id="heroSection">
+    <div class="hero-light-container">
+      <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
+
+      <div class="pearl-search-card">
+        
+        <div class="tabs-wrapper-container">
+          <div class="scroll-arrow right" onclick="scrollRoyalTabs(1)"><i class="fas fa-chevron-right"></i></div>
+          <div class="royal-tabs" id="royalTabsBar">
+            <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
+            <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
+            <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
+            <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
+          </div>
+          <div class="scroll-arrow left" onclick="scrollRoyalTabs(-1)"><i class="fas fa-chevron-left"></i></div>
+        </div>
+
+        <div class="pearl-inputs-grid">
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-city"></i> المدينة</span>
+            <select class="royal-select" id="citySelector" onchange="updateLandmarksByCity(this.value)"></select>
+          </div>
+
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-search-location"></i> المنطقة / مشروع</span>
+            <input type="text" id="searchInput" placeholder="مثال: داون تاون..." class="royal-input">
+          </div>
+
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-wallet"></i> السعر الأقصى</span>
+            <input type="number" id="maxPriceInput" placeholder="ادخل السعر..." class="royal-input">
+          </div>
+
+          <div class="royal-input-box">
+            <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
+            <select class="royal-select" id="landmarkSelector">
+              <option value="">اختر المعلم القريب...</option>
+              <option value="mosque">🕌 قريب من مسجد</option>
+              <option value="church">⛪ قريب من كنيسة</option>
+              <option value="school">🏫 قريب من مدرسة</option>
+              <option value="hospital">🏥 قريب من مستشفى</option>
+              <option value="mall">🛒 قريب من مول تجاري</option>
+              <option value="supermarket">🥦 قريب من سوبرماركت</option>
+              <option value="gym">🏋️ قريب من نادي رياضي</option>
+              <option value="park">🌳 قريب من حديقة عائلية</option>
+              <option value="pharmacy">💊 قريب من صيدلية</option>
+              <option value="clinic">🩺 قريب من مستوصف طبي</option>
+              <option value="beach">🏖️ قريب من شاطئ البحر</option>
+              <option value="airport">✈️ قريب من المطار</option>
+              <option value="metro">🚇 قريب من محطة مترو</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pearl-action-bar">
+          <div class="hero-center-badges">
+            <button class="hero-badge-btn gold" onclick="triggerGoldenPassportFilter()"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
+            <button class="hero-badge-btn ai-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
+          </div>
+          <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📊 قسم المحتوى التفاعلي (عرض العقارات على اليمين + الإعلانات على اليسار) -->
+  <section class="properties-section">
+    <h2 class="section-title" id="resultsSectionTitle">العقارات المتاحة حصرياً</h2>
+    
+    <div class="bayut-main-content-layout">
+
+      <!-- 🏢 العمود الأكبر على اليمين: قائمة العقارات بتصميم بيوت -->
+      <div class="properties-grid" id="properties-container"></div>
+
+      <!-- 📢 العمود الأيسر: الشريط الجانبي للإعلانات المميزة والرعايات الحصرية (قابل للتمرير والنزول) -->
+      <div class="bayut-sidebar-ads">
+        
+        <!-- إعلان بن غاطي مرسيدس بنز -->
+        <div class="ad-banner-card">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=600" class="ad-banner-img" alt="إعلان مرسيدس بنز ريزيدنس">
+          <div class="ad-banner-body">
+            <div class="ad-title">Mercedes-Benz Places</div>
+            <div class="ad-subtitle">أول مدينة في العالم بتوقيع مرسيدس بنز 🏎️</div>
+            <a href="property-details.html?id=101" class="btn-ad-action">استفسر الآن ❯</a>
+          </div>
+        </div>
+
+        <!-- إعلان الاستثمار الحصري -->
+        <div class="ad-banner-card" style="background: linear-gradient(135deg, #192038, #0f172a); color: white;">
+          <div class="ad-banner-body" style="color:white;">
+            <i class="fas fa-crown" style="font-size: 28px; color: var(--accent-gold); margin-bottom: 8px;"></i>
+            <div class="ad-title" style="color:white;">عقارات الإقامة الذهبية</div>
+            <div class="ad-subtitle" style="color:#cbd5e1;">احصل على الإقامة الدائمة والجنسية عبر الاستثمار العقاري الموثوق</div>
+            <a href="javascript:void(0)" onclick="triggerGoldenPassportFilter()" class="btn-ad-action" style="background: var(--accent-gold); color: var(--dubizzle-navy);">استكشف الفرص 💎</a>
+          </div>
+        </div>
+
+        <!-- إعلان العقارات الدولية -->
+        <div class="ad-banner-card">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600" class="ad-banner-img" alt="استثمار عقاري دولي">
+          <div class="ad-banner-body">
+            <div class="ad-title">استثمار عقاري في لندن وباريس</div>
+            <div class="ad-subtitle">فرص عائد استثماري متزايد يصل إلى 10% 📈</div>
+            <a href="javascript:void(0)" onclick="selectCustomCountry('uk', 'بريطانيا', 'https://flagcdn.com/w40/gb.png')" class="btn-ad-action">شاهد مشاريع أوروبا ❯</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 📱📱 الشريط السفلي المثبت للجوال -->
+  <div class="mobile-bottom-app-bar">
+    <a href="index.html" class="mob-app-item active">
+      <i class="fas fa-home"></i>
+      <span>الرئيسية</span>
+    </a>
+    <button class="mob-app-item" onclick="openFavoritesModal()">
+      <i class="fas fa-heart"></i>
+      <span>المفضلة</span>
+    </button>
+    <a href="add-property.html" class="mob-app-item" style="color:var(--primary-turquoise);">
+      <i class="fas fa-plus-circle" style="font-size:22px;"></i>
+      <span>إضافة عقار</span>
+    </a>
+    <button class="mob-app-item" onclick="openAISearchModal()">
+      <i class="fas fa-brain"></i>
+      <span>Aqaratti AI</span>
+    </button>
+    <button class="mob-app-item" onclick="openLoginModal()">
+      <i class="fas fa-user"></i>
+      <span>حسابي</span>
+    </button>
+  </div>
+
+  <!-- 📞 النافذة المنبثقة الفاخرة لكشف هاتف وإيميل الوسيط -->
+  <div class="royal-modal-overlay" id="phoneCallModal">
+    <div class="royal-modal-card" style="text-align:center;">
+      <div style="padding: 25px;">
+        <i class="fas fa-phone-volume" style="font-size:45px; color:var(--primary-turquoise); margin-bottom:12px;"></i>
+        <h3 style="font-size:20px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:6px;" id="modalBrokerTitle">التواصل المباشر مع الوسيط</h3>
+        <p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:20px;">يمكنك الاتصال المباشر أو نسَخ الرقم بالتفاصيل التالية:</p>
+
+        <div style="background:#f1f5f9; border:1px solid var(--dubizzle-border); padding:15px; border-radius:12px; margin-bottom:15px;">
+          <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:4px;">رقم المالك / الوسيط المباشر:</div>
+          <div style="font-size:24px; font-weight:900; color:var(--primary-turquoise);" id="modalBrokerPhoneNum">0501234567</div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <a id="modalDirectCallLink" href="tel:0501234567" class="btn-card-cta btn-cta-call" style="flex:1; justify-content:center; padding:12px;">
+            <i class="fas fa-phone-alt"></i> اتصل الآن
+          </a>
+          <button class="btn-card-cta btn-cta-view" style="flex:1; justify-content:center; padding:12px;" onclick="copyPhoneNumToClipboard()">
+            <i class="fas fa-copy"></i> نسخ الرقم
+          </button>
+        </div>
+        <button style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:14px; cursor:pointer;" onclick="closeRoyalModal('phoneCallModal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="affiliateInputModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header">
+        <i class="fas fa-coins"></i>
+        <div class="royal-modal-title">توليد رابط التسويق بالعمولة</div>
+      </div>
+      <div class="royal-modal-body">
+        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:15px;">أدخل رقم هاتفك أو اسمك التجاري لربط الاستفسارات واحتساب عمولتك:</p>
+        <input type="text" id="affiliateRefInput" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:8px; font-weight:bold; text-align:center; font-size:15px; margin-bottom:15px;" placeholder="رقم الهاتف أو الاسم">
+        <div style="display:flex; gap:10px;">
+          <button style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="confirmGenerateLink()"><i class="fas fa-magic"></i> إنشاء الرابط الآن</button>
+          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateInputModal')">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="affiliateSuccessModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #064e3b, #047857);">
+        <i class="fas fa-check-circle" style="color: #6ee7b7;"></i>
+        <div class="royal-modal-title">تم إنشاء رابطك بنجاح!</div>
+      </div>
+      <div class="royal-modal-body">
+        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:12px;">شارك هذا الرابط في مجموعات الواتساب واكسب عمولتك:</p>
+        <div class="royal-link-box" id="generatedLinkText">...</div>
+        <div style="display:flex; gap:10px;">
+          <button style="flex:1; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="copyGeneratedLink()"><i class="fas fa-copy"></i> نسخ الرابط ومشاركته</button>
+          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateSuccessModal')">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="serviceModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header"><i class="fas fa-info-circle"></i><div class="royal-modal-title" id="serviceModalTitle">مركز الخدمات</div></div>
+      <div class="royal-modal-body">
+        <p id="serviceModalContent" style="font-size:14px; color:#475569; line-height:1.6; font-weight:bold; text-align:center; margin-bottom:20px;"></p>
+        <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('serviceModal')">حسناً</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="favoritesModal">
+    <div class="royal-modal-card" style="max-width: 600px;">
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #881337, #be123c);"><i class="fas fa-heart" style="color: #fecdd3;"></i><div class="royal-modal-title">قائمة المفضلة</div></div>
+      <div class="royal-modal-body">
+        <div id="favoritesListContainer" style="max-height: 350px; overflow-y: auto;"></div>
+        <button style="width:100%; margin-top:15px; padding:10px; background:#f1f5f9; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('favoritesModal')">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="aiSearchModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);"><i class="fas fa-robot" style="color: #c084fc;"></i><div class="royal-modal-title">البحث بالذكاء الاصطناعي Aqaratti AI</div></div>
+      <div class="royal-modal-body">
+        <textarea id="aiPromptInput" style="width:100%; height:80px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب مواصفات عقارك أو تحدث بالصوت (مثال: شقة للبيع في دبي بنفس مواصفات بن غاطي)..."></textarea>
+        
+        <button id="voiceBtn" onclick="startVoiceRecognition()" style="width:100%; margin-top:10px; background:#f1f5f9; color:#1e293b; border:1px solid #cbd5e1; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fas fa-microphone" id="micIcon" style="color:var(--primary-turquoise); font-size:18px;"></i>
+          <span id="voiceStatusText">اضغط هنا للتحدث بالصوت 🎙️</span>
+        </button>
+
+        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث فوراً</button>
+        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="royal-modal-overlay" id="loginModal">
+    <div class="royal-modal-card">
+      <div class="royal-modal-header"><i class="fas fa-user-shield"></i><div class="royal-modal-title">دخول أو تسجيل جديد</div></div>
+      <div class="royal-modal-body">
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+          <button class="auth-tab-btn" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
+        </div>
+        <div id="loginAuthForm">
+          <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني أو رقم الهاتف">
+          <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
+          <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">تسجيل الدخول</button>
+        </div>
+        <div id="registerAuthForm" style="display: none;">
+          <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="الاسم الكامل">
+          <input type="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
+          <input type="tel" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف">
+          <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
+          <button style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنشاء الحساب بنجاح!'); closeRoyalModal('loginModal');">إنشاء الحساب الآن</button>
+        </div>
+        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let visitedProperties = JSON.parse(localStorage.getItem('aqaratti_visited') || '[]');
+    let favoriteProperties = JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
+    let activePropertyForAffiliate = '';
+    let loadedScrapedList = [];
+    let currentTabType = 'sale';
+    let propertyCardImageIndices = {};
+    let activeCallPhone = "0501234567";
+
+    /* 📌 مطابقة مصفوفة بيانات العقارات والوسيط مع صفحة تفاصيل العقار */
+    const rawPropertiesData = [
+      {
+        id: "101",
+        title: "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
+        priceAED: 645000,
+        dealType: "sale",
+        isGolden: true,
+        roiPercent: "8.5%",
+        bedrooms: 1,
+        bathrooms: 1,
+        area_m2: 336,
+        isVerified: true,
+        has3DTour: true,
+        propertyType: "شقة سكنية / استوديو",
+        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200",
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600",
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600"
+        ],
+        commission: "1.5%",
+        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", email: "ibrahim.broker@aqaratti.com", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
+      },
+      {
+        id: "102",
+        title: "فيلا شاطئية مستقلة مع واجهة مائية في نخلة جميرا",
+        priceAED: 18500000,
+        dealType: "sale",
+        isGolden: true,
+        roiPercent: "9.2%",
+        bedrooms: 6,
+        bathrooms: 7,
+        area_m2: 650,
+        isVerified: true,
+        has3DTour: true,
+        propertyType: "فيلا مستقلة",
+        image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1200",
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600",
+          "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=600"
+        ],
+        commission: "2.0%",
+        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", email: "sara.falasi@damacproperties.com", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
+      },
+      {
+        id: "103",
+        title: "شقة مودرن مفروشة بالكامل للإيجار السنوي - دبي مارينا",
+        priceAED: 120000,
+        dealType: "rent",
+        isGolden: false,
+        roiPercent: "6.0%",
+        bedrooms: 2,
+        bathrooms: 2,
+        area_m2: 130,
+        isVerified: true,
+        has3DTour: false,
+        propertyType: "شقة سكنية",
+        image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+          "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600"
+        ],
+        commission: "5%",
+        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433", email: "mazen.khaledi@aqaratti.com", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
+      }
+    ];
+
+    function toggleCustomCountryMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('customCountryList');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function selectCustomCountry(key, name, flagUrl) {
+      document.getElementById('selectedCountryLabel').innerHTML = `<img src="${flagUrl}" class="flag-img" alt="${name}"> ${name}`;
+      document.getElementById('customCountryList').style.display = 'none';
+      updateCitiesAndBackground(key);
+    }
+
+    function switchAuthTab(type) {
+      const loginForm = document.getElementById('loginAuthForm');
+      const registerForm = document.getElementById('registerAuthForm');
+      const btnLogin = document.getElementById('tabLogin');
+      const btnRegister = document.getElementById('tabRegister');
+
+      if (type === 'login') {
+        loginForm.style.display = 'block'; registerForm.style.display = 'none';
+        btnLogin.classList.add('active'); btnRegister.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none'; registerForm.style.display = 'block';
+        btnRegister.classList.add('active'); btnLogin.classList.remove('active');
+      }
+    }
+
+    function switchRoyalTab(el) {
+      document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
+      el.classList.add('active');
+      currentTabType = el.getAttribute('data-type');
+    }
+
+    function scrollRoyalTabs(direction) {
+      const el = document.getElementById('royalTabsBar');
+      if (el) el.scrollBy({ left: direction * 140, behavior: 'smooth' });
+    }
+
+    function triggerGoldenPassportFilter() {
+      const goldenTab = document.querySelector('.royal-tab[data-type="golden"]');
+      if (goldenTab) switchRoyalTab(goldenTab);
+    }
+
+    function markPropertyAsVisited(propId) {
+      if (!visitedProperties.includes(propId.toString())) {
+        visitedProperties.push(propId.toString());
+        localStorage.setItem('aqaratti_visited', JSON.stringify(visitedProperties));
+      }
+      window.location.href = `property-details.html?id=${propId}`;
+    }
+
+    function toggleFavorite(propId, event) {
+      if (event) event.stopPropagation();
+      const idStr = propId.toString();
+      const index = favoriteProperties.indexOf(idStr);
+      if (index === -1) {
+        favoriteProperties.push(idStr);
+      } else {
+        favoriteProperties.splice(index, 1);
+      }
+      localStorage.setItem('aqaratti_favorites', JSON.stringify(favoriteProperties));
+      updateFavBadgeCount();
+      fetchProperties();
+    }
+
+    function updateFavBadgeCount() {
+      document.getElementById('favBadge').innerText = favoriteProperties.length;
+    }
+
+    function openAffiliateModal(propId) {
+      activePropertyForAffiliate = propId;
+      document.getElementById('affiliateRefInput').value = '';
+      document.getElementById('affiliateInputModal').style.display = 'flex';
+    }
+
+    function confirmGenerateLink() {
+      const ref = document.getElementById('affiliateRefInput').value.trim() || 'مباشر';
+      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+      const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
+      const broker = property.broker || { name: "الوسيط المعتمد", agency: "شركة عقارية معتمدة" };
+      const propertyUrl = `https://spacem-6.github.io/Aqaratti/property-details.html?id=${property.id}&ref=${ref}`;
+
+      const shareText = 
+`🏡 *فرصة عقارية ممتازة عبر منصة Aqaratti* 🏡
+
+📌 *العقار:* ${property.title}
+💰 *السعر:* ${property.priceAED.toLocaleString()} AED
+📐 *المساحة:* ${property.area_m2} م² | 🛏️ ${property.bedrooms} غرف
+
+👤 *بيانات الوسيط المعلن الأصلي:*
+• الاسم: ${broker.name}
+• الشركة: ${broker.agency || "شركة عقارية معتمدة"}
+
+🤝 *بيانات المسوق المشارك للرابط (صاحب العمولة):*
+• كود المرجع (Ref): ${ref}
+• رقم التواصل مع المسوق: ${ref}
+• نسبة العمولة المستحقة: ${property.commission || "1.5%"}
+
+🔗 *رابط المعاينة والتفاصيل الكاملة:*
+${propertyUrl}`;
+
+      closeRoyalModal('affiliateInputModal');
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+    }
+
+    function copyGeneratedLink() {
+      const linkText = document.getElementById('generatedLinkText').innerText;
+      navigator.clipboard.writeText(linkText);
+      alert('🎉 تم نسخ رابط العمولة الخاص بك بنجاح!');
+      closeRoyalModal('affiliateSuccessModal');
+    }
+
+    function openBrokerCallModal(brokerName, phoneNum) {
+      activeCallPhone = phoneNum || "0501234567";
+      document.getElementById('modalBrokerTitle').innerText = `التواصل مع ${brokerName || 'الوسيط'}`;
+      document.getElementById('modalBrokerPhoneNum').innerText = activeCallPhone;
+      document.getElementById('modalDirectCallLink').href = `tel:${activeCallPhone}`;
+      document.getElementById('phoneCallModal').style.display = 'flex';
+    }
+
+    function copyPhoneNumToClipboard() {
+      navigator.clipboard.writeText(activeCallPhone);
+      alert('🎉 تم نسخ رقم الهاتف بنجاح!');
+    }
+
+    function showServiceModal(type) {
+      const modal = document.getElementById('serviceModal');
+      const title = document.getElementById('serviceModalTitle');
+      const content = document.getElementById('serviceModalContent');
+
+      if (type === 'market') {
+        title.innerText = "تقرير مؤشرات السوق";
+        content.innerText = "تحليل حقيقي لأسعار المتر وعائد الاستثمار (ROI).";
+      } else if (type === 'guides') {
+        title.innerText = "المرشدون العقاريون";
+        content.innerText = "تواصل مع نخبة الخبراء المعتمدين للاستشارات العقارية.";
+      } else if (type === 'plans') {
+        title.innerText = "مخططات الطوابق 3D";
+        content.innerText = "جولة افتراضية ثلاثية الأبعاد تفاعلية لمساحات العقار.";
+      } else if (type === 'agents') {
+        title.innerText = "بوابة الوكلاء";
+        content.innerText = "لوحة تحكم احترافية لإدارة المشاريع والعمولات.";
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function applyAILanguage(langCode, langName, dir) {
+      localStorage.setItem('aqaratti_lang_name', langName);
+      localStorage.setItem('aqaratti_lang_dir', dir);
+
+      const btnLabel = document.getElementById('currentLang');
+      if (btnLabel) btnLabel.innerText = langName;
+      document.documentElement.setAttribute('dir', dir);
+
+      document.cookie = "googtrans=/ar/" + langCode + "; path=/;";
+      document.cookie = "googtrans=/ar/" + langCode + "; path=/; domain=" + window.location.hostname;
+
+      const translateCombo = document.querySelector('.goog-te-combo');
+      if (translateCombo) {
+        translateCombo.value = langCode;
+        translateCombo.dispatchEvent(new Event('change'));
+      } else {
+        window.location.hash = '#googtrans(ar|' + langCode + ')';
+        window.location.reload();
+      }
+    }
+
+    function restoreSavedLanguageLabel() {
+      const savedName = localStorage.getItem('aqaratti_lang_name');
+      const savedDir = localStorage.getItem('aqaratti_lang_dir');
+      if (savedName) {
+        const btnLabel = document.getElementById('currentLang');
+        if (btnLabel) btnLabel.innerText = savedName;
+      }
+      if (savedDir) {
+        document.documentElement.setAttribute('dir', savedDir);
+      }
+    }
+
+    const countryData = {
+      'uae': { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان'] },
+      'saudi': { bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600', cities: ['مكة المكرمة', 'المدينة المنورة', 'الرياض', 'جدة', 'الخبر'] },
+      'egypt': { bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600', cities: ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد'] },
+      'turkey': { bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600', cities: ['إسطنبول', 'أنطاليا', 'بورصة'] },
+      'qatar': { bg: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1600', cities: ['الدوحة', 'اللؤلؤة', 'لوسيل'] },
+      'oman': { bg: 'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=1600', cities: ['مسقط', 'صلالة'] },
+      'uk': { bg: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1600', cities: ['لندن', 'مانشستر'] },
+      'usa': { bg: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1600', cities: ['نيويورك', 'ميامي'] },
+      'france': { bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1600', cities: ['باريس', 'كان'] },
+      'spain': { bg: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=1600', cities: ['مدريد', 'برشلونة'] },
+      'cyprus': { bg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1600', cities: ['ليماسول', 'لارنكا'] },
+      'greece': { bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1600', cities: ['أثينا', 'سانتوريني'] }
+    };
+
+    function updateCitiesAndBackground(countryKey) {
+      const citySelect = document.getElementById('citySelector');
+      const hero = document.getElementById('heroSection');
+      const data = countryData[countryKey] || { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['المدينة الرئيسية'] };
+      
+      citySelect.innerHTML = '<option value="all">كل المدن</option>';
+      data.cities.forEach(city => {
+        citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+      });
+      hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${data.bg}')`;
+      updateLandmarksByCity(citySelect.value);
+    }
+
+    function updateLandmarksByCity(selectedCity) {
+      const landmarkSelect = document.getElementById('landmarkSelector');
+      let optionsHTML = `<option value="">اختر المعلم القريب...</option>`;
+
+      if (selectedCity === 'مكة المكرمة') {
+        optionsHTML += `<option value="makkah_haram" selected>🕋 قريب من الحرم المكي الشريف</option>`;
+      } else if (selectedCity === 'المدينة المنورة') {
+        optionsHTML += `<option value="madinah_haram" selected>🕌 قريب من الحرم النبوي الشريف</option>`;
+      }
+
+      optionsHTML += `
+        <option value="mosque">🕌 قريب من مسجد</option>
+        <option value="church">⛪ قريب من كنيسة</option>
+        <option value="school">🏫 قريب من مدرسة</option>
+        <option value="hospital">🏥 قريب من مستشفى</option>
+        <option value="mall">🛒 قريب من مول تجاري</option>
+        <option value="supermarket">🥦 قريب من سوبرماركت</option>
+        <option value="gym">🏋️ قريب من نادي رياضي</option>
+        <option value="park">🌳 قريب من حديقة عائلية</option>
+        <option value="pharmacy">💊 قريب من صيدلية</option>
+        <option value="clinic">🩺 قريب من مستوصف طبي</option>
+        <option value="beach">🏖️ قريب من شاطئ البحر</option>
+        <option value="airport">✈️ قريب من المطار</option>
+        <option value="metro">🚇 قريب من محطة مترو</option>
+      `;
+      landmarkSelect.innerHTML = optionsHTML;
+    }
+
+    let currentCurrencySymbol = 'AED';
+    let currentExchangeRate = 1;
+
+    function applyCurrency(code, symbol, rate) {
+      currentCurrencySymbol = symbol;
+      currentExchangeRate = rate;
+      document.getElementById('currentCurrency').innerText = `${code} (${symbol})`;
+      document.getElementById('fastCurrencyList').style.display = 'none';
+      fetchProperties();
+    }
+
+    function navigateCardImage(propId, direction, imagesArrayJson, event) {
+      if (event) event.stopPropagation();
+      
+      const imagesList = JSON.parse(decodeURIComponent(imagesArrayJson));
+      if (!imagesList || imagesList.length <= 1) return;
+
+      if (!propertyCardImageIndices[propId]) {
+        propertyCardImageIndices[propId] = 0;
+      }
+
+      if (direction === 'next') {
+        propertyCardImageIndices[propId] = (propertyCardImageIndices[propId] + 1) % imagesList.length;
+      } else if (direction === 'prev') {
+        propertyCardImageIndices[propId] = (propertyCardImageIndices[propId] - 1 + imagesList.length) % imagesList.length;
+      }
+
+      const newImgUrl = imagesList[propertyCardImageIndices[propId]];
+      const targetImgEl = document.getElementById(`card-img-${propId}`);
+      if (targetImgEl) {
+        targetImgEl.src = newImgUrl;
+      }
+    }
+
+    /* 📌 دالة حفظ وتمرير بيانات العقار والوسيط بصفحة التفاصيل */
+function goToPropertyDetails(propId) {
+  const allProps = [...rawPropertiesData, ...loadedScrapedList];
+  const selectedProp = allProps.find(p => p.id.toString() === propId.toString()) || allProps[0];
+  
+  // حفظ بيانات العقار والوسيط بالذاكرة لصفحة التفاصيل
+  localStorage.setItem('aqaratti_selected_property', JSON.stringify(selectedProp));
+  window.location.href = `property-details.html?id=${propId}`;
+}
+function renderPropertiesList(list) {
+  const container = document.getElementById('properties-container');
+  container.innerHTML = '';
+  if (list && list.length > 0) {
+    list.forEach((prop, index) => {
+      const isVisited = visitedProperties.includes(prop.id.toString());
+      const isFav = favoriteProperties.includes(prop.id.toString());
+      const convertedPrice = Math.round((prop.priceAED || prop.price || 0) * currentExchangeRate);
+      
+      const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+      localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
+
+      /* 📌 جلب ومطابقة بيانات الوسيط الخاصة بهذا العقار تحديداً */
+      const brokerInfo = prop.broker || { 
+        brokerId: "b1", 
+        name: "إبراهيم عبد العاطي إبراهيم", 
+        agency: "سكويا العقارية SEQUOIA", 
+        phone: "0501234567", 
+        email: "ibrahim.broker@aqaratti.com",
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" 
+      };
+
+      const brokerProfileUrl = `broker-profile.html?id=${brokerInfo.brokerId || 'b1'}&name=${encodeURIComponent(brokerInfo.name)}&agency=${encodeURIComponent(brokerInfo.agency)}&phone=${brokerInfo.phone}&avatar=${encodeURIComponent(brokerInfo.avatar)}`;
+
+      const cardHTML = `
+        <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
+          <div class="card-media-box">
+            <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" onclick="goToPropertyDetails('${prop.id}')">
+            <span class="badge-trucheck-tag"><i class="fas fa-check"></i></span>
+            <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
+            <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)"><i class="fas fa-heart"></i></button>
+          </div>
+
+          <div class="card-info-content">
+            <div class="card-top-details">
+              <div class="property-price-tag">AED ${convertedPrice.toLocaleString()}</div>
+              <h3 class="property-title-heading" onclick="goToPropertyDetails('${prop.id}')">${prop.title}</h3>
+              <div class="property-specs-list">
+                <span><i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${prop.bedrooms} غرف نوم</span>
+                <span>│</span>
+                <span><i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${prop.bathrooms || 1} حمام</span>
+                <span>│</span>
+                <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> ${prop.area_m2} قدم مربع</span>
+              </div>
+              <span class="property-type-pill">${prop.propertyType || 'شقة سكنية / استوديو'}</span>
+            </div>
+
+            <div class="card-broker-footer">
+              <a href="${brokerProfileUrl}" class="broker-mini-profile">
+                <img src="${brokerInfo.avatar}" class="broker-mini-avatar" alt="${brokerInfo.name}">
+                <div>
+                  <div class="broker-mini-name">${brokerInfo.name}</div>
+                  <div class="broker-mini-agency">${brokerInfo.agency}</div>
+                </div>
+              </a>
+
+              <div class="card-action-buttons">
+                <button class="btn-card-cta btn-cta-share" onclick="openAffiliateModal('${prop.id}')"><i class="fas fa-share-alt"></i> عمولة 💰</button>
+                <a href="javascript:void(0)" onclick="goToPropertyDetails('${prop.id}')" class="btn-card-cta btn-cta-view"><i class="fas fa-arrow-left"></i> التفاصيل</a>
+                <button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${brokerInfo.name}', '${brokerInfo.phone}')"><i class="fas fa-phone-alt"></i> اتصل</button>
+                <a href="https://api.whatsapp.com/send?phone=${(brokerInfo.phone || '0501234567').replace(/^0/, '971')}" target="_blank" class="btn-card-cta btn-cta-whatsapp"><i class="fab fa-whatsapp"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.innerHTML += cardHTML;
+
+      /* إدراج إعلان كل 5 عقارات */
+      if ((index + 1) % 5 === 0) {
+        container.innerHTML += `
+          <div style="background: linear-gradient(135deg, #0f172a, #192038); color: white; padding: 18px; border-radius: 12px; border: 2px solid var(--accent-gold); text-align: center; margin: 10px 0;">
+            <h3 style="font-size: 16px; color: var(--accent-gold); font-weight: 900;"><i class="fas fa-globe-europe"></i> مشاريع الاستثمار الدولي للإقامة الذهبية</h3>
+            <p style="font-size: 12px; color: #e2e8f0; margin: 6px 0;">فرص ممتازة لتملك العقارات في أوروبا بعائد استثماري مضمون!</p>
+            <button onclick="executeSearch()" style="background: var(--accent-gold); color: #192038; font-weight: 900; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 12px;">استكشف العروض الان ❯</button>
+          </div>
+        `;
+      }
+    });
+  } else {
+    container.innerHTML = `<div style="text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث.</div>`;
+  }
+}
+
+    async function fetchProperties() {
+      try {
+        const response = await fetch('./properties.json?v=' + Date.now());
+        const scrapedData = await response.json();
+        if (scrapedData && scrapedData.length > 0) {
+          loadedScrapedList = scrapedData;
+          renderPropertiesList([...rawPropertiesData, ...scrapedData]);
+        } else {
+          renderPropertiesList(rawPropertiesData);
+        }
+      } catch (err) {
+        renderPropertiesList(rawPropertiesData);
+      }
+    }
+
+    function openAISearchModal() { document.getElementById('aiSearchModal').style.display = 'flex'; }
+    
+    function startVoiceRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("متصفحك لا يدعم خاصية التحدث الصوتي المباشر، يمكنك كتابة طلبك بالكلمات.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA';
+      const statusText = document.getElementById('voiceStatusText');
+      const micIcon = document.getElementById('micIcon');
+
+      statusText.innerText = "جاري الاستماع إليك... تحدث الآن";
+      micIcon.style.color = "#e11d48";
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('aiPromptInput').value = transcript;
+        statusText.innerText = "تم التقاط صوتك بنجاح! ✨";
+        micIcon.style.color = "var(--primary-turquoise)";
+      };
+
+      recognition.onerror = () => {
+        statusText.innerText = "تعذر التقط الصوت، أعد المحاولة.";
+        micIcon.style.color = "var(--primary-turquoise)";
+      };
+    }
+
+    /* 🤖 2. تفعيل دالة البحث بالذكاء الاصطناعي للتصفية المباشرة فوراً */
+    function executeAISearch() {
+      const query = (document.getElementById('aiPromptInput').value || '').trim().toLowerCase();
+      if (!query) {
+        alert('يرجى كتابة أو التحدث بمواصفات العقار الذي تبحث عنه أولاً!');
+        return;
+      }
+
+      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+
+      const filtered = allProps.filter(p => {
+        const fullText = `${p.title} ${p.description || ''} ${p.propertyType || ''} ${p.dealType || ''}`.toLowerCase();
+        const words = query.split(' ');
+        return words.some(w => w.length > 2 && fullText.includes(w));
+      });
+
+      closeRoyalModal('aiSearchModal');
+
+      if (filtered.length > 0) {
+        renderPropertiesList(filtered);
+        document.getElementById('resultsSectionTitle').innerText = `🤖 نتائج البحث بالذكاء الاصطناعي بناءً على: "${query}"`;
+      } else {
+        renderPropertiesList(allProps);
+        alert(`🤖 تم تحليل طلبك: "${query}". عرضنا لك أفضل العروض الحصرية القريبة من طلبك!`);
+      }
+
+      const propSection = document.querySelector('.properties-section');
+      if (propSection) propSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function executeSearch() {
+      const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
+      const selectedCity = document.getElementById('citySelector').value;
+
+      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+
+      const filtered = allProps.filter(p => {
+        let matchesTab = true;
+        if (currentTabType === 'sale') matchesTab = (p.dealType === 'sale' || !p.dealType);
+        else if (currentTabType === 'rent') matchesTab = (p.dealType === 'rent');
+        else if (currentTabType === 'golden') matchesTab = (p.isGolden === true);
+        else if (currentTabType === 'roi') matchesTab = (parseFloat(p.roiPercent || '0') >= 7.0);
+
+        const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
+        const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice;
+        const matchesCity = !selectedCity || selectedCity === 'all' || (p.city && p.city.includes(selectedCity));
+        return matchesTab && matchesKeyword && matchesPrice && matchesCity;
+      });
+
+      renderPropertiesList(filtered);
+
+      const titleEl = document.getElementById('resultsSectionTitle');
+      if (currentTabType === 'sale') titleEl.innerText = 'عقارات مخصصة للشراء 🔑';
+      else if (currentTabType === 'rent') titleEl.innerText = 'عقارات مخصصة للإيجار 🏢';
+      else if (currentTabType === 'golden') titleEl.innerText = 'عقارات مؤهلة للإقامة الذهبية والجنسية 🏆';
+      else if (currentTabType === 'roi') titleEl.innerText = 'أعلى فرص الاستثمار العقاري عائداً (ROI) 📈';
+
+      const propSection = document.querySelector('.properties-section');
+      if (propSection) {
+        propSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function openInstantDropdown(menuId, event) {
+      if (event) event.stopPropagation();
+      const targetMenu = document.getElementById(menuId);
+      const isVisible = targetMenu.style.display === 'block';
+      document.querySelectorAll('.instant-menu, .custom-country-menu').forEach(m => m.style.display = 'none');
+      if (!isVisible) targetMenu.style.display = 'block';
+    }
+
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeRoyalModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      restoreSavedLanguageLabel();
+      updateCitiesAndBackground('uae');
+      updateFavBadgeCount();
+      fetchProperties();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.instant-dropdown') && !e.target.closest('.royal-input-box')) {
+        document.querySelectorAll('.instant-menu, .custom-country-menu').forEach(m => m.style.display = 'none');
+      }
+    });
+
+    // ==================== 📲 تطبيق الويب التقدمي (PWA): تسجيل الـ Service Worker وبنر التثبيت ====================
+    let deferredInstallPrompt = null;
+    const PWA_DISMISS_KEY = 'aqaratti_pwa_banner_dismissed_at';
+    const PWA_DISMISS_DAYS = 7;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('✅ تم تسجيل Service Worker لعقاراتي بنجاح:', reg.scope))
+          .catch((err) => console.warn('⚠️ تعذر تسجيل Service Worker:', err));
+      });
+    }
+
+    function isInstallBannerSnoozed() {
+      const dismissedAt = localStorage.getItem(PWA_DISMISS_KEY);
+      if (!dismissedAt) return false;
+      const daysPassed = (Date.now() - Number(dismissedAt)) / (1000 * 60 * 60 * 24);
+      return daysPassed < PWA_DISMISS_DAYS;
+    }
+
+    function isRunningAsInstalledApp() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function showInstallBanner() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (!banner || isRunningAsInstalledApp()) return;
+      banner.classList.remove('pwa-banner-hidden');
+      banner.style.display = 'flex';
+    }
+
+    function hideInstallBanner() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.classList.add('pwa-banner-hidden');
+    }
+
+    // 🖥️ سطح المكتب: إظهار البنر تلقائياً فقط عند دعم المتصفح لحدث التثبيت الأصلي (وما لم يُغلق مؤخراً)
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if (!isInstallBannerSnoozed()) showInstallBanner();
+    });
+
+    // 📱 الجوال والشاشات الصغيرة: البنر يظهر إجبارياً عبر CSS بغض النظر عن حدث المتصفح،
+    // هنا فقط نتأكد من عدم إظهاره داخل تطبيق مثبَّت بالفعل
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isRunningAsInstalledApp()) hideInstallBanner();
+    });
+
+    function installAqarattiApp() {
+      // ✅ الحالة المثالية: المتصفح يدعم حدث التثبيت التلقائي (Chrome / Edge / Android)
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            console.log('🎉 المستخدم وافق على تثبيت تطبيق عقاراتي');
+          }
+          deferredInstallPrompt = null;
+          hideInstallBanner();
+        });
+        return;
+      }
+
+      // 🍎 لا يوجد دعم لحدث التثبيت التلقائي (iOS Safari أو متصفح آخر): نعرض تعليمات التثبيت اليدوي
+      showManualInstallInstructions();
+    }
+
+    function showManualInstallInstructions() {
+      const ua = navigator.userAgent || '';
+      const isIOS = /iphone|ipad|ipod/i.test(ua);
+      const isSafari = isIOS && /safari/i.test(ua) && !/crios|fxios|chrome/i.test(ua);
+
+      let message;
+      if (isIOS && isSafari) {
+        message = 'لتثبيت تطبيق عقاراتي على آيفون:\n1. اضغط زر المشاركة 📤 أسفل الشاشة.\n2. اختر "إضافة إلى الشاشة الرئيسية" Add to Home Screen.';
+      } else if (isIOS) {
+        message = 'لتثبيت تطبيق عقاراتي: افتح هذه الصفحة في متصفح Safari أولاً، ثم اضغط زر المشاركة 📤 واختر "إضافة إلى الشاشة الرئيسية".';
+      } else {
+        message = 'لتثبيت تطبيق عقاراتي: افتح قائمة المتصفح (⋮ في الزاوية) ثم اختر "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".';
+      }
+      alert(message);
+    }
+
+    function dismissInstallBanner() {
+      hideInstallBanner();
+      localStorage.setItem(PWA_DISMISS_KEY, Date.now().toString());
+    }
+
+    window.addEventListener('appinstalled', () => {
+      hideInstallBanner();
+      deferredInstallPrompt = null;
+      console.log('✅ تم تثبيت تطبيق عقاراتي على الجهاز بنجاح');
+    });
+  </script>
+
+</body>
+</html>
