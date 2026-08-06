@@ -2497,9 +2497,9 @@ function renderPropertiesList(list) {
     });
 
     // ==================== 📲 تطبيق الويب التقدمي (PWA): تسجيل الـ Service Worker وبنر التثبيت ====================
-    let deferredInstallPrompt = null;
     const PWA_DISMISS_KEY = 'aqaratti_pwa_banner_dismissed_at';
     const PWA_DISMISS_DAYS = 7;
+    const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.aqaratti.app';
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -2535,7 +2535,6 @@ function renderPropertiesList(list) {
     // 🖥️ سطح المكتب: إظهار البنر تلقائياً فقط عند دعم المتصفح لحدث التثبيت الأصلي (وما لم يُغلق مؤخراً)
     window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
-      deferredInstallPrompt = event;
       if (!isInstallBannerSnoozed()) showInstallBanner();
     });
 
@@ -2546,37 +2545,8 @@ function renderPropertiesList(list) {
     });
 
     function installAqarattiApp() {
-      // ✅ الحالة المثالية: المتصفح يدعم حدث التثبيت التلقائي (Chrome / Edge / Android)
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        deferredInstallPrompt.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
-            console.log('🎉 المستخدم وافق على تثبيت تطبيق عقاراتي');
-          }
-          deferredInstallPrompt = null;
-          hideInstallBanner();
-        });
-        return;
-      }
-
-      // 🍎 لا يوجد دعم لحدث التثبيت التلقائي (iOS Safari أو متصفح آخر): نعرض تعليمات التثبيت اليدوي
-      showManualInstallInstructions();
-    }
-
-    function showManualInstallInstructions() {
-      const ua = navigator.userAgent || '';
-      const isIOS = /iphone|ipad|ipod/i.test(ua);
-      const isSafari = isIOS && /safari/i.test(ua) && !/crios|fxios|chrome/i.test(ua);
-
-      let message;
-      if (isIOS && isSafari) {
-        message = 'لتثبيت تطبيق عقاراتي على آيفون:\n1. اضغط زر المشاركة 📤 أسفل الشاشة.\n2. اختر "إضافة إلى الشاشة الرئيسية" Add to Home Screen.';
-      } else if (isIOS) {
-        message = 'لتثبيت تطبيق عقاراتي: افتح هذه الصفحة في متصفح Safari أولاً، ثم اضغط زر المشاركة 📤 واختر "إضافة إلى الشاشة الرئيسية".';
-      } else {
-        message = 'لتثبيت تطبيق عقاراتي: افتح قائمة المتصفح (⋮ في الزاوية) ثم اختر "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".';
-      }
-      alert(message);
+      window.open(PLAY_STORE_URL, '_blank');
+      hideInstallBanner();
     }
 
     function dismissInstallBanner() {
@@ -2586,7 +2556,6 @@ function renderPropertiesList(list) {
 
     window.addEventListener('appinstalled', () => {
       hideInstallBanner();
-      deferredInstallPrompt = null;
       console.log('✅ تم تثبيت تطبيق عقاراتي على الجهاز بنجاح');
     });
   </script>
