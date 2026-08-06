@@ -640,19 +640,23 @@
 
     .badge-trucheck-tag {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(255, 255, 255, 0.95);
-      color: var(--accent-green);
-      font-size: 11px;
-      font-weight: 900;
-      padding: 4px 10px;
-      border-radius: 20px;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      background: #ffffff;
+      clip-path: polygon(50% 0%, 58.42% 29.67%, 85.36% 14.64%, 70.33% 41.58%, 100% 50%, 70.33% 58.42%, 85.36% 85.36%, 58.42% 70.33%, 50% 100%, 41.58% 70.33%, 14.64% 85.36%, 29.67% 58.42%, 0% 50%, 29.67% 41.58%, 14.64% 14.64%, 41.58% 29.67%);
       display: flex;
       align-items: center;
-      gap: 5px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      justify-content: center;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
       z-index: 5;
+    }
+
+    .badge-trucheck-tag i {
+      color: var(--accent-green);
+      font-size: 14px;
+      font-weight: 900;
     }
 
     .badge-quality-tag {
@@ -1155,15 +1159,21 @@
   font-size: 18px !important;
 }
 
-/* 🌟 إضاءة أزرار الجنسية والذكاء الاصطناعي بالذهبي والبنفسجي عند التحديد */
-.hero-badge-btn.gold.active, .hero-badge-btn.gold:focus {
+/* 🌟 إضاءة أزرار الجنسية والذكاء الاصطناعي بالذهبي والبنفسجي عند اللمس/الضغط/التحديد */
+.hero-badge-btn.gold.active,
+.hero-badge-btn.gold:focus,
+.hero-badge-btn.gold:hover,
+.hero-badge-btn.gold:active {
   background: linear-gradient(135deg, #d4af37, #f59e0b) !important;
   border-color: #fef08a !important;
   color: #192038 !important;
   box-shadow: 0 0 22px rgba(212, 175, 55, 0.95), 0 0 35px rgba(245, 158, 11, 0.7) !important;
 }
 
-.hero-badge-btn.ai-btn.active, .hero-badge-btn.ai-btn:focus {
+.hero-badge-btn.ai-btn.active,
+.hero-badge-btn.ai-btn:focus,
+.hero-badge-btn.ai-btn:hover,
+.hero-badge-btn.ai-btn:active {
   background: linear-gradient(135deg, #a855f7, #ec4899) !important;
   border-color: #f0abfc !important;
   color: #ffffff !important;
@@ -1709,7 +1719,6 @@
       document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
       el.classList.add('active');
       currentTabType = el.getAttribute('data-type');
-      executeSearch();
     }
 
     function triggerGoldenPassportFilter() {
@@ -1981,7 +1990,7 @@ function renderPropertiesList(list) {
         <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
           <div class="card-media-box">
             <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" onclick="goToPropertyDetails('${prop.id}')">
-            <span class="badge-trucheck-tag"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
+            <span class="badge-trucheck-tag"><i class="fas fa-check"></i></span>
             <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
             <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)"><i class="fas fa-heart"></i></button>
           </div>
