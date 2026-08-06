@@ -4,7 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>عقاراتي | Aqaratti - المنصة العقارية العالمية</title>
-  
+
+  <!-- 📱 إعدادات تطبيق الويب التقدمي (PWA) -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="عقاراتي">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
@@ -1307,9 +1317,129 @@
   }
   .card-media-box { height: 170px !important; }
 }
+
+/* 📲 بنر تثبيت تطبيق عقاراتي (PWA) */
+.pwa-install-banner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: linear-gradient(120deg, #00c8b3, #00a896 45%, #d4af37);
+  color: #ffffff;
+  padding: 10px 18px;
+  position: relative;
+  z-index: 100000;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+}
+
+.pwa-install-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pwa-install-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pwa-install-icon img { display: block; width: 22px; height: 22px; }
+
+.pwa-install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.pwa-install-text strong {
+  font-size: 13.5px;
+  font-weight: 900;
+}
+
+.pwa-install-text span {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pwa-install-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pwa-install-btn {
+  background: #ffffff;
+  color: #00796b;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 900;
+  font-size: 12.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.pwa-install-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+
+.pwa-install-close {
+  background: rgba(255,255,255,0.18);
+  color: #ffffff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.pwa-install-close:hover { background: rgba(255,255,255,0.32); }
+
+@media (max-width: 480px) {
+  .pwa-install-banner { padding: 8px 12px; }
+  .pwa-install-text span { display: none; }
+  .pwa-install-btn { padding: 7px 12px; font-size: 11.5px; }
+}
   </style>
 </head>
 <body>
+
+  <!-- 📲 بنر دعوة تثبيت تطبيق عقاراتي (يظهر تلقائياً عند توفر إمكانية التثبيت) -->
+  <div id="pwaInstallBanner" class="pwa-install-banner">
+    <div class="pwa-install-content">
+      <div class="pwa-install-icon"><img src="icons/icon.svg" alt="أيقونة تطبيق عقاراتي"></div>
+      <div class="pwa-install-text">
+        <strong>ثبّت تطبيق عقاراتي على هاتفك</strong>
+        <span>تجربة أسرع وتصفح دون إنترنت، بنقرة واحدة فقط!</span>
+      </div>
+    </div>
+    <div class="pwa-install-actions">
+      <button class="pwa-install-btn" onclick="installAqarattiApp()"><i class="fas fa-download"></i> تثبيت الآن</button>
+      <button class="pwa-install-close" onclick="dismissInstallBanner()" aria-label="إغلاق"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
 
   <div id="google_translate_element" style="display:none;"></div>
 
@@ -2303,6 +2433,66 @@ function renderPropertiesList(list) {
       if (!e.target.closest('.instant-dropdown') && !e.target.closest('.royal-input-box')) {
         document.querySelectorAll('.instant-menu, .custom-country-menu').forEach(m => m.style.display = 'none');
       }
+    });
+
+    // ==================== 📲 تطبيق الويب التقدمي (PWA): تسجيل الـ Service Worker وبنر التثبيت ====================
+    let deferredInstallPrompt = null;
+    const PWA_DISMISS_KEY = 'aqaratti_pwa_banner_dismissed_at';
+    const PWA_DISMISS_DAYS = 7;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('✅ تم تسجيل Service Worker لعقاراتي بنجاح:', reg.scope))
+          .catch((err) => console.warn('⚠️ تعذر تسجيل Service Worker:', err));
+      });
+    }
+
+    function isInstallBannerSnoozed() {
+      const dismissedAt = localStorage.getItem(PWA_DISMISS_KEY);
+      if (!dismissedAt) return false;
+      const daysPassed = (Date.now() - Number(dismissedAt)) / (1000 * 60 * 60 * 24);
+      return daysPassed < PWA_DISMISS_DAYS;
+    }
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (!isStandalone && !isInstallBannerSnoozed()) {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) banner.style.display = 'flex';
+      }
+    });
+
+    function installAqarattiApp() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (!deferredInstallPrompt) {
+        if (banner) banner.style.display = 'none';
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then((choice) => {
+        if (choice.outcome === 'accepted') {
+          console.log('🎉 المستخدم وافق على تثبيت تطبيق عقاراتي');
+        }
+        deferredInstallPrompt = null;
+        if (banner) banner.style.display = 'none';
+      });
+    }
+
+    function dismissInstallBanner() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.style.display = 'none';
+      localStorage.setItem(PWA_DISMISS_KEY, Date.now().toString());
+    }
+
+    window.addEventListener('appinstalled', () => {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.style.display = 'none';
+      deferredInstallPrompt = null;
+      console.log('✅ تم تثبيت تطبيق عقاراتي على الجهاز بنجاح');
     });
   </script>
 
