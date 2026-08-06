@@ -238,8 +238,8 @@
       gap: 10px;
     }
 
-    .mobile-logo-menu-group .instant-dropdown {
-      display: none; /* مخفي بالكمبيوتر */
+    .instant-dropdown.mobile-hamburger-group {
+      display: none; /* مخفي بالكمبيوتر، ويظهر فقط مرة واحدة في الجوال */
     }
 
     .instant-dropdown {
@@ -642,20 +642,20 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 34px;
-      height: 34px;
+      width: 24px;
+      height: 24px;
       background: #ffffff;
-      clip-path: polygon(50% 0%, 58.42% 29.67%, 85.36% 14.64%, 70.33% 41.58%, 100% 50%, 70.33% 58.42%, 85.36% 85.36%, 58.42% 70.33%, 50% 100%, 41.58% 70.33%, 14.64% 85.36%, 29.67% 58.42%, 0% 50%, 29.67% 41.58%, 14.64% 14.64%, 41.58% 29.67%);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       z-index: 5;
     }
 
     .badge-trucheck-tag i {
       color: var(--accent-green);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 900;
     }
 
@@ -1027,8 +1027,8 @@
         display: none !important;
       }
 
-      /* إظهار قائمة الجوال فقط بجوار اللوجو */
-      .mobile-logo-menu-group .instant-dropdown {
+      /* إظهار قائمة الجوال في أقصى اليسار للجوال فقط */
+      .mobile-hamburger-group {
         display: inline-block !important;
       }
 
@@ -1100,12 +1100,29 @@
       }
 
       .bayut-property-card {
-        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
       }
 
       .card-media-box {
+        width: 100% !important;
         height: 200px !important;
         min-height: auto !important;
+        flex-shrink: 0 !important;
+      }
+
+      .card-info-content {
+        width: 100% !important;
+        padding: 14px !important;
+        overflow: hidden !important;
+      }
+
+      .property-title-heading,
+      .broker-mini-name,
+      .broker-mini-agency {
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
       }
 
       .card-broker-footer {
@@ -1115,15 +1132,40 @@
 
       .card-action-buttons {
         width: 100% !important;
+        max-width: 100% !important;
         justify-content: space-between !important;
         display: flex !important;
-        gap: 6px !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
       }
 
       .btn-card-cta {
-        flex: 1 !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
         justify-content: center !important;
+        padding: 0 4px !important;
+        font-size: 10.5px !important;
+        gap: 3px !important;
+        overflow: hidden !important;
       }
+
+      /* ⬅➡ إظهار أسهم التنقل في شريط تبويبات البحث (للإيجار/الشراء/الجنسية/الاستثمار) */
+      .tabs-wrapper-container {
+        padding: 0 30px !important;
+      }
+
+      .royal-tabs {
+        scroll-behavior: smooth !important;
+      }
+
+      .scroll-arrow {
+        display: flex !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+      }
+
+      .scroll-arrow.right { right: 0 !important; }
+      .scroll-arrow.left { left: 0 !important; }
     }
     /* 📌 الشريط العلوي معتدل الجمال (~70px) */
 .aqaratti-instant-utility-bar {
@@ -1149,6 +1191,7 @@
 .btn-card-cta {
   height: 38px !important;
   flex: 1 !important;
+  min-width: 0 !important;
   font-size: 12px !important;
   font-weight: 900 !important;
   justify-content: center !important;
@@ -1188,6 +1231,82 @@
   overflow-y: auto !important;
   scrollbar-width: thin !important;
 }
+
+/* 📱 ضبط دقيق لحجم وتنسيق الهيرو وشريط البحث والأزرار في جميع الجوالات */
+@media (max-width: 768px) {
+  .aqaratti-light-hero {
+    padding: 22px 14px 30px 14px !important;
+  }
+  .royal-title {
+    font-size: 21px !important;
+    margin-bottom: 12px !important;
+  }
+  .pearl-search-card {
+    padding: 14px 12px !important;
+  }
+  .royal-tab {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+  .pearl-action-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .hero-center-badges {
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .hero-badge-btn {
+    flex: 1 !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    padding: 9px 6px !important;
+    white-space: nowrap !important;
+  }
+  .btn-royal-search {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+  .brand-text-group {
+    gap: 3px !important;
+  }
+  .arabic-brand { font-size: 17px !important; }
+  .english-brand { font-size: 13px !important; }
+
+  /* 🧩 منع اختفاء جزء من مربع العقار: السماح لأزرار البطاقة الأربعة بالانكماش داخل عرض البطاقة بدل تجاوزه */
+  .bayut-property-card {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .card-action-buttons {
+    gap: 4px !important;
+  }
+  .btn-card-cta {
+    min-width: 0 !important;
+    padding: 0 4px !important;
+    font-size: 10.5px !important;
+    gap: 3px !important;
+    overflow: hidden !important;
+  }
+}
+
+/* 📱 تحسين إضافي للشاشات الصغيرة جداً (أقل من 400px) لتناسب كافة أحجام الجوالات */
+@media (max-width: 400px) {
+  .arabic-brand { font-size: 15px !important; }
+  .english-brand { font-size: 12px !important; }
+  .brand-divider { display: none !important; }
+  .royal-title { font-size: 18px !important; }
+  .property-price-tag { font-size: 18px !important; }
+  .btn-add-nav, .btn-fav-nav {
+    font-size: 10.5px !important;
+    padding: 6px 6px !important;
+  }
+  .hero-badge-btn {
+    font-size: 10px !important;
+    padding: 8px 4px !important;
+  }
+  .card-media-box { height: 170px !important; }
+}
   </style>
 </head>
 <body>
@@ -1218,19 +1337,19 @@
               <span class="english-brand">Aqaratti</span>
             </div>
           </a>
+        </div>
 
-          <!-- قائمة الجوال المنسدلة المجاورة للوجو للجوال فقط -->
-          <div class="instant-dropdown">
-            <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownMobile', event)"><i class="fas fa-bars"></i></button>
-            <div class="instant-menu" id="mainMenuDropdownMobile" style="left: 0; right: auto; width: 240px;">
-              <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
-              
-              <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
-              <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
-              <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
-              <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
-              <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
-            </div>
+        <!-- قائمة الجوال المنسدلة في أقصى اليسار للجوال فقط -->
+        <div class="instant-dropdown mobile-hamburger-group">
+          <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownMobile', event)"><i class="fas fa-bars"></i></button>
+          <div class="instant-menu" id="mainMenuDropdownMobile" style="left: 0; right: auto; width: 240px;">
+            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+
+            <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
+            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="showServiceModal('agents')"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوكلاء</a>
           </div>
         </div>
       </div>
@@ -1359,14 +1478,14 @@
       <div class="pearl-search-card">
         
         <div class="tabs-wrapper-container">
-          <div class="scroll-arrow right"><i class="fas fa-chevron-right"></i></div>
+          <div class="scroll-arrow right" onclick="scrollRoyalTabs(1)"><i class="fas fa-chevron-right"></i></div>
           <div class="royal-tabs" id="royalTabsBar">
             <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
             <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
             <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
             <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
           </div>
-          <div class="scroll-arrow left"><i class="fas fa-chevron-left"></i></div>
+          <div class="scroll-arrow left" onclick="scrollRoyalTabs(-1)"><i class="fas fa-chevron-left"></i></div>
         </div>
 
         <div class="pearl-inputs-grid">
@@ -1719,6 +1838,11 @@
       document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
       el.classList.add('active');
       currentTabType = el.getAttribute('data-type');
+    }
+
+    function scrollRoyalTabs(direction) {
+      const el = document.getElementById('royalTabsBar');
+      if (el) el.scrollBy({ left: direction * 140, behavior: 'smooth' });
     }
 
     function triggerGoldenPassportFilter() {
