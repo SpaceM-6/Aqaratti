@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج البحث | عقاراتي</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* تنسيقات مخصصة لتقسيم صفحة البحث مثل بيوت (فلاتر على اليمين ونتائج على اليسار) */
+        .search-page-layout {
+            display: flex;
+            padding: 30px 6%;
+            gap: 30px;
+            background: #f7f9fa;
+            min-height: 80vh;
+        }
+        .filter-sidebar {
+            flex: 1;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #d8dce0;
+            height: fit-content;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            text-align: right;
+        }
+        .results-column {
+            flex: 3;
+            text-align: right;
+        }
+        .filter-box {
+            margin-bottom: 20px;
+        }
+        .filter-box label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #08243c;
+        }
+        .filter-box select, .filter-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8dce0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+        }
+        .btn-apply {
+            width: 100%;
+            background: #28b16d;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-apply:hover {
+            background: #21965a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل العلوي لصفحة البحث -->
+    <header class="navbar-bayut">
+        <div class="nav-right">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;"><i class="fas fa-home"></i> عقاراتي</div>
+           <nav class="main-menu" style="display: flex; align-items: center; gap: 15px;">
+    <a href="index.html">الرئيسية</a>
+    <a href="search.html">تصفح العقارات</a>
+    <a href="add-property.html" class="btn-add-prop" style="background: #28b16d; color: white; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
+        <i class="fas fa-plus-circle"></i> أعلن عن عقارك
+    </a>
+</nav>
+        </div>
+    </header>
+
+    <!-- حاوية تقسيم الصفحة الرئيسية للبحث -->
+    <div class="search-page-layout">
+        
+        <!-- أولاً: الفلاتر الجانبية التصفية -->
+        <aside class="filter-sidebar">
+            <h3 style="color:#08243c; margin-bottom: 15px;"><i class="fas fa-sliders-h"></i> تصفية النتائج</h3>
+            <hr style="margin-bottom: 20px; border: 0; border-top: 1px solid #e2e8f0;">
+            
+            <div class="filter-box">
+                <label>الغرض</label>
+                <select id="sidebar-purpose">
+                    <option value="buy">للبيع</option>
+                    <option value="rent">للإيجار</option>
+                </select>
+            </div>
+
+            <div class="filter-box">
+                <label>نوع العقار</label>
+                <select id="sidebar-type">
+                    <option value="all">سكني</option>
+                    <option value="commercial">تجاري</option>
+                </select>
+            </div>
+
+            <div class="filter-box">
+                <label>الحد الأقصى للسعر (درهم)</label>
+                <input type="number" id="sidebar-price" placeholder="مثال: 5,000,000">
+            </div>
+
+            <button class="btn-apply" onclick="applyFilters()">تحديث النتائج</button>
+        </aside>
+
+        <!-- ثانياً: منطقة عرض بطاقات العقارات -->
+        <main class="results-column">
+            <h2 style="color: #08243c; margin-bottom: 20px;">العقارات المتاحة في الإمارات</h2>
+            <div class="grid-container" id="search-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+                <!-- البطاقات ستعرض هنا تلقائياً -->
+            </div>
+        </main>
+
+    </div>
+
+    <!-- كود تشغيل الفلاتر الذكية والربط بين الصفحات -->
+    <script>
+        // قاعدة البيانات التجريبية
+        const propertiesData = [
+            { id: 1, title: "شقة فاخرة إطلالة كاملة على مرسى دبي", price: "140,000 درهم / سنوي", purpose: "rent", type: "سكني", img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" },
+            { id: 2, title: "فيلا مودرن مع مسبح خاص وحديقة واسعة", price: "5,200,000 درهم", purpose: "buy", type: "سكني", img: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" },
+            { id: 3, title: "مكتب تجاري مجهز بالكامل في أبراج جميرا", price: "95,000 درهم / سنوي", purpose: "rent", type: "تجاري", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        // دالة عرض البطاقات في الشبكة
+      function displayResults(data) {
+            const grid = document.getElementById('search-grid');
+            grid.innerHTML = '';
+            
+            if(data.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; font-size: 16px;">عذراً، لا توجد عقارات تطابق خيارات البحث الحالية.</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                // قمنا بتغليف الكارت برابط ينتقل لصفحة تفاصيل العقار ويمرر الـ ID الخاص به
+                grid.innerHTML += `
+                    <a href="property-details.html?id=${item.id}" style="text-decoration: none; color: inherit;">
+                        <div class="property-card" style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #d8dce0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;">
+                            <img src="${item.img}" style="width:100%; height:180px; object-fit:cover;">
+                            <div style="padding:15px;">
+                                <h3 style="color:#28b16d; font-size:18px; margin-bottom:5px;">${item.price}</h3>
+                                <p style="font-size:14px; font-weight:600; color:#222; height:40px; overflow:hidden;">${item.title}</p>
+                                <span style="font-size:12px; background:#f0f2f5; padding:3px 8px; border-radius:4px; color:#555;">${item.type}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        // دالة الفلترة والتصفية بناءً على قيم المدخلات الحالية
+        function filterAndRender() {
+            const purpose = document.getElementById('sidebar-purpose').value;
+            const type = document.getElementById('sidebar-type').value;
+            const maxPrice = document.getElementById('sidebar-price').value;
+
+            const filtered = propertiesData.filter(item => {
+                // توافق الغرض (بيع / إيجار)
+                const matchesPurpose = item.purpose === purpose;
+                // توافق النوع (سكني / تجاري)
+                const matchesType = (type === 'all' || item.type === type);
+                // توافق السعر
+                const rawPrice = parseInt(item.price.replace(/[^0-9]/g, ''));
+                const matchesPrice = !maxPrice || rawPrice <= parseInt(maxPrice);
+
+                return matchesPurpose && matchesType && matchesPrice;
+            });
+
+            displayResults(filtered);
+        }
+
+        function applyFilters() {
+            filterAndRender();
+        }
+
+        // قراءة الاختيارات القادمة من الصفحة الرئيسية فور تحميل صفحة البحث
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const purposeFromHome = params.get('purpose'); // القيمة الممررة من زر للبيع/للايجار بالرئيسية
+            const typeFromHome = params.get('type');       // نوع العقار من القائمة المنسدلة بالرئيسية
+
+            // تحديث قيم الفلاتر الجانبية لتطابق ما اختاره المستخدم في الصفحة الرئيسية
+            if (purposeFromHome) {
+                document.getElementById('sidebar-purpose').value = purposeFromHome;
+            }
+            if (typeFromHome && typeFromHome !== 'all') {
+                // تحويل المسميات الإنجليزية القادمة من القائمة لتبسيط قراءتها
+                document.getElementById('sidebar-type').value = (typeFromHome === 'تجاري' || typeFromHome === 'office') ? 'تجاري' : 'سكني';
+            }
+
+            // تشغيل التصفية الفورية وعرض العقارات الصحيحة فقط
+            filterAndRender();
+        };
+    </script>

@@ -1,0 +1,30 @@
+{
+  "name": "عقاراتي | Aqaratti - المنصة العقارية العالمية",
+  "short_name": "عقاراتي",
+  "description": "منصة عقاراتي (Aqaratti) العالمية للبحث عن العقارات للبيع والإيجار والاستثمار والإقامة الذهبية، وربط الباحثين بأفضل الوسطاء العقاريين.",
+  "id": "./index.html",
+  "start_url": "./index.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#0f172a",
+  "theme_color": "#00a896",
+  "categories": ["business", "shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
