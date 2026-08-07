@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(\\(Get-Content \"D:\\\\ميمونة\\\\رسالة الماجستير\\\\برمجة المواقع\\\\Aqaratti\\\\index.html\" | Measure-Object -Line\\).Lines)"
+      "PowerShell(\\(Get-Content \"D:\\\\ميمونة\\\\رسالة الماجستير\\\\برمجة المواقع\\\\Aqaratti\\\\index.html\" | Measure-Object -Line\\).Lines)",
+      "PowerShell(winget install *)"
     ]
   }
 }
