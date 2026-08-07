@@ -1417,9 +1417,10 @@
 
 .pwa-install-close:hover { background: rgba(255,255,255,0.32); }
 
-/* 📱 نسخة واضحة وأنيقة من بنر التثبيت لوضع الجوال: صف للمعلومات وصف كامل العرض لزر التثبيت */
-@media (max-width: 600px) {
+/* 📱 إظهار إجباري وواضح وأنيق لبنر التثبيت في الشاشات الصغيرة والجوالات: صف للمعلومات وصف كامل العرض لزر التثبيت */
+@media (max-width: 768px) {
   .pwa-install-banner {
+    display: flex !important;
     flex-direction: column;
     align-items: stretch;
     flex-wrap: nowrap;
@@ -1471,6 +1472,16 @@
     top: 12px;
     left: 12px;
   }
+}
+
+/* 🚫 إخفاء البنر عند تشغيل الموقع كتطبيق مثبَّت بالفعل (Standalone)، حتى في الشاشات الصغيرة */
+@media (display-mode: standalone) {
+  .pwa-install-banner { display: none !important; }
+}
+
+/* ✋ إخفاء إجباري عبر الإغلاق اليدوي أو بعد التثبيت الفعلي: له الأولوية المطلقة على أي إظهار إجباري أعلاه */
+.pwa-install-banner.pwa-banner-hidden {
+  display: none !important;
 }
   </style>
 </head>
@@ -2486,9 +2497,9 @@ function renderPropertiesList(list) {
     });
 
     // ==================== 📲 تطبيق الويب التقدمي (PWA): تسجيل الـ Service Worker وبنر التثبيت ====================
-    let deferredInstallPrompt = null;
     const PWA_DISMISS_KEY = 'aqaratti_pwa_banner_dismissed_at';
     const PWA_DISMISS_DAYS = 7;
+    const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.aqaratti.app';
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -2505,43 +2516,46 @@ function renderPropertiesList(list) {
       return daysPassed < PWA_DISMISS_DAYS;
     }
 
+    function isRunningAsInstalledApp() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function showInstallBanner() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (!banner || isRunningAsInstalledApp()) return;
+      banner.classList.remove('pwa-banner-hidden');
+      banner.style.display = 'flex';
+    }
+
+    function hideInstallBanner() {
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.classList.add('pwa-banner-hidden');
+    }
+
+    // 🖥️ سطح المكتب: إظهار البنر تلقائياً فقط عند دعم المتصفح لحدث التثبيت الأصلي (وما لم يُغلق مؤخراً)
     window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
-      deferredInstallPrompt = event;
+      if (!isInstallBannerSnoozed()) showInstallBanner();
+    });
 
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      if (!isStandalone && !isInstallBannerSnoozed()) {
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner) banner.style.display = 'flex';
-      }
+    // 📱 الجوال والشاشات الصغيرة: البنر يظهر إجبارياً عبر CSS بغض النظر عن حدث المتصفح،
+    // هنا فقط نتأكد من عدم إظهاره داخل تطبيق مثبَّت بالفعل
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isRunningAsInstalledApp()) hideInstallBanner();
     });
 
     function installAqarattiApp() {
-      const banner = document.getElementById('pwaInstallBanner');
-      if (!deferredInstallPrompt) {
-        if (banner) banner.style.display = 'none';
-        return;
-      }
-      deferredInstallPrompt.prompt();
-      deferredInstallPrompt.userChoice.then((choice) => {
-        if (choice.outcome === 'accepted') {
-          console.log('🎉 المستخدم وافق على تثبيت تطبيق عقاراتي');
-        }
-        deferredInstallPrompt = null;
-        if (banner) banner.style.display = 'none';
-      });
+      window.open(PLAY_STORE_URL, '_blank');
+      hideInstallBanner();
     }
 
     function dismissInstallBanner() {
-      const banner = document.getElementById('pwaInstallBanner');
-      if (banner) banner.style.display = 'none';
+      hideInstallBanner();
       localStorage.setItem(PWA_DISMISS_KEY, Date.now().toString());
     }
 
     window.addEventListener('appinstalled', () => {
-      const banner = document.getElementById('pwaInstallBanner');
-      if (banner) banner.style.display = 'none';
-      deferredInstallPrompt = null;
+      hideInstallBanner();
       console.log('✅ تم تثبيت تطبيق عقاراتي على الجهاز بنجاح');
     });
   </script>
