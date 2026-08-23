@@ -7,6 +7,7 @@
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="currency.js"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -508,7 +509,7 @@
 
           <div class="prop-card-details-box">
             <div>
-              <div class="prop-price-text">${p.priceAED.toLocaleString()} درهم</div>
+              <div class="prop-price-text">${formatPriceAED(p.priceAED)}</div>
               <div class="prop-title-text">${p.title}</div>
               <div class="prop-specs-row">
                 <span><i class="fas fa-bed"></i> استوديو / ${p.bedrooms} غرف</span>

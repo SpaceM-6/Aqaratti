@@ -17,6 +17,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="currency.js"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -171,18 +172,6 @@
       font-size: 20px;
       font-weight: 900;
       color: var(--primary-turquoise);
-    }
-
-    .brand-divider {
-      color: #cbd5e1;
-      font-size: 14px;
-      font-weight: 300;
-    }
-
-    .english-brand {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--dubizzle-navy);
     }
 
     .btn-add-nav {
@@ -1284,7 +1273,6 @@
     gap: 3px !important;
   }
   .arabic-brand { font-size: 17px !important; }
-  .english-brand { font-size: 13px !important; }
 
   /* 🧩 منع اختفاء جزء من مربع العقار: السماح لأزرار البطاقة الأربعة بالانكماش داخل عرض البطاقة بدل تجاوزه */
   .bayut-property-card {
@@ -1306,8 +1294,6 @@
 /* 📱 تحسين إضافي للشاشات الصغيرة جداً (أقل من 400px) لتناسب كافة أحجام الجوالات */
 @media (max-width: 400px) {
   .arabic-brand { font-size: 15px !important; }
-  .english-brand { font-size: 12px !important; }
-  .brand-divider { display: none !important; }
   .royal-title { font-size: 18px !important; }
   .property-price-tag { font-size: 18px !important; }
   .btn-add-nav, .btn-fav-nav {
@@ -1518,9 +1504,7 @@
 
 
             <div class="brand-text-group">
-              <span class="arabic-brand">عقاراتي</span>
-              <span class="brand-divider">│</span>
-              <span class="english-brand">Aqaratti</span>
+              <span class="arabic-brand" id="brandNameText">عقاراتي</span>
             </div>
           </a>
         </div>
@@ -2093,7 +2077,7 @@
 `🏡 *فرصة عقارية ممتازة عبر منصة Aqaratti* 🏡
 
 📌 *العقار:* ${property.title}
-💰 *السعر:* ${property.priceAED.toLocaleString()} AED
+💰 *السعر:* ${formatPriceAED(property.priceAED)}
 📐 *المساحة:* ${property.area_m2} م² | 🛏️ ${property.bedrooms} غرف
 
 👤 *بيانات الوسيط المعلن الأصلي:*
@@ -2154,13 +2138,20 @@ ${propertyUrl}`;
       modal.style.display = 'flex';
     }
 
+    function updateBrandNameForLanguage(langCode) {
+      const brandEl = document.getElementById('brandNameText');
+      if (brandEl) brandEl.innerText = (langCode === 'ar') ? 'عقاراتي' : 'Aqaratti';
+    }
+
     function applyAILanguage(langCode, langName, dir) {
+      localStorage.setItem('aqaratti_lang_code', langCode);
       localStorage.setItem('aqaratti_lang_name', langName);
       localStorage.setItem('aqaratti_lang_dir', dir);
 
       const btnLabel = document.getElementById('currentLang');
       if (btnLabel) btnLabel.innerText = langName;
       document.documentElement.setAttribute('dir', dir);
+      updateBrandNameForLanguage(langCode);
 
       document.cookie = "googtrans=/ar/" + langCode + "; path=/;";
       document.cookie = "googtrans=/ar/" + langCode + "; path=/; domain=" + window.location.hostname;
@@ -2176,6 +2167,7 @@ ${propertyUrl}`;
     }
 
     function restoreSavedLanguageLabel() {
+      const savedCode = localStorage.getItem('aqaratti_lang_code');
       const savedName = localStorage.getItem('aqaratti_lang_name');
       const savedDir = localStorage.getItem('aqaratti_lang_dir');
       if (savedName) {
@@ -2185,6 +2177,7 @@ ${propertyUrl}`;
       if (savedDir) {
         document.documentElement.setAttribute('dir', savedDir);
       }
+      updateBrandNameForLanguage(savedCode || 'ar');
     }
 
     const countryData = {
@@ -2243,15 +2236,17 @@ ${propertyUrl}`;
       landmarkSelect.innerHTML = optionsHTML;
     }
 
-    let currentCurrencySymbol = 'AED';
-    let currentExchangeRate = 1;
-
     function applyCurrency(code, symbol, rate) {
-      currentCurrencySymbol = symbol;
-      currentExchangeRate = rate;
+      setSelectedCurrency(code);
       document.getElementById('currentCurrency').innerText = `${code} (${symbol})`;
       document.getElementById('fastCurrencyList').style.display = 'none';
       fetchProperties();
+    }
+
+    function restoreSavedCurrencyLabel() {
+      const { code, symbol } = getSelectedCurrency();
+      const btnLabel = document.getElementById('currentCurrency');
+      if (btnLabel) btnLabel.innerText = `${code} (${symbol})`;
     }
 
     function navigateCardImage(propId, direction, imagesArrayJson, event) {
@@ -2293,8 +2288,8 @@ function renderPropertiesList(list) {
     list.forEach((prop, index) => {
       const isVisited = visitedProperties.includes(prop.id.toString());
       const isFav = favoriteProperties.includes(prop.id.toString());
-      const convertedPrice = Math.round((prop.priceAED || prop.price || 0) * currentExchangeRate);
-      
+      const displayPrice = formatPriceAED(prop.priceAED || prop.price || 0);
+
       const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
       localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
 
@@ -2321,7 +2316,7 @@ function renderPropertiesList(list) {
 
           <div class="card-info-content">
             <div class="card-top-details">
-              <div class="property-price-tag">AED ${convertedPrice.toLocaleString()}</div>
+              <div class="property-price-tag">${displayPrice}</div>
               <h3 class="property-title-heading" onclick="goToPropertyDetails('${prop.id}')">${prop.title}</h3>
               <div class="property-specs-list">
                 <span><i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${prop.bedrooms} غرف نوم</span>
@@ -2495,6 +2490,7 @@ function renderPropertiesList(list) {
 
     document.addEventListener('DOMContentLoaded', () => {
       restoreSavedLanguageLabel();
+      restoreSavedCurrencyLabel();
       updateCitiesAndBackground('uae');
       updateFavBadgeCount();
       fetchProperties();

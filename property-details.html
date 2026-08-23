@@ -7,6 +7,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="currency.js"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -505,7 +506,7 @@
         </div>
 
         <div class="property-header-box" id="secDetails">
-          <div class="main-price-text" id="propPrice">645,000 درهم</div>
+          <div class="main-price-text" id="propPrice" data-price-aed="645000">AED 645,000</div>
           <h1 class="property-sub-title" id="propTitle">بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي</h1>
           <p style="color:var(--primary-turquoise); font-weight:800; font-size:12px;">استوديو سكاي لاين │ إطلالة على المسبح والمنتزه</p>
         </div>
@@ -840,7 +841,8 @@
 
       if (propId === '102') {
         document.getElementById('propTitle').innerText = "فيلا شاطئية مستقلة في نخلة جميرا";
-        document.getElementById('propPrice').innerText = "18,500,000 درهم";
+        document.getElementById('propPrice').setAttribute('data-price-aed', '18500000');
+        document.getElementById('propPrice').innerText = formatPriceAED(18500000);
         document.getElementById('propArea').innerText = "650";
         document.getElementById('quickBeds').innerHTML = `<i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> 6 غرف`;
         document.getElementById('quickBaths').innerHTML = `<i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> 7 حمامات`;
@@ -850,7 +852,8 @@
         currentBrokerEmail = "sara.falasi@damacproperties.com";
       } else {
         document.getElementById('propTitle').innerText = "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي";
-        document.getElementById('propPrice').innerText = "645,000 درهم";
+        document.getElementById('propPrice').setAttribute('data-price-aed', '645000');
+        document.getElementById('propPrice').innerText = formatPriceAED(645000);
         document.getElementById('quickBeds').innerHTML = `<i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> استوديو`;
         document.getElementById('quickBaths').innerHTML = `<i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> 1 حمام`;
         document.getElementById('brokerName').innerText = "إبراهيم عبد العاطي إبراهيم";

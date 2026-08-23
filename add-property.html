@@ -7,6 +7,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="currency.js"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -340,46 +341,46 @@
     <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
     <div class="pricing-grid">
       
-      <div class="pricing-card" onclick="selectPlan('single', '50 AED / إعلان', this)">
+      <div class="pricing-card" onclick="selectPlan('single', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box">75 AED</div>
+          <div class="old-price-box" data-price-aed="75">AED 75</div>
           <div class="save-badge">خصم 33% 🏷️</div>
         </div>
-        <div class="plan-price">50 AED</div>
+        <div class="plan-price" data-price-aed="50" data-price-suffix="/ إعلان">AED 50 / إعلان</div>
         <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <div class="pricing-card" onclick="selectPlan('monthly', '500 AED / شهر', this)">
+      <div class="pricing-card" onclick="selectPlan('monthly', this)">
         <div class="plan-name">الباقة الشهرية</div>
         <div class="price-details-wrapper">
           <span style="font-size:12px; color:#64748b; font-weight:800;">باقة قياسية ممتازة</span>
         </div>
-        <div class="plan-price">500 AED / شهر</div>
+        <div class="plan-price" data-price-aed="500" data-price-suffix="/ شهر">AED 500 / شهر</div>
         <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <div class="pricing-card" onclick="selectPlan('semi', '2,500 AED / 6 أشهر', this)">
+      <div class="pricing-card" onclick="selectPlan('semi', this)">
         <div class="plan-name">الباقة نصف السنوية</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box">3,000 AED</div>
-          <div class="save-badge">توفير 500 درهم 🔥</div>
+          <div class="old-price-box" data-price-aed="3000">AED 3,000</div>
+          <div class="save-badge" data-price-aed="500" data-price-prefix="توفير " data-price-suffix="🔥">توفير AED 500 🔥</div>
         </div>
-        <div class="plan-price">2,500 AED / 6 أشهر</div>
+        <div class="plan-price" data-price-aed="2500" data-price-suffix="/ 6 أشهر">AED 2,500 / 6 أشهر</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <div class="pricing-card best-value" onclick="selectPlan('yearly', '3,999 AED / سنة', this)">
+      <div class="pricing-card best-value" onclick="selectPlan('yearly', this)">
         <div class="badge-best">🌟 الأكثر توفيراً</div>
         <div class="plan-name">الباقة السنوية</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box">6,000 AED</div>
-          <div class="save-badge">توفير 2,001 درهم 🎉</div>
+          <div class="old-price-box" data-price-aed="6000">AED 6,000</div>
+          <div class="save-badge" data-price-aed="2001" data-price-prefix="توفير " data-price-suffix="🎉">توفير AED 2,001 🎉</div>
         </div>
-        <div class="plan-price">3,999 AED / سنة</div>
+        <div class="plan-price" data-price-aed="3999" data-price-suffix="/ سنة">AED 3,999 / سنة</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء للاستخدام المتواصل</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
@@ -604,9 +605,9 @@
       "اليونان": ["كل المدن", "أثينا", "سانتوريني"]
     };
 
-    function selectPlan(planCode, priceText, cardEl) {
+    function selectPlan(planCode, cardEl) {
       selectedPlanCode = planCode;
-      selectedPlanPrice = priceText;
+      selectedPlanPrice = cardEl.querySelector('.plan-price').innerText;
 
       document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
       cardEl.classList.add('selected');
@@ -614,7 +615,7 @@
       document.getElementById('paymentNotice').style.display = 'none';
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.style.display = 'block';
-      document.getElementById('selectedPriceText').innerText = priceText;
+      document.getElementById('selectedPriceText').innerText = selectedPlanPrice;
     }
 
     function selectType(type, el) {
