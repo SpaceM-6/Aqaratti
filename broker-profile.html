@@ -8,6 +8,41 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
+  <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ar',
+        includedLanguages: 'ar,en,ru,zh-CN,fr,es,it,de,tr,fa,ur,hi,sq,bs,bg,hr,cs,da,nl,fil,fi,el,hu,id,ja,ko,no,pl,pt,ro,sv,th,uk,vi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <style>
+    /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
+    html { top: 0px !important; padding-top: 0px !important; margin-top: 0px !important; }
+    body { top: 0px !important; position: static !important; padding-top: 0px !important; margin-top: 0px !important; }
+
+    .goog-te-banner-frame,
+    .goog-te-banner,
+    .VIpgJd-yA0Tfe-BN215c,
+    iframe.skiptranslate,
+    iframe.goog-te-banner-frame {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0px !important;
+      width: 0px !important;
+      border: none !important;
+    }
+
+    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+    #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    .goog-te-gadget-icon, .goog-te-gadget-simple { display: none !important; }
+  </style>
+
   <style>
     :root {
       --primary-turquoise: #00a896;
@@ -233,6 +268,8 @@
 </head>
 <body>
 
+  <div id="google_translate_element" style="display:none;"></div>
+
   <!-- الهيدر -->
   <nav class="navbar">
     <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
@@ -417,6 +454,11 @@
       alert("📧 تم إرسال رسالتك البريدية للوكيل بنجاح وسيتواصل معك قريباً جداً!");
       closeBadgeModal('emailModal');
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedDir = localStorage.getItem('aqaratti_lang_dir');
+      if (savedDir) document.documentElement.setAttribute('dir', savedDir);
+    });
 
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
