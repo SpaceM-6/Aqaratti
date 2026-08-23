@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="عقاراتي">
-  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <link rel="apple-touch-icon" href="icons/icon-app-512.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -154,6 +154,9 @@
     }
 
     .royal-logo-icon {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
       filter: drop-shadow(0 2px 5px rgba(0, 168, 150, 0.3));
     }
 
@@ -177,7 +180,7 @@
     }
 
     .english-brand {
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 800;
       color: var(--dubizzle-navy);
     }
@@ -1490,7 +1493,7 @@
   <!-- 📲 بنر دعوة تثبيت تطبيق عقاراتي (يظهر تلقائياً عند توفر إمكانية التثبيت) -->
   <div id="pwaInstallBanner" class="pwa-install-banner">
     <div class="pwa-install-content">
-      <div class="pwa-install-icon"><img src="icons/icon.svg" alt="أيقونة تطبيق عقاراتي"></div>
+      <div class="pwa-install-icon"><img src="icons/icon-app-512.png" alt="أيقونة تطبيق عقاراتي"></div>
       <div class="pwa-install-text">
         <strong>ثبّت تطبيق عقاراتي على هاتفك</strong>
         <span>تجربة أسرع وتصفح دون إنترنت، بنقرة واحدة فقط!</span>
@@ -1511,16 +1514,8 @@
       <div class="mobile-header-top-row">
         <div class="mobile-logo-menu-group">
           <a href="index.html" class="brand-logo-royal">
-            <svg class="royal-logo-icon" viewBox="0 0 100 100" width="34" height="34">
-              <defs>
-                <linearGradient id="turquoiseGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c8b3"/><stop offset="100%" stop-color="#008072"/></linearGradient>
-                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe066"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#997a15"/></linearGradient>
-              </defs>
-              <rect x="5" y="5" width="90" height="90" rx="22" fill="url(#turquoiseGrad)"/>
-              <path d="M25 48 L50 24 L75 48" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="50" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
-              <path d="M60 68 L72 80" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
-            </svg>
+            <img class="royal-logo-icon" src="icons/logo-transparent.png" alt="شعار عقاراتي">
+
 
             <div class="brand-text-group">
               <span class="arabic-brand">عقاراتي</span>
