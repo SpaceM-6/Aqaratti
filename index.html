@@ -1690,7 +1690,7 @@
             <input type="number" id="maxPriceInput" placeholder="ادخل السعر..." class="royal-input">
           </div>
 
-          <div class="royal-input-box">
+          <div class="royal-input-box dynamic-field" id="fieldLandmark" data-tabs="sale,rent,golden">
             <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
             <select class="royal-select" id="landmarkSelector">
               <option value="">اختر المعلم القريب...</option>
@@ -1708,6 +1708,11 @@
               <option value="airport">✈️ قريب من المطار</option>
               <option value="metro">🚇 قريب من محطة مترو</option>
             </select>
+          </div>
+
+          <div class="royal-input-box dynamic-field" id="fieldRoi" data-tabs="roi" style="display:none;">
+            <span class="royal-label"><i class="fas fa-percentage"></i> الحد الأدنى للعائد السنوي (ROI)</span>
+            <input type="number" id="minRoiInput" placeholder="مثال: 7" class="royal-input">
           </div>
         </div>
 
@@ -2024,6 +2029,15 @@
       document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
       el.classList.add('active');
       currentTabType = el.getAttribute('data-type');
+      updateSearchFieldsForTab(currentTabType);
+    }
+
+    // 🔄 تبديل حقول البحث حسب التبويب المختار: كل نية بحث (شراء/إيجار/استثمار) لها الحقول الأنسب لها
+    function updateSearchFieldsForTab(type) {
+      document.querySelectorAll('.dynamic-field').forEach(field => {
+        const tabs = field.getAttribute('data-tabs').split(',');
+        field.style.display = tabs.includes(type) ? '' : 'none';
+      });
     }
 
     function scrollRoyalTabs(direction) {
@@ -2437,6 +2451,7 @@ function renderPropertiesList(list) {
       const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
       const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
       const selectedCity = document.getElementById('citySelector').value;
+      const minRoi = parseFloat(document.getElementById('minRoiInput').value) || 7.0;
 
       const allProps = [...rawPropertiesData, ...loadedScrapedList];
 
@@ -2445,7 +2460,7 @@ function renderPropertiesList(list) {
         if (currentTabType === 'sale') matchesTab = (p.dealType === 'sale' || !p.dealType);
         else if (currentTabType === 'rent') matchesTab = (p.dealType === 'rent');
         else if (currentTabType === 'golden') matchesTab = (p.isGolden === true);
-        else if (currentTabType === 'roi') matchesTab = (parseFloat(p.roiPercent || '0') >= 7.0);
+        else if (currentTabType === 'roi') matchesTab = (parseFloat(p.roiPercent || '0') >= minRoi);
 
         const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
         const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice;
