@@ -5,7 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>تفاصيل العقار | Aqaratti</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="description" content="اطّلع على كافة تفاصيل العقار: السعر، المساحة، الموقع، والمرافق، وتواصل مباشرة مع الوسيط المعلن عبر منصة عقاراتي.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/property-details.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="تفاصيل العقار | Aqaratti">
+  <meta property="og:description" content="اطّلع على كافة تفاصيل العقار وتواصل مباشرة مع الوسيط المعلن عبر منصة عقاراتي.">
+  <meta property="og:url" content="https://spacem-6.github.io/Aqaratti/property-details.html">
+  <meta property="og:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://translate.google.com https://translate.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.gstatic.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https: ; connect-src 'self' https://translate.googleapis.com https://translate.google.com; frame-src https://translate.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
 
@@ -20,7 +31,7 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <style>
     /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
@@ -785,7 +796,7 @@
       const ref = getSavedAffiliateRef();
       const title = document.getElementById('propTitle').innerText;
       const text = `مرحباً بك، أود الاستفسار عن العقار: (${title}) - كود المرجع: ${ref}`;
-      window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(text)}`, '_blank');
+      window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
     }
 
     function handleEmailSubmit(e) {
@@ -834,7 +845,7 @@
 
       const thumbStrip = document.getElementById('thumbnailsContainer');
       thumbStrip.innerHTML = propertyImagesList.map((imgUrl, idx) => `
-        <img src="${imgUrl}" class="thumb-img ${idx === 0 ? 'active' : ''}" onclick="updateGalleryImage(${idx})">
+        <img src="${imgUrl}" class="thumb-img ${idx === 0 ? 'active' : ''}" ${idx === 0 ? '' : 'loading="lazy"'} onclick="updateGalleryImage(${idx})">
       `).join('');
 
       updateGalleryImage(0);
@@ -891,7 +902,7 @@
 🤝 *كود المرجع (Ref):* ${ref}`;
 
       closeModal('inspectorModal');
-      window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(message)}`, '_blank');
+      window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
     }
 
     document.addEventListener('DOMContentLoaded', () => {

@@ -1,0 +1,10 @@
+# ⚠️ ملاحظة: GitHub Pages لا يدعم ملفات الهيدر المخصصة، فهذا الملف غير فعّال على الاستضافة الحالية.
+# سيعمل تلقائياً عند الانتقال لاستضافة تدعمه مثل Netlify أو Cloudflare Pages،
+# ويضيف حماية حقيقية على مستوى HTTP لا يمكن تحقيقها عبر وسوم <meta> وحدها.
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
