@@ -5,16 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عقاراتي | لوحة التحكم والـ CRM</title>
 
+    <!-- 🔎 لوحة تحكم داخلية للوسطاء فقط: لا فائدة من ظهورها في نتائج البحث -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/dashboard.html">
+
     <!-- ربط ملف التنسيقات الخاص بك -->
     <link rel="stylesheet" href="style.css">
 
     <!-- مكتبة الأيقونات FontAwesome لتشغيل أيقونات الـ CRM -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
     <!-- خط كايرو الفخم -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="supabase-client.js"></script>
+
+    <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'ar',
+          includedLanguages: 'ar,en,ru,zh-CN,fr,es,it,de,tr,fa,ur,hi,sq,bs,bg,hr,cs,da,nl,fil,fi,el,hu,id,ja,ko,no,pl,pt,ro,sv,th,uk,vi',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
+        html { top: 0px !important; padding-top: 0px !important; margin-top: 0px !important; }
+        body { top: 0px !important; position: static !important; padding-top: 0px !important; margin-top: 0px !important; }
+
+        .goog-te-banner-frame,
+        .goog-te-banner,
+        .VIpgJd-yA0Tfe-BN215c,
+        iframe.skiptranslate,
+        iframe.goog-te-banner-frame {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0px !important;
+            width: 0px !important;
+            border: none !important;
+        }
+
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+        #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        .goog-te-gadget-icon, .goog-te-gadget-simple { display: none !important; }
+    </style>
 </head>
 <body style="background-color: #f8fafc; font-family: 'Cairo', sans-serif;">
+
+    <div id="google_translate_element" style="display:none;"></div>
 
     <!-- شريط تنقل لوحة التحكم العلوية -->
     <header style="background: #ffffff; padding: 15px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
@@ -32,7 +74,21 @@
 
     <!-- منطقة محتوى لوحة التحكم والـ CRM -->
     <main style="padding: 30px; max-width: 1300px; margin: 0 auto;">
-        
+
+        <!-- 🛂 قسم اعتماد إعلانات الوسطاء الجدد (للإدارة فقط) -->
+        <section id="admin-approval-section" style="margin-bottom: 30px;">
+            <div id="adminGateMsg" style="background: #fef3c7; border: 1px solid #f59e0b; color: #92400e; font-weight: 800; padding: 14px 18px; border-radius: 10px; display:none;">
+                ⚠️ هذا القسم مخصص للإدارة فقط. سجّل دخولك بحساب يملك صلاحية الإدمن لمراجعة العقارات الجديدة.
+            </div>
+            <div id="adminApprovalPanel" style="display:none;">
+                <h2 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">
+                    <i class="fas fa-user-shield" style="color: #28b16d;"></i> عقارات قيد المراجعة
+                    <span id="pendingCountBadge" style="background:#dc2626; color:white; font-size:13px; padding:2px 10px; border-radius:100px; margin-right:8px;">0</span>
+                </h2>
+                <div id="pendingPropertiesList" style="display: grid; gap: 14px;"></div>
+            </div>
+        </section>
+
         <!-- واجهة الـ CRM المتكاملة -->
         <section id="crm-section" class="dashboard-tab">
             
@@ -83,7 +139,7 @@
                             <tr>
                                 <td><strong>أحمد محمود</strong></td>
                                 <td>
-                                    <a href="https://wa.me/201000000000" target="_blank" class="whatsapp-btn">
+                                    <a href="https://wa.me/201000000000" target="_blank" rel="noopener noreferrer" class="whatsapp-btn">
                                         <i class="fab fa-whatsapp"></i> 01000000000
                                     </a>
                                 </td>
@@ -103,7 +159,7 @@
                             <tr>
                                 <td><strong>سارة خالد</strong></td>
                                 <td>
-                                    <a href="https://wa.me/201100000000" target="_blank" class="whatsapp-btn">
+                                    <a href="https://wa.me/201100000000" target="_blank" rel="noopener noreferrer" class="whatsapp-btn">
                                         <i class="fab fa-whatsapp"></i> 01100000000
                                     </a>
                                 </td>
@@ -129,5 +185,79 @@
 
     <!-- ربط ملف التفاعل script.js -->
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedDir = localStorage.getItem('aqaratti_lang_dir');
+            if (savedDir) document.documentElement.setAttribute('dir', savedDir);
+        });
+
+        function pendingPropertyCardHTML(p) {
+            const broker = p.profiles || {};
+            const firstImg = (p.image_urls && p.image_urls[0]) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=400';
+            return `
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:16px; display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;">
+                    <img src="${firstImg}" style="width:110px; height:90px; object-fit:cover; border-radius:8px; flex-shrink:0;">
+                    <div style="flex:1; min-width:220px;">
+                        <div style="font-weight:900; color:#0f172a; font-size:15px;">${p.title}</div>
+                        <div style="font-size:13px; color:#64748b; margin-top:4px;">
+                            ${Number(p.price_aed).toLocaleString()} AED &middot; ${p.city || '-'} &middot; ${p.deal_type === 'rent' ? 'إيجار' : 'بيع'}
+                        </div>
+                        <div style="font-size:12px; color:#94a3b8; margin-top:6px;">
+                            <i class="fas fa-user"></i> ${broker.full_name || 'وسيط'} &middot; <i class="fas fa-phone"></i> ${broker.phone || '-'}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px; flex-shrink:0;">
+                        <button onclick="reviewProperty('${p.id}', 'approved', this)" style="background:#16a34a; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:800; cursor:pointer; font-size:13px;">
+                            <i class="fas fa-check"></i> اعتماد
+                        </button>
+                        <button onclick="reviewProperty('${p.id}', 'rejected', this)" style="background:#dc2626; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:800; cursor:pointer; font-size:13px;">
+                            <i class="fas fa-times"></i> رفض
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadPendingProperties() {
+            const { data, error } = await supabaseClient
+                .from('properties')
+                .select('*, profiles(full_name, phone)')
+                .eq('status', 'pending')
+                .order('created_at', { ascending: true });
+
+            const listEl = document.getElementById('pendingPropertiesList');
+            const badge = document.getElementById('pendingCountBadge');
+            if (error || !data || data.length === 0) {
+                listEl.innerHTML = `<p style="color:#64748b; font-weight:700;">لا توجد عقارات جديدة بانتظار المراجعة حالياً.</p>`;
+                badge.innerText = '0';
+                return;
+            }
+            badge.innerText = data.length;
+            listEl.innerHTML = data.map(pendingPropertyCardHTML).join('');
+        }
+
+        async function reviewProperty(propertyId, newStatus, btnEl) {
+            btnEl.closest('div[style*="display:flex"]').parentElement.style.opacity = '0.5';
+            const { error } = await supabaseClient
+                .from('properties')
+                .update({ status: newStatus })
+                .eq('id', propertyId);
+            if (error) {
+                alert('تعذر تحديث حالة العقار: ' + error.message);
+                return;
+            }
+            loadPendingProperties();
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const profile = await getCurrentAqarattiProfile();
+            if (profile && profile.is_admin) {
+                document.getElementById('adminApprovalPanel').style.display = 'block';
+                loadPendingProperties();
+            } else {
+                document.getElementById('adminGateMsg').style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>

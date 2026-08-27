@@ -5,10 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الاشتراك لإضافة عقار | Aqaratti</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="description" content="أضف عقارك على منصة عقاراتي ووصّله لآلاف المشترين والمستثمرين. باقات اشتراك مرنة تناسب الملاك والوسطاء العقاريين المعتمدين.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/add-property.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="الاشتراك لإضافة عقار | Aqaratti">
+  <meta property="og:description" content="أضف عقارك على منصة عقاراتي ووصّله لآلاف المشترين والمستثمرين.">
+  <meta property="og:url" content="https://spacem-6.github.io/Aqaratti/add-property.html">
+  <meta property="og:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="currency.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ar',
+        includedLanguages: 'ar,en,ru,zh-CN,fr,es,it,de,tr,fa,ur,hi,sq,bs,bg,hr,cs,da,nl,fil,fi,el,hu,id,ja,ko,no,pl,pt,ro,sv,th,uk,vi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <style>
+    /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
+    html { top: 0px !important; padding-top: 0px !important; margin-top: 0px !important; }
+    body { top: 0px !important; position: static !important; padding-top: 0px !important; margin-top: 0px !important; }
+
+    .goog-te-banner-frame,
+    .goog-te-banner,
+    .VIpgJd-yA0Tfe-BN215c,
+    iframe.skiptranslate,
+    iframe.goog-te-banner-frame {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0px !important;
+      width: 0px !important;
+      border: none !important;
+    }
+
+    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+    #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    .goog-te-gadget-icon, .goog-te-gadget-simple { display: none !important; }
+
     :root {
       --primary-turquoise: #00a896;
       --primary-turquoise-hover: #008072;
@@ -290,6 +335,8 @@
 </head>
 <body>
 
+  <div id="google_translate_element" style="display:none;"></div>
+
   <nav class="navbar">
     <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
     <a href="index.html" style="text-decoration:none; font-weight:800; color:var(--primary-turquoise);"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
@@ -302,49 +349,54 @@
       <p>اختر الباقة المناسبة لاحتياجاتك وانشر عقاراتك لتصل إلى آلاف المشتريين والمستثمرين فوراً</p>
     </div>
 
+    <div id="loginRequiredNotice" style="display:none; background:#fef3c7; border:1px solid #f59e0b; color:#92400e; font-weight:800; padding:14px 18px; border-radius:10px; margin-bottom:20px; text-align:center;">
+      ⚠️ يجب تسجيل الدخول أو إنشاء حساب أولاً قبل نشر عقارك.
+      <a href="index.html" style="color:var(--primary-turquoise); text-decoration:underline;">اضغط هنا للعودة للصفحة الرئيسية وتسجيل الدخول</a>
+    </div>
+
     <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
     <div class="pricing-grid">
       
-      <div class="pricing-card" onclick="selectPlan('single', '50 AED / إعلان', this)">
+      <div class="pricing-card" onclick="selectPlan('single', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box">75 AED</div>
+          <div class="old-price-box" data-price-aed="75">AED 75</div>
           <div class="save-badge">خصم 33% 🏷️</div>
         </div>
-        <div class="plan-price">50 AED</div>
+        <div class="plan-price" data-price-aed="50" data-price-suffix="/ إعلان">AED 50 / إعلان</div>
         <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <div class="pricing-card" onclick="selectPlan('monthly', '500 AED / شهر', this)">
+      <div class="pricing-card" onclick="selectPlan('monthly', this)">
         <div class="plan-name">الباقة الشهرية</div>
         <div class="price-details-wrapper">
           <span style="font-size:12px; color:#64748b; font-weight:800;">باقة قياسية ممتازة</span>
         </div>
-        <div class="plan-price">500 AED / شهر</div>
+        <div class="plan-price" data-price-aed="500" data-price-suffix="/ شهر">AED 500 / شهر</div>
         <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <div class="pricing-card" onclick="selectPlan('semi', '2,500 AED / 6 أشهر', this)">
+      <div class="pricing-card" onclick="selectPlan('semi', this)">
         <div class="plan-name">الباقة نصف السنوية</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box">3,000 AED</div>
-          <div class="save-badge">توفير 500 درهم 🔥</div>
+          <div class="old-price-box" data-price-aed="3000">AED 3,000</div>
+          <div class="save-badge" data-price-aed="500" data-price-prefix="توفير " data-price-suffix="🔥">توفير AED 500 🔥</div>
         </div>
-        <div class="plan-price">2,500 AED / 6 أشهر</div>
+        <div class="plan-price" data-price-aed="2500" data-price-suffix="/ 6 أشهر">AED 2,500 / 6 أشهر</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
-      <div class="pricing-card best-value" onclick="selectPlan('yearly', '3,999 AED / سنة', this)">
+      <div class="pricing-card best-value" onclick="selectPlan('yearly', this)">
         <div class="badge-best">🌟 الأكثر توفيراً</div>
         <div class="plan-name">الباقة السنوية</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box">6,000 AED</div>
-          <div class="save-badge">توفير 2,001 درهم 🎉</div>
+          <div class="old-price-box" data-price-aed="6000">AED 6,000</div>
+          <div class="save-badge" data-price-aed="2001" data-price-prefix="توفير " data-price-suffix="🎉">توفير AED 2,001 🎉</div>
         </div>
-        <div class="plan-price">3,999 AED / سنة</div>
+        <div class="plan-price" data-price-aed="3999" data-price-suffix="/ سنة">AED 3,999 / سنة</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء للاستخدام المتواصل</div>
         <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
@@ -569,9 +621,9 @@
       "اليونان": ["كل المدن", "أثينا", "سانتوريني"]
     };
 
-    function selectPlan(planCode, priceText, cardEl) {
+    function selectPlan(planCode, cardEl) {
       selectedPlanCode = planCode;
-      selectedPlanPrice = priceText;
+      selectedPlanPrice = cardEl.querySelector('.plan-price').innerText;
 
       document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
       cardEl.classList.add('selected');
@@ -579,7 +631,7 @@
       document.getElementById('paymentNotice').style.display = 'none';
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.style.display = 'block';
-      document.getElementById('selectedPriceText').innerText = priceText;
+      document.getElementById('selectedPriceText').innerText = selectedPlanPrice;
     }
 
     function selectType(type, el) {
@@ -618,13 +670,16 @@
       }
     }
 
+    let selectedImageFiles = [];
+
     function previewUploadedImages(e) {
       const files = e.target.files;
       const previewContainer = document.getElementById('imagePreviewContainer');
       previewContainer.innerHTML = "";
       uploadedImagesList = [];
+      selectedImageFiles = Array.from(files);
 
-      Array.from(files).forEach(file => {
+      selectedImageFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = function(evt) {
           uploadedImagesList.push(evt.target.result);
@@ -637,11 +692,34 @@
       });
     }
 
-    function handlePropertySubmit(e) {
+    // 📤 يرفع صور العقار الحقيقية لمخزن Supabase ويرجع روابطها العامة
+    async function uploadPropertyImages(userId) {
+      const urls = [];
+      for (let i = 0; i < selectedImageFiles.length; i++) {
+        const file = selectedImageFiles[i];
+        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+        const path = `${userId}/${Date.now()}-${i}-${safeName}`;
+        const { error } = await supabaseClient.storage.from('property-images').upload(path, file);
+        if (!error) {
+          const { data } = supabaseClient.storage.from('property-images').getPublicUrl(path);
+          urls.push(data.publicUrl);
+        }
+      }
+      return urls;
+    }
+
+    async function handlePropertySubmit(e) {
       e.preventDefault();
 
       if (!selectedPlanCode) {
         alert('يرجى اختيار باقة الاشتراك أولاً!');
+        return;
+      }
+
+      const user = await getCurrentAqarattiUser();
+      if (!user) {
+        alert('يجب تسجيل الدخول أو إنشاء حساب أولاً قبل نشر عقارك. سيتم تحويلك للصفحة الرئيسية لتسجيل الدخول.');
+        window.location.href = 'index.html';
         return;
       }
 
@@ -651,23 +729,64 @@
         if (customValue) selectedCity = customValue;
       }
 
-      let finalImg = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800';
-      if (uploadedImagesList.length > 0) {
-        finalImg = uploadedImagesList[0];
-      } else if (document.getElementById('imageLinkInput').value) {
-        finalImg = document.getElementById('imageLinkInput').value;
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'جاري رفع الصور ونشر الإعلان...';
+
+      let imageUrls = [];
+      if (selectedImageFiles.length > 0) {
+        imageUrls = await uploadPropertyImages(user.id);
+      }
+      const linkInput = document.getElementById('imageLinkInput').value.trim();
+      if (imageUrls.length === 0 && linkInput) {
+        imageUrls = [linkInput];
+      }
+      if (imageUrls.length === 0) {
+        imageUrls = ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800'];
       }
 
-      const role = document.getElementById('brokerRoleInput').value;
-      const category = document.getElementById('propertyCategoryInput').value;
+      const bedsRaw = document.getElementById('bedsInput').value;
+      const bedrooms = bedsRaw === 'استوديو' ? 0 : parseInt(bedsRaw) || 0;
+      const priceAED = parseFloat(document.getElementById('priceInput').value) || 0;
 
-      alert(`💳 جاري تحويلك لصفحة الدفع الآمن لمبلغ (${selectedPlanPrice})...\n\nتم تأكيد تفاصيل العقار (${category}) بصفتك (${role}) وسوف ينشر الإعلان فور إتمام العملية بنجاح! 🎉`);
-      
-      window.location.href = "index.html";
+      const { error } = await supabaseClient.from('properties').insert({
+        broker_id: user.id,
+        title: document.getElementById('titleInput').value.trim(),
+        description: document.getElementById('descInput').value.trim(),
+        price_aed: priceAED,
+        deal_type: dealType,
+        is_golden: dealType === 'sale' && priceAED >= 2000000,
+        bedrooms: bedrooms,
+        bathrooms: parseInt(document.getElementById('bathsInput').value) || 1,
+        area_m2: parseFloat(document.getElementById('sizeInput').value) || null,
+        property_type: document.getElementById('propertyCategoryInput').value,
+        city: selectedCity,
+        commission: '2%',
+        image_urls: imageUrls
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText">${selectedPlanPrice}</span>)`;
+
+      if (error) {
+        alert('حدث خطأ أثناء إرسال العقار: ' + error.message);
+        return;
+      }
+
+      // 💳 بوابة الدفع الفعلية غير مفعّلة بعد — الاشتراك يبقى صوريًا حالياً بانتظار ربط وسيلة دفع حقيقية
+      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته والموافقة عليه من إدارة عقاراتي.');
+      window.location.href = 'index.html';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       updateCities();
+
+      const savedDir = localStorage.getItem('aqaratti_lang_dir');
+      if (savedDir) document.documentElement.setAttribute('dir', savedDir);
+
+      const user = await getCurrentAqarattiUser();
+      const noticeBox = document.getElementById('loginRequiredNotice');
+      if (!user && noticeBox) noticeBox.style.display = 'block';
     });
   </script>
 

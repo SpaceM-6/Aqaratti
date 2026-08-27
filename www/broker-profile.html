@@ -4,9 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>الملف الشخصي للوكيل | Aqaratti</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <meta name="description" content="تعرّف على أفضل الوسطاء العقاريين المعتمدين على منصة عقاراتي وتواصل معهم مباشرة لعرض أو شراء العقارات.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/broker-profile.html">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="الملف الشخصي للوكيل | Aqaratti">
+  <meta property="og:description" content="تعرّف على أفضل الوسطاء العقاريين المعتمدين على منصة عقاراتي.">
+  <meta property="og:url" content="https://spacem-6.github.io/Aqaratti/broker-profile.html">
+  <meta property="og:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="currency.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ar',
+        includedLanguages: 'ar,en,ru,zh-CN,fr,es,it,de,tr,fa,ur,hi,sq,bs,bg,hr,cs,da,nl,fil,fi,el,hu,id,ja,ko,no,pl,pt,ro,sv,th,uk,vi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <style>
+    /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
+    html { top: 0px !important; padding-top: 0px !important; margin-top: 0px !important; }
+    body { top: 0px !important; position: static !important; padding-top: 0px !important; margin-top: 0px !important; }
+
+    .goog-te-banner-frame,
+    .goog-te-banner,
+    .VIpgJd-yA0Tfe-BN215c,
+    iframe.skiptranslate,
+    iframe.goog-te-banner-frame {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0px !important;
+      width: 0px !important;
+      border: none !important;
+    }
+
+    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+    #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    .goog-te-gadget-icon, .goog-te-gadget-simple { display: none !important; }
+  </style>
 
   <style>
     :root {
@@ -233,6 +280,8 @@
 </head>
 <body>
 
+  <div id="google_translate_element" style="display:none;"></div>
+
   <!-- الهيدر -->
   <nav class="navbar">
     <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
@@ -418,60 +467,64 @@
       closeBadgeModal('emailModal');
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedDir = localStorage.getItem('aqaratti_lang_dir');
+      if (savedDir) document.documentElement.setAttribute('dir', savedDir);
+    });
+
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const brokerId = urlParams.get('id');
 
-      let properties = [
-        {
-          id: "101",
-          title: "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
-          priceAED: 645000,
-          bedrooms: 1,
-          area_m2: 336,
-          image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
-          broker: { brokerId: "b1", name: "Ibrahim Abdelaaty Ibrahim", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
-        },
-        {
-          id: "102",
-          title: "فيلا شاطئية مستقلة في نخلة جميرا",
-          priceAED: 18500000,
-          bedrooms: 6,
-          area_m2: 650,
-          image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
-          broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
-        }
-      ];
+      // 🔗 نعرض بيانات الوسيط القادمة مباشرة من رابط بطاقة العقار (نفس الاسم/الوكالة/الهاتف/الصورة بالضبط)
+      // بدل بيانات وهمية منفصلة، حتى تتطابق الصفحتان دائماً.
+      const currentBroker = {
+        brokerId: brokerId || '',
+        name: urlParams.get('name') || 'وسيط عقاراتي',
+        agency: urlParams.get('agency') || 'عقاراتي',
+        phone: urlParams.get('phone') || '971501234567',
+        avatar: urlParams.get('avatar') || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'
+      };
 
-      const brokerProps = properties.filter(p => p.broker && p.broker.brokerId === brokerId);
-      const currentBroker = brokerProps.length > 0 ? brokerProps[0].broker : properties[0].broker;
+      document.getElementById('brokerName').innerText = currentBroker.name;
+      document.getElementById('brokerAgency').innerText = currentBroker.agency;
+      document.getElementById('brokerAvatar').src = currentBroker.avatar;
 
-      document.getElementById('brokerName').innerText = currentBroker.name || "Ibrahim Abdelaaty Ibrahim";
-      document.getElementById('brokerAgency').innerText = currentBroker.agency || "سكويا العقارية SEQUOIA";
-      if (currentBroker.avatar) document.getElementById('brokerAvatar').src = currentBroker.avatar;
-      
-      activePhone = currentBroker.phone || "0501234567";
+      activePhone = currentBroker.phone;
       document.getElementById('modalBrokerPhone').innerText = activePhone;
       document.getElementById('phoneDirectCallLink').href = `tel:${activePhone}`;
 
+      // 📦 باقي عقارات نفس الوسيط: نجلبها من كل مصادر بيانات الموقع (properties.json + عقارات Supabase المعتمدة) بمطابقة رقم الوسيط
       const container = document.getElementById('brokerPropertiesContainer');
-      const propsToShow = brokerProps.length > 0 ? brokerProps : properties;
+      let jsonList = [];
+      try {
+        const res = await fetch('./properties.json?v=' + Date.now());
+        jsonList = await res.json();
+      } catch (e) {}
+      const supabaseList = await fetchApprovedSupabaseProperties();
+      const combinedList = [...jsonList, ...supabaseList];
+      const propsToShow = combinedList.filter(p => p.broker && brokerId && p.broker.brokerId === brokerId);
+
+      if (propsToShow.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#64748b; font-weight:700; padding:20px;">لا توجد عقارات أخرى معروضة حالياً لهذا الوسيط.</p>`;
+        return;
+      }
 
       container.innerHTML = propsToShow.map(p => `
         <div class="bayut-prop-card-horizontal">
           <div class="prop-card-img-box">
-            <img src="${p.image}" alt="${p.title}">
+            <img src="${p.image}" alt="${p.title}" loading="lazy">
             <span style="position:absolute; top:10px; right:10px; background:#16a34a; color:white; font-size:10px; font-weight:900; padding:3px 8px; border-radius:12px;">TruCheck™</span>
           </div>
 
           <div class="prop-card-details-box">
             <div>
-              <div class="prop-price-text">${p.priceAED.toLocaleString()} درهم</div>
+              <div class="prop-price-text">${formatPriceAED(p.priceAED)}</div>
               <div class="prop-title-text">${p.title}</div>
               <div class="prop-specs-row">
-                <span><i class="fas fa-bed"></i> استوديو / ${p.bedrooms} غرف</span>
+                <span><i class="fas fa-bed"></i> ${p.bedrooms === 0 ? 'استوديو' : p.bedrooms + ' غرف'}</span>
                 <span>│</span>
-                <span><i class="fas fa-bath"></i> 1 حمام</span>
+                <span><i class="fas fa-bath"></i> ${p.bathrooms || 1} حمام</span>
                 <span>│</span>
                 <span><i class="fas fa-ruler-combined"></i> ${p.area_m2} قدم مربع</span>
               </div>

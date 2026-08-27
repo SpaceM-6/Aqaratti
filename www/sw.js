@@ -2,7 +2,7 @@
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v18';
 const CACHE_NAME = `aqaratti-cache-${CACHE_VERSION}`;
 
 // 🧱 واجهة التطبيق الأساسية التي تُخزَّن فور تثبيت الـ Service Worker
@@ -16,9 +16,13 @@ const APP_SHELL = [
   './property-details.html',
   './style.css',
   './script.js',
+  './currency.js',
+  './supabase-client.js',
   './manifest.json',
-  './icons/icon.svg',
-  './icons/icon-maskable.svg'
+  './icons/icon-app-192.png',
+  './icons/icon-app-512.png',
+  './icons/icon-app-1024.png',
+  './icons/icon-app-maskable-512.png'
 ];
 
 // 📥 التثبيت: تخزين ملفات واجهة التطبيق فوراً

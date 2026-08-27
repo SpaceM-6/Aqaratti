@@ -2663,7 +2663,7 @@ function renderPropertiesList(list) {
     // ==================== 📲 تطبيق الويب التقدمي (PWA): تسجيل الـ Service Worker وبنر التثبيت ====================
     const PWA_DISMISS_KEY = 'aqaratti_pwa_banner_dismissed_at';
     const PWA_DISMISS_DAYS = 7;
-    const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.aqaratti.app';
+    let deferredInstallPrompt = null;
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -2699,6 +2699,7 @@ function renderPropertiesList(list) {
     // 🖥️ سطح المكتب: إظهار البنر تلقائياً فقط عند دعم المتصفح لحدث التثبيت الأصلي (وما لم يُغلق مؤخراً)
     window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
+      deferredInstallPrompt = event;
       if (!isInstallBannerSnoozed()) showInstallBanner();
     });
 
@@ -2708,9 +2709,24 @@ function renderPropertiesList(list) {
       if (isRunningAsInstalledApp()) hideInstallBanner();
     });
 
-    function installAqarattiApp() {
-      window.open(PLAY_STORE_URL, '_blank', 'noopener,noreferrer');
-      hideInstallBanner();
+    async function installAqarattiApp() {
+      if (!deferredInstallPrompt) {
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        if (isIOS) {
+          alert('لتثبيت التطبيق على آيفون/آيباد: اضغط زر المشاركة ⬆️ بالمتصفح، ثم اختر "إضافة إلى الشاشة الرئيسية".');
+        } else {
+          alert('التثبيت غير متاح الآن من هذا المتصفح. جرّب من قائمة المتصفح (⋮) خيار "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".');
+        }
+        return;
+      }
+
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+
+      if (outcome === 'accepted') {
+        hideInstallBanner();
+      }
     }
 
     function dismissInstallBanner() {
