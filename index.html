@@ -33,6 +33,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -1555,7 +1557,7 @@
         <div class="instant-dropdown mobile-hamburger-group">
           <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownMobile', event)"><i class="fas fa-bars"></i></button>
           <div class="instant-menu" id="mainMenuDropdownMobile" style="left: 0; right: auto; width: 240px;">
-            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+            <a href="javascript:void(0)" onclick="openLoginModal()" class="aqaratti-auth-link" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
 
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
             <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
@@ -1683,7 +1685,7 @@
         <div class="instant-dropdown">
           <button class="hamburger-menu-btn" onclick="openInstantDropdown('mainMenuDropdownDesktop', event)"><i class="fas fa-bars"></i></button>
           <div class="instant-menu" id="mainMenuDropdownDesktop" style="left: 0; right: auto; width: 240px;">
-            <a href="javascript:void(0)" onclick="openLoginModal()" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
+            <a href="javascript:void(0)" onclick="openLoginModal()" class="aqaratti-auth-link" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
             
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
             <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
@@ -1943,17 +1945,18 @@
           <button class="auth-tab-btn active" id="tabLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
           <button class="auth-tab-btn" id="tabRegister" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
         </div>
+        <p id="authErrorMsg" style="display:none; color:#dc2626; background:#fef2f2; border:1px solid #fecaca; padding:8px 10px; border-radius:6px; font-size:12px; font-weight:800; margin-bottom:10px;"></p>
         <div id="loginAuthForm">
-          <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني أو رقم الهاتف">
-          <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
-          <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم تسجيل الدخول بنجاح!'); closeRoyalModal('loginModal');">تسجيل الدخول</button>
+          <input type="email" id="loginEmailInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
+          <input type="password" id="loginPasswordInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
+          <button id="loginSubmitBtn" style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="handleAqarattiLogin()">تسجيل الدخول</button>
         </div>
         <div id="registerAuthForm" style="display: none;">
-          <input type="text" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="الاسم الكامل">
-          <input type="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
-          <input type="tel" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف">
-          <input type="password" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور">
-          <button style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنشاء الحساب بنجاح!'); closeRoyalModal('loginModal');">إنشاء الحساب الآن</button>
+          <input type="text" id="registerNameInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="الاسم الكامل">
+          <input type="email" id="registerEmailInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="البريد الإلكتروني">
+          <input type="tel" id="registerPhoneInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف (مثال: 971501234567)">
+          <input type="password" id="registerPasswordInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور (6 أحرف على الأقل)">
+          <button id="registerSubmitBtn" style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="handleAqarattiRegister()">إنشاء الحساب الآن</button>
         </div>
         <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">إلغاء</button>
       </div>
@@ -2063,6 +2066,80 @@
         loginForm.style.display = 'none'; registerForm.style.display = 'block';
         btnRegister.classList.add('active'); btnLogin.classList.remove('active');
       }
+    }
+
+    function showAuthError(message) {
+      const el = document.getElementById('authErrorMsg');
+      el.innerText = message;
+      el.style.display = 'block';
+    }
+
+    async function handleAqarattiLogin() {
+      const email = document.getElementById('loginEmailInput').value.trim();
+      const password = document.getElementById('loginPasswordInput').value;
+      if (!email || !password) { showAuthError('يرجى تعبئة البريد الإلكتروني وكلمة المرور.'); return; }
+
+      const btn = document.getElementById('loginSubmitBtn');
+      btn.disabled = true; btn.innerText = 'جاري تسجيل الدخول...';
+
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      btn.disabled = false; btn.innerText = 'تسجيل الدخول';
+
+      if (error) { showAuthError('فشل تسجيل الدخول: تأكد من البريد وكلمة المرور.'); return; }
+
+      closeRoyalModal('loginModal');
+      await refreshAqarattiAuthUI();
+      alert('تم تسجيل الدخول بنجاح!');
+    }
+
+    async function handleAqarattiRegister() {
+      const fullName = document.getElementById('registerNameInput').value.trim();
+      const email = document.getElementById('registerEmailInput').value.trim();
+      const phone = document.getElementById('registerPhoneInput').value.trim();
+      const password = document.getElementById('registerPasswordInput').value;
+
+      if (!fullName || !email || !phone || !password) { showAuthError('يرجى تعبئة كل الحقول.'); return; }
+      if (password.length < 6) { showAuthError('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return; }
+
+      const btn = document.getElementById('registerSubmitBtn');
+      btn.disabled = true; btn.innerText = 'جاري إنشاء الحساب...';
+
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+      if (error) {
+        btn.disabled = false; btn.innerText = 'إنشاء الحساب الآن';
+        showAuthError('تعذر إنشاء الحساب: ' + (error.message.includes('already') ? 'هذا البريد مسجّل مسبقاً.' : error.message));
+        return;
+      }
+
+      // ننشئ صف الوسيط (profiles) مباشرة بنفس بيانات التسجيل
+      if (data.user) {
+        await supabaseClient.from('profiles').insert({
+          id: data.user.id,
+          full_name: fullName,
+          phone: phone,
+          whatsapp: phone
+        });
+      }
+
+      btn.disabled = false; btn.innerText = 'إنشاء الحساب الآن';
+      closeRoyalModal('loginModal');
+      await refreshAqarattiAuthUI();
+      alert('تم إنشاء حسابك بنجاح! يمكنك الآن إضافة عقاراتك من صفحة "الاشتراك وإضافة عقار".');
+    }
+
+    async function refreshAqarattiAuthUI() {
+      const profile = await getCurrentAqarattiProfile();
+      document.querySelectorAll('.aqaratti-auth-link').forEach(el => {
+        if (profile) {
+          el.innerHTML = `<i class="fas fa-user-check"></i> مرحباً، ${profile.full_name.split(' ')[0]} (خروج)`;
+          el.onclick = () => aqarattiSignOut();
+        } else {
+          el.innerHTML = `<i class="fas fa-user-lock"></i> تسجيل الدخول أو إنشاء حساب`;
+          el.onclick = () => openLoginModal();
+        }
+      });
     }
 
     function switchRoyalTab(el) {
@@ -2428,20 +2505,26 @@ function renderPropertiesList(list) {
       return loadedScrapedList.length > 0 ? loadedScrapedList : rawPropertiesData;
     }
 
+    // ملاحظة: mapSupabasePropertyToAqaratti و fetchApprovedSupabaseProperties معرّفتان في supabase-client.js (مشتركتان مع باقي الصفحات)
+
     async function fetchProperties() {
+      let jsonProperties = [];
       try {
         const response = await fetch('./properties.json?v=' + Date.now());
-        const scrapedData = await response.json();
-        if (scrapedData && scrapedData.length > 0) {
-          loadedScrapedList = scrapedData;
-          // 🏠 واجهة الموقع الافتراضية تعرض فقط العقارات المميزة (featured)؛ باقي القائمة الكبيرة
-          // تظهر فقط كنتائج بحث/فلترة عبر executeSearch()، وليست موجودة في الواجهة الافتراضية.
-          const featuredOnly = scrapedData.filter(p => p.featured);
-          renderPropertiesList(featuredOnly.length > 0 ? featuredOnly : rawPropertiesData);
-        } else {
-          renderPropertiesList(rawPropertiesData);
-        }
+        jsonProperties = await response.json();
       } catch (err) {
+        jsonProperties = [];
+      }
+
+      const supabaseProperties = await fetchApprovedSupabaseProperties();
+      loadedScrapedList = [...jsonProperties, ...supabaseProperties];
+
+      if (loadedScrapedList.length > 0) {
+        // 🏠 واجهة الموقع الافتراضية تعرض فقط العقارات المميزة (featured)؛ باقي القائمة الكبيرة
+        // (بما فيها عقارات الوسطاء الحقيقيين) تظهر فقط كنتائج بحث/فلترة عبر executeSearch().
+        const featuredOnly = loadedScrapedList.filter(p => p.featured);
+        renderPropertiesList(featuredOnly.length > 0 ? featuredOnly : rawPropertiesData);
+      } else {
         renderPropertiesList(rawPropertiesData);
       }
     }
@@ -2568,6 +2651,7 @@ function renderPropertiesList(list) {
       updateCitiesAndBackground('uae');
       updateFavBadgeCount();
       fetchProperties();
+      refreshAqarattiAuthUI();
     });
 
     document.addEventListener('click', (e) => {

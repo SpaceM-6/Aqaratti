@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -347,6 +349,11 @@
       <p>اختر الباقة المناسبة لاحتياجاتك وانشر عقاراتك لتصل إلى آلاف المشتريين والمستثمرين فوراً</p>
     </div>
 
+    <div id="loginRequiredNotice" style="display:none; background:#fef3c7; border:1px solid #f59e0b; color:#92400e; font-weight:800; padding:14px 18px; border-radius:10px; margin-bottom:20px; text-align:center;">
+      ⚠️ يجب تسجيل الدخول أو إنشاء حساب أولاً قبل نشر عقارك.
+      <a href="index.html" style="color:var(--primary-turquoise); text-decoration:underline;">اضغط هنا للعودة للصفحة الرئيسية وتسجيل الدخول</a>
+    </div>
+
     <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
     <div class="pricing-grid">
       
@@ -663,13 +670,16 @@
       }
     }
 
+    let selectedImageFiles = [];
+
     function previewUploadedImages(e) {
       const files = e.target.files;
       const previewContainer = document.getElementById('imagePreviewContainer');
       previewContainer.innerHTML = "";
       uploadedImagesList = [];
+      selectedImageFiles = Array.from(files);
 
-      Array.from(files).forEach(file => {
+      selectedImageFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = function(evt) {
           uploadedImagesList.push(evt.target.result);
@@ -682,11 +692,34 @@
       });
     }
 
-    function handlePropertySubmit(e) {
+    // 📤 يرفع صور العقار الحقيقية لمخزن Supabase ويرجع روابطها العامة
+    async function uploadPropertyImages(userId) {
+      const urls = [];
+      for (let i = 0; i < selectedImageFiles.length; i++) {
+        const file = selectedImageFiles[i];
+        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+        const path = `${userId}/${Date.now()}-${i}-${safeName}`;
+        const { error } = await supabaseClient.storage.from('property-images').upload(path, file);
+        if (!error) {
+          const { data } = supabaseClient.storage.from('property-images').getPublicUrl(path);
+          urls.push(data.publicUrl);
+        }
+      }
+      return urls;
+    }
+
+    async function handlePropertySubmit(e) {
       e.preventDefault();
 
       if (!selectedPlanCode) {
         alert('يرجى اختيار باقة الاشتراك أولاً!');
+        return;
+      }
+
+      const user = await getCurrentAqarattiUser();
+      if (!user) {
+        alert('يجب تسجيل الدخول أو إنشاء حساب أولاً قبل نشر عقارك. سيتم تحويلك للصفحة الرئيسية لتسجيل الدخول.');
+        window.location.href = 'index.html';
         return;
       }
 
@@ -696,26 +729,64 @@
         if (customValue) selectedCity = customValue;
       }
 
-      let finalImg = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800';
-      if (uploadedImagesList.length > 0) {
-        finalImg = uploadedImagesList[0];
-      } else if (document.getElementById('imageLinkInput').value) {
-        finalImg = document.getElementById('imageLinkInput').value;
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'جاري رفع الصور ونشر الإعلان...';
+
+      let imageUrls = [];
+      if (selectedImageFiles.length > 0) {
+        imageUrls = await uploadPropertyImages(user.id);
+      }
+      const linkInput = document.getElementById('imageLinkInput').value.trim();
+      if (imageUrls.length === 0 && linkInput) {
+        imageUrls = [linkInput];
+      }
+      if (imageUrls.length === 0) {
+        imageUrls = ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800'];
       }
 
-      const role = document.getElementById('brokerRoleInput').value;
-      const category = document.getElementById('propertyCategoryInput').value;
+      const bedsRaw = document.getElementById('bedsInput').value;
+      const bedrooms = bedsRaw === 'استوديو' ? 0 : parseInt(bedsRaw) || 0;
+      const priceAED = parseFloat(document.getElementById('priceInput').value) || 0;
 
-      alert(`💳 جاري تحويلك لصفحة الدفع الآمن لمبلغ (${selectedPlanPrice})...\n\nتم تأكيد تفاصيل العقار (${category}) بصفتك (${role}) وسوف ينشر الإعلان فور إتمام العملية بنجاح! 🎉`);
-      
-      window.location.href = "index.html";
+      const { error } = await supabaseClient.from('properties').insert({
+        broker_id: user.id,
+        title: document.getElementById('titleInput').value.trim(),
+        description: document.getElementById('descInput').value.trim(),
+        price_aed: priceAED,
+        deal_type: dealType,
+        is_golden: dealType === 'sale' && priceAED >= 2000000,
+        bedrooms: bedrooms,
+        bathrooms: parseInt(document.getElementById('bathsInput').value) || 1,
+        area_m2: parseFloat(document.getElementById('sizeInput').value) || null,
+        property_type: document.getElementById('propertyCategoryInput').value,
+        city: selectedCity,
+        commission: '2%',
+        image_urls: imageUrls
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText">${selectedPlanPrice}</span>)`;
+
+      if (error) {
+        alert('حدث خطأ أثناء إرسال العقار: ' + error.message);
+        return;
+      }
+
+      // 💳 بوابة الدفع الفعلية غير مفعّلة بعد — الاشتراك يبقى صوريًا حالياً بانتظار ربط وسيلة دفع حقيقية
+      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته والموافقة عليه من إدارة عقاراتي.');
+      window.location.href = 'index.html';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       updateCities();
 
       const savedDir = localStorage.getItem('aqaratti_lang_dir');
       if (savedDir) document.documentElement.setAttribute('dir', savedDir);
+
+      const user = await getCurrentAqarattiUser();
+      const noticeBox = document.getElementById('loginRequiredNotice');
+      if (!user && noticeBox) noticeBox.style.display = 'block';
     });
   </script>
 
