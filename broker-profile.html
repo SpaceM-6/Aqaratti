@@ -474,40 +474,37 @@
       const urlParams = new URLSearchParams(window.location.search);
       const brokerId = urlParams.get('id');
 
-      let properties = [
-        {
-          id: "101",
-          title: "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
-          priceAED: 645000,
-          bedrooms: 1,
-          area_m2: 336,
-          image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
-          broker: { brokerId: "b1", name: "Ibrahim Abdelaaty Ibrahim", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
-        },
-        {
-          id: "102",
-          title: "فيلا شاطئية مستقلة في نخلة جميرا",
-          priceAED: 18500000,
-          bedrooms: 6,
-          area_m2: 650,
-          image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
-          broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
-        }
-      ];
+      // 🔗 نعرض بيانات الوسيط القادمة مباشرة من رابط بطاقة العقار (نفس الاسم/الوكالة/الهاتف/الصورة بالضبط)
+      // بدل بيانات وهمية منفصلة، حتى تتطابق الصفحتان دائماً.
+      const currentBroker = {
+        brokerId: brokerId || '',
+        name: urlParams.get('name') || 'وسيط عقاراتي',
+        agency: urlParams.get('agency') || 'عقاراتي',
+        phone: urlParams.get('phone') || '971501234567',
+        avatar: urlParams.get('avatar') || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'
+      };
 
-      const brokerProps = properties.filter(p => p.broker && p.broker.brokerId === brokerId);
-      const currentBroker = brokerProps.length > 0 ? brokerProps[0].broker : properties[0].broker;
+      document.getElementById('brokerName').innerText = currentBroker.name;
+      document.getElementById('brokerAgency').innerText = currentBroker.agency;
+      document.getElementById('brokerAvatar').src = currentBroker.avatar;
 
-      document.getElementById('brokerName').innerText = currentBroker.name || "Ibrahim Abdelaaty Ibrahim";
-      document.getElementById('brokerAgency').innerText = currentBroker.agency || "سكويا العقارية SEQUOIA";
-      if (currentBroker.avatar) document.getElementById('brokerAvatar').src = currentBroker.avatar;
-      
-      activePhone = currentBroker.phone || "0501234567";
+      activePhone = currentBroker.phone;
       document.getElementById('modalBrokerPhone').innerText = activePhone;
       document.getElementById('phoneDirectCallLink').href = `tel:${activePhone}`;
 
+      // 📦 باقي عقارات نفس الوسيط: نجلبها من نفس مصدر بيانات الموقع (properties.json) بمطابقة رقم الوسيط
       const container = document.getElementById('brokerPropertiesContainer');
-      const propsToShow = brokerProps.length > 0 ? brokerProps : properties;
+      let propsToShow = [];
+      try {
+        const res = await fetch('./properties.json?v=' + Date.now());
+        const list = await res.json();
+        propsToShow = list.filter(p => p.broker && brokerId && p.broker.brokerId === brokerId);
+      } catch (e) {}
+
+      if (propsToShow.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#64748b; font-weight:700; padding:20px;">لا توجد عقارات أخرى معروضة حالياً لهذا الوسيط.</p>`;
+        return;
+      }
 
       container.innerHTML = propsToShow.map(p => `
         <div class="bayut-prop-card-horizontal">
@@ -521,9 +518,9 @@
               <div class="prop-price-text">${formatPriceAED(p.priceAED)}</div>
               <div class="prop-title-text">${p.title}</div>
               <div class="prop-specs-row">
-                <span><i class="fas fa-bed"></i> استوديو / ${p.bedrooms} غرف</span>
+                <span><i class="fas fa-bed"></i> ${p.bedrooms === 0 ? 'استوديو' : p.bedrooms + ' غرف'}</span>
                 <span>│</span>
-                <span><i class="fas fa-bath"></i> 1 حمام</span>
+                <span><i class="fas fa-bath"></i> ${p.bathrooms || 1} حمام</span>
                 <span>│</span>
                 <span><i class="fas fa-ruler-combined"></i> ${p.area_m2} قدم مربع</span>
               </div>

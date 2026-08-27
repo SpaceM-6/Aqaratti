@@ -2124,7 +2124,7 @@
 
     function confirmGenerateLink() {
       const ref = document.getElementById('affiliateRefInput').value.trim() || 'مباشر';
-      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+      const allProps = getAllProperties();
       const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
       const broker = property.broker || { name: "الوسيط المعتمد", agency: "شركة عقارية معتمدة" };
       const propertyUrl = `https://spacem-6.github.io/Aqaratti/property-details.html?id=${property.id}&ref=${ref}`;
@@ -2330,7 +2330,7 @@ ${propertyUrl}`;
 
     /* 📌 دالة حفظ وتمرير بيانات العقار والوسيط بصفحة التفاصيل */
 function goToPropertyDetails(propId) {
-  const allProps = [...rawPropertiesData, ...loadedScrapedList];
+  const allProps = getAllProperties();
   const selectedProp = allProps.find(p => p.id.toString() === propId.toString()) || allProps[0];
   
   // حفظ بيانات العقار والوسيط بالذاكرة لصفحة التفاصيل
@@ -2346,7 +2346,9 @@ function renderPropertiesList(list) {
       const isFav = favoriteProperties.includes(prop.id.toString());
       const displayPrice = formatPriceAED(prop.priceAED || prop.price || 0);
 
-      const propertyImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+      const propertyImages = (prop.imagesList && prop.imagesList.length > 0) ? prop.imagesList
+        : (prop.images && prop.images.length > 0) ? prop.images
+        : [prop.image];
       localStorage.setItem(`aqaratti_prop_imgs_${prop.id}`, JSON.stringify(propertyImages));
 
       /* 📌 جلب ومطابقة بيانات الوسيط الخاصة بهذا العقار تحديداً */
@@ -2421,13 +2423,21 @@ function renderPropertiesList(list) {
   }
 }
 
+    // 📦 مصدر واحد لكل العقارات: loadedScrapedList عند نجاح التحميل، وإلا rawPropertiesData كنسخة احتياطية (بدون تكرار)
+    function getAllProperties() {
+      return loadedScrapedList.length > 0 ? loadedScrapedList : rawPropertiesData;
+    }
+
     async function fetchProperties() {
       try {
         const response = await fetch('./properties.json?v=' + Date.now());
         const scrapedData = await response.json();
         if (scrapedData && scrapedData.length > 0) {
           loadedScrapedList = scrapedData;
-          renderPropertiesList([...rawPropertiesData, ...scrapedData]);
+          // 🏠 واجهة الموقع الافتراضية تعرض فقط العقارات المميزة (featured)؛ باقي القائمة الكبيرة
+          // تظهر فقط كنتائج بحث/فلترة عبر executeSearch()، وليست موجودة في الواجهة الافتراضية.
+          const featuredOnly = scrapedData.filter(p => p.featured);
+          renderPropertiesList(featuredOnly.length > 0 ? featuredOnly : rawPropertiesData);
         } else {
           renderPropertiesList(rawPropertiesData);
         }
@@ -2476,7 +2486,7 @@ function renderPropertiesList(list) {
         return;
       }
 
-      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+      const allProps = getAllProperties();
 
       const filtered = allProps.filter(p => {
         const fullText = `${p.title} ${p.description || ''} ${p.propertyType || ''} ${p.dealType || ''}`.toLowerCase();
@@ -2486,11 +2496,12 @@ function renderPropertiesList(list) {
 
       closeRoyalModal('aiSearchModal');
 
+      const RESULTS_CAP = 60;
       if (filtered.length > 0) {
-        renderPropertiesList(filtered);
-        document.getElementById('resultsSectionTitle').innerText = `🤖 نتائج البحث بالذكاء الاصطناعي بناءً على: "${query}"`;
+        renderPropertiesList(filtered.slice(0, RESULTS_CAP));
+        document.getElementById('resultsSectionTitle').innerText = `🤖 نتائج البحث بالذكاء الاصطناعي بناءً على: "${query}" (${filtered.length} نتيجة)`;
       } else {
-        renderPropertiesList(allProps);
+        renderPropertiesList(allProps.slice(0, RESULTS_CAP));
         alert(`🤖 تم تحليل طلبك: "${query}". عرضنا لك أفضل العروض الحصرية القريبة من طلبك!`);
       }
 
@@ -2504,7 +2515,7 @@ function renderPropertiesList(list) {
       const selectedCity = document.getElementById('citySelector').value;
       const minRoi = parseFloat(document.getElementById('minRoiInput').value) || 7.0;
 
-      const allProps = [...rawPropertiesData, ...loadedScrapedList];
+      const allProps = getAllProperties();
 
       const filtered = allProps.filter(p => {
         let matchesTab = true;
@@ -2519,13 +2530,20 @@ function renderPropertiesList(list) {
         return matchesTab && matchesKeyword && matchesPrice && matchesCity;
       });
 
-      renderPropertiesList(filtered);
+      const RESULTS_CAP = 60;
+      renderPropertiesList(filtered.slice(0, RESULTS_CAP));
 
       const titleEl = document.getElementById('resultsSectionTitle');
       if (currentTabType === 'sale') titleEl.innerText = 'عقارات مخصصة للشراء 🔑';
       else if (currentTabType === 'rent') titleEl.innerText = 'عقارات مخصصة للإيجار 🏢';
       else if (currentTabType === 'golden') titleEl.innerText = 'عقارات مؤهلة للإقامة الذهبية والجنسية 🏆';
       else if (currentTabType === 'roi') titleEl.innerText = 'أعلى فرص الاستثمار العقاري عائداً (ROI) 📈';
+
+      if (filtered.length > RESULTS_CAP) {
+        titleEl.innerText += ` — عرض ${RESULTS_CAP} من أصل ${filtered.length} نتيجة، ضيّق البحث لعرض الأنسب لك`;
+      } else {
+        titleEl.innerText += ` (${filtered.length} نتيجة)`;
+      }
 
       const propSection = document.querySelector('.properties-section');
       if (propSection) {

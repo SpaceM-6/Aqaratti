@@ -825,12 +825,30 @@
 
     async function loadPropertyDetails() {
       const urlParams = new URLSearchParams(window.location.search);
-      const propId = urlParams.get('id') || '101';
+      const propId = (urlParams.get('id') || '101').toString();
+
+      // 🔗 نفس العقار المعروض في بطاقة الصفحة الرئيسية بالضبط: أولاً من الذاكرة المحلية (نقرة مباشرة من بطاقة العقار)،
+      // وإلا نجلبه من properties.json عبر رقمه (رابط مباشر/مشاركة) حتى تتطابق كل التفاصيل دائماً.
+      let property = null;
+      try {
+        const saved = JSON.parse(localStorage.getItem('aqaratti_selected_property') || 'null');
+        if (saved && saved.id && saved.id.toString() === propId) property = saved;
+      } catch (e) {}
+
+      if (!property) {
+        try {
+          const res = await fetch('./properties.json?v=' + Date.now());
+          const list = await res.json();
+          property = list.find(p => p.id && p.id.toString() === propId) || list[0] || null;
+        } catch (e) {}
+      }
 
       const savedImgs = JSON.parse(localStorage.getItem(`aqaratti_prop_imgs_${propId}`) || '[]');
-      
+
       if (savedImgs.length > 0) {
         propertyImagesList = savedImgs;
+      } else if (property && (property.imagesList || property.images) && (property.imagesList || property.images).length > 0) {
+        propertyImagesList = property.imagesList || property.images;
       } else {
         propertyImagesList = [
           "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200",
@@ -848,27 +866,31 @@
 
       updateGalleryImage(0);
 
-      if (propId === '102') {
-        document.getElementById('propTitle').innerText = "فيلا شاطئية مستقلة في نخلة جميرا";
-        document.getElementById('propPrice').setAttribute('data-price-aed', '18500000');
-        document.getElementById('propPrice').innerText = formatPriceAED(18500000);
-        document.getElementById('propArea').innerText = "650";
-        document.getElementById('quickBeds').innerHTML = `<i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> 6 غرف`;
-        document.getElementById('quickBaths').innerHTML = `<i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> 7 حمامات`;
-        document.getElementById('brokerName').innerText = "سارة الفلاسي";
-        document.getElementById('brokerAgency').innerText = "شركة داماك DAMAC";
-        currentBrokerPhone = "0509876543";
-        currentBrokerEmail = "sara.falasi@damacproperties.com";
-      } else {
-        document.getElementById('propTitle').innerText = "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي";
-        document.getElementById('propPrice').setAttribute('data-price-aed', '645000');
-        document.getElementById('propPrice').innerText = formatPriceAED(645000);
-        document.getElementById('quickBeds').innerHTML = `<i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> استوديو`;
-        document.getElementById('quickBaths').innerHTML = `<i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> 1 حمام`;
-        document.getElementById('brokerName').innerText = "إبراهيم عبد العاطي إبراهيم";
-        document.getElementById('brokerAgency').innerText = "سكويا العقارية SEQUOIA";
-        currentBrokerPhone = "0501234567";
-        currentBrokerEmail = "ibrahim.broker@aqaratti.com";
+      if (property) {
+        const broker = property.broker || {};
+        const priceAED = property.priceAED || property.price || 0;
+
+        document.getElementById('propTitle').innerText = property.title || '';
+        const priceEl = document.getElementById('propPrice');
+        priceEl.setAttribute('data-price-aed', priceAED);
+        priceEl.innerText = formatPriceAED(priceAED);
+        document.getElementById('propArea').innerText = property.area_m2 || '-';
+
+        const bedsText = (property.bedrooms === 0) ? 'استوديو' : `${property.bedrooms ?? '-'} غرف`;
+        document.getElementById('quickBeds').innerHTML = `<i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${bedsText}`;
+        document.getElementById('quickBaths').innerHTML = `<i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${property.bathrooms || 1} حمام`;
+
+        const catEl = document.getElementById('propCategory');
+        if (catEl) catEl.innerText = property.propertyType || 'شقة سكنية';
+        const descEl = document.getElementById('propFullDesc');
+        if (descEl && property.description) descEl.innerText = property.description;
+
+        document.getElementById('brokerName').innerText = broker.name || 'الوسيط المعتمد';
+        document.getElementById('brokerAgency').innerText = broker.agency || 'عقاراتي';
+        const avatarEl = document.getElementById('brokerAvatar');
+        if (avatarEl && broker.avatar) avatarEl.src = broker.avatar;
+        currentBrokerPhone = broker.phone || '971501234567';
+        currentBrokerEmail = broker.email || 'info@aqaratti.com';
       }
 
       document.getElementById('brokerEmailText').innerText = currentBrokerEmail;
