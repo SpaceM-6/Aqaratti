@@ -186,7 +186,7 @@
     }
 
     .arabic-brand {
-      font-size: 20px;
+      font-size: 25px;
       font-weight: 900;
       color: var(--primary-turquoise);
     }
@@ -1289,7 +1289,7 @@
   .brand-text-group {
     gap: 3px !important;
   }
-  .arabic-brand { font-size: 17px !important; }
+  .arabic-brand { font-size: 21px !important; }
 
   /* 🧩 منع اختفاء جزء من مربع العقار: السماح لأزرار البطاقة الأربعة بالانكماش داخل عرض البطاقة بدل تجاوزه */
   .bayut-property-card {
@@ -1310,7 +1310,7 @@
 
 /* 📱 تحسين إضافي للشاشات الصغيرة جداً (أقل من 400px) لتناسب كافة أحجام الجوالات */
 @media (max-width: 400px) {
-  .arabic-brand { font-size: 15px !important; }
+  .arabic-brand { font-size: 18px !important; }
   .royal-title { font-size: 18px !important; }
   .property-price-tag { font-size: 18px !important; }
   .btn-add-nav, .btn-fav-nav {
@@ -1605,10 +1605,10 @@
 
           <!-- 🌐 2. قائمة اللغات -->
           <div class="instant-dropdown">
-            <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang">العربية</span></button>
+            <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang" class="notranslate" translate="no">العربية</span></button>
             <div class="instant-menu search-menu" id="fastLangList">
               <input type="text" placeholder="ابحث بين 34 لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
-              <div class="instant-scroll" id="fastLangOptions">
+              <div class="instant-scroll notranslate" id="fastLangOptions" translate="no">
                 <a href="javascript:void(0)" onclick="applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
                 <a href="javascript:void(0)" onclick="applyAILanguage('en', 'English', 'ltr')">English</a>
                 <a href="javascript:void(0)" onclick="applyAILanguage('fr', 'Français', 'ltr')">Français</a>
@@ -2444,6 +2444,10 @@ function renderPropertiesList(list) {
         <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
           <div class="card-media-box">
             <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" loading="lazy" onclick="goToPropertyDetails('${prop.id}')">
+            ${propertyImages.length > 1 ? `
+            <button class="card-img-arrow prev" onclick="navigateCardImage('${prop.id}', 'prev', '${encodeURIComponent(JSON.stringify(propertyImages))}', event)"><i class="fas fa-chevron-right"></i></button>
+            <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', '${encodeURIComponent(JSON.stringify(propertyImages))}', event)"><i class="fas fa-chevron-left"></i></button>
+            ` : ''}
             <span class="badge-trucheck-tag"><i class="fas fa-check"></i></span>
             <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
             <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)"><i class="fas fa-heart"></i></button>
@@ -2739,6 +2743,11 @@ function renderPropertiesList(list) {
       console.log('✅ تم تثبيت تطبيق عقاراتي على الجهاز بنجاح');
     });
   </script>
+
+  <footer style="background:#111827; color:#9ca3af; padding:16px 20px; font-size:12.5px; text-align:center; font-weight:700;">
+    جميع الحقوق محفوظة © 2026 - منصة Aqaratti العقارية ·
+    <a href="privacy-policy.html" style="color:#9ca3af; font-weight:900;">سياسة الخصوصية</a>
+  </footer>
 
 </body>
 </html>
