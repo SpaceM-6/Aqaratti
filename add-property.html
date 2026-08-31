@@ -438,6 +438,16 @@
           </div>
         </div>
 
+        <div class="grid-2">
+          <div class="form-group">
+            <label>رقم الرخصة التجارية / رقم القيد المهني للوساطة العقارية</label>
+            <input type="text" id="licenseNumberInput" placeholder="مثال: رقم رخصة RERA أو ما يعادلها">
+          </div>
+        </div>
+        <p style="font-size:11px; color:#94a3b8; margin-top:-8px; margin-bottom:10px;">
+          مطلوب للوسطاء وشركات التطوير حتى يتم اعتماد إعلانك من فريقنا. اختياري لمالك العقار المباشر.
+        </p>
+
         <div class="form-section-title" style="margin-top: 15px;">
           <i class="fas fa-building"></i> مواصفات ونوع العقار
         </div>
@@ -557,11 +567,20 @@
           <textarea id="descInput" rows="4" placeholder="اكتب تفاصيل العقار المميزة..."></textarea>
         </div>
 
+        <div class="form-group" style="display:flex; align-items:flex-start; gap:8px; margin-top:10px;">
+          <input type="checkbox" id="agreeTermsInput" style="width:16px; height:16px; margin-top:3px; flex-shrink:0;">
+          <label for="agreeTermsInput" style="font-size:12px; color:#475569; font-weight:600;">
+            أقرّ بأنني أملك تفويضاً قانونياً للإعلان عن هذا العقار، وأن جميع البيانات صحيحة، وأوافق على
+            <a href="terms-of-service.html" target="_blank" style="color:var(--primary-turquoise); font-weight:800;">الشروط والأحكام</a>
+            و<a href="privacy-policy.html" target="_blank" style="color:var(--primary-turquoise); font-weight:800;">سياسة الخصوصية</a>.
+          </label>
+        </div>
+
         <div id="paymentArea">
           <div class="payment-notice-box" id="paymentNotice">
             ⚠️ يرجى اختيار إحدى باقات الاشتراك في الأعلى أولاً ليظهر زر الاشتراك والنشر!
           </div>
-          
+
           <button type="submit" id="submitBtn" class="btn-submit" style="display: none;">
             <i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText"></span>)
           </button>
@@ -579,6 +598,7 @@
         <ul>
           <li><a href="index.html">الرئيسية</a></li>
           <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+          <li><a href="terms-of-service.html">الشروط والأحكام</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -717,6 +737,18 @@
         return;
       }
 
+      if (!document.getElementById('agreeTermsInput').checked) {
+        alert('يجب الموافقة على الشروط والأحكام وسياسة الخصوصية قبل نشر العقار.');
+        return;
+      }
+
+      const roleValue = document.getElementById('brokerRoleInput').value;
+      const licenseValue = document.getElementById('licenseNumberInput').value.trim();
+      if (roleValue !== 'مالك مباشر' && !licenseValue) {
+        const proceedAnyway = confirm('لم تُدخل رقم الرخصة/القيد المهني. الإعلانات التي بلا رقم رخصة قد تستغرق وقتاً أطول للمراجعة والاعتماد. هل تريد المتابعة على أي حال؟');
+        if (!proceedAnyway) return;
+      }
+
       const user = await getCurrentAqarattiUser();
       if (!user) {
         alert('يجب تسجيل الدخول أو إنشاء حساب أولاً قبل نشر عقارك. سيتم تحويلك للصفحة الرئيسية لتسجيل الدخول.');
@@ -763,7 +795,9 @@
         property_type: document.getElementById('propertyCategoryInput').value,
         city: selectedCity,
         commission: '2%',
-        image_urls: imageUrls
+        image_urls: imageUrls,
+        broker_role: roleValue,
+        license_number: licenseValue || null
       });
 
       submitBtn.disabled = false;

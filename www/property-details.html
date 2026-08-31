@@ -535,6 +535,7 @@
           <div class="sub-tab-item" onclick="scrollToSection('secPlans')"><i class="fas fa-drafting-compass"></i> المخططات</div>
           <div class="sub-tab-item" onclick="scrollToSection('secMortgage')"><i class="fas fa-calculator"></i> رهن عقاري</div>
           <div class="sub-tab-item" onclick="scrollToSection('secAmenities')"><i class="fas fa-concierge-bell"></i> الخدمات</div>
+          <div class="sub-tab-item" onclick="scrollToSection('secLocation')"><i class="fas fa-map-marker-alt"></i> الموقع</div>
         </div>
 
         <div class="property-header-box" id="secDetails">
@@ -564,6 +565,16 @@
             <div class="table-row-item"><span class="table-label">تاريخ الإضافة:</span> <span class="table-value">4 أغسطس 2026</span></div>
             <div class="table-row-item"><span class="table-label">حالة البناء:</span> <span class="table-value">قيد الإنشاء / تسليم 2027</span></div>
             <div class="table-row-item"><span class="table-label">الملكية:</span> <span class="table-value">تملك حر 100%</span></div>
+          </div>
+        </div>
+
+        <div class="info-section-card" id="secLocation">
+          <div class="info-card-title">موقع العقار على الخريطة</div>
+          <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:10px;">
+            <i class="fas fa-info-circle"></i> الموقع تقريبي (يشير لمنطقة/مدينة العقار)، وليس العنوان الدقيق للوحدة، حفاظاً على خصوصية الملاك.
+          </p>
+          <div style="border-radius:12px; overflow:hidden; border:1px solid var(--dubizzle-border);">
+            <iframe id="propertyMapFrame" width="100%" height="280" style="border:0; display:block;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
 
@@ -723,12 +734,12 @@
       <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">إرسال مباشر إلى (<span id="modalEmailTarget">ibrahim.broker@aqaratti.com</span>):</p>
 
       <form onsubmit="handleEmailSubmit(event)">
-        <input type="text" class="form-input-modal" required placeholder="الاسم الكريم">
-        <input type="email" class="form-input-modal" required placeholder="البريد الإلكتروني">
-        <input type="tel" class="form-input-modal" required placeholder="رقم الهاتف">
-        <textarea style="width:100%; height:60px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Tajawal'; font-weight:700; margin-bottom:10px; font-size:11px;" required>مرحباً، أرغب بالاستفسار عن العقار. أرجو الاتصال بي.</textarea>
+        <input type="text" id="emailLeadName" class="form-input-modal" required placeholder="الاسم الكريم">
+        <input type="email" id="emailLeadEmail" class="form-input-modal" required placeholder="البريد الإلكتروني">
+        <input type="tel" id="emailLeadPhone" class="form-input-modal" required placeholder="رقم الهاتف">
+        <textarea id="emailLeadMessage" style="width:100%; height:60px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; font-family:'Tajawal'; font-weight:700; margin-bottom:10px; font-size:11px;" required>مرحباً، أرغب بالاستفسار عن العقار. أرجو الاتصال بي.</textarea>
 
-        <button type="submit" class="btn-broker-action btn-call-bg" style="width:100%;">إرسال البريد</button>
+        <button type="submit" id="emailLeadSubmitBtn" class="btn-broker-action btn-call-bg" style="width:100%;">إرسال البريد</button>
         <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:6px; cursor:pointer;" onclick="closeModal('emailModal')">إلغاء</button>
       </form>
     </div>
@@ -769,8 +780,32 @@
   </div>
 
   <script>
+    const cityToCountryAr = {
+      'دبي':'الإمارات','أبوظبي':'الإمارات','الشارقة':'الإمارات','عجمان':'الإمارات','رأس الخيمة':'الإمارات',
+      'مكة المكرمة':'السعودية','المدينة المنورة':'السعودية','الرياض':'السعودية','جدة':'السعودية','الخبر':'السعودية',
+      'القاهرة الجديدة':'مصر','العاصمة الإدارية':'مصر','الشيخ زايد':'مصر',
+      'إسطنبول':'تركيا','أنطاليا':'تركيا','بورصة':'تركيا',
+      'الدوحة':'قطر','اللؤلؤة':'قطر','لوسيل':'قطر',
+      'مسقط':'عُمان','صلالة':'عُمان',
+      'لندن':'بريطانيا','مانشستر':'بريطانيا',
+      'نيويورك':'الولايات المتحدة','ميامي':'الولايات المتحدة',
+      'باريس':'فرنسا','كان':'فرنسا',
+      'مدريد':'إسبانيا','برشلونة':'إسبانيا',
+      'ليماسول':'قبرص','لارنكا':'قبرص',
+      'أثينا':'اليونان','سانتوريني':'اليونان'
+    };
+
+    function getMapEmbedSrc(city) {
+      const country = cityToCountryAr[city] || '';
+      const query = encodeURIComponent(`${city || 'دبي'} ${country}`.trim());
+      return `https://www.google.com/maps?q=${query}&output=embed`;
+    }
+
     let currentBrokerPhone = "0501234567";
     let currentBrokerEmail = "ibrahim.broker@aqaratti.com";
+    let currentBrokerId = null;
+    let currentPropertyId = null;
+    let currentPropertyTitle = "";
     let propertyImagesList = [];
     let currentImgIndex = 0;
 
@@ -860,9 +895,31 @@
       window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
     }
 
-    function handleEmailSubmit(e) {
+    async function handleEmailSubmit(e) {
       e.preventDefault();
+      const submitBtn = document.getElementById('emailLeadSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'جاري الإرسال...';
+
+      const { error } = await supabaseClient.from('leads').insert({
+        property_id: currentPropertyId,
+        property_title: currentPropertyTitle,
+        broker_id: currentBrokerId,
+        buyer_name: document.getElementById('emailLeadName').value.trim(),
+        buyer_email: document.getElementById('emailLeadEmail').value.trim(),
+        buyer_phone: document.getElementById('emailLeadPhone').value.trim(),
+        message: document.getElementById('emailLeadMessage').value.trim(),
+        status: 'new'
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'إرسال البريد';
       closeModal('emailModal');
+
+      if (error) {
+        alert('تعذر إرسال استفسارك حالياً، يرجى التواصل مباشرة عبر واتساب أو الاتصال.');
+        return;
+      }
       openModal('emailSuccessModal');
     }
 
@@ -910,6 +967,10 @@
         } catch (e) {}
       }
 
+      currentPropertyId = propId;
+      currentPropertyTitle = (property && property.title) || '';
+      currentBrokerId = (property && property.broker && property.broker.brokerId) || null;
+
       const savedImgs = JSON.parse(localStorage.getItem(`aqaratti_prop_imgs_${propId}`) || '[]');
 
       if (savedImgs.length > 0) {
@@ -950,6 +1011,7 @@
 
         const catEl = document.getElementById('propCategory');
         if (catEl) catEl.innerText = property.propertyType || 'شقة سكنية';
+        document.getElementById('propertyMapFrame').src = getMapEmbedSrc(property.city);
         const descEl = document.getElementById('propFullDesc');
         if (descEl && property.description) descEl.innerText = property.description;
 
@@ -970,7 +1032,7 @@
       calculateMortgage();
     }
 
-    function handleInspectorSubmit(e) {
+    async function handleInspectorSubmit(e) {
       e.preventDefault();
       const buyerName = document.getElementById('inspectorBuyerName').value.trim();
       const buyerPhone = document.getElementById('inspectorBuyerPhone').value.trim();
@@ -978,6 +1040,16 @@
       const formattedDateTime = rawDateTime.replace('T', ' الوقت: ');
       const propTitle = document.getElementById('propTitle').innerText;
       const ref = getSavedAffiliateRef();
+
+      supabaseClient.from('leads').insert({
+        property_id: currentPropertyId,
+        property_title: currentPropertyTitle,
+        broker_id: currentBrokerId,
+        buyer_name: buyerName,
+        buyer_phone: buyerPhone,
+        message: `طلب معاينة ميدانية - الموعد المقترح: ${formattedDateTime}`,
+        status: 'viewing'
+      });
 
       const message = 
 `🏡 *طلب معاينة ميدانية جديد - منصة عقاراتي*
