@@ -8,17 +8,17 @@
   <!-- 🔎 SEO: وصف ووسوم مشاركة اجتماعية -->
   <meta name="description" content="منصة عقاراتي (Aqaratti) العالمية للبحث عن العقارات للبيع والإيجار والاستثمار والإقامة الذهبية، وربط الباحثين بأفضل الوسطاء العقاريين.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/">
+  <link rel="canonical" href="https://aqaratti.com/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="عقاراتي | Aqaratti - المنصة العقارية العالمية">
   <meta property="og:description" content="منصة عقاراتي (Aqaratti) العالمية للبحث عن العقارات للبيع والإيجار والاستثمار والإقامة الذهبية، وربط الباحثين بأفضل الوسطاء العقاريين.">
-  <meta property="og:url" content="https://spacem-6.github.io/Aqaratti/">
-  <meta property="og:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+  <meta property="og:url" content="https://aqaratti.com/">
+  <meta property="og:image" content="https://aqaratti.com/icons/icon-app-1024.png">
   <meta property="og:locale" content="ar_AE">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="عقاراتي | Aqaratti - المنصة العقارية العالمية">
   <meta name="twitter:description" content="منصة عقاراتي (Aqaratti) العالمية للبحث عن العقارات للبيع والإيجار والاستثمار والإقامة الذهبية.">
-  <meta name="twitter:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+  <meta name="twitter:image" content="https://aqaratti.com/icons/icon-app-1024.png">
 
   <!-- 📱 إعدادات تطبيق الويب التقدمي (PWA) -->
   <link rel="manifest" href="manifest.json">
@@ -1497,9 +1497,9 @@
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": "عقاراتي | Aqaratti",
-    "url": "https://spacem-6.github.io/Aqaratti/",
-    "logo": "https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png",
-    "image": "https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png",
+    "url": "https://aqaratti.com/",
+    "logo": "https://aqaratti.com/icons/icon-app-1024.png",
+    "image": "https://aqaratti.com/icons/icon-app-1024.png",
     "description": "منصة عقاراتي (Aqaratti) العالمية للبحث عن العقارات للبيع والإيجار والاستثمار والإقامة الذهبية، وربط الباحثين بأفضل الوسطاء العقاريين.",
     "areaServed": ["الإمارات العربية المتحدة", "المملكة العربية السعودية", "مصر", "تركيا", "قطر", "سلطنة عمان"]
   }
@@ -1509,10 +1509,10 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "عقاراتي | Aqaratti",
-    "url": "https://spacem-6.github.io/Aqaratti/",
+    "url": "https://aqaratti.com/",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://spacem-6.github.io/Aqaratti/search.html?keyword={search_term_string}",
+      "target": "https://aqaratti.com/search.html?keyword={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   }
@@ -2186,11 +2186,46 @@
       }
       localStorage.setItem('aqaratti_favorites', JSON.stringify(favoriteProperties));
       updateFavBadgeCount();
-      fetchProperties();
+      document.querySelectorAll(`.btn-card-fav[onclick*="'${idStr}'"]`).forEach(btn => {
+        btn.classList.toggle('active', favoriteProperties.includes(idStr));
+      });
+      if (document.getElementById('favoritesModal').style.display === 'flex') {
+        renderFavoritesModalList();
+      }
     }
 
     function updateFavBadgeCount() {
       document.getElementById('favBadge').innerText = favoriteProperties.length;
+    }
+
+    function renderFavoritesModalList() {
+      const container = document.getElementById('favoritesListContainer');
+      const allProps = getAllProperties();
+      const favProps = favoriteProperties
+        .map(id => allProps.find(p => p.id.toString() === id))
+        .filter(Boolean);
+
+      if (favProps.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#94a3b8; padding: 20px 0;">لم تُضِف أي عقار إلى المفضلة بعد. اضغط على أيقونة القلب ❤️ في أي عقار لإضافته هنا.</p>`;
+        return;
+      }
+
+      container.innerHTML = favProps.map(prop => `
+        <div style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #f1f5f9;">
+          <img src="${prop.image || (prop.imagesList && prop.imagesList[0]) || ''}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; flex-shrink:0;" alt="${prop.title}">
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:bold; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${prop.title}</div>
+            <div style="font-size:12px; color:var(--primary-turquoise); font-weight:bold;">${formatPriceAED(prop.priceAED || prop.price || 0)}</div>
+          </div>
+          <button onclick="closeRoyalModal('favoritesModal'); goToPropertyDetails('${prop.id}')" style="background:var(--primary-turquoise); color:white; border:none; border-radius:6px; padding:6px 10px; font-size:11px; cursor:pointer; white-space:nowrap;">التفاصيل</button>
+          <button onclick="toggleFavorite('${prop.id}')" style="background:#fee2e2; color:#dc2626; border:none; border-radius:6px; padding:6px 8px; font-size:11px; cursor:pointer;"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function openFavoritesModal() {
+      renderFavoritesModalList();
+      document.getElementById('favoritesModal').style.display = 'flex';
     }
 
     function openAffiliateModal(propId) {
@@ -2204,7 +2239,7 @@
       const allProps = getAllProperties();
       const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
       const broker = property.broker || { name: "الوسيط المعتمد", agency: "شركة عقارية معتمدة" };
-      const propertyUrl = `https://spacem-6.github.io/Aqaratti/property-details.html?id=${property.id}&ref=${ref}`;
+      const propertyUrl = `https://aqaratti.com/property-details.html?id=${property.id}&ref=${ref}`;
 
       const shareText = 
 `🏡 *فرصة عقارية ممتازة عبر منصة Aqaratti* 🏡
@@ -2404,6 +2439,33 @@ ${propertyUrl}`;
         targetImgEl.src = newImgUrl;
       }
     }
+
+    (function setupCardImageSwipe() {
+      let startX = 0, startY = 0, swipePropId = null;
+      const container = document.getElementById('properties-container');
+      if (!container) return;
+
+      container.addEventListener('touchstart', function(e) {
+        const img = e.target.closest('.card-media-box img[id^="card-img-"]');
+        if (!img) { swipePropId = null; return; }
+        swipePropId = img.id.replace('card-img-', '');
+        const t = e.changedTouches[0];
+        startX = t.clientX; startY = t.clientY;
+      }, { passive: true });
+
+      container.addEventListener('touchend', function(e) {
+        if (!swipePropId) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX, dy = t.clientY - startY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          const imagesJson = localStorage.getItem(`aqaratti_prop_imgs_${swipePropId}`);
+          if (imagesJson) {
+            navigateCardImage(swipePropId, dx < 0 ? 'next' : 'prev', encodeURIComponent(imagesJson), null);
+          }
+        }
+        swipePropId = null;
+      }, { passive: true });
+    })();
 
     /* 📌 دالة حفظ وتمرير بيانات العقار والوسيط بصفحة التفاصيل */
 function goToPropertyDetails(propId) {

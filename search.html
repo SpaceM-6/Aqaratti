@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نتائج البحث | عقاراتي</title>
+    <link rel="icon" type="image/png" href="icons/icon-app-512.png">
 
     <meta name="description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة عقاراتي مع فلاتر بحث ذكية حسب السعر والموقع ونوع العقار.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/search.html">
+    <link rel="canonical" href="https://aqaratti.com/search.html">
     <meta property="og:type" content="website">
     <meta property="og:title" content="نتائج البحث | عقاراتي">
     <meta property="og:description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة عقاراتي.">
-    <meta property="og:url" content="https://spacem-6.github.io/Aqaratti/search.html">
-    <meta property="og:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+    <meta property="og:url" content="https://aqaratti.com/search.html">
+    <meta property="og:image" content="https://aqaratti.com/icons/icon-app-1024.png">
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script src="currency.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="supabase-client.js"></script>
 
     <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
     <script type="text/javascript">
@@ -173,33 +176,47 @@
 
     <!-- كود تشغيل الفلاتر الذكية والربط بين الصفحات -->
     <script>
-        // قاعدة البيانات التجريبية
-        const propertiesData = [
-            { id: 1, title: "شقة فاخرة إطلالة كاملة على مرسى دبي", priceAED: 140000, priceSuffix: "/ سنوي", purpose: "rent", type: "سكني", img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" },
-            { id: 2, title: "فيلا مودرن مع مسبح خاص وحديقة واسعة", priceAED: 5200000, priceSuffix: "", purpose: "buy", type: "سكني", img: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" },
-            { id: 3, title: "مكتب تجاري مجهز بالكامل في أبراج جميرا", priceAED: 95000, priceSuffix: "/ سنوي", purpose: "rent", type: "تجاري", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" }
-        ];
+        // 📦 قائمة العقارات الحقيقية: properties.json + عقارات الوسطاء المعتمدة من Supabase (نفس مصدر الصفحة الرئيسية)
+        let propertiesData = [];
+
+        async function loadRealProperties() {
+            let jsonProperties = [];
+            try {
+                const response = await fetch('./properties.json?v=' + Date.now());
+                jsonProperties = await response.json();
+            } catch (err) {
+                jsonProperties = [];
+            }
+            let supabaseProperties = [];
+            try {
+                supabaseProperties = await fetchApprovedSupabaseProperties();
+            } catch (err) {
+                supabaseProperties = [];
+            }
+            propertiesData = [...jsonProperties, ...supabaseProperties];
+        }
 
         // دالة عرض البطاقات في الشبكة
       function displayResults(data) {
             const grid = document.getElementById('search-grid');
             grid.innerHTML = '';
-            
+
             if(data.length === 0) {
                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; font-size: 16px;">عذراً، لا توجد عقارات تطابق خيارات البحث الحالية.</p>';
                 return;
             }
 
-            data.forEach(item => {
+            data.slice(0, 60).forEach(item => {
+                const img = item.image || (item.imagesList && item.imagesList[0]) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=600';
                 // قمنا بتغليف الكارت برابط ينتقل لصفحة تفاصيل العقار ويمرر الـ ID الخاص به
                 grid.innerHTML += `
-                    <a href="property-details.html?id=${item.id}" style="text-decoration: none; color: inherit;">
+                    <a href="javascript:void(0)" onclick="goToSearchPropertyDetails('${item.id}')" style="text-decoration: none; color: inherit;">
                         <div class="property-card" style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #d8dce0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;">
-                            <img src="${item.img}" alt="${item.title}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
+                            <img src="${img}" alt="${item.title}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
                             <div style="padding:15px;">
-                                <h3 style="color:#28b16d; font-size:18px; margin-bottom:5px;">${formatPriceAED(item.priceAED, item.priceSuffix)}</h3>
+                                <h3 style="color:#28b16d; font-size:18px; margin-bottom:5px;">${formatPriceAED(item.priceAED || item.price || 0)}</h3>
                                 <p style="font-size:14px; font-weight:600; color:#222; height:40px; overflow:hidden;">${item.title}</p>
-                                <span style="font-size:12px; background:#f0f2f5; padding:3px 8px; border-radius:4px; color:#555;">${item.type}</span>
+                                <span style="font-size:12px; background:#f0f2f5; padding:3px 8px; border-radius:4px; color:#555;">${item.propertyType || 'عقار'} ${item.city ? '- ' + item.city : ''}</span>
                             </div>
                         </div>
                     </a>
@@ -207,23 +224,32 @@
             });
         }
 
+        function goToSearchPropertyDetails(propId) {
+            const selectedProp = propertiesData.find(p => p.id.toString() === propId.toString());
+            if (selectedProp) localStorage.setItem('aqaratti_selected_property', JSON.stringify(selectedProp));
+            window.location.href = `property-details.html?id=${propId}`;
+        }
+
         let keywordFromUrl = '';
 
         // دالة الفلترة والتصفية بناءً على قيم المدخلات الحالية
         function filterAndRender() {
-            const purpose = document.getElementById('sidebar-purpose').value;
-            const type = document.getElementById('sidebar-type').value;
+            const purpose = document.getElementById('sidebar-purpose').value; // 'buy' أو 'rent'
+            const type = document.getElementById('sidebar-type').value; // 'all' أو 'commercial'
             const maxPrice = document.getElementById('sidebar-price').value;
 
             const filtered = propertiesData.filter(item => {
-                // توافق الغرض (بيع / إيجار)
-                const matchesPurpose = item.purpose === purpose;
+                // توافق الغرض (بيع / إيجار) - dealType الحقيقي يكون 'sale' أو 'rent'
+                const matchesPurpose = purpose === 'buy' ? (item.dealType === 'sale' || !item.dealType) : (item.dealType === 'rent');
                 // توافق النوع (سكني / تجاري)
-                const matchesType = (type === 'all' || item.type === type);
+                const isCommercial = (item.propertyType || '').includes('تجاري');
+                const matchesType = (type === 'all') ? !isCommercial : isCommercial;
                 // توافق السعر
-                const matchesPrice = !maxPrice || item.priceAED <= parseInt(maxPrice);
+                const price = item.priceAED || item.price || 0;
+                const matchesPrice = !maxPrice || price <= parseInt(maxPrice);
                 // توافق كلمة البحث (قادمة من صندوق بحث جوجل أو الصفحة الرئيسية)
-                const matchesKeyword = !keywordFromUrl || item.title.toLowerCase().includes(keywordFromUrl.toLowerCase());
+                const kw = keywordFromUrl.toLowerCase();
+                const matchesKeyword = !kw || (item.title && item.title.toLowerCase().includes(kw)) || (item.city && item.city.toLowerCase().includes(kw)) || (item.description && item.description.toLowerCase().includes(kw));
 
                 return matchesPurpose && matchesType && matchesPrice && matchesKeyword;
             });
@@ -236,7 +262,7 @@
         }
 
         // قراءة الاختيارات القادمة من الصفحة الرئيسية فور تحميل صفحة البحث
-        window.onload = () => {
+        window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
             const purposeFromHome = params.get('purpose'); // القيمة الممررة من زر للبيع/للايجار بالرئيسية
             const typeFromHome = params.get('type');       // نوع العقار من القائمة المنسدلة بالرئيسية
@@ -248,8 +274,11 @@
             }
             if (typeFromHome && typeFromHome !== 'all') {
                 // تحويل المسميات الإنجليزية القادمة من القائمة لتبسيط قراءتها
-                document.getElementById('sidebar-type').value = (typeFromHome === 'تجاري' || typeFromHome === 'office') ? 'تجاري' : 'سكني';
+                document.getElementById('sidebar-type').value = (typeFromHome === 'تجاري' || typeFromHome === 'office') ? 'commercial' : 'all';
             }
+
+            document.getElementById('search-grid').innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#666;">جاري تحميل العقارات...</p>';
+            await loadRealProperties();
 
             // تشغيل التصفية الفورية وعرض العقارات الصحيحة فقط
             filterAndRender();

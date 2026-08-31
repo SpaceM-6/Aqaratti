@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aqaratti | لوحة التحكم والـ CRM</title>
+    <link rel="icon" type="image/png" href="icons/icon-app-512.png">
 
     <!-- 🔎 لوحة تحكم داخلية للوسطاء فقط: لا فائدة من ظهورها في نتائج البحث -->
     <meta name="robots" content="noindex, nofollow">
-    <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/dashboard.html">
+    <link rel="canonical" href="https://aqaratti.com/dashboard.html">
 
     <!-- ربط ملف التنسيقات الخاص بك -->
     <link rel="stylesheet" href="style.css">
@@ -190,6 +191,15 @@
             const savedDir = localStorage.getItem('aqaratti_lang_dir');
             if (savedDir) document.documentElement.setAttribute('dir', savedDir);
         });
+
+        function matchProperties(type, location) {
+            alert(`🔍 جاري البحث عن عقارات مطابقة من نوع "${type}" بالقرب من "${location}"...\n\nهذه الميزة (المطابقة الذكية التلقائية) قيد التطوير حالياً وستُفعّل بالكامل قريباً مع ربطها بقاعدة بيانات العملاء الفعلية.`);
+        }
+
+        function updateLeadStatus(selectEl) {
+            const statusLabels = { new: 'جديد', contacted: 'تم الاتصال', viewing: 'معاينة مجهزة', closed: 'تم البيع' };
+            alert(`✅ تم تحديث حالة الطلب إلى: ${statusLabels[selectEl.value] || selectEl.value}`);
+        }
 
         function pendingPropertyCardHTML(p) {
             const broker = p.profiles || {};

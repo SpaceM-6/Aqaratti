@@ -4,15 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>تفاصيل العقار | Aqaratti</title>
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
 
   <meta name="description" content="اطّلع على كافة تفاصيل العقار: السعر، المساحة، الموقع، والمرافق، وتواصل مباشرة مع الوسيط المعلن عبر منصة عقاراتي.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://spacem-6.github.io/Aqaratti/property-details.html">
+  <link rel="canonical" href="https://aqaratti.com/property-details.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="تفاصيل العقار | Aqaratti">
   <meta property="og:description" content="اطّلع على كافة تفاصيل العقار وتواصل مباشرة مع الوسيط المعلن عبر منصة عقاراتي.">
-  <meta property="og:url" content="https://spacem-6.github.io/Aqaratti/property-details.html">
-  <meta property="og:image" content="https://spacem-6.github.io/Aqaratti/icons/icon-app-1024.png">
+  <meta property="og:url" content="https://aqaratti.com/property-details.html">
+  <meta property="og:image" content="https://aqaratti.com/icons/icon-app-1024.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -171,6 +172,25 @@
 
     .nav-arrow-btn.prev-btn { right: 8px; }
     .nav-arrow-btn.next-btn { left: 8px; }
+
+    .gallery-fav-btn {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #cbd5e1;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+      z-index: 6;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .gallery-fav-btn.active { color: #e11d48; }
 
     .gallery-badge-trucheck {
       position: absolute;
@@ -491,7 +511,8 @@
     <!-- المعرض المتجاوب -->
     <div class="gallery-slider-box">
       <span class="gallery-badge-trucheck"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
-      
+      <button class="gallery-fav-btn" id="detailsFavBtn" onclick="toggleDetailsFavorite()"><i class="fas fa-heart"></i></button>
+
       <div class="main-image-viewer-container">
         <button class="nav-arrow-btn prev-btn" onclick="prevPropertyImage()"><i class="fas fa-chevron-right"></i></button>
         <img id="mainPropImg" src="" onclick="openLightboxModal()" alt="صورة العقار">
@@ -777,6 +798,46 @@
     function prevPropertyImage() { updateGalleryImage(currentImgIndex - 1); }
     function nextPropertyImage() { updateGalleryImage(currentImgIndex + 1); }
 
+    function getFavoriteIds() {
+      return JSON.parse(localStorage.getItem('aqaratti_favorites') || '[]');
+    }
+
+    function refreshDetailsFavButton(propId) {
+      const btn = document.getElementById('detailsFavBtn');
+      if (!btn) return;
+      btn.classList.toggle('active', getFavoriteIds().includes(propId.toString()));
+    }
+
+    function toggleDetailsFavorite() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const propId = (urlParams.get('id') || '101').toString();
+      const favorites = getFavoriteIds();
+      const index = favorites.indexOf(propId);
+      if (index === -1) favorites.push(propId);
+      else favorites.splice(index, 1);
+      localStorage.setItem('aqaratti_favorites', JSON.stringify(favorites));
+      refreshDetailsFavButton(propId);
+    }
+
+    (function setupGallerySwipe() {
+      let startX = 0, startY = 0;
+      function onStart(e) { const t = e.changedTouches[0]; startX = t.clientX; startY = t.clientY; }
+      function onEnd(e) {
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX, dy = t.clientY - startY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          if (dx < 0) nextPropertyImage(); else prevPropertyImage();
+        }
+      }
+      ['mainPropImg', 'lightboxImgTarget'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('touchstart', onStart, { passive: true });
+          el.addEventListener('touchend', onEnd, { passive: true });
+        }
+      });
+    })();
+
     function openLightboxModal() {
       if (propertyImagesList.length === 0) return;
       document.getElementById('lightboxImgTarget').src = propertyImagesList[currentImgIndex];
@@ -864,6 +925,7 @@
       }
 
       document.getElementById('imgsCountText').innerText = propertyImagesList.length;
+      refreshDetailsFavButton(propId);
 
       const thumbStrip = document.getElementById('thumbnailsContainer');
       thumbStrip.innerHTML = propertyImagesList.map((imgUrl, idx) => `

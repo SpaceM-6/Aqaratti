@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /dashboard.html
 
-Sitemap: https://spacem-6.github.io/Aqaratti/sitemap.xml
+Sitemap: https://aqaratti.com/sitemap.xml
