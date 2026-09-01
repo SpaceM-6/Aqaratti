@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل المكاتب العقارية | Aqaratti</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --turquoise-light: #e6f7f5;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f4f6f9;
+      --dubizzle-border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --gold: #d4af37;
+      --silver: #9ca3af;
+      --bronze: #b45309;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
+
+    .navbar {
+      background: #ffffff;
+      padding: 14px 30px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+
+    .page-hero {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .page-hero h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+    .page-hero p { font-size: 13px; color: #cbd5e1; }
+
+    .toolbar {
+      max-width: 1200px;
+      margin: -25px auto 0;
+      padding: 0 20px;
+      position: relative;
+      z-index: 5;
+    }
+    .toolbar-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 18px 20px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+    }
+    .search-box i {
+      position: absolute;
+      top: 50%; right: 14px;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-pill {
+      padding: 9px 16px;
+      border-radius: 100px;
+      border: 1.5px solid var(--dubizzle-border);
+      background: white;
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .filter-pill.active { border-color: var(--primary-turquoise); color: var(--primary-turquoise); background: var(--turquoise-light); }
+    .filter-pill[data-rank="GOLD"].active { border-color: var(--gold); color: #92400e; background: #fef9e7; }
+    .filter-pill[data-rank="SILVER"].active { border-color: var(--silver); color: #374151; background: #f3f4f6; }
+    .filter-pill[data-rank="BRONZE"].active { border-color: var(--bronze); color: var(--bronze); background: #fef3e2; }
+
+    .results-meta {
+      max-width: 1200px;
+      margin: 18px auto 0;
+      padding: 0 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .brokers-grid {
+      max-width: 1200px;
+      margin: 14px auto 40px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 18px;
+    }
+
+    .broker-card {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .broker-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+
+    .broker-card-top { display: flex; align-items: center; gap: 12px; }
+    .broker-logo {
+      width: 56px; height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--dubizzle-border);
+      background: #f8fafc;
+      flex-shrink: 0;
+    }
+    .broker-names { flex: 1; min-width: 0; }
+    .broker-name-ar { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .broker-name-en { font-size: 11.5px; color: var(--text-muted); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .rank-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 900;
+      padding: 4px 10px; border-radius: 100px;
+      width: fit-content;
+    }
+    .rank-badge.GOLD { background: #fef9e7; color: #92400e; }
+    .rank-badge.SILVER { background: #f3f4f6; color: #374151; }
+    .rank-badge.BRONZE { background: #fef3e2; color: var(--bronze); }
+
+    .broker-license { font-size: 11.5px; color: var(--text-muted); font-weight: 700; }
+    .broker-license strong { color: var(--text-dark); }
+
+    .broker-activities { display: flex; flex-wrap: wrap; gap: 6px; }
+    .activity-chip {
+      font-size: 10.5px; font-weight: 700;
+      background: var(--turquoise-light); color: var(--primary-turquoise);
+      padding: 3px 9px; border-radius: 100px;
+    }
+
+    .broker-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--dubizzle-border); }
+    .broker-actions a {
+      flex: 1;
+      text-align: center;
+      font-size: 12px; font-weight: 800;
+      padding: 8px; border-radius: 8px;
+      text-decoration: none;
+      color: white;
+    }
+    .act-call { background: var(--dubizzle-navy); }
+    .act-whatsapp { background: #16a34a; }
+    .act-site { background: var(--primary-turquoise); }
+
+    .broker-social { display: flex; gap: 8px; justify-content: center; }
+    .broker-social a {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: #f1f5f9; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; text-decoration: none;
+    }
+
+    .load-more-wrap { text-align: center; padding: 10px 0 40px; }
+    #loadMoreBtn {
+      background: var(--primary-turquoise); color: white; border: none;
+      padding: 12px 28px; border-radius: 10px; font-weight: 900; font-size: 14px;
+      cursor: pointer; font-family: 'Tajawal', sans-serif;
+    }
+    #loadMoreBtn:hover { background: #008072; }
+    #loadMoreBtn[hidden] { display: none; }
+
+    .no-results {
+      text-align: center; padding: 50px 20px;
+      color: var(--text-muted); font-weight: 700;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 600px) {
+      .toolbar-card { flex-direction: column; align-items: stretch; }
+      .filter-pills { justify-content: center; }
+      .page-hero h1 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+  </nav>
+
+  <div class="page-hero">
+    <h1><i class="fas fa-building"></i> دليل المكاتب العقارية</h1>
+    <p>تصفّح المكاتب العقارية المعتمدة وتواصل معها مباشرة</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-card">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="ابحث بالاسم (عربي/إنجليزي) أو رقم الترخيص...">
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="filter-pills" id="rankFilters">
+        <button class="filter-pill active" data-rank="ALL">الكل</button>
+        <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
+        <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
+        <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-meta" id="resultsMeta"></div>
+
+  <div class="brokers-grid" id="brokersGrid"></div>
+
+  <div class="load-more-wrap">
+    <button id="loadMoreBtn">تحميل المزيد</button>
+  </div>
+
+  <script>
+    // ⚠️ بيانات وهمية للعرض فقط — استبدلها بمصدر بياناتك الحقيقي (Supabase / API / ملف JSON)
+    const brokersData = [
+      { id: 1, nameAr: "مكتب اللؤلؤة الذهبية العقارية", nameEn: "Golden Pearl Real Estate", license: "12345", rank: "GOLD", phone: "971501112233", email: "info@goldenpearl-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200", activities: ["بيع", "تأجير", "استثمار"], social: { facebook: "#", instagram: "#", twitter: "#", linkedin: "#" } },
+      { id: 2, nameAr: "دار الإمارات العقارية", nameEn: "Emirates House Properties", license: "22987", rank: "SILVER", phone: "971502223344", email: "contact@emirateshouse-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=200", activities: ["بيع", "إدارة أملاك"], social: { facebook: "#", instagram: "#" } },
+      { id: 3, nameAr: "برج الخليج للوساطة العقارية", nameEn: "Gulf Tower Brokerage", license: "31456", rank: "BRONZE", phone: "971503334455", email: "hello@gulftower-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?q=80&w=200", activities: ["تأجير"], social: { linkedin: "#" } },
+      { id: 4, nameAr: "مجموعة النخبة العقارية", nameEn: "Elite Group Real Estate", license: "40876", rank: "GOLD", phone: "971504445566", email: "sales@elitegroup-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=200", activities: ["بيع", "تأجير", "استثمار", "إدارة أملاك"], social: { facebook: "#", instagram: "#", twitter: "#" } },
+      { id: 5, nameAr: "واحة النخيل العقارية", nameEn: "Palm Oasis Properties", license: "51023", rank: "SILVER", phone: "971505556677", email: "info@palmoasis-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=200", activities: ["بيع", "استثمار"], social: { instagram: "#" } },
+      { id: 6, nameAr: "أبراج المدينة للعقارات", nameEn: "City Towers Real Estate", license: "60214", rank: "BRONZE", phone: "971506667788", email: "contact@citytowers-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200", activities: ["تأجير", "إدارة أملاك"], social: { facebook: "#" } },
+      { id: 7, nameAr: "سواحل الإمارات العقارية", nameEn: "Emirates Coast Properties", license: "70345", rank: "GOLD", phone: "971507778899", email: "info@emiratescoast-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=200", activities: ["بيع", "استثمار"], social: { facebook: "#", twitter: "#", linkedin: "#" } },
+      { id: 8, nameAr: "مرافئ دبي للوساطة", nameEn: "Dubai Marinas Brokerage", license: "80456", rank: "SILVER", phone: "971508889900", email: "hello@dubaimarinas-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1519998238411-84e6c8f57bea?q=80&w=200", activities: ["بيع", "تأجير"], social: { instagram: "#", linkedin: "#" } },
+      { id: 9, nameAr: "الواحة الفضية العقارية", nameEn: "Silver Oasis Realty", license: "90567", rank: "BRONZE", phone: "971509990011", email: "info@silveroasis-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1519974719765-e6559eac2575?q=80&w=200", activities: ["تأجير"], social: { facebook: "#" } },
+      { id: 10, nameAr: "قمم الإمارات للاستثمار العقاري", nameEn: "Emirates Peaks Investment", license: "10678", rank: "GOLD", phone: "971501230012", email: "sales@emiratespeaks-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=200", activities: ["بيع", "استثمار", "إدارة أملاك"], social: { facebook: "#", instagram: "#" } },
+      { id: 11, nameAr: "منازل الشرق العقارية", nameEn: "Eastern Homes Real Estate", license: "11789", rank: "SILVER", phone: "971502340023", email: "info@easternhomes-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=200", activities: ["بيع", "تأجير"], social: { twitter: "#" } },
+      { id: 12, nameAr: "الديرة العقارية الحديثة", nameEn: "Modern Deira Properties", license: "12890", rank: "BRONZE", phone: "971503450034", email: "contact@moderndeira-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=200", activities: ["تأجير", "إدارة أملاك"], social: { facebook: "#", linkedin: "#" } },
+    ];
+
+    let activeRank = 'ALL';
+    let searchTerm = '';
+    let visibleCount = 8;
+    const PAGE_SIZE = 8;
+
+    function getFilteredBrokers() {
+      return brokersData.filter(b => {
+        const matchesRank = activeRank === 'ALL' || b.rank === activeRank;
+        const q = searchTerm.trim().toLowerCase();
+        const matchesSearch = !q ||
+          b.nameAr.toLowerCase().includes(q) ||
+          b.nameEn.toLowerCase().includes(q) ||
+          b.license.toLowerCase().includes(q);
+        return matchesRank && matchesSearch;
+      });
+    }
+
+    function socialIconsHTML(social) {
+      if (!social) return '';
+      const icons = { facebook: 'fa-facebook-f', instagram: 'fa-instagram', twitter: 'fa-x-twitter', linkedin: 'fa-linkedin-in' };
+      return Object.keys(icons)
+        .filter(key => social[key])
+        .map(key => `<a href="${social[key]}" target="_blank" rel="noopener noreferrer"><i class="fab ${icons[key]}"></i></a>`)
+        .join('');
+    }
+
+    function brokerCardHTML(b) {
+      const rankLabels = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي' };
+      const waPhone = (b.phone || '').replace(/\D/g, '');
+      return `
+        <div class="broker-card">
+          <div class="broker-card-top">
+            <img class="broker-logo" src="${b.logo}" alt="${b.nameAr}" loading="lazy">
+            <div class="broker-names">
+              <div class="broker-name-ar">${b.nameAr}</div>
+              <div class="broker-name-en">${b.nameEn}</div>
+            </div>
+          </div>
+
+          <span class="rank-badge ${b.rank}"><i class="fas fa-star"></i> ${rankLabels[b.rank] || b.rank}</span>
+
+          <div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>
+
+          ${b.activities && b.activities.length ? `
+          <div class="broker-activities">
+            ${b.activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
+          </div>` : ''}
+
+          <div class="broker-actions">
+            <a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>
+            <a href="https://wa.me/${waPhone}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+            ${b.website ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع</a>` : ''}
+          </div>
+
+          ${socialIconsHTML(b.social) ? `<div class="broker-social">${socialIconsHTML(b.social)}</div>` : ''}
+        </div>
+      `;
+    }
+
+    function render() {
+      const filtered = getFilteredBrokers();
+      const grid = document.getElementById('brokersGrid');
+      const meta = document.getElementById('resultsMeta');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+      meta.innerText = `عرض ${Math.min(visibleCount, filtered.length)} من ${filtered.length} مكتب`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:28px; display:block; margin-bottom:10px;"></i> لا توجد نتائج مطابقة لبحثك.</div>`;
+        loadMoreBtn.hidden = true;
+        return;
+      }
+
+      grid.innerHTML = filtered.slice(0, visibleCount).map(brokerCardHTML).join('');
+      loadMoreBtn.hidden = visibleCount >= filtered.length;
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchTerm = e.target.value;
+      visibleCount = PAGE_SIZE;
+      render();
+    });
+
+    document.querySelectorAll('.filter-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeRank = btn.dataset.rank;
+        visibleCount = PAGE_SIZE;
+        render();
+      });
+    });
+
+    document.getElementById('loadMoreBtn').addEventListener('click', () => {
+      visibleCount += PAGE_SIZE;
+      render();
+    });
+
+    render();
+  </script>
+
+</body>
+</html>
