@@ -365,6 +365,32 @@
         </div>
 
         <div class="properties-list-container" id="brokerPropertiesContainer"></div>
+
+        <div class="about-broker-card" style="margin-top:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div class="about-card-title" style="margin-bottom:0;">تقييمات العملاء</div>
+            <div id="ratingSummary" style="font-weight:900; color:#d97706; font-size:14px;"><i class="fas fa-star"></i> لا توجد تقييمات بعد</div>
+          </div>
+
+          <div id="reviewsListContainer" style="margin-bottom:16px;"></div>
+
+          <button id="showReviewFormBtn" onclick="document.getElementById('reviewFormBox').style.display='block'; this.style.display='none';" style="background:var(--primary-turquoise); color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:800; cursor:pointer; font-size:13px;">
+            <i class="fas fa-star"></i> أضف تقييمك لهذا الوسيط
+          </button>
+
+          <div id="reviewFormBox" style="display:none; margin-top:12px;">
+            <select id="reviewRatingInput" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #cbd5e1;">
+              <option value="5">⭐⭐⭐⭐⭐ ممتاز</option>
+              <option value="4">⭐⭐⭐⭐ جيد جداً</option>
+              <option value="3">⭐⭐⭐ متوسط</option>
+              <option value="2">⭐⭐ ضعيف</option>
+              <option value="1">⭐ سيء</option>
+            </select>
+            <input type="text" id="reviewNameInput" placeholder="اسمك" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #cbd5e1;">
+            <textarea id="reviewCommentInput" placeholder="اكتب تجربتك مع هذا الوسيط..." style="width:100%; height:70px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; font-family:'Tajawal'; margin-bottom:8px;"></textarea>
+            <button onclick="submitBrokerReview()" style="width:100%; background:#16a34a; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; cursor:pointer;">إرسال التقييم</button>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -432,17 +458,17 @@
         <h3 style="font-size:18px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:15px;">أرسل إيميل للوكيل لمزيد من المعلومات</h3>
         
         <form onsubmit="handleEmailSubmit(event)">
-          <input type="text" class="form-input-email" required placeholder="أدخل الاسم*">
-          <input type="email" class="form-input-email" required placeholder="أدخل الإيميل*">
-          
+          <input type="text" id="profileLeadName" class="form-input-email" required placeholder="أدخل الاسم*">
+          <input type="email" id="profileLeadEmail" class="form-input-email" required placeholder="أدخل الإيميل*">
+
           <div style="display:flex; gap:8px; margin-bottom:12px;">
             <input type="text" value="+971" readonly style="width:70px; text-align:center; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-weight:bold;">
-            <input type="tel" class="form-input-email" style="margin-bottom:0; flex:1;" required placeholder="رقم الهاتف">
+            <input type="tel" id="profileLeadPhone" class="form-input-email" style="margin-bottom:0; flex:1;" required placeholder="رقم الهاتف">
           </div>
 
           <textarea style="width:100%; height:90px; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-family:'Tajawal'; font-weight:700; margin-bottom:15px; text-align:right;" id="emailTextMsg">مرحباً، أرغب بالاستفسار عن عقاراتك المعروضة. أرجو منك الاتصال بي في أقرب وقت ممكن.</textarea>
 
-          <button type="submit" style="width:100%; background:#064e3b; color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <button type="submit" id="profileLeadSubmitBtn" style="width:100%; background:#064e3b; color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
             <i class="fas fa-paper-plane"></i> إرسال بريد إلكتروني
           </button>
           <button type="button" style="width:100%; background:transparent; border:none; color:#94a3b8; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="closeBadgeModal('emailModal')">إلغاء</button>
@@ -453,6 +479,7 @@
 
   <script>
     let activePhone = "0501234567";
+    let activeBrokerId = null;
 
     function openBadgeModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeBadgeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -462,16 +489,95 @@
       alert('🎉 تم نسخ رقم هاتف الوكيل بنجاح!');
     }
 
-    function handleEmailSubmit(e) {
+    async function handleEmailSubmit(e) {
       e.preventDefault();
-      alert("📧 تم إرسال رسالتك البريدية للوكيل بنجاح وسيتواصل معك قريباً جداً!");
+      const submitBtn = document.getElementById('profileLeadSubmitBtn');
+      submitBtn.disabled = true;
+
+      const { error } = await supabaseClient.from('leads').insert({
+        property_id: null,
+        property_title: 'استفسار عام من صفحة الوسيط',
+        broker_id: activeBrokerId,
+        buyer_name: document.getElementById('profileLeadName').value.trim(),
+        buyer_email: document.getElementById('profileLeadEmail').value.trim(),
+        buyer_phone: document.getElementById('profileLeadPhone').value.trim(),
+        message: document.getElementById('emailTextMsg').value.trim(),
+        status: 'new'
+      });
+
+      submitBtn.disabled = false;
       closeBadgeModal('emailModal');
+
+      if (error) {
+        alert('تعذر إرسال استفسارك حالياً، يرجى التواصل مباشرة عبر واتساب أو الاتصال.');
+        return;
+      }
+      alert("📧 تم إرسال رسالتك بنجاح وسيتواصل معك الوكيل قريباً جداً!");
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       const savedDir = localStorage.getItem('aqaratti_lang_dir');
       if (savedDir) document.documentElement.setAttribute('dir', savedDir);
     });
+
+    async function loadBrokerReviews() {
+      if (!activeBrokerId) return;
+      const { data, error } = await supabaseClient
+        .from('broker_reviews')
+        .select('*')
+        .eq('broker_id', activeBrokerId)
+        .order('created_at', { ascending: false });
+
+      const listEl = document.getElementById('reviewsListContainer');
+      const summaryEl = document.getElementById('ratingSummary');
+
+      if (error || !data || data.length === 0) {
+        listEl.innerHTML = `<p style="font-size:13px; color:#94a3b8; font-weight:700;">لا توجد تقييمات بعد لهذا الوسيط. كن أول من يقيّم!</p>`;
+        summaryEl.innerHTML = `<i class="fas fa-star"></i> لا توجد تقييمات بعد`;
+        return;
+      }
+
+      const avg = (data.reduce((sum, r) => sum + r.rating, 0) / data.length).toFixed(1);
+      summaryEl.innerHTML = `<i class="fas fa-star"></i> ${avg} من 5 (${data.length} تقييم)`;
+
+      listEl.innerHTML = data.map(r => `
+        <div style="border-bottom:1px solid #f1f5f9; padding:10px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:13px;">${r.reviewer_name || 'عميل'}</strong>
+            <span style="color:#f59e0b; font-size:12px; font-weight:800;">${'⭐'.repeat(r.rating)}</span>
+          </div>
+          ${r.comment ? `<p style="font-size:12px; color:#64748b; margin-top:4px;">${r.comment}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function submitBrokerReview() {
+      const rating = parseInt(document.getElementById('reviewRatingInput').value);
+      const name = document.getElementById('reviewNameInput').value.trim();
+      const comment = document.getElementById('reviewCommentInput').value.trim();
+
+      if (!name) { alert('يرجى إدخال اسمك.'); return; }
+      if (!activeBrokerId) { alert('تعذر تحديد الوسيط لإرسال التقييم.'); return; }
+
+      const { error } = await supabaseClient.from('broker_reviews').insert({
+        broker_id: activeBrokerId,
+        reviewer_name: name,
+        rating: rating,
+        comment: comment
+      });
+
+      if (error) {
+        alert('تعذر إرسال تقييمك حالياً، حاول مرة أخرى لاحقاً.');
+        return;
+      }
+
+      document.getElementById('reviewFormBox').style.display = 'none';
+      document.getElementById('showReviewFormBtn').style.display = 'inline-block';
+      document.getElementById('reviewNameInput').value = '';
+      document.getElementById('reviewCommentInput').value = '';
+      alert('✅ شكراً لك، تم إرسال تقييمك بنجاح!');
+      loadBrokerReviews();
+    }
 
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -492,6 +598,8 @@
       document.getElementById('brokerAvatar').src = currentBroker.avatar;
 
       activePhone = currentBroker.phone;
+      activeBrokerId = currentBroker.brokerId;
+      loadBrokerReviews();
       document.getElementById('modalBrokerPhone').innerText = activePhone;
       document.getElementById('phoneDirectCallLink').href = `tel:${activePhone}`;
 
@@ -515,7 +623,7 @@
         <div class="bayut-prop-card-horizontal">
           <div class="prop-card-img-box">
             <img src="${p.image}" alt="${p.title}" loading="lazy">
-            <span style="position:absolute; top:10px; right:10px; background:#16a34a; color:white; font-size:10px; font-weight:900; padding:3px 8px; border-radius:12px;">TruCheck™</span>
+            ${p.isVerified ? `<span style="position:absolute; top:10px; right:10px; background:#16a34a; color:white; font-size:10px; font-weight:900; padding:3px 8px; border-radius:12px;">TruCheck™</span>` : ''}
           </div>
 
           <div class="prop-card-details-box">

@@ -50,6 +50,7 @@ function mapSupabasePropertyToAqaratti(row) {
     imagesList: images,
     totalImagesCount: images.length,
     description: row.description,
+    isVerified: !!row.license_number,
     broker: {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط عقاراتي',

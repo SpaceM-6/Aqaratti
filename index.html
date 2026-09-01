@@ -2510,7 +2510,7 @@ function renderPropertiesList(list) {
             <button class="card-img-arrow prev" onclick="navigateCardImage('${prop.id}', 'prev', '${encodeURIComponent(JSON.stringify(propertyImages))}', event)"><i class="fas fa-chevron-right"></i></button>
             <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', '${encodeURIComponent(JSON.stringify(propertyImages))}', event)"><i class="fas fa-chevron-left"></i></button>
             ` : ''}
-            <span class="badge-trucheck-tag"><i class="fas fa-check"></i></span>
+            ${prop.isVerified ? `<span class="badge-trucheck-tag" title="تم التحقق من رخصة الوسيط"><i class="fas fa-check"></i></span>` : ''}
             <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
             <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)"><i class="fas fa-heart"></i></button>
           </div>
