@@ -1489,6 +1489,76 @@
 .pwa-install-banner.pwa-banner-hidden {
   display: none !important;
 }
+
+/* 🔔 إشعارات عصرية (Toast) تحل محل alert() الافتراضي للمتصفح */
+.aqaratti-toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none;
+  width: 100%;
+  padding: 0 16px;
+}
+.aqaratti-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--dubizzle-navy, #192038);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  border-right: 4px solid var(--primary-turquoise, #00a896);
+  max-width: 420px;
+  opacity: 0;
+  transform: translateY(-16px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.aqaratti-toast.show { opacity: 1; transform: translateY(0); }
+.aqaratti-toast i { font-size: 17px; flex-shrink: 0; }
+.aqaratti-toast-success { border-right-color: #16a34a; }
+.aqaratti-toast-success i { color: #16a34a; }
+.aqaratti-toast-info { border-right-color: var(--primary-turquoise, #00a896); }
+.aqaratti-toast-info i { color: var(--primary-turquoise, #00a896); }
+.aqaratti-toast-error { border-right-color: #dc2626; }
+.aqaratti-toast-error i { color: #dc2626; }
+
+/* ✉️ لوحة "تحقق من بريدك" التي تحل محل alert() نجاح إنشاء الحساب */
+.auth-confirm-panel {
+  text-align: center;
+  padding: 10px 4px 4px;
+}
+.auth-confirm-panel .auth-confirm-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #e6f7f5;
+  color: var(--primary-turquoise, #00a896);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 14px;
+}
+.auth-confirm-panel h3 { font-size: 16px; font-weight: 900; color: var(--dubizzle-navy, #192038); margin-bottom: 8px; }
+.auth-confirm-panel p { font-size: 13px; color: #64748b; font-weight: 700; line-height: 1.7; margin-bottom: 6px; }
+.auth-confirm-panel .auth-confirm-email { color: var(--primary-turquoise, #00a896); font-weight: 900; }
+.auth-confirm-panel .auth-resend-link {
+  display: inline-block; margin-top: 10px;
+  color: var(--primary-turquoise, #00a896); font-weight: 800; font-size: 12.5px;
+  cursor: pointer; text-decoration: underline; background: none; border: none;
+}
+.auth-confirm-panel .auth-confirm-ok-btn {
+  width: 100%; margin-top: 16px;
+  background: var(--primary-turquoise, #00a896); color: white; border: none;
+  padding: 11px; border-radius: 8px; font-weight: 800; cursor: pointer;
+}
   </style>
 
   <!-- 🔎 SEO: بيانات منظمة (JSON-LD) تعرّف جوجل بهوية المنصة وخاصية البحث -->
@@ -1958,10 +2028,22 @@
           <input type="password" id="registerPasswordInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور (6 أحرف على الأقل)">
           <button id="registerSubmitBtn" style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="handleAqarattiRegister()">إنشاء الحساب الآن</button>
         </div>
-        <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">إلغاء</button>
+
+        <!-- ✉️ تظهر بدل نموذج التسجيل عند الحاجة لتأكيد البريد الإلكتروني (بدل alert() قديم) -->
+        <div id="authConfirmPanel" class="auth-confirm-panel" style="display:none;">
+          <div class="auth-confirm-icon"><i class="fas fa-envelope-circle-check"></i></div>
+          <h3>تم إنشاء حسابك بنجاح 🎉</h3>
+          <p>أرسلنا رابط تأكيد إلى <span class="auth-confirm-email" id="authConfirmEmailText"></span>.<br>افتح بريدك واضغط الرابط لتفعيل حسابك، ثم سجّل دخولك.</p>
+          <button type="button" class="auth-resend-link" onclick="resendConfirmationEmail()">لم يصلك البريد؟ إعادة الإرسال</button>
+          <button type="button" class="auth-confirm-ok-btn" onclick="closeAuthConfirmPanel()">حسناً، فهمت</button>
+        </div>
+
+        <button id="authCancelBtn" style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">إلغاء</button>
       </div>
     </div>
   </div>
+
+  <div class="aqaratti-toast-container" id="aqarattiToastContainer"></div>
 
   <script>
     let visitedProperties = JSON.parse(localStorage.getItem('aqaratti_visited') || '[]');
@@ -2070,8 +2152,70 @@
 
     function showAuthError(message) {
       const el = document.getElementById('authErrorMsg');
+      el.innerHTML = '';
       el.innerText = message;
       el.style.display = 'block';
+    }
+
+    // نفس بنر الخطأ، لكن مع رابط "إعادة إرسال رابط التأكيد" - لحالة البريد غير المؤكَّد تحديداً
+    function showAuthErrorWithResend(message, email) {
+      const el = document.getElementById('authErrorMsg');
+      el.innerHTML = `${message} <button type="button" class="auth-resend-link" style="margin-top:4px; display:block; font-size:12px;" onclick="resendConfirmationEmail('${email.replace(/'/g, "\\'")}')">إعادة إرسال رابط التأكيد</button>`;
+      el.style.display = 'block';
+    }
+
+    function hideAuthError() {
+      const el = document.getElementById('authErrorMsg');
+      el.style.display = 'none';
+      el.innerHTML = '';
+    }
+
+    // 🔔 إشعار عصري أعلى الصفحة يحل محل alert() الافتراضي للمتصفح
+    function showAqarattiToast(message, type = 'success', duration = 4000) {
+      const container = document.getElementById('aqarattiToastContainer');
+      if (!container) { return; }
+      const icons = { success: 'fa-circle-check', info: 'fa-circle-info', error: 'fa-triangle-exclamation' };
+      const toast = document.createElement('div');
+      toast.className = `aqaratti-toast aqaratti-toast-${type}`;
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    let pendingConfirmEmail = '';
+
+    // يُظهر لوحة "تحقق من بريدك" بدل نموذج التسجيل (بدل alert() قديم)
+    function showAuthConfirmPanel(email) {
+      pendingConfirmEmail = email;
+      document.getElementById('authConfirmEmailText').innerText = email;
+      document.getElementById('registerAuthForm').style.display = 'none';
+      document.getElementById('loginAuthForm').style.display = 'none';
+      document.querySelector('.auth-tabs').style.display = 'none';
+      document.getElementById('authCancelBtn').style.display = 'none';
+      document.getElementById('authConfirmPanel').style.display = 'block';
+    }
+
+    function closeAuthConfirmPanel() {
+      document.getElementById('authConfirmPanel').style.display = 'none';
+      document.querySelector('.auth-tabs').style.display = 'flex';
+      document.getElementById('authCancelBtn').style.display = 'block';
+      closeRoyalModal('loginModal');
+      switchAuthTab('login');
+    }
+
+    async function resendConfirmationEmail(email) {
+      const targetEmail = email || pendingConfirmEmail || document.getElementById('loginEmailInput').value.trim();
+      if (!targetEmail) return;
+      const { error } = await supabaseClient.auth.resend({ type: 'signup', email: targetEmail });
+      if (error) {
+        showAqarattiToast('تعذر إعادة إرسال رابط التأكيد، حاول لاحقاً.', 'error');
+        return;
+      }
+      showAqarattiToast('تم إرسال رابط التأكيد مجدداً، تحقق من بريدك.', 'info');
     }
 
     async function handleAqarattiLogin() {
@@ -2081,16 +2225,25 @@
 
       const btn = document.getElementById('loginSubmitBtn');
       btn.disabled = true; btn.innerText = 'جاري تسجيل الدخول...';
+      hideAuthError();
 
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       btn.disabled = false; btn.innerText = 'تسجيل الدخول';
 
-      if (error) { showAuthError('فشل تسجيل الدخول: تأكد من البريد وكلمة المرور.'); return; }
+      if (error) {
+        const msg = (error.message || '').toLowerCase();
+        if (error.code === 'email_not_confirmed' || msg.includes('email not confirmed')) {
+          showAuthErrorWithResend('بريدك الإلكتروني غير مؤكَّد بعد. تحقق من صندوق الوارد واضغط رابط التأكيد أولاً.', email);
+        } else {
+          showAuthError('فشل تسجيل الدخول: تأكد من البريد وكلمة المرور.');
+        }
+        return;
+      }
 
       closeRoyalModal('loginModal');
       await refreshAqarattiAuthUI();
-      alert('تم تسجيل الدخول بنجاح!');
+      showAqarattiToast('تم تسجيل الدخول بنجاح، أهلاً بعودتك!', 'success');
     }
 
     async function handleAqarattiRegister() {
@@ -2104,29 +2257,32 @@
 
       const btn = document.getElementById('registerSubmitBtn');
       btn.disabled = true; btn.innerText = 'جاري إنشاء الحساب...';
+      hideAuthError();
 
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      // الاسم/الهاتف يُرسلان كـ user_metadata فيقرأهما trigger قاعدة البيانات وينشئ صف
+      // profiles تلقائياً (حتى قبل تأكيد البريد، حيث لا توجد جلسة بعد لإدخاله من المتصفح مباشرة)
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName, phone } }
+      });
+
+      btn.disabled = false; btn.innerText = 'إنشاء الحساب الآن';
 
       if (error) {
-        btn.disabled = false; btn.innerText = 'إنشاء الحساب الآن';
         showAuthError('تعذر إنشاء الحساب: ' + (error.message.includes('already') ? 'هذا البريد مسجّل مسبقاً.' : error.message));
         return;
       }
 
-      // ننشئ صف الوسيط (profiles) مباشرة بنفس بيانات التسجيل
-      if (data.user) {
-        await supabaseClient.from('profiles').insert({
-          id: data.user.id,
-          full_name: fullName,
-          phone: phone,
-          whatsapp: phone
-        });
+      if (data.session) {
+        // تأكيد البريد معطّل في إعدادات المشروع: المستخدم مسجّل دخوله فوراً
+        closeRoyalModal('loginModal');
+        await refreshAqarattiAuthUI();
+        showAqarattiToast('🎉 تم إنشاء حسابك وتسجيل الدخول بنجاح!', 'success');
+      } else {
+        // تأكيد البريد مفعّل: لا توجد جلسة بعد - نوضح للمستخدم الخطوة التالية بدل الإيحاء بنجاح فوري
+        showAuthConfirmPanel(email);
       }
-
-      btn.disabled = false; btn.innerText = 'إنشاء الحساب الآن';
-      closeRoyalModal('loginModal');
-      await refreshAqarattiAuthUI();
-      alert('تم إنشاء حسابك بنجاح! يمكنك الآن إضافة عقاراتك من صفحة "الاشتراك وإضافة عقار".');
     }
 
     async function refreshAqarattiAuthUI() {

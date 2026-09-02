@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة تفعيل الوسطاء | Aqaratti</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-client.js"></script>
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --turquoise-light: #e6f7f5;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f4f6f9;
+      --dubizzle-border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --gold: #d4af37;
+      --silver: #9ca3af;
+      --bronze: #b45309;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
+
+    .navbar {
+      background: #ffffff;
+      padding: 14px 30px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+
+    .page-header { max-width: 1300px; margin: 24px auto 0; padding: 0 20px; }
+    .page-header h1 { font-size: 22px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 4px; }
+    .page-header p { font-size: 13px; color: var(--text-muted); font-weight: 700; }
+
+    .container { max-width: 1300px; margin: 0 auto; padding: 18px 20px 50px; }
+
+    .stats-bar-inner {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 26px;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      margin-bottom: 16px;
+    }
+    .stat-item { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 900; color: var(--text-dark); }
+    .stat-item .stat-count { color: var(--primary-turquoise); }
+    .stat-item.stat-total .stat-count { color: var(--dubizzle-navy); }
+    .stat-divider { width: 1px; background: var(--dubizzle-border); align-self: stretch; }
+
+    .toolbar-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      padding: 16px 18px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .search-box { flex: 1; min-width: 220px; position: relative; }
+    .search-box input {
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+    }
+    .search-box i { position: absolute; top: 50%; right: 14px; transform: translateY(-50%); color: var(--text-muted); }
+
+    .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-pill {
+      padding: 9px 16px;
+      border-radius: 100px;
+      border: 1.5px solid var(--dubizzle-border);
+      background: white;
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: 0.2s;
+      white-space: nowrap;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .filter-pill.active { border-color: var(--primary-turquoise); color: var(--primary-turquoise); background: var(--turquoise-light); }
+    .filter-pill[data-filter="active"].active { border-color: #16a34a; color: #15803d; background: #dcfce7; }
+    .filter-pill[data-filter="inactive"].active { border-color: #b91c1c; color: #b91c1c; background: #fee2e2; }
+
+    .table-card {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+    }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 780px; }
+    thead th {
+      background: #f8fafc;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+
+    .cell-name-ar { font-weight: 900; color: var(--dubizzle-navy); }
+    .cell-name-en { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+
+    .rank-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 900;
+      padding: 4px 10px; border-radius: 100px;
+      white-space: nowrap;
+    }
+    .rank-badge.GOLD { background: #fef9e7; color: #92400e; }
+    .rank-badge.SILVER { background: #f3f4f6; color: #374151; }
+    .rank-badge.BRONZE { background: #fef3e2; color: var(--bronze); }
+    .rank-badge.GENERAL { background: #f1f5f9; color: var(--text-muted); }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 900;
+      padding: 4px 10px; border-radius: 100px;
+      white-space: nowrap;
+    }
+    .status-pill.on { background: #dcfce7; color: #15803d; }
+    .status-pill.off { background: #fee2e2; color: #b91c1c; }
+
+    .toggle-btn {
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      white-space: nowrap;
+    }
+    .toggle-btn.activate { background: #16a34a; color: white; }
+    .toggle-btn.deactivate { background: #f1f5f9; color: #b91c1c; border: 1px solid #fecaca; }
+    .toggle-btn:disabled { opacity: 0.6; cursor: default; }
+
+    .load-more-wrap { text-align: center; padding: 18px 0 10px; }
+    .load-more-btn {
+      background: var(--primary-turquoise); color: white; border: none;
+      padding: 12px 28px; border-radius: 10px; font-weight: 900; font-size: 14px;
+      cursor: pointer; font-family: 'Tajawal', sans-serif;
+    }
+    .load-more-btn:hover { background: #008072; }
+    .load-more-btn[hidden] { display: none; }
+
+    .empty-row td { text-align: center; padding: 40px 20px; color: var(--text-muted); font-weight: 700; }
+
+    .auth-gate {
+      max-width: 500px; margin: 60px auto; text-align: center;
+      background: white; border: 1px solid var(--dubizzle-border); border-radius: 16px;
+      padding: 40px 30px;
+    }
+    .auth-gate i { font-size: 36px; color: var(--text-muted); margin-bottom: 14px; display: block; }
+    .auth-gate p { font-weight: 800; color: var(--text-dark); margin-bottom: 16px; }
+    .auth-gate a { color: var(--primary-turquoise); font-weight: 900; text-decoration: none; }
+
+    @media (max-width: 700px) {
+      .toolbar-card { flex-direction: column; align-items: stretch; }
+      .filter-pills { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="../brokers-directory.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة لدليل المكاتب</a>
+  </nav>
+
+  <div id="appRoot">
+    <div class="page-header">
+      <h1><i class="fas fa-user-check"></i> إدارة تفعيل الوسطاء</h1>
+      <p>تفعيل أو إلغاء تفعيل بيانات التواصل لوسطاء دليل RERA (10,062 مكتب)</p>
+    </div>
+
+    <div class="container">
+      <div class="stats-bar-inner" id="statsBar"></div>
+
+      <div class="toolbar-card">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="ابحث باسم المكتب (عربي/إنجليزي) أو اسم المسؤول...">
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills" id="statusFilters">
+          <button class="filter-pill active" data-filter="all">الكل</button>
+          <button class="filter-pill" data-filter="active"><i class="fas fa-check-circle"></i> مفعل</button>
+          <button class="filter-pill" data-filter="inactive"><i class="fas fa-circle-xmark"></i> غير مفعل</button>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الترخيص</th>
+                <th>التصنيف</th>
+                <th>الهاتف</th>
+                <th>الحالة</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="brokersTableBody">
+              <tr class="empty-row"><td colspan="6"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="load-more-wrap">
+        <button class="load-more-btn" id="loadMoreBtn" hidden>تحميل المزيد</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PAGE_SIZE = 50;
+    const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
+
+    let activeFilter = 'all';
+    let searchTerm = '';
+    let offset = 0;
+    let totalCount = 0;
+    let loadedBrokers = [];
+
+    function buildPrefixTsQuery(term) {
+      return term
+        .trim()
+        .split(/\s+/)
+        .map((w) => w.replace(/[^\p{L}\p{N}]/gu, ''))
+        .filter(Boolean)
+        .map((w) => `${w}:*`)
+        .join(' & ');
+    }
+
+    function baseQuery() {
+      let query = supabaseClient.from('brokers').select('*', { count: 'exact' });
+      if (activeFilter === 'active') query = query.eq('is_active', true);
+      if (activeFilter === 'inactive') query = query.eq('is_active', false);
+
+      const q = searchTerm.trim();
+      if (q) {
+        const tsQuery = buildPrefixTsQuery(q);
+        if (tsQuery) query = query.textSearch('search_vector', tsQuery, { config: 'simple' });
+      }
+      return query;
+    }
+
+    async function fetchPage(off) {
+      const { data, error, count } = await baseQuery()
+        .order('id', { ascending: true })
+        .range(off, off + PAGE_SIZE - 1);
+
+      if (error) {
+        console.error('تعذر جلب الوسطاء:', error);
+        return { data: [], count: 0 };
+      }
+      return { data: data || [], count: count || 0 };
+    }
+
+    function rowHTML(b) {
+      const isActive = !!b.is_active;
+      return `
+        <tr data-id="${b.id}">
+          <td>
+            <div class="cell-name-ar">${b.name_ar || '-'}</div>
+            <div class="cell-name-en">${b.name_en || ''}</div>
+          </td>
+          <td>${b.license || '-'}</td>
+          <td><span class="rank-badge ${b.classification}">${RANK_LABELS[b.classification] || b.classification || 'عام'}</span></td>
+          <td>${b.phone || '-'}</td>
+          <td><span class="status-pill ${isActive ? 'on' : 'off'}">${isActive ? 'مفعل' : 'غير مفعل'}</span></td>
+          <td>
+            ${isActive
+              ? `<button class="toggle-btn deactivate" onclick="toggleBroker(${b.id}, false, this)"><i class="fas fa-ban"></i> إلغاء التفعيل</button>`
+              : `<button class="toggle-btn activate" onclick="toggleBroker(${b.id}, true, this)"><i class="fas fa-check"></i> تفعيل</button>`}
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderTable() {
+      const body = document.getElementById('brokersTableBody');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+      if (loadedBrokers.length === 0) {
+        body.innerHTML = `<tr class="empty-row"><td colspan="6"><i class="fas fa-search"></i> لا توجد نتائج مطابقة.</td></tr>`;
+        loadMoreBtn.hidden = true;
+        return;
+      }
+
+      body.innerHTML = loadedBrokers.map(rowHTML).join('');
+      loadMoreBtn.hidden = loadedBrokers.length >= totalCount;
+    }
+
+    async function loadFirstPage() {
+      offset = 0;
+      document.getElementById('brokersTableBody').innerHTML = `<tr class="empty-row"><td colspan="6"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</td></tr>`;
+      const { data, count } = await fetchPage(0);
+      loadedBrokers = data;
+      totalCount = count;
+      offset = data.length;
+      renderTable();
+    }
+
+    async function loadMore() {
+      const { data } = await fetchPage(offset);
+      loadedBrokers = loadedBrokers.concat(data);
+      offset += data.length;
+      renderTable();
+    }
+
+    async function loadStats() {
+      const [{ count: activeCount }, { count: inactiveCount }, { count: total }] = await Promise.all([
+        supabaseClient.from('brokers').select('id', { count: 'exact', head: true }).eq('is_active', true),
+        supabaseClient.from('brokers').select('id', { count: 'exact', head: true }).eq('is_active', false),
+        supabaseClient.from('brokers').select('id', { count: 'exact', head: true }),
+      ]);
+
+      document.getElementById('statsBar').innerHTML = `
+        <span class="stat-item">مفعل: <span class="stat-count">${(activeCount || 0).toLocaleString('en-US')}</span></span>
+        <span class="stat-divider"></span>
+        <span class="stat-item">غير مفعل: <span class="stat-count">${(inactiveCount || 0).toLocaleString('en-US')}</span></span>
+        <span class="stat-divider"></span>
+        <span class="stat-item stat-total">الإجمالي: <span class="stat-count">${(total || 0).toLocaleString('en-US')}</span></span>
+      `;
+    }
+
+    async function toggleBroker(id, makeActive, btn) {
+      btn.disabled = true;
+      const payload = makeActive
+        ? { is_active: true, activated_at: new Date().toISOString() }
+        : { is_active: false };
+
+      const { error } = await supabaseClient.from('brokers').update(payload).eq('id', id);
+
+      if (error) {
+        alert('تعذر تحديث حالة الوسيط. تأكد أنك مسجّل دخولك ولديك صلاحية التعديل.');
+        btn.disabled = false;
+        return;
+      }
+
+      const idx = loadedBrokers.findIndex((b) => b.id === id);
+      if (idx !== -1) loadedBrokers[idx] = { ...loadedBrokers[idx], ...payload };
+      renderTable();
+      loadStats();
+    }
+
+    let searchDebounce;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchTerm = e.target.value;
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(loadFirstPage, 350);
+    });
+
+    document.querySelectorAll('#statusFilters .filter-pill').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#statusFilters .filter-pill').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        loadFirstPage();
+      });
+    });
+
+    document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
+
+    async function init() {
+      const user = await getCurrentAqarattiUser();
+      if (!user) {
+        document.getElementById('appRoot').innerHTML = `
+          <div class="auth-gate">
+            <i class="fas fa-lock"></i>
+            <p>يجب تسجيل الدخول للوصول لصفحة إدارة تفعيل الوسطاء.</p>
+            <a href="../index.html">العودة للصفحة الرئيسية لتسجيل الدخول</a>
+          </div>
+        `;
+        return;
+      }
+
+      loadStats();
+      loadFirstPage();
+    }
+
+    init();
+  </script>
+
+</body>
+</html>

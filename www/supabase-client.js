@@ -1,4 +1,9 @@
-/* ==================== إعداد الاتصال بـ Supabase لموقع عقاراتي | Aqaratti ==================== */
+/* ==================== إعداد الاتصال بـ Supabase لموقع عقاراتي | Aqaratti ====================
+   يُستخدم عبر anon key فقط، وهو آمن للعمل داخل المتصفح لأنه لا يملك صلاحيات إلا ما تسمح
+   به سياسات RLS في Postgres. جدول brokers (راجع supabase/schema.sql) للقراءة العامة فقط -
+   لا توجد سياسة INSERT/UPDATE/DELETE له، فحتى لو سُرِّب هذا المفتاح لا يمكن الكتابة فيه.
+   الكتابة في brokers تتم حصراً عبر مفتاح service_role السرّي من scripts/import-to-supabase.py،
+   الذي لا يجب أبداً وضعه في أي ملف يعمل داخل المتصفح مثل هذا الملف. */
 
 const SUPABASE_URL = 'https://mejkpckkdbmczzypzkkr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lamtwY2trZGJtY3p6eXB6a2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3ODMxNzUsImV4cCI6MjEwMzM1OTE3NX0.e9DqA9JRjhH-scSYwNue6XqowK0u1bMHEOcrcJjZwjo';
