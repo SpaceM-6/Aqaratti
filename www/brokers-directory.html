@@ -9,6 +9,8 @@
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
 
   <style>
     :root {
@@ -102,6 +104,7 @@
     .filter-pill[data-rank="GOLD"].active { border-color: var(--gold); color: #92400e; background: #fef9e7; }
     .filter-pill[data-rank="SILVER"].active { border-color: var(--silver); color: #374151; background: #f3f4f6; }
     .filter-pill[data-rank="BRONZE"].active { border-color: var(--bronze); color: var(--bronze); background: #fef3e2; }
+    .filter-pill[data-rank="GENERAL"].active { border-color: var(--text-muted); color: var(--text-dark); background: #f1f5f9; }
 
     .results-meta {
       max-width: 1200px;
@@ -155,6 +158,7 @@
     .rank-badge.GOLD { background: #fef9e7; color: #92400e; }
     .rank-badge.SILVER { background: #f3f4f6; color: #374151; }
     .rank-badge.BRONZE { background: #fef3e2; color: var(--bronze); }
+    .rank-badge.GENERAL { background: #f1f5f9; color: var(--text-muted); }
 
     .broker-license { font-size: 11.5px; color: var(--text-muted); font-weight: 700; }
     .broker-license strong { color: var(--text-dark); }
@@ -232,6 +236,7 @@
         <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
         <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
         <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+        <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
       </div>
     </div>
   </div>
@@ -248,26 +253,32 @@
   </div>
 
   <script>
-    // ⚠️ بيان وهمي واحد للعرض فقط (Placeholder) — استبدله بمصدر بياناتك الحقيقي لوسطاء منضمّين فعلاً بموافقتهم
-    const brokersData = [
-      { id: 1, nameAr: "مثال: اسم المكتب العقاري", nameEn: "Example Real Estate Office", license: "00000", rank: "GOLD", phone: "971500000000", email: "example@aqaratti.com", website: "https://aqaratti.com", logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200", activities: ["بيع", "تأجير", "استثمار"], social: { facebook: "#", instagram: "#" } },
-    ];
-
+    // 📡 المصدر الحقيقي: جدول directory_brokers في Supabase.
+    // بفضل صلاحيات RLS، الزوار العاديون لا يستلمون إلا السجلات المفعّلة (is_active = true) من الأدمن يدوياً بعد أخذ الموافقة.
     let activeRank = 'ALL';
     let searchTerm = '';
-    let visibleCount = 8;
-    const PAGE_SIZE = 8;
+    let currentOffset = 0;
+    let totalCount = 0;
+    let loadedBrokers = [];
+    const PAGE_SIZE = 12;
 
-    function getFilteredBrokers() {
-      return brokersData.filter(b => {
-        const matchesRank = activeRank === 'ALL' || b.rank === activeRank;
-        const q = searchTerm.trim().toLowerCase();
-        const matchesSearch = !q ||
-          b.nameAr.toLowerCase().includes(q) ||
-          b.nameEn.toLowerCase().includes(q) ||
-          b.license.toLowerCase().includes(q);
-        return matchesRank && matchesSearch;
-      });
+    async function fetchBrokersPage(offset) {
+      let query = supabaseClient
+        .from('directory_brokers')
+        .select('*', { count: 'exact' })
+        .eq('is_active', true);
+
+      if (activeRank !== 'ALL') query = query.eq('rank', activeRank);
+
+      const q = searchTerm.trim();
+      if (q) {
+        const safeQ = q.replace(/[%_,]/g, '');
+        query = query.or(`name_ar.ilike.%${safeQ}%,name_en.ilike.%${safeQ}%,license.ilike.%${safeQ}%`);
+      }
+
+      query = query.order('created_at', { ascending: false }).range(offset, offset + PAGE_SIZE - 1);
+      const { data, error, count } = await query;
+      return { data: data || [], count: count || 0, error };
     }
 
     function socialIconsHTML(social) {
@@ -280,30 +291,31 @@
     }
 
     function brokerCardHTML(b) {
-      const rankLabels = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي' };
+      const rankLabels = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
       const waPhone = (b.phone || '').replace(/\D/g, '');
+      const activities = Array.isArray(b.activities) ? b.activities : [];
       return `
         <div class="broker-card">
           <div class="broker-card-top">
-            <img class="broker-logo" src="${b.logo}" alt="${b.nameAr}" loading="lazy">
+            <img class="broker-logo" src="${b.logo || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
             <div class="broker-names">
-              <div class="broker-name-ar">${b.nameAr}</div>
-              <div class="broker-name-en">${b.nameEn}</div>
+              <div class="broker-name-ar">${b.name_ar || '-'}</div>
+              <div class="broker-name-en">${b.name_en || ''}</div>
             </div>
           </div>
 
-          <span class="rank-badge ${b.rank}"><i class="fas fa-star"></i> ${rankLabels[b.rank] || b.rank}</span>
+          <span class="rank-badge ${b.rank}"><i class="fas fa-star"></i> ${rankLabels[b.rank] || b.rank || 'عام'}</span>
 
-          <div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>
+          ${b.license ? `<div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>` : ''}
 
-          ${b.activities && b.activities.length ? `
+          ${activities.length ? `
           <div class="broker-activities">
-            ${b.activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
+            ${activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
           </div>` : ''}
 
           <div class="broker-actions">
-            <a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>
-            <a href="https://wa.me/${waPhone}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+            ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+            ${b.phone ? `<a href="https://wa.me/${waPhone}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
             ${b.website ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع</a>` : ''}
           </div>
 
@@ -312,28 +324,45 @@
       `;
     }
 
-    function render() {
-      const filtered = getFilteredBrokers();
+    function renderCards() {
       const grid = document.getElementById('brokersGrid');
       const meta = document.getElementById('resultsCountText');
       const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-      meta.innerText = `عرض ${Math.min(visibleCount, filtered.length)} من ${filtered.length} مكتب`;
+      meta.innerText = `عرض ${loadedBrokers.length} من ${totalCount} مكتب`;
 
-      if (filtered.length === 0) {
+      if (loadedBrokers.length === 0) {
         grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:28px; display:block; margin-bottom:10px;"></i> لا توجد نتائج مطابقة لبحثك.</div>`;
         loadMoreBtn.hidden = true;
         return;
       }
 
-      grid.innerHTML = filtered.slice(0, visibleCount).map(brokerCardHTML).join('');
-      loadMoreBtn.hidden = visibleCount >= filtered.length;
+      grid.innerHTML = loadedBrokers.map(brokerCardHTML).join('');
+      loadMoreBtn.hidden = loadedBrokers.length >= totalCount;
     }
 
+    async function loadFirstPage() {
+      currentOffset = 0;
+      document.getElementById('brokersGrid').innerHTML = `<div class="no-results"><i class="fas fa-spinner fa-spin" style="font-size:24px; display:block; margin-bottom:10px;"></i> جاري التحميل...</div>`;
+      const { data, count } = await fetchBrokersPage(0);
+      loadedBrokers = data;
+      totalCount = count;
+      currentOffset = data.length;
+      renderCards();
+    }
+
+    async function loadMore() {
+      const { data } = await fetchBrokersPage(currentOffset);
+      loadedBrokers = loadedBrokers.concat(data);
+      currentOffset += data.length;
+      renderCards();
+    }
+
+    let searchDebounce;
     document.getElementById('searchInput').addEventListener('input', (e) => {
       searchTerm = e.target.value;
-      visibleCount = PAGE_SIZE;
-      render();
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(loadFirstPage, 350);
     });
 
     document.querySelectorAll('.filter-pill').forEach(btn => {
@@ -341,17 +370,13 @@
         document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         activeRank = btn.dataset.rank;
-        visibleCount = PAGE_SIZE;
-        render();
+        loadFirstPage();
       });
     });
 
-    document.getElementById('loadMoreBtn').addEventListener('click', () => {
-      visibleCount += PAGE_SIZE;
-      render();
-    });
+    document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
 
-    render();
+    loadFirstPage();
   </script>
 
 </body>

@@ -1,5 +1,4 @@
-<!-- ==================== COMPLETE FAST JAVASCRIPT CODE ==================== -->
-<script>
+// ==================== COMPLETE FAST JAVASCRIPT CODE ====================
   // 1. فتح وإغلاق القوائم المنسدلة بسرعة البرق (0 مللي ثانية تأخير)
   function toggleDropdown(id) {
     const target = document.getElementById(id);
@@ -99,4 +98,3 @@
       });
     }
   });
-</script>

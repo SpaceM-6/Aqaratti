@@ -90,6 +90,30 @@
             </div>
         </section>
 
+        <!-- 📇 قسم تفعيل دليل المكاتب العقارية (للإدارة فقط): مخفي عن الجميع حتى يفعّله الأدمن يدوياً بعد أخذ الموافقة -->
+        <section id="directory-admin-section" style="margin-bottom: 30px; display:none;">
+            <h2 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">
+                <i class="fas fa-address-book" style="color: #28b16d;"></i> إدارة دليل المكاتب العقارية
+                <span style="font-size:12px; color:#64748b; font-weight:700;">(لا يظهر أي مكتب للزوار إلا بعد ضغط "تفعيل" هنا)</span>
+            </h2>
+
+            <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+                <input type="text" id="dirSearchInput" placeholder="ابحث بالاسم أو رقم الترخيص..." style="flex:1; min-width:220px; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                <select id="dirStatusFilter" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                    <option value="inactive">غير مفعّل فقط</option>
+                    <option value="active">مفعّل فقط</option>
+                    <option value="all">الكل</option>
+                </select>
+                <button onclick="loadDirectoryAdminList()" style="background:#0f172a; color:white; border:none; padding:10px 18px; border-radius:8px; font-weight:800; cursor:pointer;">بحث</button>
+            </div>
+
+            <div style="font-size:12px; color:#64748b; font-weight:700; margin-bottom:8px;" id="dirResultsMeta"></div>
+            <div id="dirAdminList" style="display:grid; gap:10px;"></div>
+            <div style="text-align:center; margin-top:14px;">
+                <button id="dirLoadMoreBtn" onclick="loadMoreDirectoryAdmin()" hidden style="background:#e2e8f0; color:#0f172a; border:none; padding:10px 20px; border-radius:8px; font-weight:800; cursor:pointer;">تحميل المزيد</button>
+            </div>
+        </section>
+
         <!-- واجهة الـ CRM المتكاملة -->
         <section id="crm-section" class="dashboard-tab">
             
@@ -296,12 +320,106 @@
             const profile = await getCurrentAqarattiProfile();
             if (profile && profile.is_admin) {
                 document.getElementById('adminApprovalPanel').style.display = 'block';
+                document.getElementById('directory-admin-section').style.display = 'block';
                 loadPendingProperties();
+                loadDirectoryAdminList();
             } else {
                 document.getElementById('adminGateMsg').style.display = 'block';
             }
             loadMyLeads();
         });
+
+        // ==================== 📇 إدارة دليل المكاتب العقارية (تفعيل يدوي فقط بعد الموافقة) ====================
+        let dirOffset = 0;
+        let dirTotalCount = 0;
+        const DIR_PAGE_SIZE = 20;
+
+        function directoryRowHTML(row) {
+            const isActive = row.is_active;
+            return `
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:220px;">
+                        <div style="font-weight:900; color:#0f172a; font-size:14px;">${row.name_ar || '-'} <span style="color:#94a3b8; font-weight:700; font-size:12px;">${row.name_en || ''}</span></div>
+                        <div style="font-size:12px; color:#64748b; margin-top:3px;">
+                            <i class="fas fa-id-card"></i> ${row.license || '-'} &middot; <i class="fas fa-phone"></i> ${row.phone || '-'} &middot; ${row.rank || 'GENERAL'}
+                        </div>
+                    </div>
+                    <span style="font-size:12px; font-weight:900; padding:4px 10px; border-radius:100px; ${isActive ? 'background:#dcfce7; color:#16a34a;' : 'background:#fef3c7; color:#92400e;'}">
+                        ${isActive ? '✅ مفعّل - ظاهر للزوار' : '⏳ غير مفعّل - مخفي'}
+                    </span>
+                    <button onclick="toggleDirectoryActive('${row.id}', ${!isActive})" style="background:${isActive ? '#dc2626' : '#16a34a'}; color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:800; cursor:pointer; font-size:12.5px;">
+                        ${isActive ? 'إلغاء التفعيل' : 'تفعيل بعد أخذ الموافقة'}
+                    </button>
+                </div>
+            `;
+        }
+
+        async function fetchDirectoryAdminPage(offset) {
+            const statusFilter = document.getElementById('dirStatusFilter').value;
+            const q = document.getElementById('dirSearchInput').value.trim();
+
+            let query = supabaseClient.from('directory_brokers').select('*', { count: 'exact' });
+            if (statusFilter === 'active') query = query.eq('is_active', true);
+            else if (statusFilter === 'inactive') query = query.eq('is_active', false);
+
+            if (q) {
+                const safeQ = q.replace(/[%_,]/g, '');
+                query = query.or(`name_ar.ilike.%${safeQ}%,name_en.ilike.%${safeQ}%,license.ilike.%${safeQ}%,phone.ilike.%${safeQ}%`);
+            }
+
+            query = query.order('created_at', { ascending: false }).range(offset, offset + DIR_PAGE_SIZE - 1);
+            const { data, error, count } = await query;
+            return { data: data || [], count: count || 0, error };
+        }
+
+        async function loadDirectoryAdminList() {
+            dirOffset = 0;
+            const list = document.getElementById('dirAdminList');
+            list.innerHTML = `<p style="color:#94a3b8; font-weight:700;">جاري التحميل...</p>`;
+            const { data, count, error } = await fetchDirectoryAdminPage(0);
+
+            if (error) {
+                list.innerHTML = `<p style="color:#dc2626; font-weight:700;">تعذر تحميل الدليل (تأكد من تشغيل ملف SQL الخاص بجدول directory_brokers).</p>`;
+                return;
+            }
+
+            dirOffset = data.length;
+            dirTotalCount = count;
+            document.getElementById('dirResultsMeta').innerText = `عرض ${data.length} من ${count} سجل`;
+            list.innerHTML = data.length ? data.map(directoryRowHTML).join('') : `<p style="color:#94a3b8; font-weight:700;">لا توجد سجلات مطابقة.</p>`;
+            document.getElementById('dirLoadMoreBtn').hidden = dirOffset >= dirTotalCount;
+        }
+
+        async function loadMoreDirectoryAdmin() {
+            const { data } = await fetchDirectoryAdminPage(dirOffset);
+            dirOffset += data.length;
+            document.getElementById('dirAdminList').insertAdjacentHTML('beforeend', data.map(directoryRowHTML).join(''));
+            document.getElementById('dirResultsMeta').innerText = `عرض ${dirOffset} من ${dirTotalCount} سجل`;
+            document.getElementById('dirLoadMoreBtn').hidden = dirOffset >= dirTotalCount;
+        }
+
+        async function toggleDirectoryActive(id, newState) {
+            if (newState) {
+                const confirmed = confirm('هل تأكدت أنك تواصلت مع هذا المكتب وأخذت موافقته الصريحة على نشر بياناته في الدليل؟');
+                if (!confirmed) return;
+            }
+            const { error } = await supabaseClient
+                .from('directory_brokers')
+                .update({ is_active: newState, activated_at: newState ? new Date().toISOString() : null })
+                .eq('id', id);
+            if (error) {
+                alert('تعذر تحديث حالة السجل: ' + error.message);
+                return;
+            }
+            loadDirectoryAdminList();
+        }
+
+        let dirSearchDebounce;
+        document.getElementById('dirSearchInput').addEventListener('input', () => {
+            clearTimeout(dirSearchDebounce);
+            dirSearchDebounce = setTimeout(loadDirectoryAdminList, 350);
+        });
+        document.getElementById('dirStatusFilter').addEventListener('change', loadDirectoryAdminList);
     </script>
 </body>
 </html>
