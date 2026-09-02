@@ -50,9 +50,38 @@
     .page-hero h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
     .page-hero p { font-size: 13px; color: #cbd5e1; }
 
-    .toolbar {
+    /* Tabs */
+    .directory-tabs {
       max-width: 1200px;
       margin: -25px auto 0;
+      padding: 0 20px;
+      position: relative;
+      z-index: 6;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .directory-tab {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px 12px 0 0;
+      padding: 14px 22px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      box-shadow: 0 -4px 14px rgba(0,0,0,0.04);
+    }
+    .directory-tab i { margin-left: 6px; }
+    .directory-tab.active { color: var(--primary-turquoise); border-bottom: 3px solid var(--primary-turquoise); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .toolbar {
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 0 20px;
       position: relative;
       z-index: 5;
@@ -99,6 +128,7 @@
       color: var(--text-muted);
       transition: 0.2s;
       white-space: nowrap;
+      font-family: 'Tajawal', sans-serif;
     }
     .filter-pill.active { border-color: var(--primary-turquoise); color: var(--primary-turquoise); background: var(--turquoise-light); }
     .filter-pill[data-rank="GOLD"].active { border-color: var(--gold); color: #92400e; background: #fef9e7; }
@@ -113,7 +143,29 @@
       font-size: 13px;
       color: var(--text-muted);
       font-weight: 700;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
     }
+
+    .stats-bar {
+      max-width: 1200px;
+      margin: 18px auto 0;
+      padding: 0 20px;
+    }
+    .stats-bar-inner {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 26px;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+    }
+    .stat-item { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 900; color: var(--text-dark); }
+    .stat-item .stat-count { color: var(--primary-turquoise); }
+    .stat-item.stat-total .stat-count { color: var(--dubizzle-navy); }
+    .stat-divider { width: 1px; background: var(--dubizzle-border); align-self: stretch; }
 
     .brokers-grid {
       max-width: 1200px;
@@ -135,6 +187,37 @@
       transition: transform 0.15s, box-shadow 0.15s;
     }
     .broker-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+    #panelFull .broker-card { cursor: pointer; }
+
+    .broker-card.broker-card-inactive { opacity: 0.7; background: #f8fafc; }
+    .inactive-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: #fee2e2; color: #b91c1c;
+      font-size: 11px; font-weight: 900;
+      padding: 8px 12px; border-radius: 10px;
+      line-height: 1.4;
+    }
+    .act-details { background: var(--dubizzle-navy); }
+
+    .rera-banner {
+      max-width: 1200px;
+      margin: 14px auto 0;
+      padding: 0 20px;
+    }
+    .rera-banner-inner {
+      background: #e6f7f5;
+      border: 1px solid #b7ebe4;
+      color: #0f5c53;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 12.5px;
+      font-weight: 700;
+      line-height: 1.7;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .rera-banner-inner i { color: var(--primary-turquoise); margin-top: 2px; }
 
     .broker-card-top { display: flex; align-items: center; gap: 12px; }
     .broker-logo {
@@ -162,6 +245,12 @@
 
     .broker-license { font-size: 11.5px; color: var(--text-muted); font-weight: 700; }
     .broker-license strong { color: var(--text-dark); }
+    .broker-manager { font-size: 11.5px; color: var(--text-muted); font-weight: 700; }
+    .broker-manager strong { color: var(--text-dark); }
+
+    .broker-contact-line { font-size: 11.5px; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .broker-contact-line i { color: var(--primary-turquoise); width: 14px; text-align: center; }
+    .broker-contact-line a { color: inherit; text-decoration: none; }
 
     .broker-activities { display: flex; flex-wrap: wrap; gap: 6px; }
     .activity-chip {
@@ -192,13 +281,13 @@
     }
 
     .load-more-wrap { text-align: center; padding: 10px 0 40px; }
-    #loadMoreBtn {
+    .load-more-btn {
       background: var(--primary-turquoise); color: white; border: none;
       padding: 12px 28px; border-radius: 10px; font-weight: 900; font-size: 14px;
       cursor: pointer; font-family: 'Tajawal', sans-serif;
     }
-    #loadMoreBtn:hover { background: #008072; }
-    #loadMoreBtn[hidden] { display: none; }
+    .load-more-btn:hover { background: #008072; }
+    .load-more-btn[hidden] { display: none; }
 
     .no-results {
       text-align: center; padding: 50px 20px;
@@ -210,6 +299,7 @@
       .toolbar-card { flex-direction: column; align-items: stretch; }
       .filter-pills { justify-content: center; }
       .page-hero h1 { font-size: 21px; }
+      .directory-tabs { flex-direction: column; }
     }
   </style>
 </head>
@@ -222,162 +312,242 @@
 
   <div class="page-hero">
     <h1><i class="fas fa-building"></i> دليل المكاتب العقارية</h1>
-    <p>تصفّح المكاتب العقارية المعتمدة وتواصل معها مباشرة</p>
+    <p>تصفّح آلاف المكاتب العقارية المرخّصة في دبي وتواصل معها مباشرة</p>
   </div>
 
-  <div class="toolbar">
-    <div class="toolbar-card">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="ابحث بالاسم (عربي/إنجليزي) أو رقم الترخيص...">
-        <i class="fas fa-search"></i>
+  <div class="directory-tabs">
+    <button class="directory-tab active" id="tabBtnFull" data-tab="full"><i class="fas fa-list"></i> الدليل الكامل</button>
+    <button class="directory-tab" id="tabBtnVerified" data-tab="verified"><i class="fas fa-shield-check"></i> المكاتب الموثقة</button>
+  </div>
+
+  <!-- ===================== TAB 1: FULL DIRECTORY (10,062 مكتب من سجل RERA، عبر Supabase) ===================== -->
+  <div class="tab-panel active" id="panelFull">
+    <div class="stats-bar">
+      <div class="stats-bar-inner" id="fullStatsBar"></div>
+    </div>
+    <div class="rera-banner">
+      <div class="rera-banner-inner">
+        <i class="fas fa-circle-info"></i>
+        <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط قد وافق على الظهور في دليلنا.</span>
       </div>
-      <div class="filter-pills" id="rankFilters">
-        <button class="filter-pill active" data-rank="ALL">الكل</button>
-        <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
-        <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
-        <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
-        <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+    </div>
+    <div class="toolbar">
+      <div class="toolbar-card">
+        <div class="search-box">
+          <input type="text" id="fullSearchInput" placeholder="ابحث باسم المكتب (عربي/إنجليزي) أو اسم المسؤول...">
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills" id="fullRankFilters">
+          <button class="filter-pill active" data-rank="ALL">الكل</button>
+          <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
+          <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
+          <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+          <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+        </div>
       </div>
+    </div>
+
+    <div class="results-meta">
+      <span id="fullResultsCountText"></span>
+    </div>
+
+    <div class="brokers-grid" id="fullBrokersGrid"></div>
+
+    <div class="load-more-wrap">
+      <button class="load-more-btn" id="fullLoadMoreBtn">تحميل المزيد</button>
     </div>
   </div>
 
-  <div class="results-meta" id="resultsMeta" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-    <span id="resultsCountText"></span>
-    <a href="add-property.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
-  </div>
+  <!-- ===================== TAB 2: VERIFIED DIRECTORY (Supabase, admin-gated) ===================== -->
+  <div class="tab-panel" id="panelVerified">
+    <div class="toolbar">
+      <div class="toolbar-card">
+        <div class="search-box">
+          <input type="text" id="verifiedSearchInput" placeholder="ابحث بالاسم (عربي/إنجليزي) أو رقم الترخيص...">
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-pills" id="verifiedRankFilters">
+          <button class="filter-pill active" data-rank="ALL">الكل</button>
+          <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
+          <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
+          <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+          <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+        </div>
+      </div>
+    </div>
 
-  <div class="brokers-grid" id="brokersGrid"></div>
+    <div class="results-meta">
+      <span id="verifiedResultsCountText"></span>
+      <a href="add-property.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
+    </div>
 
-  <div class="load-more-wrap">
-    <button id="loadMoreBtn">تحميل المزيد</button>
+    <div class="brokers-grid" id="verifiedBrokersGrid"></div>
+
+    <div class="load-more-wrap">
+      <button class="load-more-btn" id="verifiedLoadMoreBtn">تحميل المزيد</button>
+    </div>
   </div>
 
   <script>
-    // 📡 المصدر الحقيقي: جدول directory_brokers في Supabase.
-    // بفضل صلاحيات RLS، الزوار العاديون لا يستلمون إلا السجلات المفعّلة (is_active = true) من الأدمن يدوياً بعد أخذ الموافقة.
-    let activeRank = 'ALL';
-    let searchTerm = '';
-    let currentOffset = 0;
-    let totalCount = 0;
-    let loadedBrokers = [];
-    const PAGE_SIZE = 12;
+    const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
 
-    async function fetchBrokersPage(offset) {
-      let query = supabaseClient
-        .from('directory_brokers')
-        .select('*', { count: 'exact' })
-        .eq('is_active', true);
+    function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
 
-      if (activeRank !== 'ALL') query = query.eq('rank', activeRank);
-
-      const q = searchTerm.trim();
-      if (q) {
-        const safeQ = q.replace(/[%_,]/g, '');
-        query = query.or(`name_ar.ilike.%${safeQ}%,name_en.ilike.%${safeQ}%,license.ilike.%${safeQ}%`);
-      }
-
-      query = query.order('created_at', { ascending: false }).range(offset, offset + PAGE_SIZE - 1);
-      const { data, error, count } = await query;
-      return { data: data || [], count: count || 0, error };
-    }
-
-    function socialIconsHTML(social) {
-      if (!social) return '';
-      const icons = { facebook: 'fa-facebook-f', instagram: 'fa-instagram', twitter: 'fa-x-twitter', linkedin: 'fa-linkedin-in' };
-      return Object.keys(icons)
-        .filter(key => social[key])
-        .map(key => `<a href="${social[key]}" target="_blank" rel="noopener noreferrer"><i class="fab ${icons[key]}"></i></a>`)
-        .join('');
-    }
-
-    function brokerCardHTML(b) {
-      const rankLabels = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
-      const waPhone = (b.phone || '').replace(/\D/g, '');
-      const activities = Array.isArray(b.activities) ? b.activities : [];
-      return `
-        <div class="broker-card">
-          <div class="broker-card-top">
-            <img class="broker-logo" src="${b.logo || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
-            <div class="broker-names">
-              <div class="broker-name-ar">${b.name_ar || '-'}</div>
-              <div class="broker-name-en">${b.name_en || ''}</div>
-            </div>
-          </div>
-
-          <span class="rank-badge ${b.rank}"><i class="fas fa-star"></i> ${rankLabels[b.rank] || b.rank || 'عام'}</span>
-
-          ${b.license ? `<div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>` : ''}
-
-          ${activities.length ? `
-          <div class="broker-activities">
-            ${activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
-          </div>` : ''}
-
-          <div class="broker-actions">
-            ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
-            ${b.phone ? `<a href="https://wa.me/${waPhone}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
-            ${b.website ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع</a>` : ''}
-          </div>
-
-          ${socialIconsHTML(b.social) ? `<div class="broker-social">${socialIconsHTML(b.social)}</div>` : ''}
-        </div>
-      `;
-    }
-
-    function renderCards() {
-      const grid = document.getElementById('brokersGrid');
-      const meta = document.getElementById('resultsCountText');
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
-
-      meta.innerText = `عرض ${loadedBrokers.length} من ${totalCount} مكتب`;
-
-      if (loadedBrokers.length === 0) {
-        grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:28px; display:block; margin-bottom:10px;"></i> لا توجد نتائج مطابقة لبحثك.</div>`;
-        loadMoreBtn.hidden = true;
-        return;
-      }
-
-      grid.innerHTML = loadedBrokers.map(brokerCardHTML).join('');
-      loadMoreBtn.hidden = loadedBrokers.length >= totalCount;
-    }
-
-    async function loadFirstPage() {
-      currentOffset = 0;
-      document.getElementById('brokersGrid').innerHTML = `<div class="no-results"><i class="fas fa-spinner fa-spin" style="font-size:24px; display:block; margin-bottom:10px;"></i> جاري التحميل...</div>`;
-      const { data, count } = await fetchBrokersPage(0);
-      loadedBrokers = data;
-      totalCount = count;
-      currentOffset = data.length;
-      renderCards();
-    }
-
-    async function loadMore() {
-      const { data } = await fetchBrokersPage(currentOffset);
-      loadedBrokers = loadedBrokers.concat(data);
-      currentOffset += data.length;
-      renderCards();
-    }
-
-    let searchDebounce;
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      searchTerm = e.target.value;
-      clearTimeout(searchDebounce);
-      searchDebounce = setTimeout(loadFirstPage, 350);
-    });
-
-    document.querySelectorAll('.filter-pill').forEach(btn => {
+    // ---------------------------------------------------------------
+    // Tabs
+    // ---------------------------------------------------------------
+    document.querySelectorAll('.directory-tab').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.directory-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
-        activeRank = btn.dataset.rank;
-        loadFirstPage();
+        document.getElementById(btn.dataset.tab === 'full' ? 'panelFull' : 'panelVerified').classList.add('active');
       });
     });
 
-    document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
+    // ---------------------------------------------------------------
+    // TAB 1: الدليل الكامل - يُحمَّل عبر js/supabase-brokers.js (جدول brokers
+    // في Supabase، بصفحات 50 صف مع فلترة وبحث نصي كامل من جانب الخادم).
+    // ---------------------------------------------------------------
 
-    loadFirstPage();
+    // ---------------------------------------------------------------
+    // TAB 2: المكاتب الموثقة - مصدره جدول directory_brokers في Supabase.
+    // بفضل صلاحيات RLS، الزوار العاديون لا يستلمون إلا السجلات المفعّلة
+    // (is_active = true) من الأدمن يدوياً بعد أخذ الموافقة.
+    // ---------------------------------------------------------------
+    (function () {
+      let activeRank = 'ALL';
+      let searchTerm = '';
+      let currentOffset = 0;
+      let totalCount = 0;
+      let loadedBrokers = [];
+      const PAGE_SIZE = 12;
+
+      async function fetchBrokersPage(offset) {
+        let query = supabaseClient
+          .from('directory_brokers')
+          .select('*', { count: 'exact' })
+          .eq('is_active', true);
+
+        if (activeRank !== 'ALL') query = query.eq('rank', activeRank);
+
+        const q = searchTerm.trim();
+        if (q) {
+          const safeQ = q.replace(/[%_,]/g, '');
+          query = query.or(`name_ar.ilike.%${safeQ}%,name_en.ilike.%${safeQ}%,license.ilike.%${safeQ}%`);
+        }
+
+        query = query.order('created_at', { ascending: false }).range(offset, offset + PAGE_SIZE - 1);
+        const { data, error, count } = await query;
+        return { data: data || [], count: count || 0, error };
+      }
+
+      function socialIconsHTML(social) {
+        if (!social) return '';
+        const icons = { facebook: 'fa-facebook-f', instagram: 'fa-instagram', twitter: 'fa-x-twitter', linkedin: 'fa-linkedin-in' };
+        return Object.keys(icons)
+          .filter(key => social[key])
+          .map(key => `<a href="${social[key]}" target="_blank" rel="noopener noreferrer"><i class="fab ${icons[key]}"></i></a>`)
+          .join('');
+      }
+
+      function brokerCardHTML(b) {
+        const activities = Array.isArray(b.activities) ? b.activities : [];
+        return `
+          <div class="broker-card">
+            <div class="broker-card-top">
+              <img class="broker-logo" src="${b.logo || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
+              <div class="broker-names">
+                <div class="broker-name-ar">${b.name_ar || '-'}</div>
+                <div class="broker-name-en">${b.name_en || ''}</div>
+              </div>
+            </div>
+
+            <span class="rank-badge ${b.rank}"><i class="fas fa-star"></i> ${RANK_LABELS[b.rank] || b.rank || 'عام'}</span>
+
+            ${b.license ? `<div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>` : ''}
+
+            ${activities.length ? `
+            <div class="broker-activities">
+              ${activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
+            </div>` : ''}
+
+            <div class="broker-actions">
+              ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+              ${b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+              ${b.website ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع</a>` : ''}
+            </div>
+
+            ${socialIconsHTML(b.social) ? `<div class="broker-social">${socialIconsHTML(b.social)}</div>` : ''}
+          </div>
+        `;
+      }
+
+      function renderCards() {
+        const grid = document.getElementById('verifiedBrokersGrid');
+        const meta = document.getElementById('verifiedResultsCountText');
+        const loadMoreBtn = document.getElementById('verifiedLoadMoreBtn');
+
+        meta.innerText = `عرض ${loadedBrokers.length} من ${totalCount} مكتب`;
+
+        if (loadedBrokers.length === 0) {
+          grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:28px; display:block; margin-bottom:10px;"></i> لا توجد نتائج مطابقة لبحثك.</div>`;
+          loadMoreBtn.hidden = true;
+          return;
+        }
+
+        grid.innerHTML = loadedBrokers.map(brokerCardHTML).join('');
+        loadMoreBtn.hidden = loadedBrokers.length >= totalCount;
+      }
+
+      async function loadFirstPage() {
+        currentOffset = 0;
+        document.getElementById('verifiedBrokersGrid').innerHTML = `<div class="no-results"><i class="fas fa-spinner fa-spin" style="font-size:24px; display:block; margin-bottom:10px;"></i> جاري التحميل...</div>`;
+        const { data, count } = await fetchBrokersPage(0);
+        loadedBrokers = data;
+        totalCount = count;
+        currentOffset = data.length;
+        renderCards();
+      }
+
+      async function loadMore() {
+        const { data } = await fetchBrokersPage(currentOffset);
+        loadedBrokers = loadedBrokers.concat(data);
+        currentOffset += data.length;
+        renderCards();
+      }
+
+      let searchDebounce;
+      document.getElementById('verifiedSearchInput').addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(loadFirstPage, 350);
+      });
+
+      document.querySelectorAll('#verifiedRankFilters .filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#verifiedRankFilters .filter-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeRank = btn.dataset.rank;
+          loadFirstPage();
+        });
+      });
+
+      document.getElementById('verifiedLoadMoreBtn').addEventListener('click', loadMore);
+
+      // Only load the verified tab data once its tab is first opened, to avoid
+      // an unnecessary Supabase round-trip when visitors stay on the full directory.
+      let verifiedLoaded = false;
+      document.getElementById('tabBtnVerified').addEventListener('click', () => {
+        if (!verifiedLoaded) {
+          verifiedLoaded = true;
+          loadFirstPage();
+        }
+      });
+    })();
   </script>
+
+  <script src="js/supabase-brokers.js"></script>
 
 </body>
 </html>

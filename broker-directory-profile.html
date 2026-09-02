@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف المكتب العقاري | Aqaratti</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --turquoise-light: #e6f7f5;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f4f6f9;
+      --dubizzle-border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --gold: #d4af37;
+      --silver: #9ca3af;
+      --bronze: #b45309;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
+
+    .navbar {
+      background: #ffffff;
+      padding: 14px 30px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+
+    .back-bar {
+      max-width: 800px;
+      margin: 20px auto 0;
+      padding: 0 20px;
+    }
+    .back-to-directory {
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+      color: var(--primary-turquoise);
+      font-weight: 900;
+      font-size: 14px;
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      padding: 10px 18px;
+      border-radius: 10px;
+    }
+    .back-to-directory:hover { background: var(--turquoise-light); }
+
+    .profile-wrap { max-width: 800px; margin: 18px auto 40px; padding: 0 20px; }
+
+    .inactive-notice {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .inactive-notice i { color: #d97706; font-size: 16px; margin-top: 2px; }
+
+    .profile-card {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .profile-header {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: white;
+      padding: 34px 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .profile-logo {
+      width: 76px; height: 76px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.25);
+      background: #f8fafc;
+      flex-shrink: 0;
+    }
+    .profile-header-names { flex: 1; min-width: 200px; }
+    .profile-name-ar { font-size: 21px; font-weight: 900; margin-bottom: 4px; }
+    .profile-name-en { font-size: 13px; color: #cbd5e1; font-weight: 700; }
+
+    .rank-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 900;
+      padding: 6px 14px; border-radius: 100px;
+      width: fit-content;
+      margin-top: 10px;
+    }
+    .rank-badge.GOLD { background: #fef9e7; color: #92400e; }
+    .rank-badge.SILVER { background: #f3f4f6; color: #374151; }
+    .rank-badge.BRONZE { background: #fef3e2; color: var(--bronze); }
+    .rank-badge.GENERAL { background: #f1f5f9; color: var(--text-dark); }
+
+    .profile-body { padding: 28px 30px; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .info-item {
+      background: #f8fafc;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .info-item .info-label {
+      font-size: 11.5px; font-weight: 800; color: var(--text-muted);
+      display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+    }
+    .info-item .info-label i { color: var(--primary-turquoise); width: 14px; text-align: center; }
+    .info-item .info-value { font-size: 14.5px; font-weight: 800; color: var(--dubizzle-navy); word-break: break-word; }
+    .info-item .info-value a { color: var(--primary-turquoise); text-decoration: none; }
+    .info-item .info-value a:hover { text-decoration: underline; }
+
+    .section-title { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; border-right: 4px solid var(--primary-turquoise); padding-right: 8px; }
+
+    .activities-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .activity-chip {
+      font-size: 12px; font-weight: 700;
+      background: var(--turquoise-light); color: var(--primary-turquoise);
+      padding: 6px 13px; border-radius: 100px;
+    }
+
+    .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+    .action-buttons a {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      font-size: 13.5px; font-weight: 900;
+      padding: 12px; border-radius: 10px;
+      text-decoration: none;
+      color: white;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .act-call { background: var(--dubizzle-navy); }
+    .act-whatsapp { background: #16a34a; }
+    .act-site { background: var(--primary-turquoise); }
+    .act-email { background: #475569; }
+
+    .not-found {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .not-found i { font-size: 40px; display: block; margin-bottom: 14px; color: var(--dubizzle-border); }
+
+    @media (max-width: 600px) {
+      .profile-header { text-align: center; justify-content: center; }
+      .profile-header-names { text-align: center; }
+      .rank-badge { margin: 10px auto 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+  </nav>
+
+  <div class="back-bar">
+    <a href="brokers-directory.html" class="back-to-directory"><i class="fas fa-arrow-right"></i> العودة إلى الدليل</a>
+  </div>
+
+  <div class="profile-wrap" id="profileWrap">
+    <!-- يُعبَّأ ديناميكياً عبر JavaScript -->
+  </div>
+
+  <script>
+    const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
+    function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
+
+    function renderNotFound() {
+      document.getElementById('profileWrap').innerHTML = `
+        <div class="profile-card">
+          <div class="not-found">
+            <i class="fas fa-building-circle-xmark"></i>
+            لم يتم العثور على بيانات هذا المكتب العقاري.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProfile(b) {
+      const website = b.website ? `https://${b.website.replace(/^https?:\/\//, '')}` : '';
+      const inactiveNotice = !b.is_active ? `
+        <div class="inactive-notice">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span>هذا الوسيط مسجل رسمياً في دائرة الأراضي والأملاك بدبي (RERA)، لكنه غير مفعل حالياً في دليل عقاراتي. سيتم تفعيل بيانات الاتصال بمجرد موافقته.</span>
+        </div>
+      ` : '';
+
+      document.getElementById('profileWrap').innerHTML = `
+        ${inactiveNotice}
+        <div class="profile-card">
+          <div class="profile-header">
+            <img class="profile-logo" src="${b.logo || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
+            <div class="profile-header-names">
+              <div class="profile-name-ar">${b.name_ar || '-'}</div>
+              <div class="profile-name-en">${b.name_en || ''}</div>
+              <span class="rank-badge ${b.classification}"><i class="fas fa-star"></i> ${RANK_LABELS[b.classification] || b.classification || 'عام'}</span>
+            </div>
+          </div>
+
+          <div class="profile-body">
+            <div class="info-grid">
+              ${b.license ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-id-card"></i> رقم الترخيص</div>
+                <div class="info-value">${b.license}</div>
+              </div>` : ''}
+
+              ${b.manager ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-user-tie"></i> اسم المسؤول</div>
+                <div class="info-value">${b.manager}</div>
+              </div>` : ''}
+
+              ${b.phone ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-phone-alt"></i> الهاتف</div>
+                <div class="info-value"><a href="tel:${b.phone}">${b.phone}</a></div>
+              </div>` : ''}
+
+              ${b.email ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-envelope"></i> البريد الإلكتروني</div>
+                <div class="info-value"><a href="mailto:${b.email}">${b.email}</a></div>
+              </div>` : ''}
+
+              ${website ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-globe"></i> الموقع الإلكتروني</div>
+                <div class="info-value"><a href="${website}" target="_blank" rel="noopener noreferrer">${b.website}</a></div>
+              </div>` : ''}
+            </div>
+
+            ${b.activities && b.activities.length ? `
+            <div class="section-title">الأنشطة</div>
+            <div class="activities-wrap">
+              ${b.activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
+            </div>` : ''}
+
+            <div class="action-buttons">
+              ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+              ${b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+              ${website ? `<a href="${website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع الإلكتروني</a>` : ''}
+              ${b.email ? `<a href="mailto:${b.email}" class="act-email"><i class="fas fa-envelope"></i> إرسال بريد</a>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLoading() {
+      document.getElementById('profileWrap').innerHTML = `
+        <div class="profile-card">
+          <div class="not-found"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const id = Number(new URLSearchParams(window.location.search).get('id'));
+      if (!id) {
+        renderNotFound();
+        return;
+      }
+
+      renderLoading();
+
+      const { data: broker, error } = await supabaseClient
+        .from('brokers')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error || !broker) {
+        renderNotFound();
+        return;
+      }
+
+      document.title = `${broker.name_ar || broker.name_en || 'مكتب عقاري'} | Aqaratti`;
+      renderProfile(broker);
+    });
+  </script>
+
+</body>
+</html>
