@@ -20,3 +20,11 @@ Thumbs.db
 
 # Local Claude Code settings (machine-specific, not project source)
 .claude/
+
+# Scraped/local-only data — never commit (contains real personal contact data of third parties)
+/data/
+/dubai_brokers_output/
+dubai_brokers_data.js
+dubai_brokers_test.js
+*.xlsx
+~$*

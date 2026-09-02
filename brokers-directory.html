@@ -236,7 +236,10 @@
     </div>
   </div>
 
-  <div class="results-meta" id="resultsMeta"></div>
+  <div class="results-meta" id="resultsMeta" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+    <span id="resultsCountText"></span>
+    <a href="add-property.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
+  </div>
 
   <div class="brokers-grid" id="brokersGrid"></div>
 
@@ -245,20 +248,9 @@
   </div>
 
   <script>
-    // ⚠️ بيانات وهمية للعرض فقط — استبدلها بمصدر بياناتك الحقيقي (Supabase / API / ملف JSON)
+    // ⚠️ بيان وهمي واحد للعرض فقط (Placeholder) — استبدله بمصدر بياناتك الحقيقي لوسطاء منضمّين فعلاً بموافقتهم
     const brokersData = [
-      { id: 1, nameAr: "مكتب اللؤلؤة الذهبية العقارية", nameEn: "Golden Pearl Real Estate", license: "12345", rank: "GOLD", phone: "971501112233", email: "info@goldenpearl-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200", activities: ["بيع", "تأجير", "استثمار"], social: { facebook: "#", instagram: "#", twitter: "#", linkedin: "#" } },
-      { id: 2, nameAr: "دار الإمارات العقارية", nameEn: "Emirates House Properties", license: "22987", rank: "SILVER", phone: "971502223344", email: "contact@emirateshouse-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=200", activities: ["بيع", "إدارة أملاك"], social: { facebook: "#", instagram: "#" } },
-      { id: 3, nameAr: "برج الخليج للوساطة العقارية", nameEn: "Gulf Tower Brokerage", license: "31456", rank: "BRONZE", phone: "971503334455", email: "hello@gulftower-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?q=80&w=200", activities: ["تأجير"], social: { linkedin: "#" } },
-      { id: 4, nameAr: "مجموعة النخبة العقارية", nameEn: "Elite Group Real Estate", license: "40876", rank: "GOLD", phone: "971504445566", email: "sales@elitegroup-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=200", activities: ["بيع", "تأجير", "استثمار", "إدارة أملاك"], social: { facebook: "#", instagram: "#", twitter: "#" } },
-      { id: 5, nameAr: "واحة النخيل العقارية", nameEn: "Palm Oasis Properties", license: "51023", rank: "SILVER", phone: "971505556677", email: "info@palmoasis-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=200", activities: ["بيع", "استثمار"], social: { instagram: "#" } },
-      { id: 6, nameAr: "أبراج المدينة للعقارات", nameEn: "City Towers Real Estate", license: "60214", rank: "BRONZE", phone: "971506667788", email: "contact@citytowers-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200", activities: ["تأجير", "إدارة أملاك"], social: { facebook: "#" } },
-      { id: 7, nameAr: "سواحل الإمارات العقارية", nameEn: "Emirates Coast Properties", license: "70345", rank: "GOLD", phone: "971507778899", email: "info@emiratescoast-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=200", activities: ["بيع", "استثمار"], social: { facebook: "#", twitter: "#", linkedin: "#" } },
-      { id: 8, nameAr: "مرافئ دبي للوساطة", nameEn: "Dubai Marinas Brokerage", license: "80456", rank: "SILVER", phone: "971508889900", email: "hello@dubaimarinas-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1519998238411-84e6c8f57bea?q=80&w=200", activities: ["بيع", "تأجير"], social: { instagram: "#", linkedin: "#" } },
-      { id: 9, nameAr: "الواحة الفضية العقارية", nameEn: "Silver Oasis Realty", license: "90567", rank: "BRONZE", phone: "971509990011", email: "info@silveroasis-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1519974719765-e6559eac2575?q=80&w=200", activities: ["تأجير"], social: { facebook: "#" } },
-      { id: 10, nameAr: "قمم الإمارات للاستثمار العقاري", nameEn: "Emirates Peaks Investment", license: "10678", rank: "GOLD", phone: "971501230012", email: "sales@emiratespeaks-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=200", activities: ["بيع", "استثمار", "إدارة أملاك"], social: { facebook: "#", instagram: "#" } },
-      { id: 11, nameAr: "منازل الشرق العقارية", nameEn: "Eastern Homes Real Estate", license: "11789", rank: "SILVER", phone: "971502340023", email: "info@easternhomes-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=200", activities: ["بيع", "تأجير"], social: { twitter: "#" } },
-      { id: 12, nameAr: "الديرة العقارية الحديثة", nameEn: "Modern Deira Properties", license: "12890", rank: "BRONZE", phone: "971503450034", email: "contact@moderndeira-demo.com", website: "https://example.com", logo: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=200", activities: ["تأجير", "إدارة أملاك"], social: { facebook: "#", linkedin: "#" } },
+      { id: 1, nameAr: "مثال: اسم المكتب العقاري", nameEn: "Example Real Estate Office", license: "00000", rank: "GOLD", phone: "971500000000", email: "example@aqaratti.com", website: "https://aqaratti.com", logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200", activities: ["بيع", "تأجير", "استثمار"], social: { facebook: "#", instagram: "#" } },
     ];
 
     let activeRank = 'ALL';
@@ -323,7 +315,7 @@
     function render() {
       const filtered = getFilteredBrokers();
       const grid = document.getElementById('brokersGrid');
-      const meta = document.getElementById('resultsMeta');
+      const meta = document.getElementById('resultsCountText');
       const loadMoreBtn = document.getElementById('loadMoreBtn');
 
       meta.innerText = `عرض ${Math.min(visibleCount, filtered.length)} من ${filtered.length} مكتب`;

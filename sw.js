@@ -2,7 +2,7 @@
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v29';
+const CACHE_VERSION = 'v30';
 const CACHE_NAME = `aqaratti-cache-${CACHE_VERSION}`;
 
 // 🧱 واجهة التطبيق الأساسية التي تُخزَّن فور تثبيت الـ Service Worker
@@ -16,6 +16,7 @@ const APP_SHELL = [
   './property-details.html',
   './privacy-policy.html',
   './terms-of-service.html',
+  './brokers-directory.html',
   './style.css',
   './script.js',
   './currency.js',
