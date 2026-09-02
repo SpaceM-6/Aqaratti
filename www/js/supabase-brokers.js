@@ -59,7 +59,7 @@
       return `
         <div class="broker-card broker-card-inactive" onclick="location.href='broker-directory-profile.html?id=${b.id}'">
           <div class="broker-card-top">
-            <img class="broker-logo" src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200" alt="${b.name_ar || ''}" loading="lazy">
+            <img class="broker-logo" src="${b.logo_url || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
             <div class="broker-names">
               <div class="broker-name-ar">${b.name_ar || '-'}</div>
               <div class="broker-name-en">${b.name_en || ''}</div>
@@ -83,7 +83,7 @@
     return `
       <div class="broker-card" onclick="location.href='broker-directory-profile.html?id=${b.id}'">
         <div class="broker-card-top">
-          <img class="broker-logo" src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200" alt="${b.name_ar || ''}" loading="lazy">
+          <img class="broker-logo" src="${b.logo_url || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
           <div class="broker-names">
             <div class="broker-name-ar">${b.name_ar || '-'}</div>
             <div class="broker-name-en">${b.name_en || ''}</div>

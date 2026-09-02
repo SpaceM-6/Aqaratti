@@ -2871,6 +2871,12 @@ function renderPropertiesList(list) {
       updateFavBadgeCount();
       fetchProperties();
       refreshAqarattiAuthUI();
+
+      // إشعار عصري بعد تسجيل الخروج (بدل alert() قديم) - العلامة توضع في aqarattiSignOut() بـ supabase-client.js
+      if (sessionStorage.getItem('aqaratti_just_signed_out')) {
+        sessionStorage.removeItem('aqaratti_just_signed_out');
+        showAqarattiToast('تم تسجيل خروجك، نترقب عودتك مرة أخرى 👋', 'info');
+      }
     });
 
     document.addEventListener('click', (e) => {

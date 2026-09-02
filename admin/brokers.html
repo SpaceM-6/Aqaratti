@@ -298,11 +298,17 @@
 
     function rowHTML(b) {
       const isActive = !!b.is_active;
+      const logoSrc = b.logo_url || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=100';
       return `
         <tr data-id="${b.id}">
           <td>
-            <div class="cell-name-ar">${b.name_ar || '-'}</div>
-            <div class="cell-name-en">${b.name_en || ''}</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="${logoSrc}" alt="" style="width:32px; height:32px; border-radius:8px; object-fit:cover; border:1px solid var(--dubizzle-border); flex-shrink:0;" loading="lazy">
+              <div>
+                <div class="cell-name-ar">${b.name_ar || '-'}</div>
+                <div class="cell-name-en">${b.name_en || ''}</div>
+              </div>
+            </div>
           </td>
           <td>${b.license || '-'}</td>
           <td><span class="rank-badge ${b.classification}">${RANK_LABELS[b.classification] || b.classification || 'عام'}</span></td>
@@ -311,7 +317,12 @@
           <td>
             ${isActive
               ? `<button class="toggle-btn deactivate" onclick="toggleBroker(${b.id}, false, this)"><i class="fas fa-ban"></i> إلغاء التفعيل</button>`
-              : `<button class="toggle-btn activate" onclick="toggleBroker(${b.id}, true, this)"><i class="fas fa-check"></i> تفعيل</button>`}
+              : `
+                <div style="display:flex; flex-direction:column; gap:6px; min-width:180px;">
+                  <input type="url" class="logo-url-input" placeholder="رابط شعار المكتب (اختياري)" style="padding:6px 8px; border:1px solid var(--dubizzle-border); border-radius:6px; font-size:11.5px; font-family:'Tajawal', sans-serif;">
+                  <button class="toggle-btn activate" onclick="toggleBroker(${b.id}, true, this)"><i class="fas fa-check"></i> تفعيل</button>
+                </div>
+              `}
           </td>
         </tr>
       `;
@@ -369,6 +380,12 @@
       const payload = makeActive
         ? { is_active: true, activated_at: new Date().toISOString() }
         : { is_active: false };
+
+      if (makeActive) {
+        const logoInput = btn.closest('td').querySelector('.logo-url-input');
+        const logoUrl = logoInput ? logoInput.value.trim() : '';
+        if (logoUrl) payload.logo_url = logoUrl;
+      }
 
       const { error } = await supabaseClient.from('brokers').update(payload).eq('id', id);
 

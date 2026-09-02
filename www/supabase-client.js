@@ -31,7 +31,9 @@ async function getCurrentAqarattiProfile() {
 
 async function aqarattiSignOut() {
   await supabaseClient.auth.signOut();
-  window.location.href = 'index.html';
+  // يُقرأ في index.html بعد التوجيه لعرض إشعار عصري بدل alert() (الصفحة نفسها هي وجهة إعادة التوجيه دائماً)
+  sessionStorage.setItem('aqaratti_just_signed_out', '1');
+  window.location.href = '/index.html';
 }
 
 // 🔄 يحوّل صف عقار قادم من Supabase لنفس شكل بيانات properties.json المستخدم بكل الموقع

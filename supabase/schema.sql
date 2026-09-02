@@ -22,6 +22,9 @@ create table if not exists public.brokers (
   -- تبقى مخفية عن أزرار التواصل في الدليل حتى تُفعَّل يدوياً (بعد موافقة الوسيط).
   is_active      boolean not null default false,
   activated_at   timestamptz default null,
+  -- سجل RERA العام لا يتضمن شعارات المكاتب إطلاقاً - يُعبَّأ يدوياً من الأدمن عند
+  -- التفعيل (www/admin/brokers.html) إن توفر شعار حقيقي من الوسيط. NULL = شعار افتراضي.
+  logo_url       text default null,
   created_at     timestamptz not null default now()
 );
 
