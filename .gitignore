@@ -24,6 +24,7 @@ Thumbs.db
 # Scraped/local-only data — never commit (contains real personal contact data of third parties)
 /data/
 /dubai_brokers_output/
+/logos/
 dubai_brokers_data.js
 dubai_brokers_test.js
 *.xlsx
