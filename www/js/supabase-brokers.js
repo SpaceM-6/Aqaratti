@@ -8,7 +8,9 @@
 (function () {
   const PAGE_SIZE = 50;
   const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
-  const COUNTRY = new URLSearchParams(window.location.search).get('country') || 'uae';
+  const COUNTRY = new URLSearchParams(window.location.search).get('country')
+    || localStorage.getItem('aqaratti_selected_country')
+    || 'uae';
 
   let activeClass = 'ALL';
   let searchTerm = '';
@@ -92,6 +94,8 @@
         </div>
 
         <span class="rank-badge ${b.classification}"><i class="fas fa-star"></i> ${RANK_LABELS[b.classification] || b.classification || 'عام'}</span>
+
+        <div class="active-badge"><i class="fas fa-circle-check"></i> مفعل</div>
 
         ${b.license ? `<div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>` : ''}
         ${b.manager ? `<div class="broker-manager">المسؤول: <strong>${b.manager}</strong></div>` : ''}

@@ -125,7 +125,9 @@
     const COUNTRIES = {
       uae: 'الإمارات', saudi: 'السعودية', egypt: 'مصر', qatar: 'قطر', oman: 'عُمان',
     };
-    const COUNTRY = new URLSearchParams(window.location.search).get('country') || 'uae';
+    const COUNTRY = new URLSearchParams(window.location.search).get('country')
+      || localStorage.getItem('aqaratti_selected_country')
+      || 'uae';
     const COUNTRY_NAME = COUNTRIES[COUNTRY] || 'الإمارات';
 
     document.getElementById('heroTitle').innerText = `بوابة تسجيل الوسطاء - ${COUNTRY_NAME}`;

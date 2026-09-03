@@ -2133,6 +2133,9 @@
       document.getElementById('selectedCountryLabel').innerHTML = `<img src="${flagUrl}" class="flag-img" alt="${name}"> ${name}`;
       document.getElementById('customCountryList').style.display = 'none';
       updateCitiesAndBackground(key);
+      // تُقرأ من brokers-directory.html و broker-registration.html ليعرضا دولة الزائر
+      // المختارة تلقائياً دون الحاجة لمبدّل دولة منفصل داخل تلك الصفحات
+      localStorage.setItem('aqaratti_selected_country', key);
     }
 
     function switchAuthTab(type) {
