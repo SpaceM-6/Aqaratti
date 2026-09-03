@@ -71,7 +71,7 @@
 
           <span class="rank-badge ${b.classification}"><i class="fas fa-star"></i> ${RANK_LABELS[b.classification] || b.classification || 'عام'}</span>
 
-          <div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل — لم يتم التواصل مع الوسيط بعد</div>
+          <div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل</div>
 
           ${b.license ? `<div class="broker-license">رقم الترخيص: <strong>${b.license}</strong></div>` : ''}
 
