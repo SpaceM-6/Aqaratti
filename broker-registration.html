@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة تسجيل الوسطاء | Aqaratti</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --turquoise-light: #e6f7f5;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f4f6f9;
+      --dubizzle-border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
+
+    .navbar {
+      background: #ffffff;
+      padding: 14px 30px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+
+    .page-hero {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: white;
+      padding: 36px 20px;
+      text-align: center;
+    }
+    .page-hero h1 { font-size: 23px; font-weight: 900; margin-bottom: 8px; }
+    .page-hero p { font-size: 13px; color: #cbd5e1; }
+
+    .form-wrap { max-width: 640px; margin: -20px auto 50px; padding: 0 20px; position: relative; z-index: 5; }
+
+    .form-card {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .form-section-title { font-size: 14px; font-weight: 900; color: var(--dubizzle-navy); margin: 18px 0 12px; border-right: 4px solid var(--primary-turquoise); padding-right: 8px; }
+    .form-section-title:first-child { margin-top: 0; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .form-row.single { grid-template-columns: 1fr; }
+
+    label { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
+    input[type="text"], input[type="tel"], input[type="email"], input[type="url"] {
+      width: 100%; padding: 11px 12px; border: 1px solid var(--dubizzle-border); border-radius: 8px;
+      font-family: 'Tajawal', sans-serif; font-size: 13.5px;
+    }
+    input:focus { outline: none; border-color: var(--primary-turquoise); }
+
+    .activities-check-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .activity-check-item {
+      display: flex; align-items: center; gap: 6px;
+      background: #f8fafc; border: 1px solid var(--dubizzle-border); border-radius: 100px;
+      padding: 7px 13px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .activity-check-item input { width: auto; }
+
+    .submit-btn {
+      width: 100%; background: var(--primary-turquoise); color: white; border: none;
+      padding: 13px; border-radius: 10px; font-weight: 900; font-size: 14.5px; cursor: pointer;
+      font-family: 'Tajawal', sans-serif; margin-top: 6px;
+    }
+    .submit-btn:hover { background: #008072; }
+    .submit-btn:disabled { opacity: 0.6; cursor: default; }
+
+    .field-error { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 8px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; margin-bottom: 12px; display: none; }
+
+    .auth-gate, .success-panel {
+      text-align: center; padding: 40px 10px;
+    }
+    .auth-gate i, .success-panel i { font-size: 40px; color: var(--primary-turquoise); margin-bottom: 14px; display: block; }
+    .auth-gate p, .success-panel p { font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+    .auth-gate a, .success-panel a { color: var(--primary-turquoise); font-weight: 900; text-decoration: none; }
+    .success-panel h3 { font-size: 19px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; }
+    .success-panel .back-btn {
+      display: inline-block; margin-top: 14px; background: var(--primary-turquoise); color: white;
+      padding: 11px 24px; border-radius: 8px; font-weight: 900; text-decoration: none; font-size: 13.5px;
+    }
+
+    @media (max-width: 560px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="brokers-directory.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للدليل</a>
+  </nav>
+
+  <div class="page-hero">
+    <h1><i class="fas fa-user-plus"></i> <span id="heroTitle">بوابة تسجيل الوسطاء</span></h1>
+    <p id="heroSubtitle">سجّل بيانات مكتبك العقاري لينضم لدليل عقاراتي بعد المراجعة</p>
+  </div>
+
+  <div class="form-wrap" id="formWrap">
+    <!-- يُعبَّأ ديناميكياً: بوابة تسجيل الدخول أو النموذج أو رسالة النجاح -->
+  </div>
+
+  <script>
+    const COUNTRIES = {
+      uae: 'الإمارات', saudi: 'السعودية', egypt: 'مصر', qatar: 'قطر', oman: 'عُمان',
+    };
+    const COUNTRY = new URLSearchParams(window.location.search).get('country') || 'uae';
+    const COUNTRY_NAME = COUNTRIES[COUNTRY] || 'الإمارات';
+
+    document.getElementById('heroTitle').innerText = `بوابة تسجيل الوسطاء - ${COUNTRY_NAME}`;
+    document.getElementById('heroSubtitle').innerText = `سجّل بيانات مكتبك العقاري في ${COUNTRY_NAME} لينضم لدليل عقاراتي بعد المراجعة`;
+
+    const ACTIVITY_OPTIONS = [
+      'الوساطة في بيع العقارات وشرائها',
+      'الوساطة في تأجير العقارات',
+      'خدمات الإشراف الإداري للعقارات',
+      'استشارات عقارية',
+    ];
+
+    function renderAuthGate() {
+      document.getElementById('formWrap').innerHTML = `
+        <div class="form-card">
+          <div class="auth-gate">
+            <i class="fas fa-lock"></i>
+            <p>يجب تسجيل الدخول أولاً لتقديم طلب تسجيل مكتبك العقاري.</p>
+            <a href="index.html">العودة للصفحة الرئيسية لتسجيل الدخول</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSuccess() {
+      document.getElementById('formWrap').innerHTML = `
+        <div class="form-card">
+          <div class="success-panel">
+            <i class="fas fa-circle-check"></i>
+            <h3>تم استلام طلبك بنجاح 🎉</h3>
+            <p>سيراجع فريقنا بيانات مكتبك، وسنتواصل معك للتحقق قبل تفعيل ظهورك في الدليل العام.</p>
+            <a class="back-btn" href="brokers-directory.html?country=${COUNTRY}">العودة إلى دليل المكاتب</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderForm() {
+      document.getElementById('formWrap').innerHTML = `
+        <div class="form-card">
+          <p class="field-error" id="formError"></p>
+
+          <div class="form-section-title">بيانات المكتب</div>
+          <div class="form-row">
+            <div><label>اسم المكتب (عربي) *</label><input type="text" id="fNameAr"></div>
+            <div><label>اسم المكتب (إنجليزي)</label><input type="text" id="fNameEn"></div>
+          </div>
+          <div class="form-row single">
+            <div><label>رقم الترخيص العقاري *</label><input type="text" id="fLicense" placeholder="رقم الترخيص الرسمي في ${COUNTRY_NAME}"></div>
+          </div>
+
+          <div class="form-section-title">بيانات التواصل</div>
+          <div class="form-row">
+            <div><label>اسم المسؤول</label><input type="text" id="fContactName"></div>
+            <div><label>الهاتف *</label><input type="tel" id="fPhone" placeholder="مثال: 971501234567"></div>
+          </div>
+          <div class="form-row">
+            <div><label>البريد الإلكتروني</label><input type="email" id="fEmail"></div>
+            <div><label>الموقع الإلكتروني</label><input type="url" id="fWebsite" placeholder="https://"></div>
+          </div>
+          <div class="form-row single">
+            <div><label>رابط شعار المكتب (اختياري)</label><input type="url" id="fLogo" placeholder="https://"></div>
+          </div>
+
+          <div class="form-section-title">الأنشطة</div>
+          <div class="activities-check-grid">
+            ${ACTIVITY_OPTIONS.map((a, i) => `
+              <label class="activity-check-item">
+                <input type="checkbox" class="activity-check" value="${a}">
+                ${a}
+              </label>
+            `).join('')}
+          </div>
+
+          <button class="submit-btn" id="submitBtn" onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال طلب الانضمام</button>
+        </div>
+      `;
+    }
+
+    function showFormError(message) {
+      const el = document.getElementById('formError');
+      el.innerText = message;
+      el.style.display = 'block';
+    }
+
+    async function submitRegistration() {
+      const nameAr = document.getElementById('fNameAr').value.trim();
+      const nameEn = document.getElementById('fNameEn').value.trim();
+      const license = document.getElementById('fLicense').value.trim();
+      const contactName = document.getElementById('fContactName').value.trim();
+      const phone = document.getElementById('fPhone').value.trim();
+      const email = document.getElementById('fEmail').value.trim();
+      const website = document.getElementById('fWebsite').value.trim();
+      const logo = document.getElementById('fLogo').value.trim();
+      const activities = Array.from(document.querySelectorAll('.activity-check:checked')).map((el) => el.value);
+
+      if (!nameAr || !license || !phone) {
+        showFormError('يرجى تعبئة اسم المكتب، رقم الترخيص، والهاتف على الأقل.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+      const { error } = await supabaseClient.from('directory_brokers').insert({
+        country: COUNTRY,
+        name_ar: nameAr,
+        name_en: nameEn || null,
+        license,
+        contact_name: contactName || null,
+        phone,
+        email: email || null,
+        website: website || null,
+        logo: logo || null,
+        activities,
+        is_active: false,
+      });
+
+      if (error) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال طلب الانضمام';
+        if (error.message && error.message.includes('duplicate')) {
+          showFormError('رقم الترخيص هذا مسجّل بالفعل في دليل هذه الدولة.');
+        } else {
+          showFormError('تعذر إرسال طلبك حالياً، حاول مرة أخرى لاحقاً.');
+        }
+        return;
+      }
+
+      renderSuccess();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await getCurrentAqarattiUser();
+      if (!user) {
+        renderAuthGate();
+        return;
+      }
+      renderForm();
+    });
+  </script>
+
+</body>
+</html>

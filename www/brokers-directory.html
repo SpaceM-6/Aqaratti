@@ -219,6 +219,29 @@
     }
     .rera-banner-inner i { color: var(--primary-turquoise); margin-top: 2px; }
 
+    .country-switcher {
+      max-width: 1200px;
+      margin: 14px auto 0;
+      padding: 0 20px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .country-switcher a {
+      display: flex; align-items: center; gap: 6px;
+      background: white;
+      border: 1.5px solid var(--dubizzle-border);
+      border-radius: 100px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .country-switcher a img { width: 18px; height: 13px; object-fit: cover; border-radius: 2px; }
+    .country-switcher a.active { border-color: var(--primary-turquoise); color: var(--primary-turquoise); background: var(--turquoise-light); }
+
     .broker-card-top { display: flex; align-items: center; gap: 12px; }
     .broker-logo {
       width: 56px; height: 56px;
@@ -311,8 +334,16 @@
   </nav>
 
   <div class="page-hero">
-    <h1><i class="fas fa-building"></i> دليل المكاتب العقارية</h1>
-    <p>تصفّح آلاف المكاتب العقارية المرخّصة في دبي وتواصل معها مباشرة</p>
+    <h1><i class="fas fa-building"></i> <span id="heroTitle">دليل المكاتب العقارية</span></h1>
+    <p id="heroSubtitle">تصفّح آلاف المكاتب العقارية المرخّصة وتواصل معها مباشرة</p>
+  </div>
+
+  <div class="country-switcher" id="countrySwitcher">
+    <a href="?country=uae" data-country="uae"><img src="https://flagcdn.com/w40/ae.png" alt=""> الإمارات</a>
+    <a href="?country=saudi" data-country="saudi"><img src="https://flagcdn.com/w40/sa.png" alt=""> السعودية</a>
+    <a href="?country=egypt" data-country="egypt"><img src="https://flagcdn.com/w40/eg.png" alt=""> مصر</a>
+    <a href="?country=qatar" data-country="qatar"><img src="https://flagcdn.com/w40/qa.png" alt=""> قطر</a>
+    <a href="?country=oman" data-country="oman"><img src="https://flagcdn.com/w40/om.png" alt=""> عُمان</a>
   </div>
 
   <div class="directory-tabs">
@@ -320,15 +351,21 @@
     <button class="directory-tab" id="tabBtnVerified" data-tab="verified"><i class="fas fa-shield-check"></i> المكاتب الموثقة</button>
   </div>
 
-  <!-- ===================== TAB 1: FULL DIRECTORY (10,062 مكتب من سجل RERA، عبر Supabase) ===================== -->
+  <!-- ===================== TAB 1: FULL DIRECTORY (10,062 مكتب من سجل RERA، عبر Supabase - الإمارات فقط حالياً) ===================== -->
   <div class="tab-panel active" id="panelFull">
     <div class="stats-bar">
       <div class="stats-bar-inner" id="fullStatsBar"></div>
     </div>
-    <div class="rera-banner">
+    <div class="rera-banner" id="reraBanner">
       <div class="rera-banner-inner">
         <i class="fas fa-circle-info"></i>
         <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط قد وافق على الظهور في دليلنا.</span>
+      </div>
+    </div>
+    <div class="rera-banner" id="noBulkBanner" style="display:none;">
+      <div class="rera-banner-inner">
+        <i class="fas fa-circle-info"></i>
+        <span>لا يتوفر حالياً استيراد رسمي جماعي للوسطاء في هذه الدولة. تصفّح تبويب "المكاتب الموثقة" أو كن أول وسيط يسجّل بياناته.</span>
       </div>
     </div>
     <div class="toolbar">
@@ -378,7 +415,7 @@
 
     <div class="results-meta">
       <span id="verifiedResultsCountText"></span>
-      <a href="add-property.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
+      <a id="joinDirectoryLink" href="broker-registration.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
     </div>
 
     <div class="brokers-grid" id="verifiedBrokersGrid"></div>
@@ -390,8 +427,34 @@
 
   <script>
     const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
+    const COUNTRIES = {
+      uae: { name: 'الإمارات', hasBulkDirectory: true },
+      saudi: { name: 'السعودية', hasBulkDirectory: false },
+      egypt: { name: 'مصر', hasBulkDirectory: false },
+      qatar: { name: 'قطر', hasBulkDirectory: false },
+      oman: { name: 'عُمان', hasBulkDirectory: false },
+    };
+    const COUNTRY = new URLSearchParams(window.location.search).get('country') || 'uae';
+    const COUNTRY_INFO = COUNTRIES[COUNTRY] || COUNTRIES.uae;
 
     function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
+
+    // ---------------------------------------------------------------
+    // الدولة الحالية: تخصيص العنوان، تفعيل زر الدولة النشطة، رابط الانضمام،
+    // وإظهار بانر RERA (الإمارات فقط) أو بانر "لا يوجد استيراد جماعي بعد"
+    // ---------------------------------------------------------------
+    document.getElementById('heroTitle').innerText = `دليل المكاتب العقارية في ${COUNTRY_INFO.name}`;
+    document.getElementById('heroSubtitle').innerText = `تصفّح المكاتب العقارية المرخّصة في ${COUNTRY_INFO.name} وتواصل معها مباشرة`;
+    document.title = `دليل المكاتب العقارية - ${COUNTRY_INFO.name} | Aqaratti`;
+
+    document.querySelectorAll('#countrySwitcher a').forEach((a) => {
+      if (a.dataset.country === COUNTRY) a.classList.add('active');
+    });
+
+    document.getElementById('joinDirectoryLink').href = `broker-registration.html?country=${COUNTRY}`;
+
+    document.getElementById('reraBanner').style.display = COUNTRY_INFO.hasBulkDirectory ? '' : 'none';
+    document.getElementById('noBulkBanner').style.display = COUNTRY_INFO.hasBulkDirectory ? 'none' : '';
 
     // ---------------------------------------------------------------
     // Tabs
@@ -427,7 +490,8 @@
         let query = supabaseClient
           .from('directory_brokers')
           .select('*', { count: 'exact' })
-          .eq('is_active', true);
+          .eq('is_active', true)
+          .eq('country', COUNTRY);
 
         if (activeRank !== 'ALL') query = query.eq('rank', activeRank);
 

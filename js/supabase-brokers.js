@@ -8,6 +8,7 @@
 (function () {
   const PAGE_SIZE = 50;
   const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
+  const COUNTRY = new URLSearchParams(window.location.search).get('country') || 'uae';
 
   let activeClass = 'ALL';
   let searchTerm = '';
@@ -30,7 +31,7 @@
   }
 
   async function fetchPage(off) {
-    let query = supabaseClient.from('brokers').select('*', { count: 'exact' });
+    let query = supabaseClient.from('brokers').select('*', { count: 'exact' }).eq('country', COUNTRY);
 
     if (activeClass !== 'ALL') query = query.eq('classification', activeClass);
 
@@ -154,13 +155,15 @@
       const { count } = await supabaseClient
         .from('brokers')
         .select('id', { count: 'exact', head: true })
+        .eq('country', COUNTRY)
         .eq('classification', c);
       counts[c] = count || 0;
     }));
 
     const { count: total } = await supabaseClient
       .from('brokers')
-      .select('id', { count: 'exact', head: true });
+      .select('id', { count: 'exact', head: true })
+      .eq('country', COUNTRY);
 
     bar.innerHTML = `
       <span class="stat-item">🥇 ذهبي: <span class="stat-count">${counts.GOLD.toLocaleString('en-US')}</span></span>

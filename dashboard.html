@@ -104,6 +104,14 @@
                     <option value="active">مفعّل فقط</option>
                     <option value="all">الكل</option>
                 </select>
+                <select id="dirCountryFilter" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                    <option value="all">كل الدول</option>
+                    <option value="uae">الإمارات</option>
+                    <option value="saudi">السعودية</option>
+                    <option value="egypt">مصر</option>
+                    <option value="qatar">قطر</option>
+                    <option value="oman">عُمان</option>
+                </select>
                 <button onclick="loadDirectoryAdminList()" style="background:#0f172a; color:white; border:none; padding:10px 18px; border-radius:8px; font-weight:800; cursor:pointer;">بحث</button>
             </div>
 
@@ -334,6 +342,8 @@
         let dirTotalCount = 0;
         const DIR_PAGE_SIZE = 20;
 
+        const DIR_COUNTRY_NAMES = { uae: 'الإمارات', saudi: 'السعودية', egypt: 'مصر', qatar: 'قطر', oman: 'عُمان' };
+
         function directoryRowHTML(row) {
             const isActive = row.is_active;
             return `
@@ -341,6 +351,7 @@
                     <div style="flex:1; min-width:220px;">
                         <div style="font-weight:900; color:#0f172a; font-size:14px;">${row.name_ar || '-'} <span style="color:#94a3b8; font-weight:700; font-size:12px;">${row.name_en || ''}</span></div>
                         <div style="font-size:12px; color:#64748b; margin-top:3px;">
+                            <i class="fas fa-flag"></i> ${DIR_COUNTRY_NAMES[row.country] || row.country || '-'} &middot;
                             <i class="fas fa-id-card"></i> ${row.license || '-'} &middot; <i class="fas fa-phone"></i> ${row.phone || '-'} &middot; ${row.rank || 'GENERAL'}
                         </div>
                     </div>
@@ -356,11 +367,13 @@
 
         async function fetchDirectoryAdminPage(offset) {
             const statusFilter = document.getElementById('dirStatusFilter').value;
+            const countryFilter = document.getElementById('dirCountryFilter').value;
             const q = document.getElementById('dirSearchInput').value.trim();
 
             let query = supabaseClient.from('directory_brokers').select('*', { count: 'exact' });
             if (statusFilter === 'active') query = query.eq('is_active', true);
             else if (statusFilter === 'inactive') query = query.eq('is_active', false);
+            if (countryFilter !== 'all') query = query.eq('country', countryFilter);
 
             if (q) {
                 const safeQ = q.replace(/[%_,]/g, '');
@@ -420,6 +433,7 @@
             dirSearchDebounce = setTimeout(loadDirectoryAdminList, 350);
         });
         document.getElementById('dirStatusFilter').addEventListener('change', loadDirectoryAdminList);
+        document.getElementById('dirCountryFilter').addEventListener('change', loadDirectoryAdminList);
     </script>
 </body>
 </html>
