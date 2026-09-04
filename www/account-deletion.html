@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>حذف الحساب | Aqaratti</title>
+  <title>حذف الحساب | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -74,13 +74,13 @@
 <body>
 
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="brand-logo">AqarX</a>
     <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
   </nav>
 
   <div class="page-hero">
     <h1><i class="fas fa-user-slash"></i> حذف الحساب</h1>
-    <p>يمكنك طلب حذف حسابك وبياناتك من عقاراتي في أي وقت</p>
+    <p>يمكنك طلب حذف حسابك وبياناتك من AqarX في أي وقت</p>
   </div>
 
   <div class="content-wrap" id="contentWrap">
@@ -143,7 +143,7 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
 
-      const user = await getCurrentAqarattiUser();
+      const user = await getCurrentAqarXUser();
       if (!user) { renderAuthGate(); return; }
 
       const { error } = await supabaseClient.from('account_deletion_requests').insert({
@@ -163,7 +163,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const user = await getCurrentAqarattiUser();
+      const user = await getCurrentAqarXUser();
       if (!user) {
         renderAuthGate();
         return;

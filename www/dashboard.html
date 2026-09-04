@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aqaratti | لوحة التحكم والـ CRM</title>
+    <title>AqarX | لوحة التحكم والـ CRM</title>
     <link rel="icon" type="image/png" href="icons/icon-app-512.png">
 
     <!-- 🔎 لوحة تحكم داخلية للوسطاء فقط: لا فائدة من ظهورها في نتائج البحث -->
     <meta name="robots" content="noindex, nofollow">
-    <link rel="canonical" href="https://aqaratti.com/dashboard.html">
+    <link rel="canonical" href="https://aqarx.com/dashboard.html">
 
     <!-- ربط ملف التنسيقات الخاص بك -->
     <link rel="stylesheet" href="style.css">
@@ -179,7 +179,7 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const savedDir = localStorage.getItem('aqaratti_lang_dir');
+            const savedDir = localStorage.getItem('aqarx_lang_dir');
             if (savedDir) document.documentElement.setAttribute('dir', savedDir);
         });
 
@@ -227,7 +227,7 @@
         }
 
         async function loadMyLeads() {
-            const user = await getCurrentAqarattiUser();
+            const user = await getCurrentAqarXUser();
             if (!user) return;
 
             const { data, error } = await supabaseClient
@@ -325,7 +325,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const profile = await getCurrentAqarattiProfile();
+            const profile = await getCurrentAqarXProfile();
             if (profile && profile.is_admin) {
                 document.getElementById('adminApprovalPanel').style.display = 'block';
                 document.getElementById('directory-admin-section').style.display = 'block';

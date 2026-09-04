@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دليل المكاتب العقارية | Aqaratti</title>
+  <title>دليل المكاتب العقارية | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -312,7 +312,7 @@
 <body>
 
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="brand-logo">AqarX</a>
     <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
   </nav>
 
@@ -334,7 +334,7 @@
     <div class="rera-banner" id="reraBanner">
       <div class="rera-banner-inner">
         <i class="fas fa-circle-info"></i>
-        <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط نشط في عقاراتي.</span>
+        <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط نشط في AqarX.</span>
       </div>
     </div>
     <div class="rera-banner" id="noBulkBanner" style="display:none;">
@@ -412,7 +412,7 @@
     // الدولة تُقرأ من رابط ?country= إن وُجد، وإلا من آخر دولة اختارها الزائر في
     // الصفحة الرئيسية (محفوظة في localStorage)، وإلا الإمارات كافتراضي أخير.
     const COUNTRY = new URLSearchParams(window.location.search).get('country')
-      || localStorage.getItem('aqaratti_selected_country')
+      || localStorage.getItem('aqarx_selected_country')
       || 'uae';
     const COUNTRY_NAME = COUNTRY_NAMES[COUNTRY] || COUNTRY;
     const HAS_BULK_DIRECTORY = COUNTRY === 'uae';
@@ -425,7 +425,7 @@
     // ---------------------------------------------------------------
     document.getElementById('heroTitle').innerText = `دليل المكاتب العقارية في ${COUNTRY_NAME}`;
     document.getElementById('heroSubtitle').innerText = `تصفّح المكاتب العقارية المرخّصة في ${COUNTRY_NAME} وتواصل معها مباشرة`;
-    document.title = `دليل المكاتب العقارية - ${COUNTRY_NAME} | Aqaratti`;
+    document.title = `دليل المكاتب العقارية - ${COUNTRY_NAME} | AqarX`;
 
     document.getElementById('joinDirectoryLink').href = `broker-registration.html?country=${COUNTRY}`;
 

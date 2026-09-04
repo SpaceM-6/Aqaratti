@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نتائج البحث | عقاراتي</title>
+    <title>نتائج البحث | AqarX</title>
 
-    <meta name="description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة عقاراتي مع فلاتر بحث ذكية حسب السعر والموقع ونوع العقار.">
+    <meta name="description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة AqarX مع فلاتر بحث ذكية حسب السعر والموقع ونوع العقار.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://aqaratti.com/search.html">
+    <link rel="canonical" href="https://aqarx.com/search.html">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="نتائج البحث | عقاراتي">
-    <meta property="og:description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة عقاراتي.">
-    <meta property="og:url" content="https://aqaratti.com/search.html">
-    <meta property="og:image" content="https://aqaratti.com/icons/icon-app-1024.png">
+    <meta property="og:title" content="نتائج البحث | AqarX">
+    <meta property="og:description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة AqarX.">
+    <meta property="og:url" content="https://aqarx.com/search.html">
+    <meta property="og:image" content="https://aqarx.com/icons/icon-app-1024.png">
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -120,7 +120,7 @@
     <!-- شريط التنقل العلوي لصفحة البحث -->
     <header class="navbar-bayut">
         <div class="nav-right">
-            <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;"><i class="fas fa-home"></i> عقاراتي</div>
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;"><i class="fas fa-home"></i> AqarX</div>
            <nav class="main-menu" style="display: flex; align-items: center; gap: 15px;">
     <a href="index.html">الرئيسية</a>
     <a href="search.html">تصفح العقارات</a>
@@ -225,7 +225,7 @@
 
         function goToSearchPropertyDetails(propId) {
             const selectedProp = propertiesData.find(p => p.id.toString() === propId.toString());
-            if (selectedProp) localStorage.setItem('aqaratti_selected_property', JSON.stringify(selectedProp));
+            if (selectedProp) localStorage.setItem('aqarx_selected_property', JSON.stringify(selectedProp));
             window.location.href = `property-details.html?id=${propId}`;
         }
 
@@ -284,7 +284,7 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedDir = localStorage.getItem('aqaratti_lang_dir');
+            const savedDir = localStorage.getItem('aqarx_lang_dir');
             if (savedDir) document.documentElement.setAttribute('dir', savedDir);
         });
     </script>

@@ -1,9 +1,9 @@
-/* ==================== نظام العملة الموحّد لموقع عقاراتي | Aqaratti ====================
+/* ==================== نظام العملة الموحّد لموقع AqarX ====================
    يحفظ العملة المختارة من أي صفحة في localStorage، ويحوّل كل الأسعار المعروضة
    (المخزَّنة أصلاً بالدرهم الإماراتي AED) لنفس العملة تلقائياً عبر كل صفحات الموقع.
 */
 
-const AQARATTI_CURRENCIES = {
+const AQARX_CURRENCIES = {
   AED: { symbol: 'د.إ', rate: 1 },
   USD: { symbol: '$', rate: 0.27 },
   SAR: { symbol: 'ر.س', rate: 1.02 },
@@ -26,17 +26,17 @@ const AQARATTI_CURRENCIES = {
   JOD: { symbol: 'د.ا', rate: 0.19 }
 };
 
-const AQARATTI_CURRENCY_KEY = 'aqaratti_currency_code';
+const AQARX_CURRENCY_KEY = 'aqarx_currency_code';
 
 function getSelectedCurrency() {
-  const code = localStorage.getItem(AQARATTI_CURRENCY_KEY) || 'AED';
-  const data = AQARATTI_CURRENCIES[code] || AQARATTI_CURRENCIES.AED;
+  const code = localStorage.getItem(AQARX_CURRENCY_KEY) || 'AED';
+  const data = AQARX_CURRENCIES[code] || AQARX_CURRENCIES.AED;
   return { code, symbol: data.symbol, rate: data.rate };
 }
 
 function setSelectedCurrency(code) {
-  if (!AQARATTI_CURRENCIES[code]) return;
-  localStorage.setItem(AQARATTI_CURRENCY_KEY, code);
+  if (!AQARX_CURRENCIES[code]) return;
+  localStorage.setItem(AQARX_CURRENCY_KEY, code);
 }
 
 function convertFromAED(amountInAED) {

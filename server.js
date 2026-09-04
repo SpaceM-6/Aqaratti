@@ -172,7 +172,7 @@ app.delete('/api/properties/:id', (req, res) => {
 
 // 🚀 تشغيل السيرفر والاستماع على البورت 3001
 const server = app.listen(PORT, () => {
-  console.log(`🚀 سيرفر عقاراتي الخارق يعمل بنجاح على: http://localhost:${PORT}`);
+  console.log(`🚀 سيرفر AqarX الخارق يعمل بنجاح على: http://localhost:${PORT}`);
 });
 
 server.on('error', (e) => {

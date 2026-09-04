@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الاشتراك لإضافة عقار | Aqaratti</title>
+  <title>الاشتراك لإضافة عقار | AqarX</title>
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
 
-  <meta name="description" content="أضف عقارك على منصة عقاراتي ووصّله لآلاف المشترين والمستثمرين. باقات اشتراك مرنة تناسب الملاك والوسطاء العقاريين المعتمدين.">
+  <meta name="description" content="أضف عقارك على منصة AqarX ووصّله لآلاف المشترين والمستثمرين. باقات اشتراك مرنة تناسب الملاك والوسطاء العقاريين المعتمدين.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://aqaratti.com/add-property.html">
+  <link rel="canonical" href="https://aqarx.com/add-property.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="الاشتراك لإضافة عقار | Aqaratti">
-  <meta property="og:description" content="أضف عقارك على منصة عقاراتي ووصّله لآلاف المشترين والمستثمرين.">
-  <meta property="og:url" content="https://aqaratti.com/add-property.html">
-  <meta property="og:image" content="https://aqaratti.com/icons/icon-app-1024.png">
+  <meta property="og:title" content="الاشتراك لإضافة عقار | AqarX">
+  <meta property="og:description" content="أضف عقارك على منصة AqarX ووصّله لآلاف المشترين والمستثمرين.">
+  <meta property="og:url" content="https://aqarx.com/add-property.html">
+  <meta property="og:image" content="https://aqarx.com/icons/icon-app-1024.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -339,7 +339,7 @@
   <div id="google_translate_element" style="display:none;"></div>
 
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="brand-logo">AqarX</a>
     <a href="index.html" style="text-decoration:none; font-weight:800; color:var(--primary-turquoise);"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
   </nav>
 
@@ -594,7 +594,7 @@
   <footer>
     <div class="footer-grid">
       <div class="footer-col">
-        <h4>عن عقاراتي</h4>
+        <h4>عن AqarX</h4>
         <ul>
           <li><a href="index.html">الرئيسية</a></li>
           <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
@@ -617,7 +617,7 @@
       </div>
     </div>
     <div style="text-align:center; font-size:13px; border-top:1px solid #1f2937; padding-top:15px;">
-      جميع الحقوق محفوظة © 2026 - منصة Aqaratti العقارية
+      جميع الحقوق محفوظة © 2026 - منصة AqarX العقارية
     </div>
   </footer>
 
@@ -749,7 +749,7 @@
         if (!proceedAnyway) return;
       }
 
-      const user = await getCurrentAqarattiUser();
+      const user = await getCurrentAqarXUser();
       if (!user) {
         alert('يجب تسجيل الدخول أو إنشاء حساب أولاً قبل نشر عقارك. سيتم تحويلك للصفحة الرئيسية لتسجيل الدخول.');
         window.location.href = 'index.html';
@@ -809,17 +809,17 @@
       }
 
       // 💳 بوابة الدفع الفعلية غير مفعّلة بعد — الاشتراك يبقى صوريًا حالياً بانتظار ربط وسيلة دفع حقيقية
-      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته والموافقة عليه من إدارة عقاراتي.');
+      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته والموافقة عليه من إدارة AqarX.');
       window.location.href = 'index.html';
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
       updateCities();
 
-      const savedDir = localStorage.getItem('aqaratti_lang_dir');
+      const savedDir = localStorage.getItem('aqarx_lang_dir');
       if (savedDir) document.documentElement.setAttribute('dir', savedDir);
 
-      const user = await getCurrentAqarattiUser();
+      const user = await getCurrentAqarXUser();
       const noticeBox = document.getElementById('loginRequiredNotice');
       if (!user && noticeBox) noticeBox.style.display = 'block';
     });

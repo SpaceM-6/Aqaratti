@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إدارة تفعيل الوسطاء | AqarX</title>
+  <title>إدارة تفعيل الوسطاء الأفراد | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="../icons/icon-app-512.png">
@@ -21,9 +21,6 @@
       --dubizzle-border: #e2e8f0;
       --text-dark: #1e293b;
       --text-muted: #64748b;
-      --gold: #d4af37;
-      --silver: #9ca3af;
-      --bronze: #b45309;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -137,17 +134,6 @@
     .cell-name-ar { font-weight: 900; color: var(--dubizzle-navy); }
     .cell-name-en { font-size: 11px; color: var(--text-muted); font-weight: 700; }
 
-    .rank-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10.5px; font-weight: 900;
-      padding: 4px 10px; border-radius: 100px;
-      white-space: nowrap;
-    }
-    .rank-badge.GOLD { background: #d4af37; color: #451a03; }
-    .rank-badge.SILVER { background: #f3f4f6; color: #374151; }
-    .rank-badge.BRONZE { background: #fef3e2; color: var(--bronze); }
-    .rank-badge.GENERAL { background: #f1f5f9; color: var(--text-muted); }
-
     .status-pill {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 10.5px; font-weight: 900;
@@ -206,8 +192,8 @@
 
   <div id="appRoot">
     <div class="page-header">
-      <h1><i class="fas fa-user-check"></i> إدارة تفعيل الوسطاء</h1>
-      <p>تفعيل أو إلغاء تفعيل بيانات التواصل لوسطاء دليل RERA (10,062 مكتب)</p>
+      <h1><i class="fas fa-user-check"></i> إدارة تفعيل الوسطاء الأفراد</h1>
+      <p>تفعيل أو إلغاء تفعيل بيانات التواصل لوسطاء DLD الأفراد</p>
     </div>
 
     <div class="container">
@@ -215,7 +201,7 @@
 
       <div class="toolbar-card">
         <div class="search-box">
-          <input type="text" id="searchInput" placeholder="ابحث باسم المكتب (عربي/إنجليزي) أو اسم المسؤول...">
+          <input type="text" id="searchInput" placeholder="ابحث باسم الوسيط أو اسم المكتب...">
           <i class="fas fa-search"></i>
         </div>
         <div class="filter-pills" id="statusFilters">
@@ -231,8 +217,8 @@
             <thead>
               <tr>
                 <th>الاسم</th>
-                <th>الترخيص</th>
-                <th>التصنيف</th>
+                <th>رقم الوسيط (DLD)</th>
+                <th>المكتب</th>
                 <th>الهاتف</th>
                 <th>الحالة</th>
                 <th>إجراء</th>
@@ -253,7 +239,6 @@
 
   <script>
     const PAGE_SIZE = 50;
-    const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
 
     let activeFilter = 'all';
     let searchTerm = '';
@@ -272,7 +257,7 @@
     }
 
     function baseQuery() {
-      let query = supabaseClient.from('brokers').select('*', { count: 'exact' });
+      let query = supabaseClient.from('individual_brokers').select('*', { count: 'exact' });
       if (activeFilter === 'active') query = query.eq('is_active', true);
       if (activeFilter === 'inactive') query = query.eq('is_active', false);
 
@@ -298,31 +283,23 @@
 
     function rowHTML(b) {
       const isActive = !!b.is_active;
-      const logoSrc = b.logo_url || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=100';
+      const photo = b.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=100';
       return `
         <tr data-id="${b.id}">
           <td>
             <div style="display:flex; align-items:center; gap:10px;">
-              <img src="${logoSrc}" alt="" style="width:32px; height:32px; border-radius:8px; object-fit:cover; border:1px solid var(--dubizzle-border); flex-shrink:0;" loading="lazy">
-              <div>
-                <div class="cell-name-ar">${b.name_ar || '-'}</div>
-                <div class="cell-name-en">${b.name_en || ''}</div>
-              </div>
+              <img src="${photo}" alt="" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid var(--dubizzle-border); flex-shrink:0;" loading="lazy">
+              <div class="cell-name-ar">${b.name_ar || '-'}</div>
             </div>
           </td>
-          <td>${b.license || '-'}</td>
-          <td><span class="rank-badge ${b.classification}">${RANK_LABELS[b.classification] || b.classification || 'عام'}</span></td>
+          <td>${b.dld_broker_number || '-'}</td>
+          <td class="cell-name-en">${b.office_name || '-'}</td>
           <td>${b.phone || '-'}</td>
           <td><span class="status-pill ${isActive ? 'on' : 'off'}">${isActive ? 'مفعل' : 'غير مفعل'}</span></td>
           <td>
             ${isActive
               ? `<button class="toggle-btn deactivate" onclick="toggleBroker(${b.id}, false, this)"><i class="fas fa-ban"></i> إلغاء التفعيل</button>`
-              : `
-                <div style="display:flex; flex-direction:column; gap:6px; min-width:180px;">
-                  <input type="url" class="logo-url-input" placeholder="رابط شعار المكتب (اختياري)" style="padding:6px 8px; border:1px solid var(--dubizzle-border); border-radius:6px; font-size:11.5px; font-family:'Tajawal', sans-serif;">
-                  <button class="toggle-btn activate" onclick="toggleBroker(${b.id}, true, this)"><i class="fas fa-check"></i> تفعيل</button>
-                </div>
-              `}
+              : `<button class="toggle-btn activate" onclick="toggleBroker(${b.id}, true, this)"><i class="fas fa-check"></i> تفعيل</button>`}
           </td>
         </tr>
       `;
@@ -361,9 +338,9 @@
 
     async function loadStats() {
       const [{ count: activeCount }, { count: inactiveCount }, { count: total }] = await Promise.all([
-        supabaseClient.from('brokers').select('id', { count: 'exact', head: true }).eq('is_active', true),
-        supabaseClient.from('brokers').select('id', { count: 'exact', head: true }).eq('is_active', false),
-        supabaseClient.from('brokers').select('id', { count: 'exact', head: true }),
+        supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }).eq('is_active', true),
+        supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }).eq('is_active', false),
+        supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }),
       ]);
 
       document.getElementById('statsBar').innerHTML = `
@@ -381,13 +358,7 @@
         ? { is_active: true, activated_at: new Date().toISOString() }
         : { is_active: false };
 
-      if (makeActive) {
-        const logoInput = btn.closest('td').querySelector('.logo-url-input');
-        const logoUrl = logoInput ? logoInput.value.trim() : '';
-        if (logoUrl) payload.logo_url = logoUrl;
-      }
-
-      const { error } = await supabaseClient.from('brokers').update(payload).eq('id', id);
+      const { error } = await supabaseClient.from('individual_brokers').update(payload).eq('id', id);
 
       if (error) {
         alert('تعذر تحديث حالة الوسيط. تأكد أنك مسجّل دخولك ولديك صلاحية التعديل.');

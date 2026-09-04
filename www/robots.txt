@@ -18,4 +18,4 @@ Disallow: /
 User-agent: Applebot-Extended
 Disallow: /
 
-Sitemap: https://aqaratti.com/sitemap.xml
+Sitemap: https://aqarx.com/sitemap.xml

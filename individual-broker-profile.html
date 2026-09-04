@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف الوسيط العقاري | AqarX</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --turquoise-light: #e6f7f5;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f4f6f9;
+      --dubizzle-border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.6; }
+
+    .navbar {
+      background: #ffffff;
+      padding: 14px 30px;
+      border-bottom: 1px solid var(--dubizzle-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+
+    .back-bar { max-width: 700px; margin: 20px auto 0; padding: 0 20px; }
+    .back-to-directory {
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+      color: var(--primary-turquoise);
+      font-weight: 900;
+      font-size: 14px;
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      padding: 10px 18px;
+      border-radius: 10px;
+    }
+    .back-to-directory:hover { background: var(--turquoise-light); }
+
+    .profile-wrap { max-width: 700px; margin: 18px auto 40px; padding: 0 20px; }
+
+    .dld-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #dcfce7; color: #15803d;
+      border: 1px solid #86efac;
+      border-radius: 100px;
+      padding: 8px 16px;
+      font-size: 12.5px; font-weight: 900;
+      margin-bottom: 14px;
+    }
+    .dld-badge i { color: #16a34a; }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 900;
+      padding: 5px 12px; border-radius: 100px;
+      margin-inline-start: 8px;
+      vertical-align: middle;
+    }
+    .status-pill.off { background: #fee2e2; color: #b91c1c; }
+    .status-pill.on { background: #dcfce7; color: #15803d; }
+
+    .inactive-notice {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .inactive-notice i { color: #d97706; font-size: 16px; margin-top: 2px; }
+
+    .profile-card {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .profile-header {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: white;
+      padding: 34px 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .profile-photo {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.25);
+      background: #f8fafc;
+      flex-shrink: 0;
+    }
+    .profile-header-names { flex: 1; min-width: 200px; }
+    .profile-name-ar { font-size: 21px; font-weight: 900; margin-bottom: 6px; }
+    .profile-office { font-size: 13px; color: #cbd5e1; font-weight: 700; }
+
+    .profile-body { padding: 28px 30px; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .info-item {
+      background: #f8fafc;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .info-item .info-label {
+      font-size: 11.5px; font-weight: 800; color: var(--text-muted);
+      display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+    }
+    .info-item .info-label i { color: var(--primary-turquoise); width: 14px; text-align: center; }
+    .info-item .info-value { font-size: 14.5px; font-weight: 800; color: var(--dubizzle-navy); word-break: break-word; }
+    .info-item .info-value a { color: var(--primary-turquoise); text-decoration: none; }
+    .info-item .info-value a:hover { text-decoration: underline; }
+
+    .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+    .action-buttons a, .action-buttons button {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      font-size: 13.5px; font-weight: 900;
+      padding: 12px; border-radius: 10px;
+      text-decoration: none;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .act-call { background: var(--dubizzle-navy); }
+    .act-whatsapp { background: #16a34a; }
+    .act-email { background: #475569; }
+    .act-contract { background: var(--primary-turquoise); }
+
+    .not-found {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .not-found i { font-size: 40px; display: block; margin-bottom: 14px; color: var(--dubizzle-border); }
+
+    /* نافذة طلب التعاقد */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.55);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px; z-index: 200;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: white; border-radius: 16px; padding: 26px;
+      max-width: 420px; width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+    .modal-card h3 { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 6px; }
+    .modal-card p { font-size: 12.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 16px; }
+    .modal-field { margin-bottom: 12px; }
+    .modal-field label { display: block; font-size: 12px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; }
+    .modal-field input, .modal-field textarea {
+      width: 100%; padding: 11px 12px; border: 1px solid var(--dubizzle-border);
+      border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 13.5px;
+    }
+    .modal-field textarea { resize: vertical; min-height: 70px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .modal-actions button { flex: 1; padding: 11px; border-radius: 9px; font-weight: 900; font-size: 13.5px; border: none; cursor: pointer; font-family: 'Tajawal', sans-serif; }
+    .modal-cancel { background: #f1f5f9; color: var(--text-dark); }
+    .modal-submit { background: var(--primary-turquoise); color: white; }
+    .modal-submit:disabled { opacity: 0.6; cursor: default; }
+    .modal-success { text-align: center; padding: 10px 0; }
+    .modal-success i { font-size: 34px; color: #16a34a; margin-bottom: 10px; display: block; }
+    .modal-success p { color: var(--text-dark); font-weight: 800; }
+
+    @media (max-width: 600px) {
+      .profile-header { text-align: center; justify-content: center; }
+      .profile-header-names { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand-logo">AqarX</a>
+    <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+  </nav>
+
+  <div class="back-bar">
+    <a href="brokers-directory.html" class="back-to-directory"><i class="fas fa-arrow-right"></i> العودة إلى الدليل</a>
+  </div>
+
+  <div class="profile-wrap" id="profileWrap">
+    <!-- يُعبَّأ ديناميكياً عبر JavaScript -->
+  </div>
+
+  <!-- نافذة طلب التعاقد -->
+  <div class="modal-overlay" id="contractModal">
+    <div class="modal-card" id="contractModalCard">
+      <!-- يُعبَّأ ديناميكياً -->
+    </div>
+  </div>
+
+  <script>
+    function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
+    let currentBroker = null;
+
+    function renderNotFound() {
+      document.getElementById('profileWrap').innerHTML = `
+        <div class="profile-card">
+          <div class="not-found">
+            <i class="fas fa-user-slash"></i>
+            لم يتم العثور على بيانات هذا الوسيط.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLoading() {
+      document.getElementById('profileWrap').innerHTML = `
+        <div class="profile-card">
+          <div class="not-found"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+      `;
+    }
+
+    function renderProfile(b) {
+      currentBroker = b;
+      const isActive = !!b.is_active;
+
+      document.getElementById('profileWrap').innerHTML = `
+        <div class="dld-badge"><i class="fas fa-circle-check"></i> مسجل في دائرة الأراضي والأملاك في دبي</div>
+        <span class="status-pill ${isActive ? 'on' : 'off'}">${isActive ? 'مفعل' : 'غير مفعل'}</span>
+
+        ${!isActive ? `
+        <div class="inactive-notice">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span>هذا الوسيط مرخّص من دائرة الأراضي والأملاك في دبي (رقم الوسيط: ${b.dld_broker_number}). سيتم تفعيله على منصة AqarX بمجرد التعاقد.</span>
+        </div>` : ''}
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <img class="profile-photo" src="${b.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
+            <div class="profile-header-names">
+              <div class="profile-name-ar">${b.name_ar || '-'}</div>
+              ${b.office_name ? `<div class="profile-office"><i class="fas fa-building"></i> ${b.office_name}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="profile-body">
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-id-card"></i> رقم الوسيط (DLD)</div>
+                <div class="info-value">${b.dld_broker_number}</div>
+              </div>
+
+              ${isActive && b.phone ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-phone-alt"></i> الهاتف</div>
+                <div class="info-value"><a href="tel:${b.phone}">${b.phone}</a></div>
+              </div>` : ''}
+
+              ${isActive && b.email ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-envelope"></i> البريد الإلكتروني</div>
+                <div class="info-value"><a href="mailto:${b.email}">${b.email}</a></div>
+              </div>` : ''}
+            </div>
+
+            <div class="action-buttons">
+              ${isActive && b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+              ${isActive && b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+              ${isActive && b.email ? `<a href="mailto:${b.email}" class="act-email"><i class="fas fa-envelope"></i> إرسال بريد</a>` : ''}
+              ${!isActive ? `<button class="act-contract" onclick="openContractModal()"><i class="fas fa-handshake"></i> طلب التعاقد مع هذا الوسيط</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openContractModal() {
+      document.getElementById('contractModalCard').innerHTML = `
+        <h3><i class="fas fa-handshake"></i> طلب التعاقد</h3>
+        <p>اترك بياناتك وسنتواصل معك لإتمام تفعيل هذا الوسيط على AqarX.</p>
+        <div class="modal-field">
+          <label>الاسم</label>
+          <input type="text" id="reqName" placeholder="اسمك الكامل">
+        </div>
+        <div class="modal-field">
+          <label>رقم الهاتف</label>
+          <input type="tel" id="reqPhone" placeholder="05xxxxxxxx">
+        </div>
+        <div class="modal-field">
+          <label>ملاحظة (اختياري)</label>
+          <textarea id="reqNote" placeholder="أي تفاصيل إضافية..."></textarea>
+        </div>
+        <div class="field-error" id="reqError" style="display:none; color:#dc2626; background:#fef2f2; border:1px solid #fecaca; padding:8px 10px; border-radius:6px; font-size:12px; font-weight:800; margin-top:6px;"></div>
+        <div class="modal-actions">
+          <button class="modal-cancel" onclick="closeContractModal()">إلغاء</button>
+          <button class="modal-submit" id="reqSubmitBtn" onclick="submitContractRequest()">إرسال الطلب</button>
+        </div>
+      `;
+      document.getElementById('contractModal').classList.add('open');
+    }
+
+    function closeContractModal() {
+      document.getElementById('contractModal').classList.remove('open');
+    }
+
+    async function submitContractRequest() {
+      const name = document.getElementById('reqName').value.trim();
+      const phone = document.getElementById('reqPhone').value.trim();
+      const note = document.getElementById('reqNote').value.trim();
+      const errorBox = document.getElementById('reqError');
+      const btn = document.getElementById('reqSubmitBtn');
+
+      if (!name || !phone) {
+        errorBox.textContent = 'الرجاء إدخال الاسم ورقم الهاتف.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'جارٍ الإرسال...';
+
+      const { error } = await supabaseClient.from('broker_contract_requests').insert({
+        broker_id: currentBroker.id,
+        broker_name: currentBroker.name_ar,
+        requester_name: name,
+        requester_phone: phone,
+        note: note || null,
+      });
+
+      if (error) {
+        errorBox.textContent = 'تعذر إرسال الطلب، حاول مرة أخرى.';
+        errorBox.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'إرسال الطلب';
+        return;
+      }
+
+      document.getElementById('contractModalCard').innerHTML = `
+        <div class="modal-success">
+          <i class="fas fa-circle-check"></i>
+          <p>تم إرسال طلبك بنجاح. سنتواصل معك قريباً.</p>
+          <div class="modal-actions" style="margin-top:16px;">
+            <button class="modal-submit" style="flex:1;" onclick="closeContractModal()">إغلاق</button>
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('contractModal').addEventListener('click', (e) => {
+      if (e.target.id === 'contractModal') closeContractModal();
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const id = Number(new URLSearchParams(window.location.search).get('id'));
+      if (!id) {
+        renderNotFound();
+        return;
+      }
+
+      renderLoading();
+
+      const { data: broker, error } = await supabaseClient
+        .from('individual_brokers')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error || !broker) {
+        renderNotFound();
+        return;
+      }
+
+      document.title = `${broker.name_ar || 'وسيط عقاري'} | AqarX`;
+      renderProfile(broker);
+    });
+  </script>
+
+</body>
+</html>

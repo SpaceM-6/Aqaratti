@@ -1,4 +1,4 @@
-package com.aqaratti.app;
+package com.aqarx.app;
 
 import com.getcapacitor.BridgeActivity;
 

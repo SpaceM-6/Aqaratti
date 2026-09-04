@@ -1,9 +1,9 @@
-/* ==================== Service Worker - عقاراتي | Aqaratti ====================
+/* ==================== Service Worker - AqarX ====================
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v33';
-const CACHE_NAME = `aqaratti-cache-${CACHE_VERSION}`;
+const CACHE_VERSION = 'v34';
+const CACHE_NAME = `aqarx-cache-${CACHE_VERSION}`;
 
 // 🧱 واجهة التطبيق الأساسية التي تُخزَّن فور تثبيت الـ Service Worker
 const APP_SHELL = [

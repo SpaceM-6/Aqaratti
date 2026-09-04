@@ -1,9 +1,9 @@
 {
-  "appId": "com.aqaratti.app",
-  "appName": "Aqaratti",
+  "appId": "com.aqarx.app",
+  "appName": "AqarX",
   "webDir": "www",
   "server": {
-    "url": "https://aqaratti.com",
+    "url": "https://aqarx.com",
     "cleartext": false
   }
 }

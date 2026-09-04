@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دليل المكاتب العقارية | Aqaratti</title>
+  <title>دليل المكاتب العقارية | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -312,7 +312,7 @@
 <body>
 
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="brand-logo">AqarX</a>
     <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
   </nav>
 
@@ -323,6 +323,7 @@
 
   <div class="directory-tabs">
     <button class="directory-tab active" id="tabBtnFull" data-tab="full"><i class="fas fa-list"></i> الدليل الكامل</button>
+    <button class="directory-tab" id="tabBtnIndividual" data-tab="individual"><i class="fas fa-user-tie"></i> الوسطاء الأفراد</button>
     <button class="directory-tab" id="tabBtnVerified" data-tab="verified"><i class="fas fa-shield-check"></i> المكاتب الموثقة</button>
   </div>
 
@@ -334,7 +335,7 @@
     <div class="rera-banner" id="reraBanner">
       <div class="rera-banner-inner">
         <i class="fas fa-circle-info"></i>
-        <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط نشط في عقاراتي.</span>
+        <span>هذه المكاتب العقارية مسجلة رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن المكتب نشط في AqarX.</span>
       </div>
     </div>
     <div class="rera-banner" id="noBulkBanner" style="display:none;">
@@ -370,7 +371,38 @@
     </div>
   </div>
 
-  <!-- ===================== TAB 2: VERIFIED DIRECTORY (Supabase, admin-gated) ===================== -->
+  <!-- ===================== TAB 2: INDIVIDUAL BROKERS (جدول individual_brokers، وسطاء أفراد من سجل DLD) ===================== -->
+  <div class="tab-panel" id="panelIndividual">
+    <div class="stats-bar">
+      <div class="stats-bar-inner" id="individualStatsBar"></div>
+    </div>
+    <div class="rera-banner">
+      <div class="rera-banner-inner">
+        <i class="fas fa-circle-info"></i>
+        <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط نشط في AqarX.</span>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="toolbar-card">
+        <div class="search-box">
+          <input type="text" id="individualSearchInput" placeholder="ابحث باسم الوسيط أو اسم المكتب...">
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-meta">
+      <span id="individualResultsCountText"></span>
+    </div>
+
+    <div class="brokers-grid" id="individualBrokersGrid"></div>
+
+    <div class="load-more-wrap">
+      <button class="load-more-btn" id="individualLoadMoreBtn">تحميل المزيد</button>
+    </div>
+  </div>
+
+  <!-- ===================== TAB 3: VERIFIED DIRECTORY (Supabase, admin-gated) ===================== -->
   <div class="tab-panel" id="panelVerified">
     <div class="toolbar">
       <div class="toolbar-card">
@@ -412,7 +444,7 @@
     // الدولة تُقرأ من رابط ?country= إن وُجد، وإلا من آخر دولة اختارها الزائر في
     // الصفحة الرئيسية (محفوظة في localStorage)، وإلا الإمارات كافتراضي أخير.
     const COUNTRY = new URLSearchParams(window.location.search).get('country')
-      || localStorage.getItem('aqaratti_selected_country')
+      || localStorage.getItem('aqarx_selected_country')
       || 'uae';
     const COUNTRY_NAME = COUNTRY_NAMES[COUNTRY] || COUNTRY;
     const HAS_BULK_DIRECTORY = COUNTRY === 'uae';
@@ -425,7 +457,7 @@
     // ---------------------------------------------------------------
     document.getElementById('heroTitle').innerText = `دليل المكاتب العقارية في ${COUNTRY_NAME}`;
     document.getElementById('heroSubtitle').innerText = `تصفّح المكاتب العقارية المرخّصة في ${COUNTRY_NAME} وتواصل معها مباشرة`;
-    document.title = `دليل المكاتب العقارية - ${COUNTRY_NAME} | Aqaratti`;
+    document.title = `دليل المكاتب العقارية - ${COUNTRY_NAME} | AqarX`;
 
     document.getElementById('joinDirectoryLink').href = `broker-registration.html?country=${COUNTRY}`;
 
@@ -435,12 +467,13 @@
     // ---------------------------------------------------------------
     // Tabs
     // ---------------------------------------------------------------
+    const TAB_PANEL_IDS = { full: 'panelFull', individual: 'panelIndividual', verified: 'panelVerified' };
     document.querySelectorAll('.directory-tab').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.directory-tab').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(btn.dataset.tab === 'full' ? 'panelFull' : 'panelVerified').classList.add('active');
+        document.getElementById(TAB_PANEL_IDS[btn.dataset.tab] || 'panelFull').classList.add('active');
       });
     });
 
@@ -588,6 +621,7 @@
   </script>
 
   <script src="js/supabase-brokers.js"></script>
+  <script src="js/supabase-individual-brokers.js"></script>
 
 </body>
 </html>

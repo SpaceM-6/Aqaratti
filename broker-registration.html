@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بوابة تسجيل الوسطاء | Aqaratti</title>
+  <title>بوابة تسجيل الوسطاء | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -108,13 +108,13 @@
 <body>
 
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="brand-logo">AqarX</a>
     <a href="brokers-directory.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للدليل</a>
   </nav>
 
   <div class="page-hero">
     <h1><i class="fas fa-user-plus"></i> <span id="heroTitle">بوابة تسجيل الوسطاء</span></h1>
-    <p id="heroSubtitle">سجّل بيانات مكتبك العقاري لينضم لدليل عقاراتي بعد المراجعة</p>
+    <p id="heroSubtitle">سجّل بيانات مكتبك العقاري لينضم لدليل AqarX بعد المراجعة</p>
   </div>
 
   <div class="form-wrap" id="formWrap">
@@ -126,12 +126,12 @@
       uae: 'الإمارات', saudi: 'السعودية', egypt: 'مصر', qatar: 'قطر', oman: 'عُمان',
     };
     const COUNTRY = new URLSearchParams(window.location.search).get('country')
-      || localStorage.getItem('aqaratti_selected_country')
+      || localStorage.getItem('aqarx_selected_country')
       || 'uae';
     const COUNTRY_NAME = COUNTRIES[COUNTRY] || 'الإمارات';
 
     document.getElementById('heroTitle').innerText = `بوابة تسجيل الوسطاء - ${COUNTRY_NAME}`;
-    document.getElementById('heroSubtitle').innerText = `سجّل بيانات مكتبك العقاري في ${COUNTRY_NAME} لينضم لدليل عقاراتي بعد المراجعة`;
+    document.getElementById('heroSubtitle').innerText = `سجّل بيانات مكتبك العقاري في ${COUNTRY_NAME} لينضم لدليل AqarX بعد المراجعة`;
 
     const ACTIVITY_OPTIONS = [
       'الوساطة في بيع العقارات وشرائها',
@@ -262,7 +262,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const user = await getCurrentAqarattiUser();
+      const user = await getCurrentAqarXUser();
       if (!user) {
         renderAuthGate();
         return;
