@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حذف الحساب | Aqaratti</title>
+
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <style>
+    :root {
+      --primary-turquoise: #00a896;
+      --turquoise-light: #e6f7f5;
+      --dubizzle-navy: #192038;
+      --dubizzle-bg: #f4f6f9;
+      --dubizzle-border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--dubizzle-bg); color: var(--text-dark); line-height: 1.7; }
+
+    .navbar {
+      background: #ffffff; padding: 14px 30px; border-bottom: 1px solid var(--dubizzle-border);
+      display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+    }
+    .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
+    .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
+
+    .page-hero {
+      background: linear-gradient(135deg, var(--dubizzle-navy), #0f172a);
+      color: white; padding: 36px 20px; text-align: center;
+    }
+    .page-hero h1 { font-size: 23px; font-weight: 900; margin-bottom: 8px; }
+    .page-hero p { font-size: 13px; color: #cbd5e1; }
+
+    .content-wrap { max-width: 640px; margin: -20px auto 50px; padding: 0 20px; position: relative; z-index: 5; }
+    .content-card {
+      background: white; border: 1px solid var(--dubizzle-border); border-radius: 18px;
+      padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .section-title { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin: 18px 0 10px; border-right: 4px solid var(--primary-turquoise); padding-right: 8px; }
+    .section-title:first-child { margin-top: 0; }
+    p.body-text { font-size: 13.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; }
+    ul.data-list { padding-right: 20px; margin-bottom: 10px; }
+    ul.data-list li { font-size: 13.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+
+    .danger-btn {
+      width: 100%; background: #dc2626; color: white; border: none;
+      padding: 13px; border-radius: 10px; font-weight: 900; font-size: 14.5px; cursor: pointer;
+      font-family: 'Tajawal', sans-serif; margin-top: 10px;
+    }
+    .danger-btn:hover { background: #b91c1c; }
+    .danger-btn:disabled { opacity: 0.6; cursor: default; }
+
+    .auth-gate, .success-panel {
+      text-align: center; padding: 40px 10px;
+    }
+    .auth-gate i, .success-panel i { font-size: 40px; color: var(--primary-turquoise); margin-bottom: 14px; display: block; }
+    .success-panel i { color: #16a34a; }
+    .auth-gate p, .success-panel p { font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+    .auth-gate a { color: var(--primary-turquoise); font-weight: 900; text-decoration: none; }
+    .success-panel h3 { font-size: 19px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; }
+
+    .field-error { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 8px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; margin-top: 12px; display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand-logo">عقاراتي │ Aqaratti</a>
+    <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+  </nav>
+
+  <div class="page-hero">
+    <h1><i class="fas fa-user-slash"></i> حذف الحساب</h1>
+    <p>يمكنك طلب حذف حسابك وبياناتك من عقاراتي في أي وقت</p>
+  </div>
+
+  <div class="content-wrap" id="contentWrap">
+    <!-- يُعبَّأ ديناميكياً -->
+  </div>
+
+  <script>
+    function renderAuthGate() {
+      document.getElementById('contentWrap').innerHTML = `
+        <div class="content-card">
+          <div class="auth-gate">
+            <i class="fas fa-lock"></i>
+            <p>يجب تسجيل الدخول أولاً لتقديم طلب حذف حسابك.</p>
+            <a href="index.html">العودة للصفحة الرئيسية لتسجيل الدخول</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSuccess() {
+      document.getElementById('contentWrap').innerHTML = `
+        <div class="content-card">
+          <div class="success-panel">
+            <i class="fas fa-circle-check"></i>
+            <h3>تم استلام طلب حذف حسابك</h3>
+            <p>سنقوم بحذف حسابك وبياناتك خلال 30 يوماً كحد أقصى. إذا سجّلت دخولك مرة أخرى قبل ذلك، سيُلغى الطلب تلقائياً.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderForm(email) {
+      document.getElementById('contentWrap').innerHTML = `
+        <div class="content-card">
+          <div class="section-title">ماذا يحدث عند حذف حسابك؟</div>
+          <p class="body-text">سنقوم بحذف البيانات التالية المرتبطة بحسابك (${email}) نهائياً:</p>
+          <ul class="data-list">
+            <li>الاسم الكامل، رقم الهاتف، اسم الوكالة، والصورة الشخصية</li>
+            <li>بريدك الإلكتروني وحساب تسجيل الدخول</li>
+            <li>أي طلبات تسجيل كوسيط قدّمتها (إن وُجدت)</li>
+          </ul>
+
+          <div class="section-title">بيانات قد تبقى محفوظة</div>
+          <p class="body-text">
+            العقارات والاستفسارات (Leads) المرتبطة بحسابك والتي تفاعل معها مستخدمون آخرون قد تبقى محفوظة بشكل مجهول
+            (غير مرتبطة باسمك) للحفاظ على سجل النظام، ما لم تطلب حذفها صراحة عبر التواصل معنا.
+          </p>
+
+          <div class="section-title">خطوات الحذف</div>
+          <p class="body-text">اضغط الزر أدناه لتقديم طلب الحذف. سيُعالَج الطلب يدوياً خلال 30 يوماً كحد أقصى، وستُحذف بياناتك بالكامل من قاعدة البيانات.</p>
+
+          <button class="danger-btn" id="deleteBtn" onclick="submitDeletionRequest()"><i class="fas fa-trash"></i> تأكيد طلب حذف حسابي نهائياً</button>
+          <p class="field-error" id="formError"></p>
+        </div>
+      `;
+    }
+
+    async function submitDeletionRequest() {
+      const btn = document.getElementById('deleteBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+      const user = await getCurrentAqarattiUser();
+      if (!user) { renderAuthGate(); return; }
+
+      const { error } = await supabaseClient.from('account_deletion_requests').insert({
+        user_id: user.id,
+        email: user.email,
+      });
+
+      if (error) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-trash"></i> تأكيد طلب حذف حسابي نهائياً';
+        document.getElementById('formError').innerText = 'تعذر إرسال الطلب حالياً، حاول مرة أخرى لاحقاً.';
+        document.getElementById('formError').style.display = 'block';
+        return;
+      }
+
+      renderSuccess();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = await getCurrentAqarattiUser();
+      if (!user) {
+        renderAuthGate();
+        return;
+      }
+      renderForm(user.email);
+    });
+  </script>
+
+</body>
+</html>
