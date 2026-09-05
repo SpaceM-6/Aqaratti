@@ -18,6 +18,10 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Python bytecode cache
+__pycache__/
+*.pyc
+
 # Local Claude Code settings (machine-specific, not project source)
 .claude/
 

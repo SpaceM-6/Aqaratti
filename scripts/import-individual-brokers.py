@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-ينقل بيانات الوسطاء العقاريين الأفراد (وليس المكاتب) من ملفات
-وسطاء_دبي_01..20.xlsx في dld-brokers-scraper/dld_brokers_output/excel_files
-إلى جدول individual_brokers في Supabase عبر REST API (PostgREST)، دفعات دفعات.
+ينقل بيانات الوسطاء العقاريين الأفراد من ملفات وسطاء_دبي_01..20.xlsx في
+dld-brokers-scraper/dld_brokers_output/excel_files (مصدرها fetch_dld_api.py -
+سحب مباشر من API الوسطاء الرسمي لـ DLD، وليس استخراج DOM) إلى جدول
+individual_brokers في Supabase عبر REST API (PostgREST)، دفعات دفعات.
 
 قبل التشغيل:
-  1. شغّل supabase/individual_brokers.sql على مشروع Supabase الخاص بك (SQL
-     Editor) لإنشاء الجدول.
+  1. شغّل supabase/individual_brokers.sql ثم supabase/individual_brokers_enrich.sql
+     على مشروع Supabase الخاص بك (SQL Editor) لإنشاء/توسعة الجدول.
   2. تأكد أن .env بجذر هذا المشروع يحتوي SUPABASE_URL و
      SUPABASE_SERVICE_ROLE_KEY (وليس anon key - لأن RLS يمنع anon من الكتابة).
-  3. صور الوسطاء تُرفع لاحقاً عبر scripts/upload-individual-broker-photos.py
-     (سكربت منفصل) - هذا السكربت يُدخل الصفوف بدون photo_url أولاً.
+  3. صور الوسطاء وشعارات المكاتب تُرفع لاحقاً عبر
+     scripts/upload-individual-broker-photos.py (سكربت منفصل).
 
 التشغيل:
   python scripts/import-individual-brokers.py
@@ -19,6 +20,7 @@ import glob
 import json
 import os
 import sys
+from datetime import datetime
 
 import openpyxl
 import requests
@@ -26,20 +28,18 @@ import requests
 sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# dld-brokers-scraper هو مجلد شقيق منفصل عن مستودع aqarx، وليس جزءاً منه.
 DEFAULT_SOURCE_DIR = os.path.join(os.path.dirname(ROOT_DIR), "dld-brokers-scraper", "dld_brokers_output", "excel_files")
 SOURCE_DIR = os.environ.get("DLD_EXCEL_DIR", DEFAULT_SOURCE_DIR)
 BATCH_SIZE = 500
 
 EXPECTED_HEADER = (
-    "id", "رقم_الوسيط_DLD", "الاسم_العربي", "اسم_المكتب", "رقم_الهاتف",
-    "البريد_الالكتروني", "الحالة", "رابط_الصورة", "مسار_الصورة_المحلية",
-    "المصدر", "ملاحظات",
+    "id", "رقم_الوسيط_DLD", "الاسم_العربي", "الاسم_الانجليزي", "اسم_المكتب",
+    "اسم_المكتب_انجليزي", "رقم_المكتب", "تصنيف_المكتب", "تقييم_الوسيط",
+    "رقم_الهاتف", "رقم_الجوال", "البريد_الالكتروني", "تاريخ_اصدار_الترخيص",
+    "تاريخ_انتهاء_الترخيص", "الحالة", "رابط_صورة_الوسيط", "رابط_شعار_المكتب",
+    "مسار_الصورة_المحلية", "مسار_شعار_المكتب_المحلي", "المصدر", "ملاحظات",
 )
 
-# الوسطاء الموقوفون/منتهيو الترخيص لا يُرفعون - راجع ملاحظة في main() فالحقل
-# "الحالة" في هذه النسخة من السكربت لا يعكس فعلياً حالة الترخيص من DLD (الموقع
-# لا يعرضها في القائمة)، لكن نُبقي هذا الفلتر لأي بيانات مستقبلية قد تتضمنه.
 SUSPENDED_STATUSES = {"منتهي", "موقوف"}
 
 
@@ -76,6 +76,17 @@ def clean(value):
     return value or None
 
 
+def clean_date(value):
+    """التواريخ القادمة من API الوسطاء بصيغة ISO datetime (2011-02-06T00:00:00)."""
+    value = clean(value)
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "")).date().isoformat()
+    except Exception:
+        return None
+
+
 def load_file(path):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     ws = wb.active
@@ -85,36 +96,40 @@ def load_file(path):
         raise ValueError(f"{path}: unexpected header {header}")
 
     brokers = []
-    skipped_suspended = 0
-    skipped_no_number = 0
     for row in rows:
         if row is None or all(v is None for v in row):
             continue
-        (_, dld_number, name_ar, office_name, phone, email, status,
-         photo_url, local_image_path, source, notes) = row[:11]
+        d = dict(zip(header, row))
 
-        dld_number = clean(dld_number)
+        dld_number = clean(d.get("رقم_الوسيط_DLD"))
         if not dld_number:
-            skipped_no_number += 1
             continue
 
-        if clean(status) in SUSPENDED_STATUSES:
-            skipped_suspended += 1
+        if clean(d.get("الحالة")) in SUSPENDED_STATUSES:
             continue
 
         brokers.append({
             "dld_broker_number": dld_number,
-            "name_ar": clean(name_ar),
-            "office_name": clean(office_name),
-            "phone": clean(phone),
-            "email": clean(email),
-            "source": clean(source) or "dld_government_registry",
-            "notes": clean(notes),
+            "name_ar": clean(d.get("الاسم_العربي")),
+            "name_en": clean(d.get("الاسم_الانجليزي")),
+            "office_name": clean(d.get("اسم_المكتب")),
+            "office_name_en": clean(d.get("اسم_المكتب_انجليزي")),
+            "office_number": clean(d.get("رقم_المكتب")),
+            "office_rank": clean(d.get("تصنيف_المكتب")),
+            "card_rating": clean(d.get("تقييم_الوسيط")),
+            "phone": clean(d.get("رقم_الهاتف")),
+            "mobile": clean(d.get("رقم_الجوال")),
+            "email": clean(d.get("البريد_الالكتروني")),
+            "license_issue_date": clean_date(d.get("تاريخ_اصدار_الترخيص")),
+            "license_expiry_date": clean_date(d.get("تاريخ_انتهاء_الترخيص")),
+            "source": clean(d.get("المصدر")) or "dld_government_registry",
+            "notes": clean(d.get("ملاحظات")),
             "is_active": False,
-            "_local_image_path": clean(local_image_path),  # لا يُرسل لـ Supabase، يُستخدم فقط لسكربت الصور
+            "_local_image_path": clean(d.get("مسار_الصورة_المحلية")),
+            "_local_office_logo_path": clean(d.get("مسار_شعار_المكتب_المحلي")),
         })
     wb.close()
-    return brokers, skipped_suspended, skipped_no_number
+    return brokers
 
 
 def insert_batch(session, url, batch):
@@ -147,17 +162,13 @@ def main():
         raise SystemExit(f"لا توجد ملفات مطابقة في {SOURCE_DIR}")
 
     all_brokers = []
-    total_suspended = 0
-    total_no_number = 0
     for path in files:
-        brokers, skipped_suspended, skipped_no_number = load_file(path)
-        total_suspended += skipped_suspended
-        total_no_number += skipped_no_number
+        brokers = load_file(path)
         print(f"{os.path.basename(path)}: {len(brokers)} سجل صالح")
         all_brokers.extend(brokers)
 
     total = len(all_brokers)
-    print(f"الإجمالي المقروء من Excel: {total} سجل صالح (متخطى موقوف: {total_suspended}, بلا رقم وسيط: {total_no_number})")
+    print(f"الإجمالي المقروء من Excel: {total} سجل صالح")
 
     session = requests.Session()
     session.headers.update({
@@ -186,8 +197,6 @@ def main():
     print(f"✅ وسطاء جدد تم إدخالهم: {new_count}")
     print(f"⏭️ متخطون (موجودون مسبقاً برقم وسيط مطابق): {skipped_duplicate}")
     print(f"❌ أخطاء إدخال: {error_count}")
-    print(f"🚫 متخطون (موقوف/منتهي الترخيص): {total_suspended}")
-    print(f"🚫 متخطون (بلا رقم وسيط): {total_no_number}")
     if error_count:
         print(f"تفاصيل الأخطاء في: {error_log_path}")
     print("=" * 50)
