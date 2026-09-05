@@ -23,7 +23,8 @@ import requests
 sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SOURCE_FILE = os.path.join(os.path.dirname(ROOT_DIR), "dld-brokers-scraper", "dld_developers_output", "المطورين_العقاريين.xlsx")
+DLD_SCRAPER_ROOT = os.path.join(os.path.dirname(ROOT_DIR), "dld-brokers-scraper")
+SOURCE_FILE = os.path.join(DLD_SCRAPER_ROOT, "dld_developers_output", "المطورين_العقاريين.xlsx")
 BUCKET = "developer-logos"
 MAX_WORKERS = 12
 
@@ -60,6 +61,16 @@ def clean(v):
     return v or None
 
 
+def resolve_local_path(raw_path):
+    """المسار المحفوظ بالـ Excel نسبي لمجلد dld-brokers-scraper وبفواصل \\ ويندوز."""
+    if not raw_path:
+        return None
+    normalized = raw_path.replace("\\", os.sep).replace("/", os.sep)
+    if os.path.isabs(normalized) and os.path.exists(normalized):
+        return normalized
+    return os.path.join(DLD_SCRAPER_ROOT, normalized)
+
+
 def load_developers():
     wb = openpyxl.load_workbook(SOURCE_FILE, read_only=True, data_only=True)
     ws = wb.active
@@ -83,7 +94,7 @@ def load_developers():
             "email": clean(row[idx["البريد_الالكتروني"]]),
             "rating": clean(row[idx["التقييم"]]),
             "is_active": False,
-            "_local_logo_path": clean(row[idx["مسار_الشعار_المحلي"]]),
+            "_local_logo_path": resolve_local_path(clean(row[idx["مسار_الشعار_المحلي"]])),
         })
     wb.close()
     return developers
