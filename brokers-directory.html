@@ -652,12 +652,26 @@
       setHero('developers');
     }
 
-    document.getElementById('cardOffices').addEventListener('click', showOfficesSection);
-    document.getElementById('cardIndividuals').addEventListener('click', showIndividualsSection);
-    document.getElementById('cardDevelopers').addEventListener('click', showDevelopersSection);
-    document.getElementById('backFromOffices').addEventListener('click', showPortalLanding);
-    document.getElementById('backFromIndividuals').addEventListener('click', showPortalLanding);
-    document.getElementById('backFromDevelopers').addEventListener('click', showPortalLanding);
+    // ---------------------------------------------------------------
+    // ربط زر/إيماءة الرجوع بالهاتف (وسهم رجوع المتصفح) بنفس سلوك زر "رجوع
+    // لبوابة الوسطاء" - بدون هذا، الرجوع من الهاتف يغادر الصفحة كاملة
+    // مباشرة بدل ما يرجع للشاشة الرئيسية للبوابة أولاً. ندفع حالة جديدة
+    // بالتاريخ عند دخول أي قسم، وأي رجوع (زر الجهاز أو زر الصفحة نفسه، كلاهما
+    // يستدعي history.back()) يُطلق popstate فيعرض شاشة الاختيار.
+    function pushSectionState(section) {
+      history.pushState({ aqarxSection: section }, '', '');
+    }
+
+    document.getElementById('cardOffices').addEventListener('click', () => { showOfficesSection(); pushSectionState('offices'); });
+    document.getElementById('cardIndividuals').addEventListener('click', () => { showIndividualsSection(); pushSectionState('individuals'); });
+    document.getElementById('cardDevelopers').addEventListener('click', () => { showDevelopersSection(); pushSectionState('developers'); });
+    document.getElementById('backFromOffices').addEventListener('click', () => history.back());
+    document.getElementById('backFromIndividuals').addEventListener('click', () => history.back());
+    document.getElementById('backFromDevelopers').addEventListener('click', () => history.back());
+
+    window.addEventListener('popstate', () => {
+      showPortalLanding();
+    });
 
     // ---------------------------------------------------------------
     // تبديل التبويبات داخل كل قسم (مستقل عن القسم الآخر)

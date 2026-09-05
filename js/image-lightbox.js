@@ -8,16 +8,6 @@
 ==================================================================== */
 (function () {
   const TARGET_SELECTOR = '.broker-logo, .profile-photo, .profile-logo, .lightbox-img';
-  const PLACEHOLDER_HOSTS = ['images.unsplash.com'];
-
-  function isPlaceholder(src) {
-    try {
-      const url = new URL(src, window.location.href);
-      return PLACEHOLDER_HOSTS.includes(url.hostname);
-    } catch (e) {
-      return false;
-    }
-  }
 
   let overlay, imgEl;
   function ensureLightbox() {
@@ -70,7 +60,7 @@
   // لصفحة الملف الشخصي) ونمنعه من التنفيذ عند الضغط على الصورة تحديداً.
   document.addEventListener('click', (e) => {
     const img = e.target.closest(TARGET_SELECTOR);
-    if (!img || !img.src || isPlaceholder(img.src)) return;
+    if (!img || !img.src) return;
     e.stopPropagation();
     e.preventDefault();
     open(img.src);
