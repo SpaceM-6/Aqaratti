@@ -2,7 +2,7 @@
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v34';
+const CACHE_VERSION = 'v35';
 const CACHE_NAME = `aqarx-cache-${CACHE_VERSION}`;
 
 // 🧱 واجهة التطبيق الأساسية التي تُخزَّن فور تثبيت الـ Service Worker

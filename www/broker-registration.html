@@ -60,6 +60,14 @@
     .form-section-title { font-size: 14px; font-weight: 900; color: var(--dubizzle-navy); margin: 18px 0 12px; border-right: 4px solid var(--primary-turquoise); padding-right: 8px; }
     .form-section-title:first-child { margin-top: 0; }
 
+    .type-toggle { display: flex; gap: 10px; margin-bottom: 18px; }
+    .type-toggle button {
+      flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid var(--dubizzle-border);
+      background: #f8fafc; color: var(--text-muted); font-weight: 900; font-size: 13.5px;
+      cursor: pointer; font-family: 'Tajawal', sans-serif;
+    }
+    .type-toggle button.active { border-color: var(--primary-turquoise); color: var(--primary-turquoise); background: var(--turquoise-light); }
+
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .form-row.single { grid-template-columns: 1fr; }
 
@@ -130,8 +138,18 @@
       || 'uae';
     const COUNTRY_NAME = COUNTRIES[COUNTRY] || 'الإمارات';
 
-    document.getElementById('heroTitle').innerText = `بوابة تسجيل الوسطاء - ${COUNTRY_NAME}`;
-    document.getElementById('heroSubtitle').innerText = `سجّل بيانات مكتبك العقاري في ${COUNTRY_NAME} لينضم لدليل AqarX بعد المراجعة`;
+    let BROKER_TYPE = new URLSearchParams(window.location.search).get('type') === 'individual' ? 'individual' : 'office';
+    const TYPE_LABELS = {
+      office: { hero: 'مكتبك العقاري', entity: 'المكتب', nameLabel: 'اسم المكتب', directoryLink: 'دليل المكاتب' },
+      individual: { hero: 'بياناتك كوسيط', entity: 'الوسيط', nameLabel: 'الاسم الكامل', directoryLink: 'دليل الوسطاء' },
+    };
+
+    function setHeroForType() {
+      const t = TYPE_LABELS[BROKER_TYPE];
+      document.getElementById('heroTitle').innerText = `بوابة تسجيل الوسطاء - ${COUNTRY_NAME}`;
+      document.getElementById('heroSubtitle').innerText = `سجّل ${t.hero} في ${COUNTRY_NAME} لينضم لدليل AqarX بعد المراجعة`;
+    }
+    setHeroForType();
 
     const ACTIVITY_OPTIONS = [
       'الوساطة في بيع العقارات وشرائها',
@@ -153,27 +171,34 @@
     }
 
     function renderSuccess() {
+      const t = TYPE_LABELS[BROKER_TYPE];
       document.getElementById('formWrap').innerHTML = `
         <div class="form-card">
           <div class="success-panel">
             <i class="fas fa-circle-check"></i>
             <h3>تم استلام طلبك بنجاح 🎉</h3>
-            <p>سيراجع فريقنا بيانات مكتبك، وسنتواصل معك للتحقق قبل تفعيل ظهورك في الدليل العام.</p>
-            <a class="back-btn" href="brokers-directory.html?country=${COUNTRY}">العودة إلى دليل المكاتب</a>
+            <p>سيراجع فريقنا بيانات ${t.entity}، وسنتواصل معك للتحقق قبل تفعيل ظهورك في الدليل العام.</p>
+            <a class="back-btn" href="brokers-directory.html?country=${COUNTRY}">العودة إلى ${t.directoryLink}</a>
           </div>
         </div>
       `;
     }
 
     function renderForm() {
+      const t = TYPE_LABELS[BROKER_TYPE];
       document.getElementById('formWrap').innerHTML = `
         <div class="form-card">
+          <div class="type-toggle">
+            <button type="button" id="typeOfficeBtn" class="${BROKER_TYPE === 'office' ? 'active' : ''}"><i class="fas fa-building"></i> أنا مكتب عقاري</button>
+            <button type="button" id="typeIndividualBtn" class="${BROKER_TYPE === 'individual' ? 'active' : ''}"><i class="fas fa-user-tie"></i> أنا وسيط فرد</button>
+          </div>
+
           <p class="field-error" id="formError"></p>
 
-          <div class="form-section-title">بيانات المكتب</div>
+          <div class="form-section-title">بيانات ${t.entity}</div>
           <div class="form-row">
-            <div><label>اسم المكتب (عربي) *</label><input type="text" id="fNameAr"></div>
-            <div><label>اسم المكتب (إنجليزي)</label><input type="text" id="fNameEn"></div>
+            <div><label>${t.nameLabel} (عربي) *</label><input type="text" id="fNameAr"></div>
+            <div><label>${t.nameLabel} (إنجليزي)</label><input type="text" id="fNameEn"></div>
           </div>
           <div class="form-row single">
             <div><label>رقم الترخيص العقاري *</label><input type="text" id="fLicense" placeholder="رقم الترخيص الرسمي في ${COUNTRY_NAME}"></div>
@@ -181,7 +206,7 @@
 
           <div class="form-section-title">بيانات التواصل</div>
           <div class="form-row">
-            <div><label>اسم المسؤول</label><input type="text" id="fContactName"></div>
+            ${BROKER_TYPE === 'office' ? `<div><label>اسم المسؤول</label><input type="text" id="fContactName"></div>` : ''}
             <div><label>الهاتف *</label><input type="tel" id="fPhone" placeholder="مثال: 971501234567"></div>
           </div>
           <div class="form-row">
@@ -189,7 +214,7 @@
             <div><label>الموقع الإلكتروني</label><input type="url" id="fWebsite" placeholder="https://"></div>
           </div>
           <div class="form-row single">
-            <div><label>رابط شعار المكتب (اختياري)</label><input type="url" id="fLogo" placeholder="https://"></div>
+            <div><label>رابط ${BROKER_TYPE === 'office' ? 'شعار المكتب' : 'صورتك الشخصية'} (اختياري)</label><input type="url" id="fLogo" placeholder="https://"></div>
           </div>
 
           <div class="form-section-title">الأنشطة</div>
@@ -205,6 +230,9 @@
           <button class="submit-btn" id="submitBtn" onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال طلب الانضمام</button>
         </div>
       `;
+
+      document.getElementById('typeOfficeBtn').addEventListener('click', () => { BROKER_TYPE = 'office'; setHeroForType(); renderForm(); });
+      document.getElementById('typeIndividualBtn').addEventListener('click', () => { BROKER_TYPE = 'individual'; setHeroForType(); renderForm(); });
     }
 
     function showFormError(message) {
@@ -217,7 +245,8 @@
       const nameAr = document.getElementById('fNameAr').value.trim();
       const nameEn = document.getElementById('fNameEn').value.trim();
       const license = document.getElementById('fLicense').value.trim();
-      const contactName = document.getElementById('fContactName').value.trim();
+      const contactNameEl = document.getElementById('fContactName');
+      const contactName = contactNameEl ? contactNameEl.value.trim() : '';
       const phone = document.getElementById('fPhone').value.trim();
       const email = document.getElementById('fEmail').value.trim();
       const website = document.getElementById('fWebsite').value.trim();
@@ -235,6 +264,7 @@
 
       const { error } = await supabaseClient.from('directory_brokers').insert({
         country: COUNTRY,
+        broker_type: BROKER_TYPE,
         name_ar: nameAr,
         name_en: nameEn || null,
         license,

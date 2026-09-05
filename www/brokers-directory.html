@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دليل المكاتب العقارية | AqarX</title>
+  <title>بوابة الوسطاء | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -50,10 +50,56 @@
     .page-hero h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
     .page-hero p { font-size: 13px; color: #cbd5e1; }
 
+    /* ==================== شاشة الاختيار (بوابة الوسطاء) ==================== */
+    .portal-landing {
+      max-width: 900px;
+      margin: -30px auto 40px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 6;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .portal-card {
+      background: white;
+      border: 1px solid var(--dubizzle-border);
+      border-radius: 18px;
+      padding: 34px 24px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .portal-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(0,0,0,0.1); }
+    .portal-card i {
+      font-size: 34px;
+      color: var(--primary-turquoise);
+      background: var(--turquoise-light);
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .portal-card h3 { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 6px; }
+    .portal-card p { font-size: 12.5px; color: var(--text-muted); font-weight: 700; }
+
+    .back-to-portal-bar { max-width: 1200px; margin: 16px auto 0; padding: 0 20px; }
+    .back-to-portal {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid var(--dubizzle-border);
+      color: var(--primary-turquoise); font-weight: 900; font-size: 13px;
+      padding: 9px 16px; border-radius: 10px; cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .back-to-portal:hover { background: var(--turquoise-light); }
+
+    [hidden] { display: none !important; }
+
     /* Tabs */
     .directory-tabs {
       max-width: 1200px;
-      margin: -25px auto 0;
+      margin: 16px auto 0;
       padding: 0 20px;
       position: relative;
       z-index: 6;
@@ -187,7 +233,7 @@
       transition: transform 0.15s, box-shadow 0.15s;
     }
     .broker-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
-    #panelFull .broker-card { cursor: pointer; }
+    #panelFull .broker-card, #panelIndividual .broker-card { cursor: pointer; }
 
     .broker-card.broker-card-inactive { opacity: 0.7; background: #f8fafc; }
     .inactive-badge {
@@ -306,6 +352,7 @@
       .filter-pills { justify-content: center; }
       .page-hero h1 { font-size: 21px; }
       .directory-tabs { flex-direction: column; }
+      .portal-landing { grid-template-columns: 1fr; margin-top: -20px; }
     }
   </style>
 </head>
@@ -317,86 +364,180 @@
   </nav>
 
   <div class="page-hero">
-    <h1><i class="fas fa-building"></i> <span id="heroTitle">دليل المكاتب العقارية</span></h1>
-    <p id="heroSubtitle">تصفّح آلاف المكاتب العقارية المرخّصة وتواصل معها مباشرة</p>
+    <h1><i class="fas fa-building-user"></i> <span id="heroTitle">بوابة الوسطاء</span></h1>
+    <p id="heroSubtitle">اختر القسم الذي تبحث عنه</p>
   </div>
 
-  <div class="directory-tabs">
-    <button class="directory-tab active" id="tabBtnFull" data-tab="full"><i class="fas fa-list"></i> الدليل الكامل</button>
-    <button class="directory-tab" id="tabBtnVerified" data-tab="verified"><i class="fas fa-shield-check"></i> المكاتب الموثقة</button>
-  </div>
-
-  <!-- ===================== TAB 1: FULL DIRECTORY (10,062 مكتب من سجل RERA، عبر Supabase - الإمارات فقط حالياً) ===================== -->
-  <div class="tab-panel active" id="panelFull">
-    <div class="stats-bar">
-      <div class="stats-bar-inner" id="fullStatsBar"></div>
+  <!-- ===================== شاشة الاختيار ===================== -->
+  <div class="portal-landing" id="portalLanding">
+    <div class="portal-card" id="cardOffices">
+      <i class="fas fa-building"></i>
+      <h3>المكاتب العقارية</h3>
+      <p>تصفّح دليل المكاتب العقارية المرخّصة وتواصل معها مباشرة</p>
     </div>
-    <div class="rera-banner" id="reraBanner">
-      <div class="rera-banner-inner">
-        <i class="fas fa-circle-info"></i>
-        <span>هؤلاء الوسطاء مسجلون رسمياً في دائرة الأراضي والأملاك بدبي (RERA). البيانات مأخوذة من السجل العقاري العام. علامة "مفعل" تعني أن الوسيط نشط في AqarX.</span>
-      </div>
-    </div>
-    <div class="rera-banner" id="noBulkBanner" style="display:none;">
-      <div class="rera-banner-inner">
-        <i class="fas fa-circle-info"></i>
-        <span>لا يتوفر حالياً استيراد رسمي جماعي للوسطاء في هذه الدولة. تصفّح تبويب "المكاتب الموثقة" أو كن أول وسيط يسجّل بياناته.</span>
-      </div>
-    </div>
-    <div class="toolbar">
-      <div class="toolbar-card">
-        <div class="search-box">
-          <input type="text" id="fullSearchInput" placeholder="ابحث باسم المكتب (عربي/إنجليزي) أو اسم المسؤول...">
-          <i class="fas fa-search"></i>
-        </div>
-        <div class="filter-pills" id="fullRankFilters">
-          <button class="filter-pill active" data-rank="ALL">الكل</button>
-          <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
-          <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
-          <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
-          <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="results-meta">
-      <span id="fullResultsCountText"></span>
-    </div>
-
-    <div class="brokers-grid" id="fullBrokersGrid"></div>
-
-    <div class="load-more-wrap">
-      <button class="load-more-btn" id="fullLoadMoreBtn">تحميل المزيد</button>
+    <div class="portal-card" id="cardIndividuals">
+      <i class="fas fa-user-tie"></i>
+      <h3>الوسطاء الأفراد</h3>
+      <p>تصفّح دليل الوسطاء العقاريين الأفراد وتواصل معهم مباشرة</p>
     </div>
   </div>
 
-  <!-- ===================== TAB 2: VERIFIED DIRECTORY (Supabase, admin-gated) ===================== -->
-  <div class="tab-panel" id="panelVerified">
-    <div class="toolbar">
-      <div class="toolbar-card">
-        <div class="search-box">
-          <input type="text" id="verifiedSearchInput" placeholder="ابحث بالاسم (عربي/إنجليزي) أو رقم الترخيص...">
-          <i class="fas fa-search"></i>
+  <!-- ===================== قسم: المكاتب العقارية ===================== -->
+  <div class="portal-section" id="sectionOffices" hidden>
+    <div class="back-to-portal-bar">
+      <button class="back-to-portal" id="backFromOffices"><i class="fas fa-arrow-right"></i> رجوع لبوابة الوسطاء</button>
+    </div>
+
+    <div class="directory-tabs">
+      <button class="directory-tab active" id="tabBtnFull" data-tab="full"><i class="fas fa-list"></i> الدليل الكامل</button>
+      <button class="directory-tab" id="tabBtnVerified" data-tab="verified"><i class="fas fa-shield-check"></i> المكاتب الموثقة</button>
+    </div>
+
+    <!-- TAB: الدليل الكامل (10,062 مكتب من سجل RERA، عبر Supabase - الإمارات فقط حالياً) -->
+    <div class="tab-panel active" id="panelFull">
+      <div class="stats-bar">
+        <div class="stats-bar-inner" id="fullStatsBar"></div>
+      </div>
+      <div class="rera-banner" id="reraBanner">
+        <div class="rera-banner-inner">
+          <i class="fas fa-circle-info"></i>
+          <span>علامة "مفعل" تعني أن المكتب نشط في AqarX.</span>
         </div>
-        <div class="filter-pills" id="verifiedRankFilters">
-          <button class="filter-pill active" data-rank="ALL">الكل</button>
-          <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
-          <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
-          <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
-          <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+      </div>
+      <div class="rera-banner" id="noBulkBanner" style="display:none;">
+        <div class="rera-banner-inner">
+          <i class="fas fa-circle-info"></i>
+          <span>لا يتوفر حالياً استيراد رسمي جماعي للمكاتب في هذه الدولة. تصفّح تبويب "المكاتب الموثقة" أو كن أول مكتب يسجّل بياناته.</span>
         </div>
+      </div>
+      <div class="toolbar">
+        <div class="toolbar-card">
+          <div class="search-box">
+            <input type="text" id="fullSearchInput" placeholder="ابحث باسم المكتب (عربي/إنجليزي) أو اسم المسؤول...">
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="filter-pills" id="fullRankFilters">
+            <button class="filter-pill active" data-rank="ALL">الكل</button>
+            <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
+            <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
+            <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+            <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-meta">
+        <span id="fullResultsCountText"></span>
+      </div>
+
+      <div class="brokers-grid" id="fullBrokersGrid"></div>
+
+      <div class="load-more-wrap">
+        <button class="load-more-btn" id="fullLoadMoreBtn">تحميل المزيد</button>
       </div>
     </div>
 
-    <div class="results-meta">
-      <span id="verifiedResultsCountText"></span>
-      <a id="joinDirectoryLink" href="broker-registration.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
+    <!-- TAB: المكاتب الموثقة (directory_brokers, broker_type='office') -->
+    <div class="tab-panel" id="panelVerified">
+      <div class="toolbar">
+        <div class="toolbar-card">
+          <div class="search-box">
+            <input type="text" id="verifiedSearchInput" placeholder="ابحث بالاسم (عربي/إنجليزي) أو رقم الترخيص...">
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="filter-pills" id="verifiedRankFilters">
+            <button class="filter-pill active" data-rank="ALL">الكل</button>
+            <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
+            <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
+            <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+            <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-meta">
+        <span id="verifiedResultsCountText"></span>
+        <a id="joinDirectoryLink" href="broker-registration.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت مكتب عقاري؟ انضم للدليل الآن</a>
+      </div>
+
+      <div class="brokers-grid" id="verifiedBrokersGrid"></div>
+
+      <div class="load-more-wrap">
+        <button class="load-more-btn" id="verifiedLoadMoreBtn">تحميل المزيد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== قسم: الوسطاء الأفراد ===================== -->
+  <div class="portal-section" id="sectionIndividuals" hidden>
+    <div class="back-to-portal-bar">
+      <button class="back-to-portal" id="backFromIndividuals"><i class="fas fa-arrow-right"></i> رجوع لبوابة الوسطاء</button>
     </div>
 
-    <div class="brokers-grid" id="verifiedBrokersGrid"></div>
+    <div class="directory-tabs">
+      <button class="directory-tab active" id="tabBtnIndividualFull" data-tab="individual-full"><i class="fas fa-list"></i> الدليل الكامل</button>
+      <button class="directory-tab" id="tabBtnIndividualVerified" data-tab="individual-verified"><i class="fas fa-shield-check"></i> الوسطاء الموثقون</button>
+    </div>
 
-    <div class="load-more-wrap">
-      <button class="load-more-btn" id="verifiedLoadMoreBtn">تحميل المزيد</button>
+    <!-- TAB: الدليل الكامل (individual_brokers، وسطاء أفراد من سجل DLD) -->
+    <div class="tab-panel active" id="panelIndividual">
+      <div class="stats-bar">
+        <div class="stats-bar-inner" id="individualStatsBar"></div>
+      </div>
+      <div class="rera-banner">
+        <div class="rera-banner-inner">
+          <i class="fas fa-circle-info"></i>
+          <span>علامة "مفعل" تعني أن الوسيط نشط في AqarX.</span>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="toolbar-card">
+          <div class="search-box">
+            <input type="text" id="individualSearchInput" placeholder="ابحث باسم الوسيط أو اسم المكتب...">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-meta">
+        <span id="individualResultsCountText"></span>
+      </div>
+
+      <div class="brokers-grid" id="individualBrokersGrid"></div>
+
+      <div class="load-more-wrap">
+        <button class="load-more-btn" id="individualLoadMoreBtn">تحميل المزيد</button>
+      </div>
+    </div>
+
+    <!-- TAB: الوسطاء الموثقون (directory_brokers, broker_type='individual') -->
+    <div class="tab-panel" id="panelIndividualVerified">
+      <div class="toolbar">
+        <div class="toolbar-card">
+          <div class="search-box">
+            <input type="text" id="individualVerifiedSearchInput" placeholder="ابحث بالاسم أو رقم الترخيص...">
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="filter-pills" id="individualVerifiedRankFilters">
+            <button class="filter-pill active" data-rank="ALL">الكل</button>
+            <button class="filter-pill" data-rank="GOLD"><i class="fas fa-crown"></i> ذهبي</button>
+            <button class="filter-pill" data-rank="SILVER"><i class="fas fa-medal"></i> فضي</button>
+            <button class="filter-pill" data-rank="BRONZE"><i class="fas fa-award"></i> برونزي</button>
+            <button class="filter-pill" data-rank="GENERAL"><i class="fas fa-building"></i> عام</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-meta">
+        <span id="individualVerifiedResultsCountText"></span>
+        <a id="joinIndividualDirectoryLink" href="broker-registration.html?type=individual" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
+      </div>
+
+      <div class="brokers-grid" id="individualVerifiedBrokersGrid"></div>
+
+      <div class="load-more-wrap">
+        <button class="load-more-btn" id="individualVerifiedLoadMoreBtn">تحميل المزيد</button>
+      </div>
     </div>
   </div>
 
@@ -409,8 +550,6 @@
       oman: 'عُمان', uk: 'بريطانيا', usa: 'أمريكا', france: 'فرنسا', spain: 'إسبانيا',
       cyprus: 'قبرص', greece: 'اليونان',
     };
-    // الدولة تُقرأ من رابط ?country= إن وُجد، وإلا من آخر دولة اختارها الزائر في
-    // الصفحة الرئيسية (محفوظة في localStorage)، وإلا الإمارات كافتراضي أخير.
     const COUNTRY = new URLSearchParams(window.location.search).get('country')
       || localStorage.getItem('aqarx_selected_country')
       || 'uae';
@@ -419,42 +558,85 @@
 
     function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
 
-    // ---------------------------------------------------------------
-    // الدولة الحالية: تخصيص العنوان، رابط الانضمام، وإظهار بانر RERA
-    // (الإمارات فقط) أو بانر "لا يوجد استيراد جماعي بعد"
-    // ---------------------------------------------------------------
-    document.getElementById('heroTitle').innerText = `دليل المكاتب العقارية في ${COUNTRY_NAME}`;
-    document.getElementById('heroSubtitle').innerText = `تصفّح المكاتب العقارية المرخّصة في ${COUNTRY_NAME} وتواصل معها مباشرة`;
-    document.title = `دليل المكاتب العقارية - ${COUNTRY_NAME} | AqarX`;
-
-    document.getElementById('joinDirectoryLink').href = `broker-registration.html?country=${COUNTRY}`;
-
+    document.title = `بوابة الوسطاء - ${COUNTRY_NAME} | AqarX`;
+    document.getElementById('joinDirectoryLink').href = `broker-registration.html?country=${COUNTRY}&type=office`;
+    document.getElementById('joinIndividualDirectoryLink').href = `broker-registration.html?country=${COUNTRY}&type=individual`;
     document.getElementById('reraBanner').style.display = HAS_BULK_DIRECTORY ? '' : 'none';
     document.getElementById('noBulkBanner').style.display = HAS_BULK_DIRECTORY ? 'none' : '';
 
     // ---------------------------------------------------------------
-    // Tabs
+    // شاشة الاختيار (بوابة الوسطاء): بطاقتان تفتحان كل قسم بصفحته الخاصة
+    // (نفس الملف، بدون إعادة تحميل) مع تحديث عنوان الصفحة العلوي.
     // ---------------------------------------------------------------
-    document.querySelectorAll('.directory-tab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.directory-tab').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab === 'full' ? 'panelFull' : 'panelVerified').classList.add('active');
+    const HERO_TEXT = {
+      portal: ['بوابة الوسطاء', 'اختر القسم الذي تبحث عنه'],
+      offices: [`دليل المكاتب العقارية في ${COUNTRY_NAME}`, `تصفّح المكاتب العقارية المرخّصة في ${COUNTRY_NAME} وتواصل معها مباشرة`],
+      individuals: [`دليل الوسطاء الأفراد في ${COUNTRY_NAME}`, `تصفّح الوسطاء العقاريين الأفراد في ${COUNTRY_NAME} وتواصل معهم مباشرة`],
+    };
+
+    function setHero(key) {
+      document.getElementById('heroTitle').innerText = HERO_TEXT[key][0];
+      document.getElementById('heroSubtitle').innerText = HERO_TEXT[key][1];
+    }
+
+    function showPortalLanding() {
+      document.getElementById('portalLanding').hidden = false;
+      document.getElementById('sectionOffices').hidden = true;
+      document.getElementById('sectionIndividuals').hidden = true;
+      setHero('portal');
+    }
+
+    let individualFullLoaded = false;
+    function showOfficesSection() {
+      document.getElementById('portalLanding').hidden = true;
+      document.getElementById('sectionOffices').hidden = false;
+      document.getElementById('sectionIndividuals').hidden = true;
+      setHero('offices');
+    }
+
+    function showIndividualsSection() {
+      document.getElementById('portalLanding').hidden = true;
+      document.getElementById('sectionOffices').hidden = true;
+      document.getElementById('sectionIndividuals').hidden = false;
+      setHero('individuals');
+      if (!individualFullLoaded) {
+        individualFullLoaded = true;
+        document.getElementById('tabBtnIndividualFull').dispatchEvent(new Event('click'));
+      }
+    }
+
+    document.getElementById('cardOffices').addEventListener('click', showOfficesSection);
+    document.getElementById('cardIndividuals').addEventListener('click', showIndividualsSection);
+    document.getElementById('backFromOffices').addEventListener('click', showPortalLanding);
+    document.getElementById('backFromIndividuals').addEventListener('click', showPortalLanding);
+
+    // ---------------------------------------------------------------
+    // تبديل التبويبات داخل كل قسم (مستقل عن القسم الآخر)
+    // ---------------------------------------------------------------
+    function wireTabs(tabButtonIds, panelIds) {
+      tabButtonIds.forEach((btnId, i) => {
+        document.getElementById(btnId).addEventListener('click', () => {
+          tabButtonIds.forEach((id) => document.getElementById(id).classList.remove('active'));
+          panelIds.forEach((id) => document.getElementById(id).classList.remove('active'));
+          document.getElementById(btnId).classList.add('active');
+          document.getElementById(panelIds[i]).classList.add('active');
+        });
       });
-    });
+    }
+    wireTabs(['tabBtnFull', 'tabBtnVerified'], ['panelFull', 'panelVerified']);
+    wireTabs(['tabBtnIndividualFull', 'tabBtnIndividualVerified'], ['panelIndividual', 'panelIndividualVerified']);
 
     // ---------------------------------------------------------------
-    // TAB 1: الدليل الكامل - يُحمَّل عبر js/supabase-brokers.js (جدول brokers
-    // في Supabase، بصفحات 50 صف مع فلترة وبحث نصي كامل من جانب الخادم).
+    // TAB "الدليل الكامل" بكلا القسمين: يُحمَّل عبر js/supabase-brokers.js
+    // و js/supabase-individual-brokers.js (خارجيين، بدون تغيير هنا).
     // ---------------------------------------------------------------
 
     // ---------------------------------------------------------------
-    // TAB 2: المكاتب الموثقة - مصدره جدول directory_brokers في Supabase.
-    // بفضل صلاحيات RLS، الزوار العاديون لا يستلمون إلا السجلات المفعّلة
-    // (is_active = true) من الأدمن يدوياً بعد أخذ الموافقة.
+    // TAB "الموثقون/الموثقة": نفس منطق جلب directory_brokers، مُعاد استخدامه
+    // مرتين (مكاتب wa وسطاء أفراد) بفارق broker_type فقط بدل تكرار الكود.
+    // بفضل RLS، الزوار العاديون لا يستلمون إلا السجلات المفعّلة (is_active=true).
     // ---------------------------------------------------------------
-    (function () {
+    function initVerifiedDirectory({ brokerType, gridId, searchInputId, rankFiltersId, resultsCountId, loadMoreBtnId, tabBtnId }) {
       let activeRank = 'ALL';
       let searchTerm = '';
       let currentOffset = 0;
@@ -467,7 +649,8 @@
           .from('directory_brokers')
           .select('*', { count: 'exact' })
           .eq('is_active', true)
-          .eq('country', COUNTRY);
+          .eq('country', COUNTRY)
+          .eq('broker_type', brokerType);
 
         if (activeRank !== 'ALL') query = query.eq('rank', activeRank);
 
@@ -486,8 +669,8 @@
         if (!social) return '';
         const icons = { facebook: 'fa-facebook-f', instagram: 'fa-instagram', twitter: 'fa-x-twitter', linkedin: 'fa-linkedin-in' };
         return Object.keys(icons)
-          .filter(key => social[key])
-          .map(key => `<a href="${social[key]}" target="_blank" rel="noopener noreferrer"><i class="fab ${icons[key]}"></i></a>`)
+          .filter((key) => social[key])
+          .map((key) => `<a href="${social[key]}" target="_blank" rel="noopener noreferrer"><i class="fab ${icons[key]}"></i></a>`)
           .join('');
       }
 
@@ -509,7 +692,7 @@
 
             ${activities.length ? `
             <div class="broker-activities">
-              ${activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
+              ${activities.map((a) => `<span class="activity-chip">${a}</span>`).join('')}
             </div>` : ''}
 
             <div class="broker-actions">
@@ -524,14 +707,14 @@
       }
 
       function renderCards() {
-        const grid = document.getElementById('verifiedBrokersGrid');
-        const meta = document.getElementById('verifiedResultsCountText');
-        const loadMoreBtn = document.getElementById('verifiedLoadMoreBtn');
+        const grid = document.getElementById(gridId);
+        const meta = document.getElementById(resultsCountId);
+        const loadMoreBtn = document.getElementById(loadMoreBtnId);
 
-        meta.innerText = `عرض ${loadedBrokers.length} من ${totalCount} مكتب`;
+        meta.innerText = `عرض ${loadedBrokers.length} من ${totalCount}`;
 
         if (loadedBrokers.length === 0) {
-          grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:28px; display:block; margin-bottom:10px;"></i> لا توجد نتائج مطابقة لبحثك.</div>`;
+          grid.innerHTML = `<div class="no-results"><i class="fas fa-search" style="font-size:28px; display:block; margin-bottom:10px;"></i> لا توجد نتائج مطابقة بعد.</div>`;
           loadMoreBtn.hidden = true;
           return;
         }
@@ -542,7 +725,7 @@
 
       async function loadFirstPage() {
         currentOffset = 0;
-        document.getElementById('verifiedBrokersGrid').innerHTML = `<div class="no-results"><i class="fas fa-spinner fa-spin" style="font-size:24px; display:block; margin-bottom:10px;"></i> جاري التحميل...</div>`;
+        document.getElementById(gridId).innerHTML = `<div class="no-results"><i class="fas fa-spinner fa-spin" style="font-size:24px; display:block; margin-bottom:10px;"></i> جاري التحميل...</div>`;
         const { data, count } = await fetchBrokersPage(0);
         loadedBrokers = data;
         totalCount = count;
@@ -558,36 +741,56 @@
       }
 
       let searchDebounce;
-      document.getElementById('verifiedSearchInput').addEventListener('input', (e) => {
+      document.getElementById(searchInputId).addEventListener('input', (e) => {
         searchTerm = e.target.value;
         clearTimeout(searchDebounce);
         searchDebounce = setTimeout(loadFirstPage, 350);
       });
 
-      document.querySelectorAll('#verifiedRankFilters .filter-pill').forEach(btn => {
+      document.querySelectorAll(`#${rankFiltersId} .filter-pill`).forEach((btn) => {
         btn.addEventListener('click', () => {
-          document.querySelectorAll('#verifiedRankFilters .filter-pill').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll(`#${rankFiltersId} .filter-pill`).forEach((b) => b.classList.remove('active'));
           btn.classList.add('active');
           activeRank = btn.dataset.rank;
           loadFirstPage();
         });
       });
 
-      document.getElementById('verifiedLoadMoreBtn').addEventListener('click', loadMore);
+      document.getElementById(loadMoreBtnId).addEventListener('click', loadMore);
 
-      // Only load the verified tab data once its tab is first opened, to avoid
-      // an unnecessary Supabase round-trip when visitors stay on the full directory.
-      let verifiedLoaded = false;
-      document.getElementById('tabBtnVerified').addEventListener('click', () => {
-        if (!verifiedLoaded) {
-          verifiedLoaded = true;
+      // تحميل بيانات هذا التبويب فقط عند فتحه أول مرة
+      let loaded = false;
+      document.getElementById(tabBtnId).addEventListener('click', () => {
+        if (!loaded) {
+          loaded = true;
           loadFirstPage();
         }
       });
-    })();
+    }
+
+    initVerifiedDirectory({
+      brokerType: 'office',
+      gridId: 'verifiedBrokersGrid',
+      searchInputId: 'verifiedSearchInput',
+      rankFiltersId: 'verifiedRankFilters',
+      resultsCountId: 'verifiedResultsCountText',
+      loadMoreBtnId: 'verifiedLoadMoreBtn',
+      tabBtnId: 'tabBtnVerified',
+    });
+
+    initVerifiedDirectory({
+      brokerType: 'individual',
+      gridId: 'individualVerifiedBrokersGrid',
+      searchInputId: 'individualVerifiedSearchInput',
+      rankFiltersId: 'individualVerifiedRankFilters',
+      resultsCountId: 'individualVerifiedResultsCountText',
+      loadMoreBtnId: 'individualVerifiedLoadMoreBtn',
+      tabBtnId: 'tabBtnIndividualVerified',
+    });
   </script>
 
   <script src="js/supabase-brokers.js"></script>
+  <script src="js/supabase-individual-brokers.js"></script>
 
 </body>
 </html>

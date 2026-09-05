@@ -1,8 +1,11 @@
 /* ====================================================================
-   تبويب "الوسطاء الأفراد" في brokers-directory.html: يعرض جدول
-   individual_brokers من Supabase (وسطاء أفراد مسجّلون لدى دائرة الأراضي
-   والأملاك بدبي، مستوردون عبر scripts/import-individual-brokers.py) بصفحات
-   (50 صف في كل طلب)، مع بحث نصي كامل عبر عمود search_vector.
+   تبويب "الدليل الكامل" داخل قسم "الوسطاء الأفراد" في brokers-directory.html:
+   يعرض جدول individual_brokers من Supabase (وسطاء أفراد مسجّلون لدى دائرة
+   الأراضي والأملاك بدبي، مستوردون عبر scripts/import-individual-brokers.py)
+   بصفحات (50 صف في كل طلب)، مع بحث نصي كامل عبر عمود search_vector.
+   بيانات التواصل (هاتف/بريد) تظهر دائماً بغض النظر عن حالة التفعيل - "غير
+   مفعل" هنا مجرد مؤشر حالة على منصة AqarX، وليس حجباً لبيانات عامة أصلاً
+   منشورة رسمياً من دائرة الأراضي والأملاك.
    يعتمد على supabaseClient العام المُهيَّأ مسبقاً في supabase-client.js.
 ==================================================================== */
 (function () {
@@ -52,29 +55,6 @@
     const isActive = !!b.is_active;
     const photo = b.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200';
 
-    if (!isActive) {
-      return `
-        <div class="broker-card broker-card-inactive" onclick="location.href='individual-broker-profile.html?id=${b.id}'">
-          <div class="broker-card-top">
-            <img class="broker-logo" style="border-radius:50%;" src="${photo}" alt="${b.name_ar || ''}" loading="lazy">
-            <div class="broker-names">
-              <div class="broker-name-ar">${b.name_ar || '-'}</div>
-              <div class="broker-name-en">${b.office_name || ''}</div>
-            </div>
-          </div>
-
-          <div class="active-badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-circle-check"></i> مسجل في DLD</div>
-          <div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل</div>
-
-          <div class="broker-license">رقم الوسيط: <strong>${b.dld_broker_number}</strong></div>
-
-          <div class="broker-actions">
-            <a href="individual-broker-profile.html?id=${b.id}" class="act-details" onclick="event.stopPropagation()"><i class="fas fa-handshake"></i> عرض التفاصيل وطلب التعاقد</a>
-          </div>
-        </div>
-      `;
-    }
-
     return `
       <div class="broker-card" onclick="location.href='individual-broker-profile.html?id=${b.id}'">
         <div class="broker-card-top">
@@ -86,6 +66,7 @@
         </div>
 
         <div class="active-badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-circle-check"></i> مسجل في DLD</div>
+        ${!isActive ? `<div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل</div>` : ''}
 
         <div class="broker-license">رقم الوسيط: <strong>${b.dld_broker_number}</strong></div>
         ${b.email ? `<div class="broker-contact-line"><i class="fas fa-envelope"></i> <a href="mailto:${b.email}" onclick="event.stopPropagation()">${b.email}</a></div>` : ''}
@@ -163,9 +144,9 @@
     document.getElementById('individualLoadMoreBtn').addEventListener('click', loadMore);
   }
 
-  // تُحمَّل بيانات هذا التبويب فقط عند فتحه أول مرة، لتفادي طلب Supabase غير
-  // الضروري إذا بقي الزائر في تبويب آخر (نفس أسلوب تبويب "المكاتب الموثقة").
-  document.getElementById('tabBtnIndividual').addEventListener('click', () => {
+  // تُحمَّل بيانات هذا التبويب فقط عند فتحه أول مرة (بما في ذلك أول فتح
+  // تلقائي عند دخول قسم "الوسطاء الأفراد" من بوابة الوسطاء).
+  document.getElementById('tabBtnIndividualFull').addEventListener('click', () => {
     if (!tabLoaded) {
       tabLoaded = true;
       bindEvents();
