@@ -52,13 +52,13 @@
 
     /* ==================== شاشة الاختيار (بوابة الوسطاء) ==================== */
     .portal-landing {
-      max-width: 900px;
+      max-width: 1100px;
       margin: -30px auto 40px;
       padding: 0 20px;
       position: relative;
       z-index: 6;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
     }
     .portal-card {
@@ -380,6 +380,11 @@
       <h3>الوسطاء الأفراد</h3>
       <p>تصفّح دليل الوسطاء العقاريين الأفراد وتواصل معهم مباشرة</p>
     </div>
+    <div class="portal-card" id="cardDevelopers">
+      <i class="fas fa-city"></i>
+      <h3>المطورين العقاريين</h3>
+      <p>تصفّح دليل المطورين العقاريين المعتمدين وتواصل معهم مباشرة</p>
+    </div>
   </div>
 
   <!-- ===================== قسم: المكاتب العقارية ===================== -->
@@ -541,6 +546,41 @@
     </div>
   </div>
 
+  <!-- ===================== قسم: المطورين العقاريين ===================== -->
+  <div class="portal-section" id="sectionDevelopers" hidden>
+    <div class="back-to-portal-bar">
+      <button class="back-to-portal" id="backFromDevelopers"><i class="fas fa-arrow-right"></i> رجوع لبوابة الوسطاء</button>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stats-bar-inner" id="developersStatsBar"></div>
+    </div>
+    <div class="rera-banner">
+      <div class="rera-banner-inner">
+        <i class="fas fa-circle-info"></i>
+        <span>علامة "مفعل" تعني أن المطوّر نشط في AqarX.</span>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="toolbar-card">
+        <div class="search-box">
+          <input type="text" id="developersSearchInput" placeholder="ابحث باسم المطوّر (عربي/إنجليزي)...">
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-meta">
+      <span id="developersResultsCountText"></span>
+    </div>
+
+    <div class="brokers-grid" id="developersGrid"></div>
+
+    <div class="load-more-wrap">
+      <button class="load-more-btn" id="developersLoadMoreBtn">تحميل المزيد</button>
+    </div>
+  </div>
+
   <script>
     const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
     // نفس قائمة الدول المتاحة للاختيار في الصفحة الرئيسية (index.html) - فقط الإمارات
@@ -572,7 +612,10 @@
       portal: ['بوابة الوسطاء', 'اختر القسم الذي تبحث عنه'],
       offices: [`دليل المكاتب العقارية في ${COUNTRY_NAME}`, `تصفّح المكاتب العقارية المرخّصة في ${COUNTRY_NAME} وتواصل معها مباشرة`],
       individuals: [`دليل الوسطاء الأفراد في ${COUNTRY_NAME}`, `تصفّح الوسطاء العقاريين الأفراد في ${COUNTRY_NAME} وتواصل معهم مباشرة`],
+      developers: [`دليل المطورين العقاريين في ${COUNTRY_NAME}`, `تصفّح المطورين العقاريين المعتمدين في ${COUNTRY_NAME} وتواصل معهم مباشرة`],
     };
+
+    const ALL_SECTIONS = ['sectionOffices', 'sectionIndividuals', 'sectionDevelopers'];
 
     function setHero(key) {
       document.getElementById('heroTitle').innerText = HERO_TEXT[key][0];
@@ -581,23 +624,20 @@
 
     function showPortalLanding() {
       document.getElementById('portalLanding').hidden = false;
-      document.getElementById('sectionOffices').hidden = true;
-      document.getElementById('sectionIndividuals').hidden = true;
+      ALL_SECTIONS.forEach((id) => { document.getElementById(id).hidden = true; });
       setHero('portal');
     }
 
     let individualFullLoaded = false;
     function showOfficesSection() {
       document.getElementById('portalLanding').hidden = true;
-      document.getElementById('sectionOffices').hidden = false;
-      document.getElementById('sectionIndividuals').hidden = true;
+      ALL_SECTIONS.forEach((id) => { document.getElementById(id).hidden = id !== 'sectionOffices'; });
       setHero('offices');
     }
 
     function showIndividualsSection() {
       document.getElementById('portalLanding').hidden = true;
-      document.getElementById('sectionOffices').hidden = true;
-      document.getElementById('sectionIndividuals').hidden = false;
+      ALL_SECTIONS.forEach((id) => { document.getElementById(id).hidden = id !== 'sectionIndividuals'; });
       setHero('individuals');
       if (!individualFullLoaded) {
         individualFullLoaded = true;
@@ -605,10 +645,18 @@
       }
     }
 
+    function showDevelopersSection() {
+      document.getElementById('portalLanding').hidden = true;
+      ALL_SECTIONS.forEach((id) => { document.getElementById(id).hidden = id !== 'sectionDevelopers'; });
+      setHero('developers');
+    }
+
     document.getElementById('cardOffices').addEventListener('click', showOfficesSection);
     document.getElementById('cardIndividuals').addEventListener('click', showIndividualsSection);
+    document.getElementById('cardDevelopers').addEventListener('click', showDevelopersSection);
     document.getElementById('backFromOffices').addEventListener('click', showPortalLanding);
     document.getElementById('backFromIndividuals').addEventListener('click', showPortalLanding);
+    document.getElementById('backFromDevelopers').addEventListener('click', showPortalLanding);
 
     // ---------------------------------------------------------------
     // تبديل التبويبات داخل كل قسم (مستقل عن القسم الآخر)
@@ -791,6 +839,7 @@
 
   <script src="js/supabase-brokers.js"></script>
   <script src="js/supabase-individual-brokers.js"></script>
+  <script src="js/supabase-developers.js"></script>
 
 </body>
 </html>
