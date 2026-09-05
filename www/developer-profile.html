@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ملف المكتب العقاري | AqarX</title>
+  <title>ملف المطوّر العقاري | AqarX</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -21,9 +21,6 @@
       --dubizzle-border: #e2e8f0;
       --text-dark: #1e293b;
       --text-muted: #64748b;
-      --gold: #d4af37;
-      --silver: #9ca3af;
-      --bronze: #b45309;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,11 +38,7 @@
     .brand-logo { font-size: 20px; font-weight: 900; color: var(--primary-turquoise); text-decoration: none; }
     .nav-back-link { text-decoration: none; font-weight: 800; color: var(--primary-turquoise); font-size: 13px; }
 
-    .back-bar {
-      max-width: 800px;
-      margin: 20px auto 0;
-      padding: 0 20px;
-    }
+    .back-bar { max-width: 700px; margin: 20px auto 0; padding: 0 20px; }
     .back-to-directory {
       display: inline-flex; align-items: center; gap: 8px;
       text-decoration: none;
@@ -59,23 +52,28 @@
     }
     .back-to-directory:hover { background: var(--turquoise-light); }
 
-    .profile-wrap { max-width: 800px; margin: 18px auto 40px; padding: 0 20px; }
+    .profile-wrap { max-width: 700px; margin: 18px auto 40px; padding: 0 20px; }
 
-    .inactive-notice {
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      color: #92400e;
-      border-radius: 12px;
-      padding: 14px 18px;
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.8;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
+    .dld-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #dcfce7; color: #15803d;
+      border: 1px solid #86efac;
+      border-radius: 100px;
+      padding: 8px 16px;
+      font-size: 12.5px; font-weight: 900;
+      margin-bottom: 14px;
     }
-    .inactive-notice i { color: #d97706; font-size: 16px; margin-top: 2px; }
+    .dld-badge i { color: #16a34a; }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 900;
+      padding: 5px 12px; border-radius: 100px;
+      margin-inline-start: 8px;
+      vertical-align: middle;
+    }
+    .status-pill.off { background: #fee2e2; color: #b91c1c; }
+    .status-pill.on { background: #dcfce7; color: #15803d; }
 
     .profile-card {
       background: white;
@@ -104,26 +102,14 @@
       cursor: zoom-in;
     }
     .profile-header-names { flex: 1; min-width: 200px; }
-    .profile-name-ar { font-size: 21px; font-weight: 900; margin-bottom: 4px; }
+    .profile-name-ar { font-size: 21px; font-weight: 900; margin-bottom: 6px; }
     .profile-name-en { font-size: 13px; color: #cbd5e1; font-weight: 700; }
-
-    .rank-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 900;
-      padding: 6px 14px; border-radius: 100px;
-      width: fit-content;
-      margin-top: 10px;
-    }
-    .rank-badge.GOLD { background: #d4af37; color: #451a03; }
-    .rank-badge.SILVER { background: #f3f4f6; color: #374151; }
-    .rank-badge.BRONZE { background: #fef3e2; color: var(--bronze); }
-    .rank-badge.GENERAL { background: #f1f5f9; color: var(--text-dark); }
 
     .profile-body { padding: 28px 30px; }
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 18px;
       margin-bottom: 24px;
     }
@@ -142,15 +128,6 @@
     .info-item .info-value a { color: var(--primary-turquoise); text-decoration: none; }
     .info-item .info-value a:hover { text-decoration: underline; }
 
-    .section-title { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 10px; border-right: 4px solid var(--primary-turquoise); padding-right: 8px; }
-
-    .activities-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-    .activity-chip {
-      font-size: 12px; font-weight: 700;
-      background: var(--turquoise-light); color: var(--primary-turquoise);
-      padding: 6px 13px; border-radius: 100px;
-    }
-
     .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
     .action-buttons a {
       flex: 1;
@@ -164,7 +141,6 @@
     }
     .act-call { background: var(--dubizzle-navy); }
     .act-whatsapp { background: #16a34a; }
-    .act-site { background: var(--primary-turquoise); }
     .act-email { background: #475569; }
 
     .not-found {
@@ -178,7 +154,6 @@
     @media (max-width: 600px) {
       .profile-header { text-align: center; justify-content: center; }
       .profile-header-names { text-align: center; }
-      .rank-badge { margin: 10px auto 0; }
     }
   </style>
 </head>
@@ -199,86 +174,14 @@
 
   <script src="js/image-lightbox.js"></script>
   <script>
-    const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
     function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
 
     function renderNotFound() {
       document.getElementById('profileWrap').innerHTML = `
         <div class="profile-card">
           <div class="not-found">
-            <i class="fas fa-building-circle-xmark"></i>
-            لم يتم العثور على بيانات هذا المكتب العقاري.
-          </div>
-        </div>
-      `;
-    }
-
-    function renderProfile(b) {
-      const website = b.website ? `https://${b.website.replace(/^https?:\/\//, '')}` : '';
-      const inactiveNotice = !b.is_active ? `
-        <div class="inactive-notice">
-          <i class="fas fa-triangle-exclamation"></i>
-          <span>هذا الوسيط مسجل رسمياً في دائرة الأراضي والأملاك بدبي (RERA)، لكنه غير مفعل حالياً في دليل AqarX. سيتم تفعيل الوسيط بمجرد التعاقد.</span>
-        </div>
-      ` : '';
-
-      document.getElementById('profileWrap').innerHTML = `
-        ${inactiveNotice}
-        <div class="profile-card">
-          <div class="profile-header">
-            <img class="profile-logo" src="${b.logo_url || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
-            <div class="profile-header-names">
-              <div class="profile-name-ar">${b.name_ar || '-'}</div>
-              <div class="profile-name-en">${b.name_en || ''}</div>
-              <span class="rank-badge ${b.classification}"><i class="fas fa-star"></i> ${RANK_LABELS[b.classification] || b.classification || 'عام'}</span>
-            </div>
-          </div>
-
-          <div class="profile-body">
-            <div class="info-grid">
-              ${b.license ? `
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-id-card"></i> رقم الترخيص</div>
-                <div class="info-value">${b.license}</div>
-              </div>` : ''}
-
-              ${b.manager ? `
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-user-tie"></i> اسم المسؤول</div>
-                <div class="info-value">${b.manager}</div>
-              </div>` : ''}
-
-              ${b.phone ? `
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-phone-alt"></i> الهاتف</div>
-                <div class="info-value"><a href="tel:${b.phone}">${b.phone}</a></div>
-              </div>` : ''}
-
-              ${b.email ? `
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-envelope"></i> البريد الإلكتروني</div>
-                <div class="info-value"><a href="mailto:${b.email}">${b.email}</a></div>
-              </div>` : ''}
-
-              ${website ? `
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-globe"></i> الموقع الإلكتروني</div>
-                <div class="info-value"><a href="${website}" target="_blank" rel="noopener noreferrer">${b.website}</a></div>
-              </div>` : ''}
-            </div>
-
-            ${b.activities && b.activities.length ? `
-            <div class="section-title">الأنشطة</div>
-            <div class="activities-wrap">
-              ${b.activities.map(a => `<span class="activity-chip">${a}</span>`).join('')}
-            </div>` : ''}
-
-            <div class="action-buttons">
-              ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
-              ${b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
-              ${website ? `<a href="${website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع الإلكتروني</a>` : ''}
-              ${b.email ? `<a href="mailto:${b.email}" class="act-email"><i class="fas fa-envelope"></i> إرسال بريد</a>` : ''}
-            </div>
+            <i class="fas fa-city"></i>
+            لم يتم العثور على بيانات هذا المطوّر.
           </div>
         </div>
       `;
@@ -292,6 +195,59 @@
       `;
     }
 
+    function renderProfile(d) {
+      const isActive = !!d.is_active;
+      const phone = d.phone || d.mobile;
+
+      document.getElementById('profileWrap').innerHTML = `
+        <div class="dld-badge"><i class="fas fa-circle-check"></i> معتمد لدى دائرة الأراضي والأملاك في دبي</div>
+        <span class="status-pill ${isActive ? 'on' : 'off'}">${isActive ? 'مفعل' : 'غير مفعل'}</span>
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <img class="profile-logo lightbox-img" src="${d.logo_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200'}" alt="${d.name_ar || ''}" loading="lazy">
+            <div class="profile-header-names">
+              <div class="profile-name-ar">${d.name_ar || '-'}</div>
+              <div class="profile-name-en">${d.name_en || ''}</div>
+            </div>
+          </div>
+
+          <div class="profile-body">
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-id-card"></i> رقم المطوّر (DLD)</div>
+                <div class="info-value">${d.dld_developer_number}</div>
+              </div>
+
+              ${d.rating ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-star"></i> التقييم</div>
+                <div class="info-value">${d.rating} <i class="fas fa-star" style="color:#d4af37;"></i></div>
+              </div>` : ''}
+
+              ${phone ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-phone-alt"></i> الهاتف</div>
+                <div class="info-value"><a href="tel:${phone}">${phone}</a></div>
+              </div>` : ''}
+
+              ${d.email ? `
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-envelope"></i> البريد الإلكتروني</div>
+                <div class="info-value"><a href="mailto:${d.email}">${d.email}</a></div>
+              </div>` : ''}
+            </div>
+
+            <div class="action-buttons">
+              ${phone ? `<a href="tel:${phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+              ${phone ? `<a href="https://wa.me/${waNumber(phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+              ${d.email ? `<a href="mailto:${d.email}" class="act-email"><i class="fas fa-envelope"></i> إرسال بريد</a>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       const id = Number(new URLSearchParams(window.location.search).get('id'));
       if (!id) {
@@ -301,19 +257,19 @@
 
       renderLoading();
 
-      const { data: broker, error } = await supabaseClient
-        .from('brokers')
+      const { data: developer, error } = await supabaseClient
+        .from('developers')
         .select('*')
         .eq('id', id)
         .single();
 
-      if (error || !broker) {
+      if (error || !developer) {
         renderNotFound();
         return;
       }
 
-      document.title = `${broker.name_ar || broker.name_en || 'مكتب عقاري'} | AqarX`;
-      renderProfile(broker);
+      document.title = `${developer.name_ar || 'مطوّر عقاري'} | AqarX`;
+      renderProfile(developer);
     });
   </script>
 

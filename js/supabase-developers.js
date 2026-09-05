@@ -53,7 +53,7 @@
     const logo = d.logo_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200';
 
     return `
-      <div class="broker-card">
+      <div class="broker-card" onclick="location.href='developer-profile.html?id=${d.id}'">
         <div class="broker-card-top">
           <img class="broker-logo" src="${logo}" alt="${d.name_ar || ''}" loading="lazy">
           <div class="broker-names">
@@ -66,11 +66,11 @@
         ${!isActive ? `<div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل</div>` : ''}
 
         ${d.rating ? `<div class="broker-license">التقييم: <strong>${d.rating} <i class="fas fa-star" style="color:#d4af37;"></i></strong></div>` : ''}
-        ${d.email ? `<div class="broker-contact-line"><i class="fas fa-envelope"></i> <a href="mailto:${d.email}">${d.email}</a></div>` : ''}
 
         <div class="broker-actions">
-          ${phone ? `<a href="tel:${phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
-          ${phone ? `<a href="https://wa.me/${waNumber(phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+          ${phone ? `<a href="tel:${phone}" class="act-call" onclick="event.stopPropagation()"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+          ${phone ? `<a href="https://wa.me/${waNumber(phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+          ${d.email ? `<a href="mailto:${d.email}" class="act-site" onclick="event.stopPropagation()"><i class="fas fa-envelope"></i> بريد</a>` : ''}
         </div>
       </div>
     `;

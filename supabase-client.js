@@ -10,6 +10,27 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ==================== 📲 Service Worker: تسجيل + تحديث تلقائي ====================
+// هذا الملف يُحمَّل في كل صفحة بالموقع (خلافاً لتسجيل sw.js السابق الذي كان
+// فقط داخل index.html) - كانت أي صفحة أخرى غير index.html، بمافيها صفحات
+// الإدارة admin/*.html، تُفتح مباشرة بدون المرور بـ index.html أولاً تبقى
+// بدون أي منطق تحديث إطلاقاً، فتستمر بعرض نسخة كاش قديمة للأبد حتى لو
+// صدر تحديث جديد على الموقع. المسار '/sw.js' (لا '/.sw.js') مطلق من جذر
+// الموقع عمداً حتى يعمل بشكل صحيح من الصفحات الفرعية مثل admin/ أيضاً.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .catch((err) => console.warn('⚠️ تعذر تسجيل Service Worker:', err));
+  });
+
+  let reloadedAfterSwUpdate = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloadedAfterSwUpdate) return;
+    reloadedAfterSwUpdate = true;
+    window.location.reload();
+  });
+}
+
 // 👤 يرجع بيانات المستخدم المسجّل دخوله حالياً (أو null إن لم يكن مسجلاً)
 async function getCurrentAqarXUser() {
   const { data } = await supabaseClient.auth.getUser();

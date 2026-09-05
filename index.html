@@ -2889,29 +2889,12 @@ function renderPropertiesList(list) {
       }
     });
 
-    // ==================== 📲 تطبيق الويب التقدمي (PWA): تسجيل الـ Service Worker وبنر التثبيت ====================
+    // ==================== 📲 تطبيق الويب التقدمي (PWA): بنر التثبيت ====================
+    // تسجيل Service Worker ومنطق التحديث التلقائي انتقلا إلى supabase-client.js
+    // (يُحمَّل بكل صفحة، خلافاً لهذا الملف) - راجع التعليق هناك لسبب النقل.
     const PWA_DISMISS_KEY = 'aqarx_pwa_banner_dismissed_at';
     const PWA_DISMISS_DAYS = 7;
     let deferredInstallPrompt = null;
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('✅ تم تسجيل Service Worker لAqarX بنجاح:', reg.scope))
-          .catch((err) => console.warn('⚠️ تعذر تسجيل Service Worker:', err));
-      });
-
-      // عند تفعيل نسخة Service Worker جديدة (بعد رفع تحديث)، أعد تحميل الصفحة
-      // تلقائياً مرة واحدة - بدون هذا، تبويب كروم عادي مفتوح مسبقاً يبقى يعرض
-      // الصفحة والكاش القديمين حتى يُغلق يدوياً، بعكس المتصفح المتخفي الذي
-      // يبدأ بدون أي Service Worker مسجّل مسبقاً فيُظهر آخر تحديث دائماً.
-      let reloadedAfterSwUpdate = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (reloadedAfterSwUpdate) return;
-        reloadedAfterSwUpdate = true;
-        window.location.reload();
-      });
-    }
 
     function isInstallBannerSnoozed() {
       const dismissedAt = localStorage.getItem(PWA_DISMISS_KEY);
