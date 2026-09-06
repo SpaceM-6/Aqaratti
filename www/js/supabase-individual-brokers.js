@@ -4,14 +4,14 @@
    الأراضي والأملاك بدبي، مستوردون عبر scripts/import-individual-brokers.py)
    بصفحات (50 صف في كل طلب)، مع بحث نصي كامل عبر عمود search_vector.
    بيانات التواصل (هاتف/بريد) تظهر دائماً بغض النظر عن حالة التفعيل - "غير
-   مفعل" هنا مجرد مؤشر حالة على منصة AqarX، وليس حجباً لبيانات عامة أصلاً
+   مفعل" هنا مجرد مؤشر حالة على منصة AnaAqar، وليس حجباً لبيانات عامة أصلاً
    منشورة رسمياً من دائرة الأراضي والأملاك.
    يعتمد على supabaseClient العام المُهيَّأ مسبقاً في supabase-client.js.
 ==================================================================== */
 (function () {
   const PAGE_SIZE = 50;
   const COUNTRY = new URLSearchParams(window.location.search).get('country')
-    || localStorage.getItem('aqarx_selected_country')
+    || localStorage.getItem('anaaqar_selected_country')
     || 'uae';
 
   let searchTerm = '';

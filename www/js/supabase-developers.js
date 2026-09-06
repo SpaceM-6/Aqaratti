@@ -2,12 +2,12 @@
    تبويب "الدليل الكامل" داخل قسم "المطورين العقاريين" في brokers-directory.html:
    يعرض جدول developers من Supabase (مطورون معتمدون لدى دائرة الأراضي
    والأملاك بدبي، مستوردون عبر scripts/import-developers.py) بصفحات (50 صف).
-   بيانات التواصل تظهر دائماً - "غير مفعل" مجرد مؤشر حالة على منصة AqarX.
+   بيانات التواصل تظهر دائماً - "غير مفعل" مجرد مؤشر حالة على منصة AnaAqar.
 ==================================================================== */
 (function () {
   const PAGE_SIZE = 50;
   const COUNTRY = new URLSearchParams(window.location.search).get('country')
-    || localStorage.getItem('aqarx_selected_country')
+    || localStorage.getItem('anaaqar_selected_country')
     || 'uae';
 
   let searchTerm = '';

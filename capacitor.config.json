@@ -1,9 +1,9 @@
 {
-  "appId": "com.aqarx.app",
-  "appName": "AqarX",
+  "appId": "com.anaaqar.app",
+  "appName": "AnaAqar",
   "webDir": "www",
   "server": {
-    "url": "https://aqarx.com",
+    "url": "https://anaaqar.com",
     "cleartext": false
   }
 }

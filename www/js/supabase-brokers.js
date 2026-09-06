@@ -9,7 +9,7 @@
   const PAGE_SIZE = 50;
   const RANK_LABELS = { GOLD: 'ذهبي', SILVER: 'فضي', BRONZE: 'برونزي', GENERAL: 'عام' };
   const COUNTRY = new URLSearchParams(window.location.search).get('country')
-    || localStorage.getItem('aqarx_selected_country')
+    || localStorage.getItem('anaaqar_selected_country')
     || 'uae';
 
   let activeClass = 'ALL';

@@ -1,9 +1,9 @@
-/* ==================== نظام العملة الموحّد لموقع AqarX ====================
+/* ==================== نظام العملة الموحّد لموقع AnaAqar ====================
    يحفظ العملة المختارة من أي صفحة في localStorage، ويحوّل كل الأسعار المعروضة
    (المخزَّنة أصلاً بالدرهم الإماراتي AED) لنفس العملة تلقائياً عبر كل صفحات الموقع.
 */
 
-const AQARX_CURRENCIES = {
+const ANAAQAR_CURRENCIES = {
   AED: { symbol: 'د.إ', rate: 1 },
   USD: { symbol: '$', rate: 0.27 },
   SAR: { symbol: 'ر.س', rate: 1.02 },
@@ -26,17 +26,17 @@ const AQARX_CURRENCIES = {
   JOD: { symbol: 'د.ا', rate: 0.19 }
 };
 
-const AQARX_CURRENCY_KEY = 'aqarx_currency_code';
+const ANAAQAR_CURRENCY_KEY = 'anaaqar_currency_code';
 
 function getSelectedCurrency() {
-  const code = localStorage.getItem(AQARX_CURRENCY_KEY) || 'AED';
-  const data = AQARX_CURRENCIES[code] || AQARX_CURRENCIES.AED;
+  const code = localStorage.getItem(ANAAQAR_CURRENCY_KEY) || 'AED';
+  const data = ANAAQAR_CURRENCIES[code] || ANAAQAR_CURRENCIES.AED;
   return { code, symbol: data.symbol, rate: data.rate };
 }
 
 function setSelectedCurrency(code) {
-  if (!AQARX_CURRENCIES[code]) return;
-  localStorage.setItem(AQARX_CURRENCY_KEY, code);
+  if (!ANAAQAR_CURRENCIES[code]) return;
+  localStorage.setItem(ANAAQAR_CURRENCY_KEY, code);
 }
 
 function convertFromAED(amountInAED) {

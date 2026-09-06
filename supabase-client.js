@@ -1,4 +1,4 @@
-/* ==================== إعداد الاتصال بـ Supabase لموقع AqarX ====================
+/* ==================== إعداد الاتصال بـ Supabase لموقع AnaAqar ====================
    يُستخدم عبر anon key فقط، وهو آمن للعمل داخل المتصفح لأنه لا يملك صلاحيات إلا ما تسمح
    به سياسات RLS في Postgres. جدول brokers (راجع supabase/schema.sql) للقراءة العامة فقط -
    لا توجد سياسة INSERT/UPDATE/DELETE له، فحتى لو سُرِّب هذا المفتاح لا يمكن الكتابة فيه.
@@ -32,14 +32,14 @@ if ('serviceWorker' in navigator) {
 }
 
 // 👤 يرجع بيانات المستخدم المسجّل دخوله حالياً (أو null إن لم يكن مسجلاً)
-async function getCurrentAqarXUser() {
+async function getCurrentAnaAqarUser() {
   const { data } = await supabaseClient.auth.getUser();
   return data && data.user ? data.user : null;
 }
 
 // 📇 يرجع صف الوسيط (profiles) الخاص بالمستخدم الحالي
-async function getCurrentAqarXProfile() {
-  const user = await getCurrentAqarXUser();
+async function getCurrentAnaAqarProfile() {
+  const user = await getCurrentAnaAqarUser();
   if (!user) return null;
   const { data, error } = await supabaseClient
     .from('profiles')
@@ -50,15 +50,15 @@ async function getCurrentAqarXProfile() {
   return data;
 }
 
-async function aqarxSignOut() {
+async function anaaqarSignOut() {
   await supabaseClient.auth.signOut();
   // يُقرأ في index.html بعد التوجيه لعرض إشعار عصري بدل alert() (الصفحة نفسها هي وجهة إعادة التوجيه دائماً)
-  sessionStorage.setItem('aqarx_just_signed_out', '1');
+  sessionStorage.setItem('anaaqar_just_signed_out', '1');
   window.location.href = '/index.html';
 }
 
 // 🔄 يحوّل صف عقار قادم من Supabase لنفس شكل بيانات properties.json المستخدم بكل الموقع
-function mapSupabasePropertyToAqarX(row) {
+function mapSupabasePropertyToAnaAqar(row) {
   const p = row.profiles || {};
   const images = row.image_urls && row.image_urls.length > 0 ? row.image_urls : [];
   return {
@@ -81,8 +81,8 @@ function mapSupabasePropertyToAqarX(row) {
     isVerified: !!row.license_number,
     broker: {
       brokerId: row.broker_id,
-      name: p.full_name || 'وسيط AqarX',
-      agency: p.agency || 'AqarX',
+      name: p.full_name || 'وسيط AnaAqar',
+      agency: p.agency || 'AnaAqar',
       phone: p.phone || '971500000000',
       whatsapp: p.whatsapp || p.phone || '971500000000',
       avatar: p.avatar_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'
@@ -99,7 +99,7 @@ async function fetchApprovedSupabaseProperties() {
       .select('*, profiles(full_name, agency, phone, whatsapp, avatar_url)')
       .eq('status', 'approved');
     if (error || !data) return [];
-    return data.map(mapSupabasePropertyToAqarX);
+    return data.map(mapSupabasePropertyToAnaAqar);
   } catch (e) {
     return [];
   }
@@ -115,7 +115,7 @@ async function fetchOneApprovedSupabaseProperty(rawId) {
       .eq('status', 'approved')
       .single();
     if (error || !data) return null;
-    return mapSupabasePropertyToAqarX(data);
+    return mapSupabasePropertyToAnaAqar(data);
   } catch (e) {
     return null;
   }

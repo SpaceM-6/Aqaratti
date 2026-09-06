@@ -8,10 +8,10 @@ if (hasSigningConfig) {
 }
 
 android {
-    namespace = "com.aqarx.app"
+    namespace = "com.anaaqar.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.aqarx.app"
+        applicationId "com.anaaqar.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

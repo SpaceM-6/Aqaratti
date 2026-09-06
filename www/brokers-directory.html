@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بوابة الوسطاء | AqarX</title>
+  <title>بوابة الوسطاء | AnaAqar</title>
 
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
@@ -360,7 +360,7 @@
 <body>
 
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">AqarX</a>
+    <a href="index.html" class="brand-logo">أنا عقار │ AnaAqar</a>
     <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
   </nav>
 
@@ -407,7 +407,7 @@
       <div class="rera-banner" id="reraBanner">
         <div class="rera-banner-inner">
           <i class="fas fa-circle-info"></i>
-          <span>علامة "مفعل" تعني أن المكتب نشط في AqarX.</span>
+          <span>علامة "مفعل" تعني أن المكتب نشط في AnaAqar.</span>
         </div>
       </div>
       <div class="rera-banner" id="noBulkBanner" style="display:none;">
@@ -493,7 +493,7 @@
       <div class="rera-banner">
         <div class="rera-banner-inner">
           <i class="fas fa-circle-info"></i>
-          <span>علامة "مفعل" تعني أن الوسيط نشط في AqarX.</span>
+          <span>علامة "مفعل" تعني أن الوسيط نشط في AnaAqar.</span>
         </div>
       </div>
       <div class="toolbar">
@@ -559,7 +559,7 @@
     <div class="rera-banner">
       <div class="rera-banner-inner">
         <i class="fas fa-circle-info"></i>
-        <span>علامة "مفعل" تعني أن المطوّر نشط في AqarX.</span>
+        <span>علامة "مفعل" تعني أن المطوّر نشط في AnaAqar.</span>
       </div>
     </div>
     <div class="toolbar">
@@ -592,14 +592,14 @@
       cyprus: 'قبرص', greece: 'اليونان',
     };
     const COUNTRY = new URLSearchParams(window.location.search).get('country')
-      || localStorage.getItem('aqarx_selected_country')
+      || localStorage.getItem('anaaqar_selected_country')
       || 'uae';
     const COUNTRY_NAME = COUNTRY_NAMES[COUNTRY] || COUNTRY;
     const HAS_BULK_DIRECTORY = COUNTRY === 'uae';
 
     function waNumber(phone) { return (phone || '').replace(/\D/g, ''); }
 
-    document.title = `بوابة الوسطاء - ${COUNTRY_NAME} | AqarX`;
+    document.title = `بوابة الوسطاء - ${COUNTRY_NAME} | AnaAqar`;
     document.getElementById('joinDirectoryLink').href = `broker-registration.html?country=${COUNTRY}&type=office`;
     document.getElementById('joinIndividualDirectoryLink').href = `broker-registration.html?country=${COUNTRY}&type=individual`;
     document.getElementById('reraBanner').style.display = HAS_BULK_DIRECTORY ? '' : 'none';
@@ -659,7 +659,7 @@
     // بالتاريخ عند دخول أي قسم، وأي رجوع (زر الجهاز أو زر الصفحة نفسه، كلاهما
     // يستدعي history.back()) يُطلق popstate فيعرض شاشة الاختيار.
     function pushSectionState(section) {
-      history.pushState({ aqarxSection: section }, '', '');
+      history.pushState({ anaaqarSection: section }, '', '');
     }
 
     document.getElementById('cardOffices').addEventListener('click', () => { showOfficesSection(); pushSectionState('offices'); });
