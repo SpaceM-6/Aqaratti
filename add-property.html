@@ -543,6 +543,18 @@
         </div>
 
         <div class="form-section-title" style="margin-top: 15px;">
+          <i class="fas fa-map-marker-alt"></i> موقع العقار الدقيق (اختياري)
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="captureAddPropertyLocation()" id="captureLocationBtn" style="width:100%; padding:12px; background:var(--turquoise-light); color:var(--primary-turquoise); border:1px dashed var(--primary-turquoise); border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">
+            <i class="fas fa-crosshairs"></i> استخدم موقعي الحالي للعقار
+          </button>
+          <p id="locationStatusText" style="font-size:11px; color:var(--text-muted); margin-top:6px;">يساعد هذا المستخدمين اللي يبحثون عن "عقارات قريبة مني" يلقون عقارك.</p>
+          <input type="hidden" id="propLatInput">
+          <input type="hidden" id="propLngInput">
+        </div>
+
+        <div class="form-section-title" style="margin-top: 15px;">
           <i class="fas fa-camera"></i> صور العقار
         </div>
 
@@ -659,6 +671,34 @@
       dealType = type;
       document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
       el.classList.add('active');
+    }
+
+    // 📍 يلتقط موقع الجهاز الحالي (إحداثيات GPS) ليُحفظ مع العقار لميزة "عقارات قريبة مني"
+    function captureAddPropertyLocation() {
+      const statusEl = document.getElementById('locationStatusText');
+      const btn = document.getElementById('captureLocationBtn');
+      if (!navigator.geolocation) {
+        statusEl.innerText = 'جهازك/متصفحك لا يدعم تحديد الموقع.';
+        return;
+      }
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارِ تحديد الموقع...';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.getElementById('propLatInput').value = pos.coords.latitude;
+          document.getElementById('propLngInput').value = pos.coords.longitude;
+          btn.innerHTML = '<i class="fas fa-check-circle"></i> تم تحديد الموقع بنجاح';
+          btn.style.color = 'var(--accent-green, #16a34a)';
+          statusEl.innerText = 'الموقع محفوظ وسيُرفع مع العقار.';
+          btn.disabled = false;
+        },
+        () => {
+          btn.innerHTML = '<i class="fas fa-crosshairs"></i> استخدم موقعي الحالي للعقار';
+          statusEl.innerText = 'تعذّر الوصول للموقع — تأكد من منح الإذن للموقع بالمتصفح.';
+          btn.disabled = false;
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
     }
 
     function updateCities() {
@@ -797,7 +837,9 @@
         commission: '2%',
         image_urls: imageUrls,
         broker_role: roleValue,
-        license_number: licenseValue || null
+        license_number: licenseValue || null,
+        lat: document.getElementById('propLatInput').value ? parseFloat(document.getElementById('propLatInput').value) : null,
+        lng: document.getElementById('propLngInput').value ? parseFloat(document.getElementById('propLngInput').value) : null
       });
 
       submitBtn.disabled = false;

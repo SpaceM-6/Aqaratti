@@ -80,16 +80,16 @@
     }
 
     [data-theme="dark"] {
-      --primary-turquoise: #1fc4ae;
-      --primary-turquoise-hover: #17a894;
-      --turquoise-light: #0f3a36;
-      --accent-gold: #e8c158;
-      --dubizzle-navy: #e8ecf4;
-      --dubizzle-bg: #10151f;
-      --dubizzle-border: #2a3344;
-      --text-dark: #e8ecf4;
+      --primary-turquoise: #2dd4bf;
+      --primary-turquoise-hover: #14b8a6;
+      --turquoise-light: #134e4a;
+      --accent-gold: #fbbf24;
+      --dubizzle-navy: #f1f5f9;
+      --dubizzle-bg: #0f172a;
+      --dubizzle-border: #273549;
+      --text-dark: #e2e8f0;
       --text-muted: #94a3b8;
-      --card-bg: #1a2130;
+      --card-bg: #1a2436;
     }
     [data-theme="dark"] .navbar,
     [data-theme="dark"] .sub-nav-tabs,
@@ -99,8 +99,11 @@
     [data-theme="dark"] .royal-modal-card,
     [data-theme="dark"] .mobile-sticky-contact-bar {
       background: var(--card-bg) !important;
+      border-color: var(--dubizzle-border) !important;
     }
-    [data-theme="dark"] img { filter: brightness(0.92); }
+    [data-theme="dark"] .info-section-card { box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    [data-theme="dark"] img { filter: brightness(0.94); }
+    [data-theme="dark"] ::placeholder { color: #64748b; }
 
     * {
       box-sizing: border-box !important; 
@@ -182,6 +185,36 @@
       height: 100%;
       object-fit: cover;
       cursor: pointer;
+    }
+
+    /* 🖼️ معرض قابل للسحب: يظهر جزء من الصورة التالية/السابقة أثناء السحب (مثل تطبيقات التواصل) */
+    .gallery-swipe-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      gap: 6px;
+      scrollbar-width: none;
+    }
+    .gallery-swipe-track::-webkit-scrollbar { display: none; }
+    .gallery-swipe-slide {
+      flex: 0 0 90%;
+      height: 100%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .gallery-swipe-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
     }
 
     .nav-arrow-btn {
@@ -548,7 +581,8 @@
 
       <div class="main-image-viewer-container">
         <button class="nav-arrow-btn prev-btn" onclick="prevPropertyImage()"><i class="fas fa-chevron-right"></i></button>
-        <img id="mainPropImg" src="" onclick="openLightboxModal()" alt="صورة العقار">
+        <div class="gallery-swipe-track" id="gallerySwipeTrack"></div>
+        <img id="mainPropImg" src="" style="display:none;" alt="صورة العقار">
         <button class="nav-arrow-btn next-btn" onclick="nextPropertyImage()"><i class="fas fa-chevron-left"></i></button>
       </div>
 
@@ -874,18 +908,52 @@
       return localStorage.getItem('anaaqar_affiliate_ref') || 'مباشر';
     }
 
+    let gallerySwipeObserver = null;
+    let suppressGalleryScrollSync = false;
+
+    // 🖼️ يبني شرائح المعرض القابل للسحب (كل صورة شريحة بعرض 90% تترك جزء من جاراتها ظاهر)
+    function renderGallerySwipeTrack() {
+      const track = document.getElementById('gallerySwipeTrack');
+      track.innerHTML = propertyImagesList.map((imgUrl, idx) => `
+        <div class="gallery-swipe-slide" data-idx="${idx}" onclick="openLightboxModal()">
+          <img src="${imgUrl}" alt="صورة العقار ${idx + 1}" ${idx === 0 ? '' : 'loading="lazy"'}>
+        </div>
+      `).join('');
+
+      if (gallerySwipeObserver) gallerySwipeObserver.disconnect();
+      gallerySwipeObserver = new IntersectionObserver((entries) => {
+        if (suppressGalleryScrollSync) return;
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+            const idx = parseInt(entry.target.getAttribute('data-idx'));
+            syncGalleryUIToIndex(idx);
+          }
+        });
+      }, { root: track, threshold: [0.6] });
+
+      track.querySelectorAll('.gallery-swipe-slide').forEach(slide => gallerySwipeObserver.observe(slide));
+    }
+
+    function syncGalleryUIToIndex(index) {
+      currentImgIndex = index;
+      document.getElementById('lightboxImgTarget').src = propertyImagesList[currentImgIndex];
+      document.querySelectorAll('.thumb-img').forEach((t, i) => {
+        t.classList.toggle('active', i === currentImgIndex);
+      });
+    }
+
+    // يُستدعى من الأسهم والمصغّرات: يحرّك المعرض للصورة المطلوبة (السحب اليدوي يعمل بشكل مستقل عبره IntersectionObserver)
     function updateGalleryImage(index) {
       if (propertyImagesList.length === 0) return;
-      currentImgIndex = (index + propertyImagesList.length) % propertyImagesList.length;
-      
-      const activeUrl = propertyImagesList[currentImgIndex];
-      document.getElementById('mainPropImg').src = activeUrl;
-      document.getElementById('lightboxImgTarget').src = activeUrl;
-
-      document.querySelectorAll('.thumb-img').forEach((t, i) => {
-        if (i === currentImgIndex) t.classList.add('active');
-        else t.classList.remove('active');
-      });
+      const targetIndex = (index + propertyImagesList.length) % propertyImagesList.length;
+      const track = document.getElementById('gallerySwipeTrack');
+      const slide = track.querySelector(`.gallery-swipe-slide[data-idx="${targetIndex}"]`);
+      if (slide) {
+        suppressGalleryScrollSync = true;
+        slide.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        setTimeout(() => { suppressGalleryScrollSync = false; }, 400);
+      }
+      syncGalleryUIToIndex(targetIndex);
     }
 
     function prevPropertyImage() { updateGalleryImage(currentImgIndex - 1); }
@@ -1056,6 +1124,7 @@
         <img src="${imgUrl}" class="thumb-img ${idx === 0 ? 'active' : ''}" ${idx === 0 ? '' : 'loading="lazy"'} onclick="updateGalleryImage(${idx})">
       `).join('');
 
+      renderGallerySwipeTrack();
       updateGalleryImage(0);
 
       if (property) {

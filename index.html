@@ -110,21 +110,21 @@
 
     /* ==================== 🌙 DARK MODE ==================== */
     [data-theme="dark"] {
-      --primary-turquoise: #1fc4ae;
-      --primary-turquoise-hover: #17a894;
-      --turquoise-light: #0f3a36;
-      --accent-gold: #e8c158;
-      --accent-gold-hover: #d4af37;
-      --gold-bg-light: #2a2411;
-      --dubizzle-navy: #e8ecf4;
-      --dubizzle-bg: #10151f;
-      --dubizzle-border: #2a3344;
-      --text-dark: #e8ecf4;
+      --primary-turquoise: #2dd4bf;
+      --primary-turquoise-hover: #14b8a6;
+      --turquoise-light: #134e4a;
+      --accent-gold: #fbbf24;
+      --accent-gold-hover: #f59e0b;
+      --gold-bg-light: #2e2410;
+      --dubizzle-navy: #f1f5f9;
+      --dubizzle-bg: #0f172a;
+      --dubizzle-border: #273549;
+      --text-dark: #e2e8f0;
       --text-muted: #94a3b8;
-      --accent-green: #22c55e;
-      --card-bg: #1a2130;
-      --input-bg: #1a2130;
-      --toast-bg: #1a2130;
+      --accent-green: #4ade80;
+      --card-bg: #1a2436;
+      --input-bg: #1a2436;
+      --toast-bg: #1a2436;
     }
     [data-theme="dark"] .anaaqar-instant-utility-bar,
     [data-theme="dark"] .royal-input-box,
@@ -136,9 +136,13 @@
     [data-theme="dark"] .auth-tab-btn.active,
     [data-theme="dark"] .btn-card-fav.active {
       background: var(--card-bg) !important;
+      border: 1px solid var(--dubizzle-border);
     }
-    [data-theme="dark"] img { filter: brightness(0.92); }
+    [data-theme="dark"] .bayut-property-card { box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    [data-theme="dark"] img { filter: brightness(0.94); }
     [data-theme="dark"] .bayut-property-card.visited-card { background: #241f12 !important; }
+    [data-theme="dark"] ::placeholder { color: #64748b; }
+    [data-theme="dark"] .property-price-tag { color: var(--primary-turquoise); }
 
     * {
       box-sizing: border-box;
@@ -211,7 +215,6 @@
       height: 42px;
       width: auto;
       object-fit: contain;
-      filter: drop-shadow(0 2px 5px rgba(0, 168, 150, 0.3));
     }
 
     .brand-text-group {
@@ -668,6 +671,35 @@
       aspect-ratio: 16 / 10;
       transition: opacity 0.3s ease;
       cursor: pointer;
+    }
+
+    /* 🖼️ سحب الصور داخل البطاقة: يظهر جزء من الصورة التالية/السابقة أثناء السحب */
+    .card-swipe-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      gap: 4px;
+      scrollbar-width: none;
+    }
+    .card-swipe-track::-webkit-scrollbar { display: none; }
+    .card-swipe-slide {
+      flex: 0 0 94%;
+      height: 100%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .card-swipe-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
     }
 
     .card-img-arrow {
@@ -1869,6 +1901,7 @@
           <div class="hero-center-badges">
             <button class="hero-badge-btn gold" onclick="triggerGoldenPassportFilter()"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
             <button class="hero-badge-btn ai-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
+            <button class="hero-badge-btn ai-btn" id="nearMeBtn" onclick="searchPropertiesNearMe()"><i class="fas fa-location-crosshairs"></i> عقارات قريبة مني</button>
           </div>
           <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
         </div>
@@ -2751,55 +2784,20 @@ ${propertyUrl}`;
       if (btnLabel) btnLabel.innerText = `${code} (${symbol})`;
     }
 
-    function navigateCardImage(propId, direction, imagesArrayJson, event) {
+    // 🖼️ ينقل بطاقة العقار للصورة التالية/السابقة بسحب ناعم (السحب اليدوي بالإصبع يعمل تلقائياً عبر scroll-snap بدون أي كود إضافي)
+    function navigateCardImage(propId, direction, event) {
       if (event) event.stopPropagation();
-      
-      const imagesList = JSON.parse(decodeURIComponent(imagesArrayJson));
-      if (!imagesList || imagesList.length <= 1) return;
+      const track = document.getElementById(`card-track-${propId}`);
+      if (!track) return;
+      const slides = track.querySelectorAll('.card-swipe-slide');
+      if (slides.length <= 1) return;
 
-      if (!propertyCardImageIndices[propId]) {
-        propertyCardImageIndices[propId] = 0;
-      }
-
-      if (direction === 'next') {
-        propertyCardImageIndices[propId] = (propertyCardImageIndices[propId] + 1) % imagesList.length;
-      } else if (direction === 'prev') {
-        propertyCardImageIndices[propId] = (propertyCardImageIndices[propId] - 1 + imagesList.length) % imagesList.length;
-      }
-
-      const newImgUrl = imagesList[propertyCardImageIndices[propId]];
-      const targetImgEl = document.getElementById(`card-img-${propId}`);
-      if (targetImgEl) {
-        targetImgEl.src = newImgUrl;
-      }
+      if (!(propId in propertyCardImageIndices)) propertyCardImageIndices[propId] = 0;
+      let idx = propertyCardImageIndices[propId];
+      idx = direction === 'next' ? (idx + 1) % slides.length : (idx - 1 + slides.length) % slides.length;
+      propertyCardImageIndices[propId] = idx;
+      slides[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
-
-    (function setupCardImageSwipe() {
-      let startX = 0, startY = 0, swipePropId = null;
-      const container = document.getElementById('properties-container');
-      if (!container) return;
-
-      container.addEventListener('touchstart', function(e) {
-        const img = e.target.closest('.card-media-box img[id^="card-img-"]');
-        if (!img) { swipePropId = null; return; }
-        swipePropId = img.id.replace('card-img-', '');
-        const t = e.changedTouches[0];
-        startX = t.clientX; startY = t.clientY;
-      }, { passive: true });
-
-      container.addEventListener('touchend', function(e) {
-        if (!swipePropId) return;
-        const t = e.changedTouches[0];
-        const dx = t.clientX - startX, dy = t.clientY - startY;
-        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-          const imagesJson = localStorage.getItem(`anaaqar_prop_imgs_${swipePropId}`);
-          if (imagesJson) {
-            navigateCardImage(swipePropId, dx < 0 ? 'next' : 'prev', encodeURIComponent(imagesJson), null);
-          }
-        }
-        swipePropId = null;
-      }, { passive: true });
-    })();
 
     /* 📌 دالة حفظ وتمرير بيانات العقار والوسيط بصفحة التفاصيل */
 function goToPropertyDetails(propId) {
@@ -2840,10 +2838,16 @@ function renderPropertiesList(list) {
       const cardHTML = `
         <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
           <div class="card-media-box">
-            <img id="card-img-${prop.id}" src="${prop.image || propertyImages[0]}" alt="${prop.title}" loading="lazy" onclick="goToPropertyDetails('${prop.id}')">
+            <div class="card-swipe-track" id="card-track-${prop.id}">
+              ${propertyImages.map((imgUrl, i) => `
+                <div class="card-swipe-slide" onclick="goToPropertyDetails('${prop.id}')">
+                  <img src="${imgUrl}" alt="${prop.title}" ${i === 0 ? '' : 'loading="lazy"'}>
+                </div>
+              `).join('')}
+            </div>
             ${propertyImages.length > 1 ? `
-            <button class="card-img-arrow prev" onclick="navigateCardImage('${prop.id}', 'prev', '${encodeURIComponent(JSON.stringify(propertyImages))}', event)"><i class="fas fa-chevron-right"></i></button>
-            <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', '${encodeURIComponent(JSON.stringify(propertyImages))}', event)"><i class="fas fa-chevron-left"></i></button>
+            <button class="card-img-arrow prev" onclick="navigateCardImage('${prop.id}', 'prev', event)"><i class="fas fa-chevron-right"></i></button>
+            <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', event)"><i class="fas fa-chevron-left"></i></button>
             ` : ''}
             ${prop.isVerified ? `<span class="badge-trucheck-tag" title="تم التحقق من رخصة الوسيط"><i class="fas fa-check"></i></span>` : ''}
             <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
@@ -2992,6 +2996,40 @@ function renderPropertiesList(list) {
 
       const propSection = document.querySelector('.properties-section');
       if (propSection) propSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 📍 عقارات قريبة مني: يطلب موقع الجهاز، ويجلب العقارات الحقيقية (اللي عندها إحداثيات) ضمن 15 كم
+    function searchPropertiesNearMe() {
+      const btn = document.getElementById('nearMeBtn');
+      if (!navigator.geolocation) {
+        showAnaAqarToast('جهازك لا يدعم تحديد الموقع', 'error');
+        return;
+      }
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارِ تحديد موقعك...';
+      btn.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const results = await fetchNearbyProperties(pos.coords.latitude, pos.coords.longitude, 15);
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+          if (results.length === 0) {
+            showAnaAqarToast('ما لقينا عقارات قريبة منك حالياً (ضمن 15 كم) — جرب توسيع نطاق البحث لاحقاً', 'info');
+            return;
+          }
+          renderPropertiesList(results);
+          showAnaAqarToast(`لقينا ${results.length} عقار قريب منك 📍`, 'success');
+          const propSection = document.querySelector('.properties-section');
+          if (propSection) propSection.scrollIntoView({ behavior: 'smooth' });
+        },
+        () => {
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+          showAnaAqarToast('تعذّر الوصول لموقعك — تأكد من منح إذن الموقع للمتصفح', 'error');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
     }
 
     function executeSearch() {

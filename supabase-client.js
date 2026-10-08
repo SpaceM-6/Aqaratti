@@ -79,6 +79,8 @@ function mapSupabasePropertyToAnaAqar(row) {
     totalImagesCount: images.length,
     description: row.description,
     isVerified: !!row.license_number,
+    lat: row.lat ?? null,
+    lng: row.lng ?? null,
     broker: {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',
@@ -118,6 +120,21 @@ async function fetchOneApprovedSupabaseProperty(rawId) {
     return mapSupabasePropertyToAnaAqar(data);
   } catch (e) {
     return null;
+  }
+}
+
+// ==================== 📍 عقارات قريبة مني (PostGIS) ====================
+// يعمل فقط على عقارات الوسطاء الحقيقيين اللي أدخلوا إحداثيات (lat/lng) - العقارات
+// التجريبية الثابتة من properties.json ما تظهر هنا لعدم وجود إحداثيات لها.
+async function fetchNearbyProperties(lat, lng, radiusKm = 15) {
+  try {
+    const { data, error } = await supabaseClient.rpc('nearby_properties', {
+      search_lat: lat, search_lng: lng, radius_km: radiusKm
+    });
+    if (error || !data) return [];
+    return data.map(mapSupabasePropertyToAnaAqar);
+  } catch (e) {
+    return [];
   }
 }
 
