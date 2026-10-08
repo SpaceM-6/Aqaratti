@@ -5,9 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>تفاصيل العقار | AnaAqar</title>
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <script>
+    // 🌙 تطبيق الوضع الليلي فوراً (قبل الرسم) لتفادي الوميض، بنفس اختيار المستخدم المحفوظ من الصفحة الرئيسية
+    (function() {
+      const saved = localStorage.getItem('anaaqar_theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
 
   <meta name="description" content="اطّلع على كافة تفاصيل العقار: السعر، المساحة، الموقع، والمرافق، وتواصل مباشرة مع الوسيط المعلن عبر منصة أنا عقار.">
   <meta name="robots" content="index, follow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://anaaqar.com/property-details.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="تفاصيل العقار | AnaAqar">
@@ -67,9 +76,33 @@
       --dubizzle-border: #e2e8f0;
       --text-dark: #1e293b;
       --text-muted: #64748b;
+      --card-bg: #ffffff;
     }
 
-    * { 
+    [data-theme="dark"] {
+      --primary-turquoise: #1fc4ae;
+      --primary-turquoise-hover: #17a894;
+      --turquoise-light: #0f3a36;
+      --accent-gold: #e8c158;
+      --dubizzle-navy: #e8ecf4;
+      --dubizzle-bg: #10151f;
+      --dubizzle-border: #2a3344;
+      --text-dark: #e8ecf4;
+      --text-muted: #94a3b8;
+      --card-bg: #1a2130;
+    }
+    [data-theme="dark"] .navbar,
+    [data-theme="dark"] .sub-nav-tabs,
+    [data-theme="dark"] .sub-tab-item,
+    [data-theme="dark"] .info-section-card,
+    [data-theme="dark"] .trubroker-sidebar-card,
+    [data-theme="dark"] .royal-modal-card,
+    [data-theme="dark"] .mobile-sticky-contact-bar {
+      background: var(--card-bg) !important;
+    }
+    [data-theme="dark"] img { filter: brightness(0.92); }
+
+    * {
       box-sizing: border-box !important; 
       margin: 0; 
       padding: 0; 
@@ -632,6 +665,31 @@
           </div>
         </div>
 
+        <!-- 🔔 تنبيه السعر: المستخدم المسجّل دخوله يحفظ سعر مستهدف ويُخزَّن بحسابه -->
+        <div class="info-section-card" id="secPriceAlert">
+          <div class="info-card-title"><i class="fas fa-bell" style="color:var(--accent-gold);"></i> نبّهني لو نزل السعر</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <input type="number" id="alertTargetPrice" placeholder="السعر المستهدف (AED)" style="flex:1; min-width:140px; padding:10px; border:1px solid var(--dubizzle-border); border-radius:8px; font-weight:700; font-size:13px;">
+            <button onclick="handleCreatePriceAlert()" style="background:var(--accent-gold); color:#1e293b; border:none; border-radius:8px; padding:10px 16px; font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap;"><i class="fas fa-bell"></i> فعّل التنبيه</button>
+          </div>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">يتطلب تسجيل الدخول — راح نراجع ونتواصل معك يدوياً لو وصل العقار للسعر المطلوب.</p>
+        </div>
+
+        <!-- ⭐ تقييمات العقار -->
+        <div class="info-section-card" id="secPropertyReviews">
+          <div class="info-card-title"><i class="fas fa-star" style="color:var(--accent-gold);"></i> تقييمات الزوّار</div>
+
+          <div style="background:var(--dubizzle-bg); border-radius:10px; padding:12px; margin-bottom:14px;">
+            <div style="display:flex; gap:4px; margin-bottom:8px;" id="reviewStarsInput">
+              ${[1,2,3,4,5].map(n => `<i class="fas fa-star" data-star="${n}" onclick="setReviewRating(${n})" style="cursor:pointer; color:#cbd5e1; font-size:20px;"></i>`).join('')}
+            </div>
+            <textarea id="reviewCommentInput" placeholder="شاركنا رأيك بهذا العقار (اختياري)..." style="width:100%; min-height:60px; padding:8px; border:1px solid var(--dubizzle-border); border-radius:8px; font-family:inherit; font-size:12.5px; resize:vertical;"></textarea>
+            <button onclick="handleSubmitReview()" style="margin-top:8px; background:var(--primary-turquoise); color:#fff; border:none; border-radius:8px; padding:9px 18px; font-weight:800; font-size:12px; cursor:pointer;">إرسال التقييم</button>
+          </div>
+
+          <div id="propertyReviewsList"><p style="color:var(--text-muted); font-size:12px;">جارِ تحميل التقييمات...</p></div>
+        </div>
+
       </div>
 
       <!-- كارت الوسيط -->
@@ -843,15 +901,20 @@
       btn.classList.toggle('active', getFavoriteIds().includes(propId.toString()));
     }
 
-    function toggleDetailsFavorite() {
+    async function toggleDetailsFavorite() {
       const urlParams = new URLSearchParams(window.location.search);
       const propId = (urlParams.get('id') || '101').toString();
       const favorites = getFavoriteIds();
       const index = favorites.indexOf(propId);
-      if (index === -1) favorites.push(propId);
+      const willBeFav = index === -1;
+      if (willBeFav) favorites.push(propId);
       else favorites.splice(index, 1);
       localStorage.setItem('anaaqar_favorites', JSON.stringify(favorites));
       refreshDetailsFavButton(propId);
+      try {
+        if (willBeFav) await addSupabaseFavorite(propId);
+        else await removeSupabaseFavorite(propId);
+      } catch (e) {}
     }
 
     (function setupGallerySwipe() {
@@ -1030,6 +1093,8 @@
         if (avatarEl && broker.avatar) avatarEl.src = broker.avatar;
         currentBrokerPhone = broker.phone || '971501234567';
         currentBrokerEmail = broker.email || 'info@anaaqar.com';
+
+        updatePropertySEO(property, propertyImagesList[0], priceAED);
       }
 
       document.getElementById('brokerEmailText').innerText = currentBrokerEmail;
@@ -1039,6 +1104,121 @@
       document.getElementById('directCallAnchor').href = `tel:${currentBrokerPhone}`;
 
       calculateMortgage();
+      loadPropertyReviewsList();
+    }
+
+    // 🔍 SEO: عنوان الصفحة، وصف الميتا، Open Graph، وبيانات Schema.org منظّمة (RealEstateListing) تُبنى ديناميكياً لكل عقار
+    function updatePropertySEO(property, mainImage, priceAED) {
+      const title = `${property.title || 'عقار'} | AnaAqar`;
+      const desc = property.description
+        ? property.description.slice(0, 160)
+        : `${property.propertyType || 'عقار'} في ${property.city || 'الإمارات'} - ${property.bedrooms ?? ''} غرف، ${property.area_m2 || ''} م² - بسعر ${formatPriceAED(priceAED)}`;
+      const url = `https://anaaqar.com/property-details.html?id=${encodeURIComponent(property.id)}`;
+
+      document.title = title;
+      const setMeta = (sel, attr, val) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, val); };
+      setMeta('meta[name="description"]', 'content', desc);
+      setMeta('link[rel="canonical"]', 'href', url);
+      setMeta('meta[property="og:title"]', 'content', title);
+      setMeta('meta[property="og:description"]', 'content', desc);
+      setMeta('meta[property="og:url"]', 'content', url);
+      if (mainImage) setMeta('meta[property="og:image"]', 'content', mainImage);
+
+      const existing = document.getElementById('propertyJsonLd');
+      if (existing) existing.remove();
+
+      const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "RealEstateListing",
+        "name": property.title || 'عقار',
+        "description": property.description || desc,
+        "url": url,
+        "image": mainImage ? [mainImage] : undefined,
+        "datePosted": property.datePosted || undefined,
+        "offers": {
+          "@type": "Offer",
+          "price": priceAED || undefined,
+          "priceCurrency": "AED",
+          "availability": "https://schema.org/InStock",
+          "businessFunction": property.dealType === 'rent' ? "https://schema.org/LeaseOut" : "https://schema.org/Sell"
+        },
+        "numberOfRooms": property.bedrooms ?? undefined,
+        "numberOfBathroomsTotal": property.bathrooms ?? undefined,
+        "floorSize": property.area_m2 ? { "@type": "QuantitativeValue", "value": property.area_m2, "unitCode": "MTK" } : undefined,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": property.city || 'دبي',
+          "addressCountry": "AE"
+        }
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'propertyJsonLd';
+      script.textContent = JSON.stringify(jsonLd);
+      document.head.appendChild(script);
+    }
+
+    // ⭐ تقييمات العقار
+    let selectedReviewRating = 0;
+    function setReviewRating(n) {
+      selectedReviewRating = n;
+      document.querySelectorAll('#reviewStarsInput i').forEach(star => {
+        const val = parseInt(star.getAttribute('data-star'));
+        star.style.color = val <= n ? '#f59e0b' : '#cbd5e1';
+      });
+    }
+
+    async function handleSubmitReview() {
+      const user = await getCurrentAnaAqarUser();
+      if (!user) { showLoginPrompt('لازم تسجّل دخولك الأول عشان تضيف تقييم.'); return; }
+      if (selectedReviewRating === 0) { alert('اختر عدد النجوم أولاً'); return; }
+      const comment = document.getElementById('reviewCommentInput').value;
+      const { error } = await submitPropertyReview(currentPropertyId, selectedReviewRating, comment);
+      if (error) { alert('حدث خطأ، حاول مرة أخرى'); return; }
+      document.getElementById('reviewCommentInput').value = '';
+      setReviewRating(0);
+      loadPropertyReviewsList();
+    }
+
+    async function loadPropertyReviewsList() {
+      const container = document.getElementById('propertyReviewsList');
+      const reviews = await fetchPropertyReviews(currentPropertyId);
+      if (reviews.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px 0;">لا توجد تقييمات بعد. كن أول من يقيّم هذا العقار.</p>`;
+        return;
+      }
+      container.innerHTML = reviews.map(r => `
+        <div style="border-bottom:1px solid var(--dubizzle-border); padding:10px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:12.5px;">${(r.profiles && r.profiles.full_name) || 'مستخدم'}</span>
+            <span style="color:#f59e0b; font-size:12px;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+          </div>
+          ${r.comment ? `<p style="font-size:12px; color:var(--text-muted); margin-top:4px;">${r.comment}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // 🔔 تنبيهات الأسعار
+    async function handleCreatePriceAlert() {
+      const user = await getCurrentAnaAqarUser();
+      if (!user) { showLoginPrompt('لازم تسجّل دخولك الأول عشان تفعّل تنبيه السعر.'); return; }
+      const target = parseFloat(document.getElementById('alertTargetPrice').value);
+      if (!target || target <= 0) { alert('أدخل سعر مستهدف صحيح'); return; }
+      const currentPrice = parseFloat(document.getElementById('propPrice').getAttribute('data-price-aed')) || 0;
+      const { error } = await createPriceAlert(currentPropertyId, target, currentPrice);
+      if (error) { alert('حدث خطأ، حاول مرة أخرى'); return; }
+      showAnaAqarToastSafe('✅ تم تفعيل التنبيه، راح نتواصل معك لو وصل السعر المطلوب');
+    }
+
+    function showAnaAqarToastSafe(msg) {
+      if (typeof showAnaAqarToast === 'function') showAnaAqarToast(msg, 'success');
+      else alert(msg);
+    }
+
+    function showLoginPrompt(msg) {
+      if (typeof openLoginModal === 'function') { alert(msg); openLoginModal(); }
+      else alert(msg);
     }
 
     async function handleInspectorSubmit(e) {

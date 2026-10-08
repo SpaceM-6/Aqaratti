@@ -120,3 +120,81 @@ async function fetchOneApprovedSupabaseProperty(rawId) {
     return null;
   }
 }
+
+// ==================== ❤️ المفضلة: مزامنة Supabase للمستخدمين المسجّلين دخولهم ====================
+// غير المسجّلين دخولهم يستمرون يستخدمون localStorage وحده (anaaqar_favorites) كالسابق.
+
+async function fetchSupabaseFavoriteIds() {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return null; // null = غير مسجل دخول، الصفحة ترجع لـ localStorage
+  const { data, error } = await supabaseClient.from('favorites').select('property_id').eq('user_id', user.id);
+  if (error || !data) return [];
+  return data.map(r => r.property_id);
+}
+
+async function addSupabaseFavorite(propertyId) {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return false;
+  const { error } = await supabaseClient.from('favorites').insert({ user_id: user.id, property_id: propertyId.toString() });
+  return !error;
+}
+
+async function removeSupabaseFavorite(propertyId) {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return false;
+  const { error } = await supabaseClient.from('favorites').delete().eq('user_id', user.id).eq('property_id', propertyId.toString());
+  return !error;
+}
+
+// ==================== ⭐ تقييمات العقارات ====================
+
+async function fetchPropertyReviews(propertyId) {
+  const { data, error } = await supabaseClient
+    .from('property_reviews')
+    .select('*, profiles(full_name)')
+    .eq('property_id', propertyId.toString())
+    .order('created_at', { ascending: false });
+  if (error || !data) return [];
+  return data;
+}
+
+async function submitPropertyReview(propertyId, rating, comment) {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return { error: 'not_logged_in' };
+  const { error } = await supabaseClient.from('property_reviews').upsert({
+    user_id: user.id,
+    property_id: propertyId.toString(),
+    rating,
+    comment: (comment || '').trim() || null
+  }, { onConflict: 'user_id,property_id' });
+  return { error: error ? error.message : null };
+}
+
+// ==================== 🔔 تنبيهات الأسعار ====================
+
+async function createPriceAlert(propertyId, targetPrice, currentPrice) {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return { error: 'not_logged_in' };
+  const { error } = await supabaseClient.from('price_alerts').upsert({
+    user_id: user.id,
+    property_id: propertyId.toString(),
+    target_price: targetPrice,
+    price_at_creation: currentPrice || null,
+    notified: false
+  }, { onConflict: 'user_id,property_id' });
+  return { error: error ? error.message : null };
+}
+
+async function fetchMyPriceAlerts() {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return [];
+  const { data, error } = await supabaseClient.from('price_alerts').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+  return (error || !data) ? [] : data;
+}
+
+async function deletePriceAlert(propertyId) {
+  const user = await getCurrentAnaAqarUser();
+  if (!user) return false;
+  const { error } = await supabaseClient.from('price_alerts').delete().eq('user_id', user.id).eq('property_id', propertyId.toString());
+  return !error;
+}
