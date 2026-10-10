@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فعّل ملفك | أنا عقار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="icons/icon-app-512.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase-client.js"></script>
+<style>
+  :root{
+    --teal:#0E9F8E; --teal-dark:#0B7F72; --teal-soft:#E6F6F3;
+    --navy:#141B34; --ink:#1E2433; --muted:#6B7385;
+    --bg:#F3F5F8; --card:#FFFFFF; --line:#E3E7EE;
+    --ok:#16A34A; --ok-soft:#E7F8EC; --warn:#DC2626; --warn-soft:#FDECEC;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Tajawal',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  header{background:#fff;border-bottom:1px solid var(--line);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+  .brand{font-weight:800;font-size:22px;color:var(--teal)}
+  .brand span{color:var(--navy);margin-inline-start:6px;font-weight:700;font-size:18px}
+  .hero{background:var(--navy);color:#fff;text-align:center;padding:36px 16px 56px}
+  .hero h1{margin:0 0 8px;font-size:26px;font-weight:800}
+  .hero p{margin:0 auto;max-width:520px;color:#C9CFDD}
+  main{max-width:560px;margin:-36px auto 40px;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 6px 24px rgba(20,27,52,.06)}
+  .steps{display:flex;gap:6px;margin-bottom:20px}
+  .steps div{flex:1;height:6px;border-radius:6px;background:var(--line)}
+  .steps div.on{background:var(--teal)}
+  h2{margin:0 0 6px;font-size:20px}
+  .sub{color:var(--muted);margin:0 0 18px;font-size:15px}
+  label{display:block;font-weight:700;margin:14px 0 6px;font-size:15px}
+  input[type=text],input[type=email]{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;font:inherit;font-size:16px;background:#fff}
+  input:focus{outline:none;border-color:var(--teal)}
+  .btn{width:100%;margin-top:18px;padding:14px;border:0;border-radius:12px;background:var(--teal);color:#fff;font:inherit;font-weight:800;font-size:17px;cursor:pointer}
+  .btn:hover{background:var(--teal-dark)}
+  .btn.ghost{background:transparent;color:var(--teal);border:1.5px solid var(--teal);margin-top:10px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .result{border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-top:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .result:hover,.result.sel{border-color:var(--teal);background:var(--teal-soft)}
+  .result b{display:block}
+  .result small{color:var(--muted)}
+  .tag{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .tag.ok{background:var(--ok-soft);color:var(--ok)}
+  .tag.no{background:var(--warn-soft);color:var(--warn)}
+  .note{background:var(--teal-soft);border:1px solid #BFE7E0;border-radius:12px;padding:12px 14px;font-size:14px;color:#0B5F56;margin-top:16px}
+  .err{color:var(--warn);font-size:14px;margin-top:8px;min-height:20px}
+  .otp{display:flex;gap:8px;direction:ltr;justify-content:center;margin-top:8px}
+  .otp input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:800;padding:0}
+  .check{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:15px}
+  .check input{width:20px;height:20px;margin-top:3px;accent-color:var(--teal);flex-shrink:0}
+  .check a{color:var(--teal)}
+  .done{text-align:center}
+  .done .icon{width:76px;height:76px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-size:40px;margin:4px auto 14px}
+  .perks{display:grid;gap:10px;margin-top:22px}
+  .perk{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
+  .perk i{font-style:normal;width:34px;height:34px;border-radius:10px;background:var(--teal-soft);display:grid;place-items:center;flex-shrink:0}
+  .hidden{display:none}
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 30px}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="brand" style="text-decoration:none">أنا عقار<span>AnaAqar</span></a>
+  <a href="index.html" style="color:var(--teal);font-weight:700;text-decoration:none">العودة للرئيسية ←</a>
+</header>
+
+<section class="hero">
+  <h1>فعّل ملفك المهني مجانًا</h1>
+  <p>أنت مسجّل لدى دائرة الأراضي والأملاك. فعّل ملفك في «أنا عقار» وابدأ برفع إعلاناتك والتواصل مع العملاء مباشرة.</p>
+</section>
+
+<main>
+  <div class="card">
+    <div class="steps"><div id="s1" class="on"></div><div id="s2"></div><div id="s3"></div><div id="s4"></div></div>
+
+    <!-- الخطوة 1: البحث -->
+    <section id="step1">
+      <h2>ابحث عن ملفك</h2>
+      <p class="sub">اكتب اسمك أو رقم الوسيط المسجّل لدى DLD.</p>
+      <label for="q">الاسم أو رقم الوسيط</label>
+      <input id="q" type="text" placeholder="مثال: 689 أو مهند" autocomplete="off">
+      <div id="results"></div>
+      <div class="err" id="err1"></div>
+      <button class="btn" id="toStep2" disabled>هذا ملفي، متابعة</button>
+    </section>
+
+    <!-- الخطوة 2: التحقق من البريد -->
+    <section id="step2" class="hidden">
+      <h2>تأكيد الهوية</h2>
+      <p class="sub">للحماية، أدخل البريد الإلكتروني المسجّل في ملفك لدى DLD، وسنرسل إليه رمز تحقق.</p>
+      <label for="email">البريد الإلكتروني</label>
+      <input id="email" type="email" placeholder="name@company.ae" dir="ltr">
+      <div class="err" id="err2"></div>
+      <button class="btn" id="sendCode">أرسل رمز التحقق</button>
+      <button class="btn ghost" data-back="1">رجوع</button>
+      <div class="note">لن نعرض صورتك أو بيانات تواصلك للعموم إلا بعد موافقتك الصريحة في الخطوة الأخيرة.</div>
+    </section>
+
+    <!-- الخطوة 3: رمز التحقق -->
+    <section id="step3" class="hidden">
+      <h2>أدخل رمز التحقق</h2>
+      <p class="sub">أرسلنا رمزًا من 6 أرقام إلى <b id="maskedEmail" dir="ltr"></b></p>
+      <div class="otp" id="otp">
+        <input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1">
+      </div>
+      <div class="err" id="err3" style="text-align:center"></div>
+      <button class="btn" id="verify">تحقق</button>
+      <button class="btn ghost" data-back="2">تغيير البريد</button>
+      <button class="btn ghost" id="resend">إعادة إرسال الرمز</button>
+      <p class="sub" style="text-align:center;margin-top:12px;font-size:13px">لم يصلك الرمز؟ تحقق من مجلد الرسائل غير المرغوبة (Spam).</p>
+    </section>
+
+    <!-- الخطوة 4: الموافقات -->
+    <section id="step4" class="hidden">
+      <h2>الموافقة والتفعيل</h2>
+      <p class="sub">اختر ما توافق عليه. يمكنك تعديل اختياراتك لاحقًا من إعدادات حسابك.</p>
+      <label class="check"><input type="checkbox" id="c1"> <span>أوافق على <a href="terms-of-service.html" target="_blank">شروط الاستخدام</a> و<a href="privacy-policy.html" target="_blank">سياسة الخصوصية</a> لمنصة أنا عقار. <b style="color:var(--warn)">(مطلوب)</b></span></label>
+      <label class="check"><input type="checkbox" id="c2"> <span>أوافق على عرض صورتي ورقمي وبريدي في ملفي العام ليتواصل معي العملاء.</span></label>
+      <label class="check"><input type="checkbox" id="c3"> <span>أرغب في تلقي رسائل من المنصة عن العروض والتحديثات (يمكن إلغاؤها في أي وقت).</span></label>
+      <button class="btn" id="activate" disabled>فعّل ملفي</button>
+    </section>
+
+    <!-- النجاح -->
+    <section id="step5" class="hidden done">
+      <div class="icon">✓</div>
+      <h2>تم تفعيل ملفك بنجاح</h2>
+      <p class="sub">مرحبًا بك في «أنا عقار». يمكنك الآن رفع أول إعلان عقاري.</p>
+      <a class="btn" style="display:block;text-align:center;text-decoration:none" href="add-property.html">ارفع أول إعلان</a>
+      <a class="btn ghost" id="profileLink" style="display:block;text-align:center;text-decoration:none" href="dashboard.html">أكمل ملفي المهني</a>
+    </section>
+  </div>
+
+  <div class="perks">
+    <div class="perk"><i>🏷️</i>علامة «مفعّل» تزيد ثقة العملاء في ملفك</div>
+    <div class="perk"><i>🏠</i>رفع الإعلانات العقارية وإدارتها من مكان واحد</div>
+    <div class="perk"><i>💬</i>تواصل مباشر مع العملاء عبر الاتصال وواتساب</div>
+  </div>
+</main>
+
+<footer>© أنا عقار — بياناتك محمية ولا تُشارك مع أي طرف ثالث.</footer>
+
+<script>
+  /* تفعيل الوسيط لملفه: البحث في individual_brokers، ثم إثبات ملكية البريد برمز
+     Supabase Auth، ثم claim_individual_broker (راجع supabase/broker_claim.sql)
+     التي تتحقق داخل قاعدة البيانات من تطابق البريد قبل التفعيل. */
+  let selected = null, currentEmail = '';
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const busy = (btn, on, label) => { btn.disabled = on; if (label) btn.textContent = label; };
+
+  function go(n){
+    for(let i=1;i<=5;i++) $('step'+i).classList.toggle('hidden', i!==n);
+    for(let i=1;i<=4;i++) $('s'+i).classList.toggle('on', i<=Math.min(n,4));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => go(+b.dataset.back));
+
+  async function search(q){
+    const cols = 'id, dld_broker_number, name_ar, office_name, is_active';
+    let query = supabaseClient.from('individual_brokers').select(cols).limit(5);
+    if (/^\d+$/.test(q)) query = query.eq('dld_broker_number', q);
+    else {
+      const ts = q.split(/\s+/).map(w => w.replace(/[^\p{L}\p{N}]/gu,'')).filter(Boolean).map(w => w + ':*').join(' & ');
+      if (!ts) return [];
+      query = query.textSearch('search_vector', ts, { config: 'simple' });
+    }
+    const { data, error } = await query;
+    if (error) { console.error(error); throw error; }
+    return data || [];
+  }
+
+  let timer = null, seq = 0;
+  $('q').addEventListener('input', e => {
+    const q = e.target.value.trim();
+    selected = null; $('toStep2').disabled = true; $('err1').textContent = '';
+    $('results').innerHTML = '';
+    clearTimeout(timer);
+    if (q.length < 2) return;
+    timer = setTimeout(async () => {
+      const my = ++seq;
+      let hits;
+      try { hits = await search(q); } catch { $('err1').textContent = 'تعذر البحث الآن، حاول بعد قليل.'; return; }
+      if (my !== seq) return;
+      if (!hits.length) { $('err1').textContent = 'لم نجد ملفًا مطابقًا. تأكد من الاسم أو رقم الوسيط.'; return; }
+      hits.forEach(b => {
+        const d = document.createElement('div');
+        d.className = 'result';
+        d.innerHTML = `<div><b>${esc(b.name_ar || '-')}</b><small>${esc(b.office_name || '')} — رقم الوسيط: ${esc(b.dld_broker_number)}</small></div>
+          <span class="tag ${b.is_active?'ok':'no'}">${b.is_active?'مفعّل':'غير مفعّل'}</span>`;
+        d.onclick = () => {
+          document.querySelectorAll('.result').forEach(x => x.classList.remove('sel'));
+          d.classList.add('sel');
+          if (b.is_active) { $('err1').textContent = 'هذا الملف مفعّل بالفعل. سجّل الدخول إلى حسابك.'; $('toStep2').disabled = true; selected = null; return; }
+          $('err1').textContent = ''; selected = b; $('toStep2').disabled = false;
+        };
+        $('results').appendChild(d);
+      });
+    }, 300);
+  });
+
+  $('toStep2').onclick = () => { if (selected) go(2); };
+
+  async function sendCode(){
+    const { error } = await supabaseClient.auth.signInWithOtp({ email: currentEmail, options: { shouldCreateUser: true } });
+    if (error) throw error;
+  }
+
+  $('sendCode').onclick = async () => {
+    const btn = $('sendCode');
+    const email = $('email').value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('err2').textContent = 'اكتب بريدًا إلكترونيًا صحيحًا.'; return; }
+    busy(btn, true, 'جارٍ الإرسال...'); $('err2').textContent = '';
+    try {
+      const { data: ok, error } = await supabaseClient.rpc('broker_email_matches', { p_dld_number: selected.dld_broker_number, p_email: email });
+      if (error) throw error;
+      if (!ok) { $('err2').textContent = 'البريد لا يطابق البريد المسجّل في هذا الملف.'; return; }
+      currentEmail = email;
+      await sendCode();
+      const [u, d] = email.split('@');
+      $('maskedEmail').textContent = u[0] + '•••@' + d;
+      go(3); document.querySelector('#otp input').focus();
+    } catch (e) {
+      console.error(e);
+      $('err2').textContent = /rate|seconds/i.test(e.message || '') ? 'طلبات كثيرة، انتظر دقيقة ثم حاول مرة أخرى.' : 'تعذر إرسال الرمز الآن، حاول بعد قليل.';
+    } finally { busy(btn, false, 'أرسل رمز التحقق'); }
+  };
+
+  $('resend').onclick = async () => {
+    try { await sendCode(); $('err3').style.color = 'var(--ok)'; $('err3').textContent = 'أُعيد إرسال الرمز.'; }
+    catch { $('err3').style.color = ''; $('err3').textContent = 'انتظر دقيقة قبل إعادة الإرسال.'; }
+  };
+
+  const otpInputs = [...document.querySelectorAll('#otp input')];
+  otpInputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      const v = inp.value.replace(/\D/g,'');
+      if (v.length > 1) { v.split('').slice(0,6).forEach((c,j) => { if (otpInputs[j]) otpInputs[j].value = c; }); otpInputs[Math.min(v.length,6)-1].focus(); return; }
+      inp.value = v; if (v && otpInputs[i+1]) otpInputs[i+1].focus();
+    });
+    inp.addEventListener('keydown', e => { if (e.key==='Backspace' && !inp.value && otpInputs[i-1]) otpInputs[i-1].focus(); });
+  });
+  otpInputs.forEach(i => i.removeAttribute('maxlength'));
+
+  $('verify').onclick = async () => {
+    const btn = $('verify');
+    const token = otpInputs.map(i => i.value).join('');
+    $('err3').style.color = '';
+    if (token.length !== 6) { $('err3').textContent = 'أدخل الرمز كاملًا (6 أرقام).'; return; }
+    busy(btn, true, 'جارٍ التحقق...');
+    const { error } = await supabaseClient.auth.verifyOtp({ email: currentEmail, token, type: 'email' });
+    busy(btn, false, 'تحقق');
+    if (error) { $('err3').textContent = 'الرمز غير صحيح أو انتهت صلاحيته.'; return; }
+    $('err3').textContent = ''; go(4);
+  };
+
+  $('c1').onchange = () => $('activate').disabled = !$('c1').checked;
+  $('activate').onclick = async () => {
+    const btn = $('activate');
+    busy(btn, true, 'جارٍ التفعيل...');
+    const { data: id, error } = await supabaseClient.rpc('claim_individual_broker', {
+      p_dld_number: selected.dld_broker_number,
+      p_terms: $('c1').checked, p_public_contact: $('c2').checked, p_marketing: $('c3').checked
+    });
+    busy(btn, false, 'فعّل ملفي');
+    if (error) {
+      console.error(error);
+      const m = error.message || '';
+      alert(m.includes('already_claimed_another') ? 'حسابك مرتبط بملف وسيط آخر بالفعل.'
+          : m.includes('no_matching_profile') ? 'تعذر التفعيل: الملف مفعّل مسبقًا أو البريد لا يطابق.'
+          : 'تعذر التفعيل الآن، حاول بعد قليل.');
+      return;
+    }
+    $('profileLink').href = 'individual-broker-profile.html?id=' + id;
+    go(5);
+  };
+
+  // رابط مباشر من رسالة الدعوة: claim-profile.html?dld=689
+  const pre = new URLSearchParams(location.search).get('dld');
+  if (pre && /^\d+$/.test(pre)) { $('q').value = pre; $('q').dispatchEvent(new Event('input')); }
+</script>
+</body>
+</html>
