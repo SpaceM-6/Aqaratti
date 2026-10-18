@@ -13,7 +13,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ==================== 📊 قياس الزوار (Google Analytics 4) ====================
 // ضعي هنا معرّف القياس من Google Analytics (يبدأ بـ G-) ليبدأ القياس في كل صفحات الموقع.
 // يبقى فارغاً = لا يُحمَّل أي كود قياس. لا يُقاس الزوار في صفحات الإدارة admin/.
-const ANAAQAR_GA4_ID = '';
+const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
 (function loadAnalytics() {
   if (!/^G-[A-Z0-9]+$/.test(ANAAQAR_GA4_ID)) return;
   if (location.pathname.indexOf('/admin/') !== -1) return;
