@@ -236,6 +236,21 @@
     #panelFull .broker-card, #panelIndividual .broker-card { cursor: pointer; }
 
     .broker-card.broker-card-inactive { opacity: 0.7; background: #f8fafc; }
+    .claim-link {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin: -4px 0 12px; padding: 9px 12px; border-radius: 12px;
+      border: 1.5px dashed var(--primary-turquoise); color: var(--primary-turquoise);
+      font-weight: 800; font-size: 13px; text-decoration: none;
+    }
+    .claim-link:hover { background: rgba(0,168,150,.08); }
+    .claim-cta {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      max-width: 1200px; margin: 14px auto 0; padding: 14px 18px; border-radius: 16px;
+      background: linear-gradient(135deg, #00a896, #028090); color: #fff;
+    }
+    .claim-cta strong { font-size: 15px; }
+    .claim-cta span { font-size: 13px; opacity: .9; display: block; }
+    .claim-cta a { background: #fff; color: #028090; font-weight: 900; padding: 10px 18px; border-radius: 12px; text-decoration: none; white-space: nowrap; }
     .inactive-badge {
       display: flex; align-items: center; gap: 6px;
       background: #fee2e2; color: #b91c1c;
@@ -495,6 +510,10 @@
           <i class="fas fa-circle-info"></i>
           <span>علامة "مفعل" تعني أن الوسيط نشط في AnaAqar.</span>
         </div>
+      </div>
+      <div class="claim-cta" style="margin-inline:16px; margin-bottom:14px;">
+        <div><strong><i class="fas fa-user-check"></i> أنت وسيط مسجّل لدى دائرة الأراضي؟</strong><span>ابحث عن ملفك وفعّله مجانًا خلال دقيقتين، وابدأ برفع إعلاناتك.</span></div>
+        <a href="claim-profile.html">فعّل ملفي</a>
       </div>
       <div class="toolbar">
         <div class="toolbar-card">
