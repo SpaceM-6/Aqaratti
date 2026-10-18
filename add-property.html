@@ -484,6 +484,30 @@
 
         <div class="grid-2">
           <div class="form-group">
+            <label>حالة العقار *</label>
+            <select id="completionStatusInput" required>
+              <option value="ready">جاهز للاستلام / السكن 🔑</option>
+              <option value="under_construction">تحت الإنشاء 🏗️</option>
+              <option value="off_plan">مشروع جديد على الخارطة 🚀</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>العمولة وعروض خاصة</label>
+            <label style="display:flex; gap:8px; align-items:center; font-weight:600; margin-top:6px;">
+              <input type="checkbox" id="noCommissionInput"> بدون عمولة على المشتري أو المستأجر
+            </label>
+            <label style="display:flex; gap:8px; align-items:center; font-weight:600; margin-top:6px;">
+              <input type="checkbox" id="hasOfferInput" onchange="document.getElementById('offerTextGroup').style.display = this.checked ? 'block' : 'none'"> يوجد عرض أو خصم خاص
+            </label>
+          </div>
+        </div>
+        <div class="form-group" id="offerTextGroup" style="display:none;">
+          <label>تفاصيل العرض</label>
+          <input type="text" id="offerTextInput" maxlength="140" placeholder="مثال: خصم 5% أو خطة سداد 1% شهريًا حتى الاستلام">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
             <label>عنوان الإعلان والعقار *</label>
             <input type="text" id="titleInput" required placeholder="مثال: شقة فاخرة بإطلالة بحرية غرفتين وصالة">
           </div>
@@ -867,16 +891,26 @@
         license_number: licenseValue || null,
         lat: document.getElementById('propLatInput').value ? parseFloat(document.getElementById('propLatInput').value) : null,
         lng: document.getElementById('propLngInput').value ? parseFloat(document.getElementById('propLngInput').value) : null,
-        permit_number: permitValue || null
+        permit_number: permitValue || null,
+        completion_status: document.getElementById('completionStatusInput').value,
+        no_commission: document.getElementById('noCommissionInput').checked,
+        has_offer: document.getElementById('hasOfferInput').checked,
+        offer_text: document.getElementById('hasOfferInput').checked ? (document.getElementById('offerTextInput').value.trim() || null) : null
       };
 
-      let { error } = await supabaseClient.from('properties').insert(propertyRow);
-      // احتياط: إن لم يُضف عمود permit_number بعد في قاعدة البيانات (supabase/property_permit.sql)،
-      // يُحفظ رقم التصريح داخل الوصف بدل أن يفشل نشر الإعلان كله.
-      if (error && /permit_number/.test(error.message || '')) {
-        const { permit_number, ...rest } = propertyRow;
-        if (permit_number) rest.description = `${rest.description || ''}\n\nرقم تصريح الإعلان: ${permit_number}`.trim();
-        ({ error } = await supabaseClient.from('properties').insert(rest));
+      // احتياط: إن لم تُضف الأعمدة الجديدة بعد في قاعدة البيانات (supabase/property_listing_fields.sql)،
+      // يُحذف العمود غير الموجود ويُعاد الحفظ بدل أن يفشل نشر الإعلان كله (ورقم التصريح يُحفظ داخل الوصف).
+      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text'];
+      let rowToSave = { ...propertyRow };
+      let { error } = await supabaseClient.from('properties').insert(rowToSave);
+      for (let attempt = 0; error && attempt < OPTIONAL_COLUMNS.length; attempt++) {
+        const missing = OPTIONAL_COLUMNS.find(c => c in rowToSave && (error.message || '').includes(c));
+        if (!missing) break;
+        if (missing === 'permit_number' && rowToSave.permit_number) {
+          rowToSave.description = `${rowToSave.description || ''}\n\nرقم تصريح الإعلان: ${rowToSave.permit_number}`.trim();
+        }
+        delete rowToSave[missing];
+        ({ error } = await supabaseClient.from('properties').insert(rowToSave));
       }
 
       submitBtn.disabled = false;

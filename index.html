@@ -1660,6 +1660,40 @@
   background: var(--primary-turquoise, #00a896); color: white; border: none;
   padding: 11px; border-radius: 8px; font-weight: 800; cursor: pointer;
 }
+
+    /* 🧭 تصفّح حسب الفئة + الخدمات */
+    .aq-explore { padding: 28px 16px 8px; }
+    .aq-explore-inner { max-width: 1200px; margin: 0 auto; }
+    .aq-block-title { font-size: 20px; font-weight: 900; color: var(--dubizzle-navy); margin: 0 0 14px; display:flex; align-items:center; gap:8px; }
+    .aq-block-title i { color: var(--primary-turquoise); }
+    .aq-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .aq-tile { display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:right; background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:16px; cursor:pointer; font-family:inherit; text-decoration:none; color:inherit; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+    .aq-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(25,32,56,.08); border-color: var(--primary-turquoise); }
+    .aq-tile b { font-size: 15px; color: var(--dubizzle-navy); }
+    .aq-tile small { font-size: 12px; color: #64748b; line-height: 1.5; }
+    .aq-ico { width: 42px; height: 42px; border-radius: 12px; display:grid; place-items:center; font-size:18px; color: var(--c); background: color-mix(in srgb, var(--c) 12%, #fff); margin-bottom: 4px; }
+    @media (max-width: 900px) { .aq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 380px) { .aq-tile { padding: 12px; } .aq-tile b { font-size: 14px; } }
+    .aq-label { display:block; font-size:13px; font-weight:800; color:#334155; margin:10px 0 5px; }
+    .aq-input { width:100%; box-sizing:border-box; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-family:inherit; font-size:15px; background:#fff; color:#0f172a; }
+    .aq-input:focus { outline:none; border-color: var(--primary-turquoise); }
+    .aq-submit { width:100%; margin-top:14px; padding:12px; border:0; border-radius:10px; background: var(--primary-turquoise); color:#fff; font-family:inherit; font-weight:900; font-size:15px; cursor:pointer; }
+    .aq-submit:disabled { opacity:.6; cursor:wait; }
+    /* 💬 الزر العائم */
+    .aq-fab-wrap { position: fixed; left: 18px; bottom: 22px; z-index: 990; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+    .aq-fab { display:flex; align-items:center; gap:8px; border:0; border-radius:999px; padding:12px 18px; background: linear-gradient(135deg, #00a896, #028090); color:#fff; font-family:inherit; font-weight:900; font-size:14px; box-shadow: 0 8px 24px rgba(0,128,128,.35); cursor:pointer; }
+    .aq-fab i { font-size: 18px; }
+    .aq-fab-menu { display:none; flex-direction:column; background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow: 0 12px 30px rgba(25,32,56,.18); overflow:hidden; min-width: 250px; }
+    .aq-fab-menu.open { display:flex; }
+    .aq-fab-menu a, .aq-fab-menu button { display:flex; align-items:center; gap:10px; padding:12px 16px; border:0; background:none; text-align:right; font-family:inherit; font-size:14px; font-weight:800; color: var(--dubizzle-navy); text-decoration:none; cursor:pointer; border-bottom:1px solid #f1f5f9; }
+    .aq-fab-menu a:hover, .aq-fab-menu button:hover { background:#f0fdfa; }
+    .aq-fab-menu i { color: var(--primary-turquoise); width: 18px; text-align:center; }
+    @media (max-width: 768px) { .aq-fab-wrap { bottom: 84px; left: 12px; } .aq-fab span { display:none; } .aq-fab { padding: 14px; } }
+    [data-theme="dark"] .aq-tile, [data-theme="dark"] .aq-fab-menu { background:#1e293b; border-color:#334155; }
+    [data-theme="dark"] .aq-tile b, [data-theme="dark"] .aq-block-title, [data-theme="dark"] .aq-fab-menu a, [data-theme="dark"] .aq-fab-menu button { color:#f1f5f9; }
+    [data-theme="dark"] .aq-tile small { color:#94a3b8; }
+    [data-theme="dark"] .aq-input { background:#0f172a; color:#f1f5f9; border-color:#334155; }
+    [data-theme="dark"] .aq-label { color:#cbd5e1; }
   </style>
 
   <!-- 🔎 SEO: بيانات منظمة (JSON-LD) تعرّف جوجل بهوية المنصة وخاصية البحث -->
@@ -1882,6 +1916,8 @@
           <div class="royal-tabs" id="royalTabsBar">
             <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
             <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
+            <button class="royal-tab" data-type="residential" onclick="switchRoyalTab(this)"><i class="fas fa-house-chimney"></i> سكني</button>
+            <button class="royal-tab" data-type="commercial" onclick="switchRoyalTab(this)"><i class="fas fa-store"></i> تجاري</button>
             <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
             <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
           </div>
@@ -1938,6 +1974,36 @@
           </div>
           <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 🧭 تصفّح حسب الفئة + خدمات أنا عقار -->
+  <section class="aq-explore" id="exploreSection">
+    <div class="aq-explore-inner">
+      <h2 class="aq-block-title"><i class="fas fa-compass"></i> تصفّح حسب الفئة</h2>
+      <div class="aq-grid">
+        <button class="aq-tile" onclick="openPropertyCategory('off_plan')"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-rocket"></i></span><b>مشاريع جديدة</b><small>إطلاقات المطوّرين على الخارطة</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('under_construction')"><span class="aq-ico" style="--c:#f59e0b"><i class="fas fa-helmet-safety"></i></span><b>مشاريع تحت الإنشاء</b><small>استلام خلال الفترة القادمة</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('ready')"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('roi')"><span class="aq-ico" style="--c:#7c3aed"><i class="fas fa-chart-line"></i></span><b>العائد الاستثماري ROI</b><small>أعلى العقارات عائدًا سنويًا</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('offers')"><span class="aq-ico" style="--c:#e11d48"><i class="fas fa-tags"></i></span><b>العروض</b><small>خصومات وخطط سداد خاصة</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('golden')"><span class="aq-ico" style="--c:#d4af37"><i class="fas fa-passport"></i></span><b>عقار للإقامة الذهبية</b><small>عقارات بقيمة تؤهّل للتقدّم للإقامة</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('citizenship')"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('no_commission')"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>مباشرة من المالك</small></button>
+      </div>
+
+      <h2 class="aq-block-title" style="margin-top:34px;"><i class="fas fa-briefcase"></i> خدمات أنا عقار</h2>
+      <div class="aq-grid">
+        <a class="aq-tile" href="brokers-directory.html"><span class="aq-ico" style="--c:#00a896"><i class="fas fa-user-tie"></i></span><b>الوسطاء العقاريون</b><small>دليل الوسطاء والمكاتب المسجّلين</small></a>
+        <button class="aq-tile" onclick="openServiceRequest('brokerage')"><span class="aq-ico" style="--c:#2563eb"><i class="fas fa-handshake"></i></span><b>خدمات الوساطة العقارية</b><small>بيع أو تأجير عقارك عبر وسيط</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('residency')"><span class="aq-ico" style="--c:#9333ea"><i class="fas fa-id-card"></i></span><b>الإقامة وتأسيس الشركات</b><small>إجراءات الإقامة والرخص التجارية</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('legal')"><span class="aq-ico" style="--c:#475569"><i class="fas fa-scale-balanced"></i></span><b>الاستشارات القانونية</b><small>عقود ونزاعات وتوثيق</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('property_services')"><span class="aq-ico" style="--c:#db2777"><i class="fas fa-building-circle-check"></i></span><b>خدمات عقارية</b><small>إدارة الأملاك والتقييم والصيانة</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('engineering')"><span class="aq-ico" style="--c:#65a30d"><i class="fas fa-compass-drafting"></i></span><b>استشارات هندسية</b><small>تصميم وإشراف وفحص عقار</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('contracting')"><span class="aq-ico" style="--c:#92400e"><i class="fas fa-trowel-bricks"></i></span><b>المقاولات</b><small>بناء وتشطيب وترميم</small></button>
+        <button class="aq-tile" onclick="openServiceRequest('interior')"><span class="aq-ico" style="--c:#ea580c"><i class="fas fa-couch"></i></span><b>تصميم الديكور</b><small>تصميم داخلي وتأثيث</small></button>
       </div>
     </div>
   </section>
@@ -2081,6 +2147,51 @@
         <button style="width:100%; background:var(--primary-turquoise); color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('serviceModal')">حسناً</button>
       </div>
     </div>
+  </div>
+
+  <!-- 🛎️ نموذج طلب خدمة (يُحفظ في جدول service_requests ويظهر في admin/service-requests.html) -->
+  <div class="royal-modal-overlay" id="serviceRequestModal">
+    <div class="royal-modal-card" style="max-width: 520px;">
+      <div class="royal-modal-header"><i class="fas fa-bell-concierge"></i><div class="royal-modal-title" id="serviceRequestTitle">اطلب الخدمة</div></div>
+      <div class="royal-modal-body">
+        <p id="serviceRequestIntro" style="color:#64748b; font-size:13px; margin:0 0 12px;"></p>
+        <form id="serviceRequestForm" onsubmit="submitServiceRequest(event)">
+          <input type="hidden" id="srService">
+          <label class="aq-label">الاسم *</label>
+          <input class="aq-input" id="srName" required minlength="2" maxlength="100" placeholder="اسمك الكامل">
+          <label class="aq-label">رقم الهاتف / واتساب *</label>
+          <input class="aq-input" id="srPhone" required type="tel" dir="ltr" minlength="6" maxlength="30" placeholder="+971 50 000 0000">
+          <label class="aq-label">البريد الإلكتروني (اختياري)</label>
+          <input class="aq-input" id="srEmail" type="email" dir="ltr" maxlength="150" placeholder="name@example.com">
+          <label class="aq-label">المدينة / الدولة</label>
+          <input class="aq-input" id="srCity" maxlength="100" placeholder="مثال: دبي">
+          <label class="aq-label">اكتب طلبك بالتفصيل</label>
+          <textarea class="aq-input" id="srDetails" rows="3" maxlength="2000" placeholder="كلما كان الوصف أوضح، كان الرد أسرع وأدق"></textarea>
+          <label style="display:flex; gap:8px; align-items:flex-start; font-size:12px; color:#475569; margin-top:10px;">
+            <input type="checkbox" id="srConsent" required style="margin-top:3px; accent-color:#00a896;">
+            <span>أوافق على أن تتواصل معي «أنا عقار» أو مقدّم الخدمة المناسب بخصوص هذا الطلب، وفق <a href="privacy-policy.html" target="_blank" style="color:#00a896;">سياسة الخصوصية</a>.</span>
+          </label>
+          <button type="submit" id="srSubmit" class="aq-submit"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+        </form>
+        <div id="serviceRequestDone" style="display:none; text-align:center; padding:10px 0;">
+          <div style="font-size:42px; color:#16a34a;"><i class="fas fa-circle-check"></i></div>
+          <p style="font-weight:900; margin:8px 0 4px;">تم استلام طلبك بنجاح</p>
+          <p style="color:#64748b; font-size:13px; margin:0;">سنتواصل معك في أقرب وقت على الرقم الذي أدخلته.</p>
+        </div>
+        <button style="width:100%; margin-top:12px; padding:10px; background:#f1f5f9; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('serviceRequestModal')">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💬 زر «أنا عقار» العائم: المساعد الذكي والتواصل -->
+  <div class="aq-fab-wrap" id="aqFabWrap">
+    <div class="aq-fab-menu" id="aqFabMenu">
+      <button onclick="toggleAqFab(false); openAISearchModal()"><i class="fas fa-brain"></i> اسأل المساعد الذكي عن عقارك</button>
+      <button onclick="toggleAqFab(false); openServiceRequest('general')"><i class="fas fa-headset"></i> تواصل معنا / اطلب مساعدة</button>
+      <a href="add-property.html"><i class="fas fa-plus-circle"></i> أضف عقارك</a>
+      <a href="claim-profile.html"><i class="fas fa-user-check"></i> أنا وسيط: فعّل ملفي</a>
+    </div>
+    <button class="aq-fab" onclick="toggleAqFab()" aria-label="أنا عقار - المساعدة والتواصل"><i class="fas fa-comments"></i><span>أنا عقار</span></button>
   </div>
 
   <div class="royal-modal-overlay" id="favoritesModal">
@@ -2935,7 +3046,7 @@ function renderPropertiesList(list) {
       }
     });
   } else {
-    container.innerHTML = `<div style="text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات مطابقة لخيارات البحث.</div>`;
+    container.innerHTML = `<div style="text-align: center; padding: 40px; font-weight: 800; color: #64748b;">لا توجد عقارات في هذا القسم حاليًا.<br><span style="font-weight:600; font-size:13px;">هل لديك عقار مناسب؟ <a href="add-property.html" style="color:var(--primary-turquoise);">أضفه الآن</a></span></div>`;
   }
 }
 
@@ -3079,6 +3190,11 @@ function renderPropertiesList(list) {
         else if (currentTabType === 'rent') matchesTab = (p.dealType === 'rent');
         else if (currentTabType === 'golden') matchesTab = (p.isGolden === true);
         else if (currentTabType === 'roi') matchesTab = (parseFloat(p.roiPercent || '0') >= minRoi);
+        else if (currentTabType === 'residential') matchesTab = !isCommercialProperty(p);
+        else if (currentTabType === 'commercial') matchesTab = isCommercialProperty(p);
+        else if (['off_plan', 'under_construction', 'ready'].includes(currentTabType)) matchesTab = (p.completionStatus === currentTabType);
+        else if (currentTabType === 'offers') matchesTab = (p.hasOffer === true);
+        else if (currentTabType === 'no_commission') matchesTab = isNoCommissionProperty(p);
 
         const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
         const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice;
@@ -3094,6 +3210,7 @@ function renderPropertiesList(list) {
       else if (currentTabType === 'rent') titleEl.innerText = 'عقارات مخصصة للإيجار 🏢';
       else if (currentTabType === 'golden') titleEl.innerText = 'عقارات مؤهلة للإقامة الذهبية والجنسية 🏆';
       else if (currentTabType === 'roi') titleEl.innerText = 'أعلى فرص الاستثمار العقاري عائداً (ROI) 📈';
+      else if (CATEGORY_TITLES[currentTabType]) titleEl.innerText = CATEGORY_TITLES[currentTabType];
 
       if (filtered.length > RESULTS_CAP) {
         titleEl.innerText += ` — عرض ${RESULTS_CAP} من أصل ${filtered.length} نتيجة، ضيّق البحث لعرض الأنسب لك`;
@@ -3117,6 +3234,91 @@ function renderPropertiesList(list) {
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
     function closeRoyalModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // ==================== 🧭 الفئات والخدمات ====================
+    const COMMERCIAL_TYPE_WORDS = ['تجاري', 'مكتب', 'محل', 'مستودع', 'ورشة', 'معرض', 'مصنع'];
+    function isCommercialProperty(p) {
+      return COMMERCIAL_TYPE_WORDS.some(w => (p.propertyType || '').includes(w));
+    }
+    function isNoCommissionProperty(p) {
+      if (p.noCommission === true) return true;
+      if ((p.brokerRole || '') === 'مالك مباشر') return true;
+      return /^\s*0+(\.0+)?\s*%?\s*$/.test(String(p.commission ?? 'x'));
+    }
+    const CATEGORY_TITLES = {
+      residential: 'عقارات سكنية 🏡',
+      commercial: 'عقارات تجارية 🏬',
+      off_plan: 'مشاريع جديدة على الخارطة 🚀',
+      under_construction: 'مشاريع تحت الإنشاء 🏗️',
+      ready: 'عقارات جاهزة للاستلام 🔑',
+      offers: 'عروض وخصومات خاصة 🏷️',
+      no_commission: 'عقارات بدون عمولة — مباشرة من المالك 🤝'
+    };
+    function openPropertyCategory(type) {
+      document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));
+      const tab = document.querySelector(`.royal-tab[data-type="${type}"]`);
+      if (tab) tab.classList.add('active');
+      currentTabType = type;
+      updateSearchFieldsForTab(type);
+      executeSearch();
+    }
+
+    const SERVICE_INFO = {
+      general: ['تواصل مع فريق أنا عقار', 'اكتب سؤالك أو ما تحتاجه، وسيرد عليك فريقنا في أقرب وقت.'],
+      brokerage: ['خدمات الوساطة العقارية', 'تريد بيع عقارك أو تأجيره أو شراء عقار؟ اترك بياناتك ونربطك بوسيط مرخّص مناسب.'],
+      residency: ['الإقامة وتأسيس الشركات', 'إقامة المستثمر أو العمل، وتأسيس الشركات واستخراج الرخص التجارية. اترك طلبك ونوجّهك للجهة المختصة.'],
+      legal: ['الاستشارات القانونية العقارية', 'مراجعة العقود، ونزاعات الإيجار والبيع، وتوثيق الملكية. اترك طلبك ونربطك بمستشار قانوني.'],
+      property_services: ['خدمات عقارية', 'إدارة الأملاك، وتقييم العقارات، والصيانة والتنظيف. صف ما تحتاجه.'],
+      engineering: ['الاستشارات الهندسية', 'التصميم المعماري، والإشراف، وفحص العقار قبل الشراء أو الاستلام.'],
+      contracting: ['المقاولات', 'البناء، والتشطيب، والترميم. صف المشروع ومساحته وموقعه.'],
+      interior: ['تصميم الديكور', 'التصميم الداخلي والتأثيث لشقتك أو فيلتك أو مكتبك.'],
+      citizenship: ['الجنسية والإقامة عبر الاستثمار العقاري', 'تختلف الشروط والمبالغ من دولة لأخرى وتتغيّر من وقت لآخر. اترك طلبك لنرشدك إلى الخيارات المتاحة حاليًا.']
+    };
+    function openServiceRequest(key) {
+      const info = SERVICE_INFO[key] || SERVICE_INFO.general;
+      document.getElementById('srService').value = SERVICE_INFO[key] ? key : 'general';
+      document.getElementById('serviceRequestTitle').innerText = info[0];
+      document.getElementById('serviceRequestIntro').innerText = info[1];
+      document.getElementById('serviceRequestForm').style.display = '';
+      document.getElementById('serviceRequestDone').style.display = 'none';
+      document.getElementById('serviceRequestModal').style.display = 'flex';
+    }
+    async function submitServiceRequest(e) {
+      e.preventDefault();
+      const btn = document.getElementById('srSubmit');
+      const row = {
+        service: document.getElementById('srService').value,
+        name: document.getElementById('srName').value.trim(),
+        phone: document.getElementById('srPhone').value.trim(),
+        email: document.getElementById('srEmail').value.trim() || null,
+        city: document.getElementById('srCity').value.trim() || null,
+        details: document.getElementById('srDetails').value.trim() || null,
+        page: location.pathname
+      };
+      btn.disabled = true;
+      try {
+        const { error } = await supabaseClient.from('service_requests').insert(row);
+        if (error) throw error;
+        document.getElementById('serviceRequestForm').reset();
+        document.getElementById('serviceRequestForm').style.display = 'none';
+        document.getElementById('serviceRequestDone').style.display = '';
+        if (window.gtag) window.gtag('event', 'generate_lead', { service: row.service });
+      } catch (err) {
+        console.error('service request failed', err);
+        showAnaAqarToast('تعذّر إرسال الطلب الآن، حاول مرة أخرى بعد قليل', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    function toggleAqFab(force) {
+      const m = document.getElementById('aqFabMenu');
+      const open = typeof force === 'boolean' ? force : !m.classList.contains('open');
+      m.classList.toggle('open', open);
+    }
+    document.addEventListener('click', (ev) => {
+      const wrap = document.getElementById('aqFabWrap');
+      if (wrap && !wrap.contains(ev.target)) toggleAqFab(false);
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
       restoreSavedLanguageLabel();

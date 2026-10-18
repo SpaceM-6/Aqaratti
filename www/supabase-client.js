@@ -98,6 +98,11 @@ function mapSupabasePropertyToAnaAqar(row) {
     description: row.description,
     isVerified: !!row.license_number,
     permitNumber: row.permit_number || null,
+    completionStatus: row.completion_status || null,
+    noCommission: row.no_commission === true,
+    hasOffer: row.has_offer === true,
+    offerText: row.offer_text || null,
+    brokerRole: row.broker_role || null,
     broker: {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',

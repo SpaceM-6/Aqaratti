@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>طلبات الخدمات | إدارة AnaAqar</title>
+  <link rel="icon" type="image/png" href="../icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-client.js"></script>
+  <style>
+    :root { --teal:#00a896; --navy:#192038; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:#0f172a; }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; }
+    header b { color:var(--teal); font-size:20px; font-weight:900; }
+    header a { color:var(--teal); font-weight:800; text-decoration:none; font-size:14px; }
+    main { max-width:1000px; margin:0 auto; padding:20px 16px 40px; }
+    h1 { font-size:22px; margin:0 0 6px; color:var(--navy); }
+    .sub { color:var(--muted); margin:0 0 16px; font-size:14px; }
+    .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+    .pill { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:7px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .pill.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:12px; }
+    .row1 { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
+    .svc { font-weight:900; color:var(--navy); }
+    .date { color:var(--muted); font-size:12px; }
+    .meta { display:flex; gap:14px; flex-wrap:wrap; margin:10px 0; font-size:14px; }
+    .meta a { color:var(--teal); font-weight:800; text-decoration:none; }
+    .details { background:#f8fafc; border-radius:10px; padding:10px 12px; font-size:14px; white-space:pre-wrap; line-height:1.7; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .actions button { border:0; border-radius:10px; padding:8px 12px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .b-contacted { background:#fef3c7; color:#92400e; } .b-done { background:#dcfce7; color:#166534; } .b-new { background:#e0f2fe; color:#075985; }
+    .badge { font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; }
+    .empty, .gate { text-align:center; color:var(--muted); padding:40px 16px; font-weight:800; background:#fff; border:1px solid var(--line); border-radius:14px; }
+    .gate i { font-size:34px; display:block; margin-bottom:10px; }
+  </style>
+</head>
+<body>
+  <header><b>أنا عقار — الإدارة</b><a href="../index.html">العودة للموقع ←</a></header>
+  <main id="appRoot">
+    <h1>طلبات الخدمات</h1>
+    <p class="sub">الطلبات المرسلة من قسم «خدمات أنا عقار» وزر التواصل العائم في الصفحة الرئيسية.</p>
+    <div class="filters" id="filters">
+      <button class="pill active" data-f="open">الجديدة وقيد المتابعة</button>
+      <button class="pill" data-f="new">جديدة</button>
+      <button class="pill" data-f="contacted">تم التواصل</button>
+      <button class="pill" data-f="done">مكتملة</button>
+      <button class="pill" data-f="all">الكل</button>
+    </div>
+    <div id="list"><div class="empty"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div></div>
+  </main>
+
+  <script>
+    const SERVICE_NAMES = {
+      general: 'تواصل عام', brokerage: 'خدمات الوساطة العقارية', residency: 'الإقامة وتأسيس الشركات',
+      legal: 'الاستشارات القانونية', property_services: 'خدمات عقارية', engineering: 'استشارات هندسية',
+      contracting: 'المقاولات', interior: 'تصميم الديكور', citizenship: 'الجنسية عبر الاستثمار'
+    };
+    const STATUS = { new: ['جديد', 'b-new'], contacted: ['تم التواصل', 'b-contacted'], done: ['مكتمل', 'b-done'] };
+    let filter = 'open';
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const waNum = p => String(p || '').replace(/\D/g, '');
+
+    async function load() {
+      const list = document.getElementById('list');
+      let q = supabaseClient.from('service_requests').select('*').order('created_at', { ascending: false }).limit(200);
+      if (filter === 'open') q = q.in('status', ['new', 'contacted']);
+      else if (filter !== 'all') q = q.eq('status', filter);
+      const { data, error } = await q;
+      if (error) {
+        list.innerHTML = `<div class="empty">تعذّر تحميل الطلبات. تأكد من تشغيل ملف supabase/service_requests.sql وأن حسابك مضاف كمدير.<br><small>${esc(error.message)}</small></div>`;
+        return;
+      }
+      if (!data.length) { list.innerHTML = '<div class="empty">لا توجد طلبات في هذا القسم.</div>'; return; }
+      list.innerHTML = data.map(r => {
+        const st = STATUS[r.status] || STATUS.new;
+        return `<div class="card">
+          <div class="row1">
+            <span class="svc"><i class="fas fa-bell-concierge" style="color:var(--teal)"></i> ${esc(SERVICE_NAMES[r.service] || r.service)}</span>
+            <span><span class="badge ${st[1]}">${st[0]}</span> <span class="date">${new Date(r.created_at).toLocaleString('ar-EG')}</span></span>
+          </div>
+          <div class="meta">
+            <span><i class="fas fa-user"></i> ${esc(r.name)}</span>
+            <a href="tel:${esc(r.phone)}" dir="ltr"><i class="fas fa-phone"></i> ${esc(r.phone)}</a>
+            <a href="https://wa.me/${waNum(r.phone)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>
+            ${r.email ? `<a href="mailto:${esc(r.email)}" dir="ltr"><i class="fas fa-envelope"></i> ${esc(r.email)}</a>` : ''}
+            ${r.city ? `<span><i class="fas fa-location-dot"></i> ${esc(r.city)}</span>` : ''}
+          </div>
+          ${r.details ? `<div class="details">${esc(r.details)}</div>` : ''}
+          <div class="actions">
+            ${r.status !== 'contacted' ? `<button class="b-contacted" onclick="setStatus(${r.id}, 'contacted')">تم التواصل</button>` : ''}
+            ${r.status !== 'done' ? `<button class="b-done" onclick="setStatus(${r.id}, 'done')">مكتمل</button>` : ''}
+            ${r.status !== 'new' ? `<button class="b-new" onclick="setStatus(${r.id}, 'new')">إعادة كجديد</button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    async function setStatus(id, status) {
+      const { error } = await supabaseClient.from('service_requests').update({ status }).eq('id', id);
+      if (error) { alert('تعذّر التحديث: ' + error.message); return; }
+      load();
+    }
+
+    document.querySelectorAll('#filters .pill').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#filters .pill').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); filter = b.dataset.f; load();
+    }));
+
+    (async function init() {
+      const user = await getCurrentAnaAqarUser();
+      if (!user) {
+        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>يجب تسجيل الدخول بحساب الإدارة.<br><a href="../index.html" style="color:var(--teal)">العودة للصفحة الرئيسية لتسجيل الدخول</a></div>`;
+        return;
+      }
+      load();
+    })();
+  </script>
+</body>
+</html>
