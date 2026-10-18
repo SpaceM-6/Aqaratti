@@ -102,11 +102,8 @@
     <!-- الخطوة 3: رمز التحقق -->
     <section id="step3" class="hidden">
       <h2>أدخل رمز التحقق</h2>
-      <p class="sub">أرسلنا رمزًا من 6 أرقام إلى <b id="maskedEmail" dir="ltr"></b></p>
-      <div class="otp" id="otp">
-        <input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1">
-        <input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1"><input type="text" inputmode="numeric" maxlength="1">
-      </div>
+      <p class="sub">أرسلنا رمز التحقق إلى <b id="maskedEmail" dir="ltr"></b></p>
+      <input type="text" id="otpInput" inputmode="numeric" autocomplete="one-time-code" maxlength="10" dir="ltr" placeholder="• • • • • • • •" style="text-align:center; font-size:24px; font-weight:900; letter-spacing:6px; margin-top:8px;">
       <div class="err" id="err3" style="text-align:center"></div>
       <button class="btn" id="verify">تحقق</button>
       <button class="btn ghost" data-back="2">تغيير البريد</button>
@@ -222,7 +219,7 @@
       await sendCode();
       const [u, d] = email.split('@');
       $('maskedEmail').textContent = u[0] + '•••@' + d;
-      go(3); document.querySelector('#otp input').focus();
+      go(3); $('otpInput').value = ''; $('otpInput').focus();
     } catch (e) {
       console.error(e);
       $('err2').textContent = /rate|seconds/i.test(e.message || '') ? 'طلبات كثيرة، انتظر دقيقة ثم حاول مرة أخرى.' : 'تعذر إرسال الرمز الآن، حاول بعد قليل.';
@@ -234,22 +231,14 @@
     catch { $('err3').style.color = ''; $('err3').textContent = 'انتظر دقيقة قبل إعادة الإرسال.'; }
   };
 
-  const otpInputs = [...document.querySelectorAll('#otp input')];
-  otpInputs.forEach((inp, i) => {
-    inp.addEventListener('input', () => {
-      const v = inp.value.replace(/\D/g,'');
-      if (v.length > 1) { v.split('').slice(0,6).forEach((c,j) => { if (otpInputs[j]) otpInputs[j].value = c; }); otpInputs[Math.min(v.length,6)-1].focus(); return; }
-      inp.value = v; if (v && otpInputs[i+1]) otpInputs[i+1].focus();
-    });
-    inp.addEventListener('keydown', e => { if (e.key==='Backspace' && !inp.value && otpInputs[i-1]) otpInputs[i-1].focus(); });
-  });
-  otpInputs.forEach(i => i.removeAttribute('maxlength'));
+  $('otpInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+  $('otpInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('verify').click(); });
 
   $('verify').onclick = async () => {
     const btn = $('verify');
-    const token = otpInputs.map(i => i.value).join('');
+    const token = ($('otpInput').value || '').replace(/\D/g, '');
     $('err3').style.color = '';
-    if (token.length !== 6) { $('err3').textContent = 'أدخل الرمز كاملًا (6 أرقام).'; return; }
+    if (token.length < 6) { $('err3').textContent = 'أدخل الرمز كاملًا كما وصلك في البريد.'; return; }
     busy(btn, true, 'جارٍ التحقق...');
     const { error } = await supabaseClient.auth.verifyOtp({ email: currentEmail, token, type: 'email' });
     busy(btn, false, 'تحقق');

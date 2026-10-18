@@ -2262,10 +2262,15 @@
         <!-- ✉️ تظهر بدل نموذج التسجيل عند الحاجة لتأكيد البريد الإلكتروني (بدل alert() قديم) -->
         <div id="authConfirmPanel" class="auth-confirm-panel" style="display:none;">
           <div class="auth-confirm-icon"><i class="fas fa-envelope-circle-check"></i></div>
-          <h3>تم إنشاء حسابك بنجاح 🎉</h3>
-          <p>أرسلنا رابط تأكيد إلى <span class="auth-confirm-email" id="authConfirmEmailText"></span>.<br>افتح بريدك واضغط الرابط لتفعيل حسابك، ثم سجّل دخولك.</p>
-          <button type="button" class="auth-resend-link" onclick="resendConfirmationEmail()">لم يصلك البريد؟ إعادة الإرسال</button>
-          <button type="button" class="auth-confirm-ok-btn" onclick="closeAuthConfirmPanel()">حسناً، فهمت</button>
+          <h3 id="authConfirmTitle">تم إنشاء حسابك بنجاح 🎉</h3>
+          <p>أرسلنا رمز تأكيد إلى <span class="auth-confirm-email" id="authConfirmEmailText"></span>.<br>اكتب الرمز هنا لتفعيل حسابك والدخول مباشرة:</p>
+          <input type="text" id="authOtpInput" inputmode="numeric" autocomplete="one-time-code" maxlength="10" dir="ltr" placeholder="• • • • • • • •"
+                 style="width:100%; padding:12px; margin:6px 0 4px; border-radius:8px; border:1.5px solid #cbd5e1; text-align:center; font-size:24px; font-weight:900; letter-spacing:6px;"
+                 oninput="this.value = this.value.replace(/\D/g, '')" onkeydown="if (event.key === 'Enter') confirmSignupOtp()">
+          <p id="authOtpError" style="display:none; color:#dc2626; font-size:12px; font-weight:800; margin:4px 0;"></p>
+          <button type="button" id="authOtpSubmitBtn" class="auth-confirm-ok-btn" onclick="confirmSignupOtp()">تأكيد الحساب والدخول</button>
+          <button type="button" class="auth-resend-link" onclick="resendConfirmationEmail()">لم يصلك الرمز؟ إعادة الإرسال</button>
+          <button type="button" class="auth-resend-link" style="color:#94a3b8; display:block; margin:8px auto 0;" onclick="closeAuthConfirmPanel()">إلغاء</button>
         </div>
 
         <button id="authCancelBtn" style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('loginModal')">إلغاء</button>
@@ -2449,14 +2454,44 @@
     let pendingConfirmEmail = '';
 
     // يُظهر لوحة "تحقق من بريدك" بدل نموذج التسجيل (بدل alert() قديم)
-    function showAuthConfirmPanel(email) {
+    function showAuthConfirmPanel(email, title) {
       pendingConfirmEmail = email;
       document.getElementById('authConfirmEmailText').innerText = email;
+      document.getElementById('authConfirmTitle').innerText = title || 'تم إنشاء حسابك بنجاح 🎉';
+      document.getElementById('authOtpInput').value = '';
+      document.getElementById('authOtpError').style.display = 'none';
+      hideAuthError();
       document.getElementById('registerAuthForm').style.display = 'none';
       document.getElementById('loginAuthForm').style.display = 'none';
       document.querySelector('.auth-tabs').style.display = 'none';
       document.getElementById('authCancelBtn').style.display = 'none';
       document.getElementById('authConfirmPanel').style.display = 'block';
+      setTimeout(() => document.getElementById('authOtpInput').focus(), 50);
+    }
+
+    // ✅ تأكيد الحساب برمز البريد (بدل الرابط) ثم الدخول مباشرة
+    async function confirmSignupOtp() {
+      const token = (document.getElementById('authOtpInput').value || '').replace(/\D/g, '');
+      const errEl = document.getElementById('authOtpError');
+      errEl.style.display = 'none';
+      if (token.length < 6) { errEl.innerText = 'اكتب الرمز كاملًا كما وصلك في البريد.'; errEl.style.display = 'block'; return; }
+      const btn = document.getElementById('authOtpSubmitBtn');
+      btn.disabled = true; btn.innerText = 'جاري التأكيد...';
+      let { error } = await supabaseClient.auth.verifyOtp({ email: pendingConfirmEmail, token, type: 'signup' });
+      if (error) ({ error } = await supabaseClient.auth.verifyOtp({ email: pendingConfirmEmail, token, type: 'email' }));
+      btn.disabled = false; btn.innerText = 'تأكيد الحساب والدخول';
+      if (error) {
+        errEl.innerText = 'الرمز غير صحيح أو انتهت صلاحيته. اطلب رمزًا جديدًا ثم حاول مرة أخرى.';
+        errEl.style.display = 'block';
+        return;
+      }
+      document.getElementById('authConfirmPanel').style.display = 'none';
+      document.querySelector('.auth-tabs').style.display = 'flex';
+      document.getElementById('authCancelBtn').style.display = 'block';
+      switchAuthTab('login');
+      closeRoyalModal('loginModal');
+      await refreshAnaAqarAuthUI();
+      showAnaAqarToast('🎉 تم تأكيد حسابك وتسجيل دخولك بنجاح!', 'success');
     }
 
     function closeAuthConfirmPanel() {
@@ -2472,10 +2507,10 @@
       if (!targetEmail) return;
       const { error } = await supabaseClient.auth.resend({ type: 'signup', email: targetEmail });
       if (error) {
-        showAnaAqarToast('تعذر إعادة إرسال رابط التأكيد، حاول لاحقاً.', 'error');
+        showAnaAqarToast('انتظر دقيقة ثم أعد المحاولة لإرسال رمز جديد.', 'error');
         return;
       }
-      showAnaAqarToast('تم إرسال رابط التأكيد مجدداً، تحقق من بريدك.', 'info');
+      showAnaAqarToast('أرسلنا رمز تأكيد جديدًا إلى بريدك.', 'info');
     }
 
     async function handleAnaAqarLogin() {
@@ -2494,7 +2529,9 @@
       if (error) {
         const msg = (error.message || '').toLowerCase();
         if (error.code === 'email_not_confirmed' || msg.includes('email not confirmed')) {
-          showAuthErrorWithResend('بريدك الإلكتروني غير مؤكَّد بعد. تحقق من صندوق الوارد واضغط رابط التأكيد أولاً.', email);
+          // بريد غير مؤكد: نفتح خانة الرمز مباشرة. الرمز السابق (إن وصل) يبقى صالحًا لفترة،
+          // ويمكن طلب رمز جديد من زر "إعادة الإرسال".
+          showAuthConfirmPanel(email, 'أكّد بريدك الإلكتروني أولًا ✉️');
         } else {
           showAuthError('فشل تسجيل الدخول: تأكد من البريد وكلمة المرور.');
         }
