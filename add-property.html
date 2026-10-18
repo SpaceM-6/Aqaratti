@@ -102,6 +102,11 @@
     .hero-banner h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
     .hero-banner p { font-size: 15px; color: #cbd5e1; }
 
+    .trial-banner { display:flex; gap:12px; align-items:flex-start; max-width:900px; margin:0 auto 18px; background:#ecfdf5; border:1.5px solid #a7f3d0; color:#065f46; border-radius:14px; padding:14px 16px; }
+    .trial-banner i { font-size:24px; margin-top:2px; }
+    .trial-banner b { display:block; font-size:15px; margin-bottom:4px; }
+    .trial-banner span { font-size:13px; line-height:1.7; }
+    .trial-chip { margin:10px 0 4px; font-size:12px; font-weight:900; color:#047857; background:#d1fae5; border-radius:999px; padding:4px 10px; display:inline-block; }
     .pricing-section-title {
       text-align: center;
       font-size: 22px;
@@ -355,18 +360,25 @@
       <a href="index.html" style="color:var(--primary-turquoise); text-decoration:underline;">اضغط هنا للعودة للصفحة الرئيسية وتسجيل الدخول</a>
     </div>
 
-    <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
+    <h2 class="pricing-section-title">اختر باقتك — <span style="color:var(--primary-turquoise);">أول 3 أشهر مجانًا</span></h2>
+      <div class="trial-banner">
+        <i class="fas fa-gift"></i>
+        <div>
+          <b>الاشتراك مجاني بالكامل لأول 3 أشهر من تاريخ نشر إعلانك.</b>
+          <span>بعد انتهاء الفترة المجانية تُحتسب الباقة التي تختارها الآن. سنُبلغك قبل انتهائها بـ 7 أيام على الأقل، ويمكنك الإلغاء أو تغيير الباقة في أي وقت قبل ذلك دون أي رسوم.</span>
+        </div>
+      </div>
     <div class="pricing-grid">
       
       <div class="pricing-card" onclick="selectPlan('single', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box" data-price-aed="75">AED 75</div>
-          <div class="save-badge">خصم 33% 🏷️</div>
+            <span style="font-size:12px; color:#64748b; font-weight:800;">لعقار واحد</span>
         </div>
         <div class="plan-price" data-price-aed="50" data-price-suffix="/ إعلان">AED 50 / إعلان</div>
         <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
       <div class="pricing-card" onclick="selectPlan('monthly', this)">
@@ -376,7 +388,8 @@
         </div>
         <div class="plan-price" data-price-aed="500" data-price-suffix="/ شهر">AED 500 / شهر</div>
         <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
       <div class="pricing-card" onclick="selectPlan('semi', this)">
@@ -387,7 +400,8 @@
         </div>
         <div class="plan-price" data-price-aed="2500" data-price-suffix="/ 6 أشهر">AED 2,500 / 6 أشهر</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
       <div class="pricing-card best-value" onclick="selectPlan('yearly', this)">
@@ -399,7 +413,8 @@
         </div>
         <div class="plan-price" data-price-aed="3999" data-price-suffix="/ سنة">AED 3,999 / سنة</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء للاستخدام المتواصل</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
     </div>
@@ -434,7 +449,7 @@
           </div>
           <div class="form-group">
             <label>اسم الشركة العقارية / المكتب (إن وجد)</label>
-            <input type="text" id="brokerAgencyInput" placeholder="مثال: إعمار العقارية">
+            <input type="text" id="brokerAgencyInput" placeholder="مثال: مكتب الأفق للوساطة العقارية">
           </div>
         </div>
 
@@ -628,7 +643,7 @@
           </div>
 
           <button type="submit" id="submitBtn" class="btn-submit" style="display: none;">
-            <i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText"></span>)
+            <i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText"></span>)
           </button>
         </div>
 
@@ -650,8 +665,8 @@
       <div class="footer-col">
         <h4>خدماتنا</h4>
         <ul>
-          <li><a href="#">تسويق العمولات</a></li>
-          <li><a href="#">بوابة الوسطاء</a></li>
+          <li><a href="brokers-directory.html">بوابة الوسطاء</a></li>
+          <li><a href="claim-profile.html">فعّل ملفك كوسيط</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -895,12 +910,14 @@
         completion_status: document.getElementById('completionStatusInput').value,
         no_commission: document.getElementById('noCommissionInput').checked,
         has_offer: document.getElementById('hasOfferInput').checked,
-        offer_text: document.getElementById('hasOfferInput').checked ? (document.getElementById('offerTextInput').value.trim() || null) : null
+        offer_text: document.getElementById('hasOfferInput').checked ? (document.getElementById('offerTextInput').value.trim() || null) : null,
+        subscription_plan: selectedPlanCode || null,
+        trial_ends_at: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
       };
 
       // احتياط: إن لم تُضف الأعمدة الجديدة بعد في قاعدة البيانات (supabase/property_listing_fields.sql)،
       // يُحذف العمود غير الموجود ويُعاد الحفظ بدل أن يفشل نشر الإعلان كله (ورقم التصريح يُحفظ داخل الوصف).
-      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text'];
+      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at'];
       let rowToSave = { ...propertyRow };
       let { error } = await supabaseClient.from('properties').insert(rowToSave);
       for (let attempt = 0; error && attempt < OPTIONAL_COLUMNS.length; attempt++) {
@@ -914,7 +931,7 @@
       }
 
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText">${selectedPlanPrice}</span>)`;
+      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText">${selectedPlanPrice}</span>)`;
 
       if (error) {
         alert('حدث خطأ أثناء إرسال العقار: ' + error.message);
@@ -922,7 +939,7 @@
       }
 
       // 💳 بوابة الدفع الفعلية غير مفعّلة بعد — الاشتراك يبقى صوريًا حالياً بانتظار ربط وسيلة دفع حقيقية
-      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته والموافقة عليه من إدارة AnaAqar.');
+      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته. اشتراكك مجاني لأول 3 أشهر.');
       window.location.href = 'index.html';
     }
 

@@ -599,15 +599,13 @@
       <div>
         <div class="sub-nav-tabs">
           <div class="sub-tab-item active" onclick="scrollToSection('secDetails')"><i class="fas fa-list"></i> التفاصيل</div>
-          <div class="sub-tab-item" onclick="scrollToSection('secPlans')"><i class="fas fa-drafting-compass"></i> المخططات</div>
           <div class="sub-tab-item" onclick="scrollToSection('secMortgage')"><i class="fas fa-calculator"></i> رهن عقاري</div>
-          <div class="sub-tab-item" onclick="scrollToSection('secAmenities')"><i class="fas fa-concierge-bell"></i> الخدمات</div>
           <div class="sub-tab-item" onclick="scrollToSection('secLocation')"><i class="fas fa-map-marker-alt"></i> الموقع</div>
         </div>
 
         <div class="property-header-box" id="secDetails">
           <div class="main-price-text" id="propPrice" data-price-aed="645000">AED 645,000</div>
-          <h1 class="property-sub-title" id="propTitle">بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي</h1>
+          <h1 class="property-sub-title" id="propTitle">جاري تحميل بيانات العقار...</h1>
           <p style="color:var(--primary-turquoise); font-weight:800; font-size:12px;">استوديو سكاي لاين │ إطلالة على المسبح والمنتزه</p>
         </div>
 
@@ -646,7 +644,7 @@
           </div>
         </div>
 
-        <div class="info-section-card" id="secAmenities">
+        <div class="info-section-card" id="secAmenities" style="display:none;">
           <div class="info-card-title">الميزات الرئيسية ووسائل الراحة</div>
           <div class="amenities-list-grid">
             <div class="amenity-item-bullet"><i class="fas fa-circle"></i> تخطيط الاستوديو العصري</div>
@@ -664,12 +662,10 @@
 
         <div class="info-section-card">
           <div class="info-card-title">وصف العقار التفصيلي</div>
-          <p style="color:#334155; font-weight:700; font-size:12px; line-height:1.7;" id="propFullDesc">
-            هذه الشقة السكنية الاستوديو للبيع في مشروع Binghatti Luxuria بمثلث قرية جميرا JVT دبي، تقدم تصميماً مدمجاً وفعالاً مثالياً للمقيمين أو المستثمرين. تقع الوحدة في مشروع حديث مرتفع مع مساحات لوبي متعددة وتطل على مناطق المجتمع ذات المناظر الطبيعية والإطلالات المباشرة على أفق المدينة.
-          </p>
+          <p style="color:#334155; font-weight:700; font-size:12px; line-height:1.7;" id="propFullDesc"></p>
         </div>
 
-        <div class="info-section-card" id="secPlans">
+        <div class="info-section-card" id="secPlans" style="display:none;">
           <div class="info-card-title">المخططات الطابقية 3D & 2D</div>
           <div style="text-align:center; padding:10px; background:#f1f5f9; border-radius:8px;">
             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" style="max-width:100%; border-radius:6px; height:180px; object-fit:cover;" alt="المخطط الطابقي">
@@ -731,23 +727,22 @@
       <div>
         <div class="trubroker-sidebar-card">
           <div class="trubroker-header-bg">
-            <span><i class="fas fa-shield-alt"></i> TruBroker™</span>
-            <span>معتمد</span>
+            <span><i class="fas fa-id-badge"></i> بيانات المعلن</span>
+            <span></span>
           </div>
 
           <div class="broker-profile-center">
             <img id="brokerAvatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" class="broker-avatar-img" alt="صورة الوسيط">
-            <h3 class="broker-name-heading" id="brokerName">إبراهيم عبد العاطي إبراهيم</h3>
-            <p style="font-size:11px; color:var(--text-muted); font-weight:800;" id="brokerAgency">سكويا العقارية SEQUOIA</p>
+            <h3 class="broker-name-heading" id="brokerName"></h3>
+            <p style="font-size:11px; color:var(--text-muted); font-weight:800;" id="brokerAgency"></p>
             
             <div style="margin-top:4px; font-size:11px; font-weight:800; color:var(--primary-turquoise);">
-              <i class="fas fa-envelope"></i> <span id="brokerEmailText">ibrahim.broker@anaaqar.com</span>
+              <i class="fas fa-envelope"></i> <span id="brokerEmailText"></span>
             </div>
           </div>
 
           <div class="broker-tags-row">
-            <span class="broker-tag">💎 معلن بجودة عالية</span>
-            <span class="broker-tag">⚡ سريع الاستجابة</span>
+
           </div>
 
           <div class="broker-contact-buttons">
@@ -782,10 +777,10 @@
 
   <!-- 📱 شريط أزرار اتصل وواتساب مثبت بأسفل الجوال لتسهيل التواصل -->
   <div class="mobile-sticky-contact-bar">
-    <a href="tel:0501234567" class="btn-mobile-contact btn-mob-call">
+    <a href="#" id="mobCallBtn" class="btn-mobile-contact btn-mob-call">
       <i class="fas fa-phone-alt"></i> اتصل بالوسيط
     </a>
-    <a href="https://api.whatsapp.com/send?phone=971501234567" class="btn-mobile-contact btn-mob-wa">
+    <a href="#" id="mobWaBtn" target="_blank" rel="noopener noreferrer" class="btn-mobile-contact btn-mob-wa">
       <i class="fab fa-whatsapp"></i> واتساب
     </a>
   </div>
@@ -800,16 +795,16 @@
 
         <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px; font-weight:900;">
           <div style="font-size:10px; color:var(--text-muted);">رقم الهاتف:</div>
-          <div style="font-size:18px; color:var(--primary-turquoise);" id="modalPhoneVal">0501234567</div>
+          <div style="font-size:18px; color:var(--primary-turquoise);" id="modalPhoneVal"></div>
         </div>
 
         <div style="background:#f1f5f9; padding:8px; border-radius:8px; margin-bottom:12px; font-weight:800; font-size:11px; color:var(--dubizzle-navy);">
           <i class="fas fa-envelope" style="color:var(--primary-turquoise);"></i> البريد الإلكتروني: <br>
-          <strong id="modalEmailVal">ibrahim.broker@anaaqar.com</strong>
+          <strong id="modalEmailVal"></strong>
         </div>
 
         <div style="display:flex; gap:6px;">
-          <a id="directCallAnchor" href="tel:0501234567" class="btn-broker-action btn-call-bg" style="flex:1;">
+          <a id="directCallAnchor" href="#" class="btn-broker-action btn-call-bg" style="flex:1;">
             <i class="fas fa-phone-alt"></i> اتصل الآن
           </a>
           <button class="btn-broker-action btn-email-bg" style="flex:1;" onclick="copyPhoneToClipboard()">
@@ -894,8 +889,8 @@
       return `https://www.google.com/maps?q=${query}&output=embed`;
     }
 
-    let currentBrokerPhone = "0501234567";
-    let currentBrokerEmail = "ibrahim.broker@anaaqar.com";
+    let currentBrokerPhone = "";
+    let currentBrokerEmail = "info@anaaqar.com";
     let currentBrokerId = null;
     let currentPropertyId = null;
     let currentPropertyTitle = "";
@@ -1165,7 +1160,7 @@
         document.getElementById('brokerAgency').innerText = broker.agency || 'AnaAqar';
         const avatarEl = document.getElementById('brokerAvatar');
         if (avatarEl && broker.avatar) avatarEl.src = broker.avatar;
-        currentBrokerPhone = broker.phone || '971501234567';
+        currentBrokerPhone = broker.phone ? String(broker.phone) : '';
         currentBrokerEmail = broker.email || 'info@anaaqar.com';
 
         updatePropertySEO(property, propertyImagesList[0], priceAED);
@@ -1176,6 +1171,17 @@
       document.getElementById('modalEmailVal').innerText = currentBrokerEmail;
       document.getElementById('modalPhoneVal').innerText = currentBrokerPhone;
       document.getElementById('directCallAnchor').href = `tel:${currentBrokerPhone}`;
+      // لا رقم حقيقي للمعلن ← نخفي أزرار الاتصال/واتساب ونوجّه الزائر لنموذج الاستفسار بدل رقم وهمي
+      const waNum = currentBrokerPhone.replace(/\D/g, '').replace(/^0/, '971');
+      const mobCall = document.getElementById('mobCallBtn'), mobWa = document.getElementById('mobWaBtn');
+      if (currentBrokerPhone) {
+        if (mobCall) mobCall.href = `tel:${currentBrokerPhone}`;
+        if (mobWa) mobWa.href = `https://api.whatsapp.com/send?phone=${waNum}`;
+      } else {
+        document.querySelectorAll('.btn-whatsapp-bg, .btn-call-bg, .mobile-sticky-contact-bar').forEach(el => { el.style.display = 'none'; });
+        const box = document.querySelector('.broker-contact-buttons');
+        if (box && !document.getElementById('noPhoneNote')) box.insertAdjacentHTML('afterbegin', '<p id="noPhoneNote" style="font-size:12px; color:#64748b; font-weight:700; margin:0 0 8px;">لم يضف المعلن رقم هاتف. أرسل استفسارك عبر البريد وسيصله مباشرة.</p>');
+      }
 
       calculateMortgage();
       loadPropertyReviewsList();

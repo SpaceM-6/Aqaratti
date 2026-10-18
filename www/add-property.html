@@ -102,6 +102,11 @@
     .hero-banner h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
     .hero-banner p { font-size: 15px; color: #cbd5e1; }
 
+    .trial-banner { display:flex; gap:12px; align-items:flex-start; max-width:900px; margin:0 auto 18px; background:#ecfdf5; border:1.5px solid #a7f3d0; color:#065f46; border-radius:14px; padding:14px 16px; }
+    .trial-banner i { font-size:24px; margin-top:2px; }
+    .trial-banner b { display:block; font-size:15px; margin-bottom:4px; }
+    .trial-banner span { font-size:13px; line-height:1.7; }
+    .trial-chip { margin:10px 0 4px; font-size:12px; font-weight:900; color:#047857; background:#d1fae5; border-radius:999px; padding:4px 10px; display:inline-block; }
     .pricing-section-title {
       text-align: center;
       font-size: 22px;
@@ -355,18 +360,25 @@
       <a href="index.html" style="color:var(--primary-turquoise); text-decoration:underline;">اضغط هنا للعودة للصفحة الرئيسية وتسجيل الدخول</a>
     </div>
 
-    <h2 class="pricing-section-title">اختر باقة الاشتراك المناسبة لك أولاً:</h2>
+    <h2 class="pricing-section-title">اختر باقتك — <span style="color:var(--primary-turquoise);">أول 3 أشهر مجانًا</span></h2>
+      <div class="trial-banner">
+        <i class="fas fa-gift"></i>
+        <div>
+          <b>الاشتراك مجاني بالكامل لأول 3 أشهر من تاريخ نشر إعلانك.</b>
+          <span>بعد انتهاء الفترة المجانية تُحتسب الباقة التي تختارها الآن. سنُبلغك قبل انتهائها بـ 7 أيام على الأقل، ويمكنك الإلغاء أو تغيير الباقة في أي وقت قبل ذلك دون أي رسوم.</span>
+        </div>
+      </div>
     <div class="pricing-grid">
       
       <div class="pricing-card" onclick="selectPlan('single', this)">
         <div class="plan-name">باقة الإعلان الواحد</div>
         <div class="price-details-wrapper">
-          <div class="old-price-box" data-price-aed="75">AED 75</div>
-          <div class="save-badge">خصم 33% 🏷️</div>
+            <span style="font-size:12px; color:#64748b; font-weight:800;">لعقار واحد</span>
         </div>
         <div class="plan-price" data-price-aed="50" data-price-suffix="/ إعلان">AED 50 / إعلان</div>
         <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
       <div class="pricing-card" onclick="selectPlan('monthly', this)">
@@ -376,7 +388,8 @@
         </div>
         <div class="plan-price" data-price-aed="500" data-price-suffix="/ شهر">AED 500 / شهر</div>
         <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
       <div class="pricing-card" onclick="selectPlan('semi', this)">
@@ -387,7 +400,8 @@
         </div>
         <div class="plan-price" data-price-aed="2500" data-price-suffix="/ 6 أشهر">AED 2,500 / 6 أشهر</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
       <div class="pricing-card best-value" onclick="selectPlan('yearly', this)">
@@ -399,7 +413,8 @@
         </div>
         <div class="plan-price" data-price-aed="3999" data-price-suffix="/ سنة">AED 3,999 / سنة</div>
         <div class="plan-target">تناسب الشركات العقارية والوسطاء للاستخدام المتواصل</div>
-        <button type="button" class="btn-select-plan">اختر الباقة</button>
+        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
+          <button type="button" class="btn-select-plan">اختر الباقة</button>
       </div>
 
     </div>
@@ -434,7 +449,7 @@
           </div>
           <div class="form-group">
             <label>اسم الشركة العقارية / المكتب (إن وجد)</label>
-            <input type="text" id="brokerAgencyInput" placeholder="مثال: إعمار العقارية">
+            <input type="text" id="brokerAgencyInput" placeholder="مثال: مكتب الأفق للوساطة العقارية">
           </div>
         </div>
 
@@ -446,6 +461,16 @@
         </div>
         <p style="font-size:11px; color:#94a3b8; margin-top:-8px; margin-bottom:10px;">
           مطلوب للوسطاء وشركات التطوير حتى يتم اعتماد إعلانك من فريقنا. اختياري لمالك العقار المباشر.
+        </p>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>رقم تصريح الإعلان من دائرة الأراضي (Trakheesi) <span id="permitRequiredMark" style="color:#dc2626;">*</span></label>
+            <input type="text" id="permitNumberInput" inputmode="numeric" maxlength="30" placeholder="مثال: 7112345678">
+          </div>
+        </div>
+        <p id="permitHint" style="font-size:11px; color:#94a3b8; margin-top:-8px; margin-bottom:10px;">
+          إلزامي لكل عقار في دبي: تشترط دائرة الأراضي والأملاك استخراج تصريح إعلان قبل نشر أي عقار، ويظهر رقمه على الإعلان. اختياري لباقي المدن.
         </p>
 
         <div class="form-section-title" style="margin-top: 15px;">
@@ -470,6 +495,30 @@
               <option value="ستوديو">استوديو 🛋️</option>
             </select>
           </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>حالة العقار *</label>
+            <select id="completionStatusInput" required>
+              <option value="ready">جاهز للاستلام / السكن 🔑</option>
+              <option value="under_construction">تحت الإنشاء 🏗️</option>
+              <option value="off_plan">مشروع جديد على الخارطة 🚀</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>العمولة وعروض خاصة</label>
+            <label style="display:flex; gap:8px; align-items:center; font-weight:600; margin-top:6px;">
+              <input type="checkbox" id="noCommissionInput"> بدون عمولة على المشتري أو المستأجر
+            </label>
+            <label style="display:flex; gap:8px; align-items:center; font-weight:600; margin-top:6px;">
+              <input type="checkbox" id="hasOfferInput" onchange="document.getElementById('offerTextGroup').style.display = this.checked ? 'block' : 'none'"> يوجد عرض أو خصم خاص
+            </label>
+          </div>
+        </div>
+        <div class="form-group" id="offerTextGroup" style="display:none;">
+          <label>تفاصيل العرض</label>
+          <input type="text" id="offerTextInput" maxlength="140" placeholder="مثال: خصم 5% أو خطة سداد 1% شهريًا حتى الاستلام">
         </div>
 
         <div class="grid-2">
@@ -543,6 +592,18 @@
         </div>
 
         <div class="form-section-title" style="margin-top: 15px;">
+          <i class="fas fa-map-marker-alt"></i> موقع العقار الدقيق (اختياري)
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="captureAddPropertyLocation()" id="captureLocationBtn" style="width:100%; padding:12px; background:var(--turquoise-light); color:var(--primary-turquoise); border:1px dashed var(--primary-turquoise); border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">
+            <i class="fas fa-crosshairs"></i> استخدم موقعي الحالي للعقار
+          </button>
+          <p id="locationStatusText" style="font-size:11px; color:var(--text-muted); margin-top:6px;">يساعد هذا المستخدمين اللي يبحثون عن "عقارات قريبة مني" يلقون عقارك.</p>
+          <input type="hidden" id="propLatInput">
+          <input type="hidden" id="propLngInput">
+        </div>
+
+        <div class="form-section-title" style="margin-top: 15px;">
           <i class="fas fa-camera"></i> صور العقار
         </div>
 
@@ -582,7 +643,7 @@
           </div>
 
           <button type="submit" id="submitBtn" class="btn-submit" style="display: none;">
-            <i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText"></span>)
+            <i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText"></span>)
           </button>
         </div>
 
@@ -604,8 +665,8 @@
       <div class="footer-col">
         <h4>خدماتنا</h4>
         <ul>
-          <li><a href="#">تسويق العمولات</a></li>
-          <li><a href="#">بوابة الوسطاء</a></li>
+          <li><a href="brokers-directory.html">بوابة الوسطاء</a></li>
+          <li><a href="claim-profile.html">فعّل ملفك كوسيط</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -661,6 +722,34 @@
       el.classList.add('active');
     }
 
+    // 📍 يلتقط موقع الجهاز الحالي (إحداثيات GPS) ليُحفظ مع العقار لميزة "عقارات قريبة مني"
+    function captureAddPropertyLocation() {
+      const statusEl = document.getElementById('locationStatusText');
+      const btn = document.getElementById('captureLocationBtn');
+      if (!navigator.geolocation) {
+        statusEl.innerText = 'جهازك/متصفحك لا يدعم تحديد الموقع.';
+        return;
+      }
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارِ تحديد الموقع...';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.getElementById('propLatInput').value = pos.coords.latitude;
+          document.getElementById('propLngInput').value = pos.coords.longitude;
+          btn.innerHTML = '<i class="fas fa-check-circle"></i> تم تحديد الموقع بنجاح';
+          btn.style.color = 'var(--accent-green, #16a34a)';
+          statusEl.innerText = 'الموقع محفوظ وسيُرفع مع العقار.';
+          btn.disabled = false;
+        },
+        () => {
+          btn.innerHTML = '<i class="fas fa-crosshairs"></i> استخدم موقعي الحالي للعقار';
+          statusEl.innerText = 'تعذّر الوصول للموقع — تأكد من منح الإذن للموقع بالمتصفح.';
+          btn.disabled = false;
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
     function updateCities() {
       const country = document.getElementById('countryInput').value;
       const citySelect = document.getElementById('cityInput');
@@ -677,7 +766,18 @@
       handleCityChange(citySelect.value);
     }
 
+    // رقم تصريح الإعلان إلزامي لعقارات دبي فقط (اشتراط دائرة الأراضي والأملاك)
+    function updatePermitRequirement(selectedCity) {
+      const input = document.getElementById('permitNumberInput');
+      const mark = document.getElementById('permitRequiredMark');
+      if (!input) return;
+      const isDubai = (selectedCity || '').trim() === 'دبي';
+      input.required = isDubai;
+      if (mark) mark.style.display = isDubai ? 'inline' : 'none';
+    }
+
     function handleCityChange(selectedCity) {
+      updatePermitRequirement(selectedCity);
       const customCityGroup = document.getElementById('customCityGroup');
       const customCityInput = document.getElementById('customCityInput');
 
@@ -744,6 +844,12 @@
 
       const roleValue = document.getElementById('brokerRoleInput').value;
       const licenseValue = document.getElementById('licenseNumberInput').value.trim();
+      const permitValue = (document.getElementById('permitNumberInput')?.value || '').trim();
+      if (document.getElementById('cityInput').value === 'دبي' && !/^[0-9A-Za-z-]{5,30}$/.test(permitValue)) {
+        alert('يرجى إدخال رقم تصريح الإعلان الصادر من دائرة الأراضي والأملاك (Trakheesi). لا يمكن نشر عقار في دبي بدونه.');
+        document.getElementById('permitNumberInput').focus();
+        return;
+      }
       if (roleValue !== 'مالك مباشر' && !licenseValue) {
         const proceedAnyway = confirm('لم تُدخل رقم الرخصة/القيد المهني. الإعلانات التي بلا رقم رخصة قد تستغرق وقتاً أطول للمراجعة والاعتماد. هل تريد المتابعة على أي حال؟');
         if (!proceedAnyway) return;
@@ -782,7 +888,7 @@
       const bedrooms = bedsRaw === 'استوديو' ? 0 : parseInt(bedsRaw) || 0;
       const priceAED = parseFloat(document.getElementById('priceInput').value) || 0;
 
-      const { error } = await supabaseClient.from('properties').insert({
+      const propertyRow = {
         broker_id: user.id,
         title: document.getElementById('titleInput').value.trim(),
         description: document.getElementById('descInput').value.trim(),
@@ -797,11 +903,35 @@
         commission: '2%',
         image_urls: imageUrls,
         broker_role: roleValue,
-        license_number: licenseValue || null
-      });
+        license_number: licenseValue || null,
+        lat: document.getElementById('propLatInput').value ? parseFloat(document.getElementById('propLatInput').value) : null,
+        lng: document.getElementById('propLngInput').value ? parseFloat(document.getElementById('propLngInput').value) : null,
+        permit_number: permitValue || null,
+        completion_status: document.getElementById('completionStatusInput').value,
+        no_commission: document.getElementById('noCommissionInput').checked,
+        has_offer: document.getElementById('hasOfferInput').checked,
+        offer_text: document.getElementById('hasOfferInput').checked ? (document.getElementById('offerTextInput').value.trim() || null) : null,
+        subscription_plan: selectedPlanCode || null,
+        trial_ends_at: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
+      };
+
+      // احتياط: إن لم تُضف الأعمدة الجديدة بعد في قاعدة البيانات (supabase/property_listing_fields.sql)،
+      // يُحذف العمود غير الموجود ويُعاد الحفظ بدل أن يفشل نشر الإعلان كله (ورقم التصريح يُحفظ داخل الوصف).
+      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at'];
+      let rowToSave = { ...propertyRow };
+      let { error } = await supabaseClient.from('properties').insert(rowToSave);
+      for (let attempt = 0; error && attempt < OPTIONAL_COLUMNS.length; attempt++) {
+        const missing = OPTIONAL_COLUMNS.find(c => c in rowToSave && (error.message || '').includes(c));
+        if (!missing) break;
+        if (missing === 'permit_number' && rowToSave.permit_number) {
+          rowToSave.description = `${rowToSave.description || ''}\n\nرقم تصريح الإعلان: ${rowToSave.permit_number}`.trim();
+        }
+        delete rowToSave[missing];
+        ({ error } = await supabaseClient.from('properties').insert(rowToSave));
+      }
 
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText">${selectedPlanPrice}</span>)`;
+      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText">${selectedPlanPrice}</span>)`;
 
       if (error) {
         alert('حدث خطأ أثناء إرسال العقار: ' + error.message);
@@ -809,7 +939,7 @@
       }
 
       // 💳 بوابة الدفع الفعلية غير مفعّلة بعد — الاشتراك يبقى صوريًا حالياً بانتظار ربط وسيلة دفع حقيقية
-      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته والموافقة عليه من إدارة AnaAqar.');
+      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته. اشتراكك مجاني لأول 3 أشهر.');
       window.location.href = 'index.html';
     }
 

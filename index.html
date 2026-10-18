@@ -1672,7 +1672,8 @@
     .aq-tile b { font-size: 15px; color: var(--dubizzle-navy); }
     .aq-tile small { font-size: 12px; color: #64748b; line-height: 1.5; }
     .aq-ico { width: 42px; height: 42px; border-radius: 12px; display:grid; place-items:center; font-size:18px; color: var(--c); background: color-mix(in srgb, var(--c) 12%, #fff); margin-bottom: 4px; }
-    @media (max-width: 900px) { .aq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .aq-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 900px) { .aq-grid, .aq-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 380px) { .aq-tile { padding: 12px; } .aq-tile b { font-size: 14px; } }
     .aq-label { display:block; font-size:13px; font-weight:800; color:#334155; margin:10px 0 5px; }
     .aq-input { width:100%; box-sizing:border-box; padding:11px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-family:inherit; font-size:15px; background:#fff; color:#0f172a; }
@@ -1771,9 +1772,9 @@
             <a href="javascript:void(0)" onclick="openLoginModal()" class="anaaqar-auth-link" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
 
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
-            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('exploreSection').scrollIntoView({behavior:'smooth'})"><i class="fas fa-briefcase" style="color:var(--primary-turquoise);"></i> خدمات أنا عقار</a>
+            <a href="claim-profile.html"><i class="fas fa-user-check" style="color:var(--primary-turquoise);"></i> أنا وسيط: فعّل ملفي</a>
+            <a href="javascript:void(0)" onclick="openServiceRequest('general')"><i class="fas fa-headset" style="color:var(--primary-turquoise);"></i> تواصل معنا</a>
             <a href="brokers-directory.html"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوسطاء</a>
           </div>
         </div>
@@ -1900,9 +1901,9 @@
             <a href="javascript:void(0)" onclick="openLoginModal()" class="anaaqar-auth-link" style="color:var(--primary-turquoise); font-weight:900; background:#e6f7f5; border-bottom:2px solid var(--primary-turquoise);"><i class="fas fa-user-lock" style="color:var(--primary-turquoise);"></i> تسجيل الدخول أو إنشاء حساب</a>
             
             <div style="padding: 10px 16px; font-weight: bold; background: #f8fafc; font-size:12px;">خدمات المنصة</div>
-            <a href="javascript:void(0)" onclick="showServiceModal('market')"><i class="fas fa-chart-bar" style="color:var(--primary-turquoise);"></i> معلومات السوق</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('guides')"><i class="fas fa-user-tie" style="color:var(--primary-turquoise);"></i> المرشدون</a>
-            <a href="javascript:void(0)" onclick="showServiceModal('plans')"><i class="fas fa-drafting-compass" style="color:var(--primary-turquoise);"></i> مخططات الطوابق 3D</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('exploreSection').scrollIntoView({behavior:'smooth'})"><i class="fas fa-briefcase" style="color:var(--primary-turquoise);"></i> خدمات أنا عقار</a>
+            <a href="claim-profile.html"><i class="fas fa-user-check" style="color:var(--primary-turquoise);"></i> أنا وسيط: فعّل ملفي</a>
+            <a href="javascript:void(0)" onclick="openServiceRequest('general')"><i class="fas fa-headset" style="color:var(--primary-turquoise);"></i> تواصل معنا</a>
             <a href="brokers-directory.html"><i class="fas fa-building-user" style="color:var(--primary-turquoise);"></i> بوابة الوسطاء</a>
           </div>
         </div>
@@ -1924,7 +1925,7 @@
             <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
             <button class="royal-tab" data-type="residential" onclick="switchRoyalTab(this)"><i class="fas fa-house-chimney"></i> سكني</button>
             <button class="royal-tab" data-type="commercial" onclick="switchRoyalTab(this)"><i class="fas fa-store"></i> تجاري</button>
-            <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> العقارات الذهبية والجنسية</button>
+            <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> عقارات الإقامة الذهبية</button>
             <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
           </div>
           <div class="scroll-arrow left" onclick="scrollRoyalTabs(-1)"><i class="fas fa-chevron-left"></i></div>
@@ -1974,8 +1975,7 @@
 
         <div class="pearl-action-bar">
           <div class="hero-center-badges">
-            <button class="hero-badge-btn gold" onclick="triggerGoldenPassportFilter()"><i class="fas fa-crown"></i> عقار مقابل الجنسية/الإقامة</button>
-            <button class="hero-badge-btn ai-btn" onclick="openAISearchModal()"><i class="fas fa-brain"></i> البحث بالذكاء الاصطناعي</button>
+            <button class="hero-badge-btn ai-btn" onclick="openAISearchModal()"><i class="fas fa-wand-magic-sparkles"></i> البحث الذكي</button>
             <button class="hero-badge-btn ai-btn" id="nearMeBtn" onclick="searchPropertiesNearMe()"><i class="fas fa-location-crosshairs"></i> عقارات قريبة مني</button>
           </div>
           <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
@@ -1989,13 +1989,11 @@
   <section class="aq-explore" id="exploreSection">
     <div class="aq-explore-inner">
       <h2 class="aq-block-title"><i class="fas fa-compass"></i> تصفّح حسب الفئة</h2>
-      <div class="aq-grid">
+      <div class="aq-grid aq-grid-3">
         <button class="aq-tile" onclick="openPropertyCategory('off_plan')"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-rocket"></i></span><b>مشاريع جديدة</b><small>إطلاقات المطوّرين على الخارطة</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('under_construction')"><span class="aq-ico" style="--c:#f59e0b"><i class="fas fa-helmet-safety"></i></span><b>مشاريع تحت الإنشاء</b><small>استلام خلال الفترة القادمة</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('ready')"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></button>
-        <button class="aq-tile" onclick="openPropertyCategory('roi')"><span class="aq-ico" style="--c:#7c3aed"><i class="fas fa-chart-line"></i></span><b>العائد الاستثماري ROI</b><small>أعلى العقارات عائدًا سنويًا</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('offers')"><span class="aq-ico" style="--c:#e11d48"><i class="fas fa-tags"></i></span><b>العروض</b><small>خصومات وخطط سداد خاصة</small></button>
-        <button class="aq-tile" onclick="openPropertyCategory('golden')"><span class="aq-ico" style="--c:#d4af37"><i class="fas fa-passport"></i></span><b>عقار للإقامة الذهبية</b><small>عقارات بقيمة تؤهّل للتقدّم للإقامة</small></button>
         <button class="aq-tile" onclick="openServiceRequest('citizenship')"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('no_commission')"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>مباشرة من المالك</small></button>
       </div>
@@ -2025,37 +2023,30 @@
 
       <!-- 📢 العمود الأيسر: الشريط الجانبي للإعلانات المميزة والرعايات الحصرية (قابل للتمرير والنزول) -->
       <div class="bayut-sidebar-ads">
-        
-        <!-- إعلان بن غاطي مرسيدس بنز -->
-        <div class="ad-banner-card">
-          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=600" class="ad-banner-img" alt="إعلان مرسيدس بنز ريزيدنس">
-          <div class="ad-banner-body">
-            <div class="ad-title">Mercedes-Benz Places</div>
-            <div class="ad-subtitle">أول مدينة في العالم بتوقيع مرسيدس بنز 🏎️</div>
-            <a href="property-details.html?id=101" class="btn-ad-action">استفسر الآن ❯</a>
+        <div class="ad-banner-card" style="background: linear-gradient(135deg, #00a896, #028090); color: white;">
+          <div class="ad-banner-body" style="color:white;">
+            <i class="fas fa-bullhorn" style="font-size: 28px; margin-bottom: 8px;"></i>
+            <div class="ad-title" style="color:white;">أعلن عن عقارك مجانًا</div>
+            <div class="ad-subtitle" style="color:#e0f2f1;">الاشتراك مجاني لأول 3 أشهر لكل وسيط ومالك عقار.</div>
+            <a href="add-property.html" class="btn-ad-action" style="background:#fff; color:#028090;">أضف عقارك ❯</a>
           </div>
         </div>
-
-        <!-- إعلان الاستثمار الحصري -->
         <div class="ad-banner-card" style="background: linear-gradient(135deg, #192038, #0f172a); color: white;">
           <div class="ad-banner-body" style="color:white;">
-            <i class="fas fa-crown" style="font-size: 28px; color: var(--accent-gold); margin-bottom: 8px;"></i>
-            <div class="ad-title" style="color:white;">عقارات الإقامة الذهبية</div>
-            <div class="ad-subtitle" style="color:#cbd5e1;">احصل على الإقامة الدائمة والجنسية عبر الاستثمار العقاري الموثوق</div>
-            <a href="javascript:void(0)" onclick="triggerGoldenPassportFilter()" class="btn-ad-action" style="background: var(--accent-gold); color: var(--dubizzle-navy);">استكشف الفرص 💎</a>
+            <i class="fas fa-user-check" style="font-size: 28px; color: var(--accent-gold); margin-bottom: 8px;"></i>
+            <div class="ad-title" style="color:white;">أنت وسيط مسجّل لدى دائرة الأراضي؟</div>
+            <div class="ad-subtitle" style="color:#cbd5e1;">فعّل ملفك المهني مجانًا خلال دقيقتين.</div>
+            <a href="claim-profile.html" class="btn-ad-action" style="background: var(--accent-gold); color: var(--dubizzle-navy);">فعّل ملفي ❯</a>
           </div>
         </div>
-
-        <!-- إعلان العقارات الدولية -->
         <div class="ad-banner-card">
-          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600" class="ad-banner-img" alt="استثمار عقاري دولي">
           <div class="ad-banner-body">
-            <div class="ad-title">استثمار عقاري في لندن وباريس</div>
-            <div class="ad-subtitle">فرص عائد استثماري متزايد يصل إلى 10% 📈</div>
-            <a href="javascript:void(0)" onclick="selectCustomCountry('uk', 'بريطانيا', 'https://flagcdn.com/w40/gb.png')" class="btn-ad-action">شاهد مشاريع أوروبا ❯</a>
+            <i class="fas fa-bell-concierge" style="font-size: 28px; color: var(--primary-turquoise); margin-bottom: 8px;"></i>
+            <div class="ad-title">تحتاج خدمة عقارية؟</div>
+            <div class="ad-subtitle">قانونية، هندسية، مقاولات، ديكور، إدارة أملاك.</div>
+            <a href="javascript:void(0)" onclick="document.getElementById('exploreSection').scrollIntoView({behavior:'smooth'})" class="btn-ad-action">تصفّح الخدمات ❯</a>
           </div>
         </div>
-
       </div>
 
     </div>
@@ -2075,9 +2066,9 @@
       <i class="fas fa-plus-circle" style="font-size:22px;"></i>
       <span>إضافة عقار</span>
     </a>
-    <button class="mob-app-item" onclick="openAISearchModal()">
-      <i class="fas fa-brain"></i>
-      <span>AnaAqar AI</span>
+    <button class="mob-app-item" onclick="document.getElementById('exploreSection').scrollIntoView({behavior:'smooth'})">
+      <i class="fas fa-briefcase"></i>
+      <span>الخدمات</span>
     </button>
     <button class="mob-app-item" onclick="openLoginModal()">
       <i class="fas fa-user"></i>
@@ -2095,11 +2086,11 @@
 
         <div style="background:#f1f5f9; border:1px solid var(--dubizzle-border); padding:15px; border-radius:12px; margin-bottom:15px;">
           <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:4px;">رقم المالك / الوسيط المباشر:</div>
-          <div style="font-size:24px; font-weight:900; color:var(--primary-turquoise);" id="modalBrokerPhoneNum">0501234567</div>
+          <div style="font-size:24px; font-weight:900; color:var(--primary-turquoise);" id="modalBrokerPhoneNum"></div>
         </div>
 
         <div style="display:flex; gap:10px;">
-          <a id="modalDirectCallLink" href="tel:0501234567" class="btn-card-cta btn-cta-call" style="flex:1; justify-content:center; padding:12px;">
+          <a id="modalDirectCallLink" href="#" class="btn-card-cta btn-cta-call" style="flex:1; justify-content:center; padding:12px;">
             <i class="fas fa-phone-alt"></i> اتصل الآن
           </a>
           <button class="btn-card-cta btn-cta-view" style="flex:1; justify-content:center; padding:12px;" onclick="copyPhoneNumToClipboard()">
@@ -2192,9 +2183,8 @@
   <!-- 💬 زر «أنا عقار» العائم: المساعد الذكي والتواصل -->
   <div class="aq-fab-wrap" id="aqFabWrap">
     <div class="aq-fab-menu" id="aqFabMenu">
-      <button onclick="toggleAqFab(false); openAISearchModal()"><i class="fas fa-brain"></i> اسأل المساعد الذكي عن عقارك</button>
-      <button onclick="toggleAqFab(false); openServiceRequest('general')"><i class="fas fa-headset"></i> تواصل معنا / اطلب مساعدة</button>
-      <a href="add-property.html"><i class="fas fa-plus-circle"></i> أضف عقارك</a>
+      <button onclick="toggleAqFab(false); openServiceRequest('general')"><i class="fas fa-headset"></i> تواصل مع فريق أنا عقار</button>
+      <button onclick="toggleAqFab(false); openServiceRequest('brokerage')"><i class="fas fa-handshake"></i> أريد وسيطًا لبيع أو تأجير عقاري</button>
       <a href="claim-profile.html"><i class="fas fa-user-check"></i> أنا وسيط: فعّل ملفي</a>
     </div>
     <button class="aq-fab" onclick="toggleAqFab()" aria-label="أنا عقار - المساعدة والتواصل"><i class="fas fa-comments"></i><span>أنا عقار</span></button>
@@ -2228,9 +2218,9 @@
 
   <div class="royal-modal-overlay" id="aiSearchModal">
     <div class="royal-modal-card">
-      <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);"><i class="fas fa-robot" style="color: #c084fc;"></i><div class="royal-modal-title">البحث بالذكاء الاصطناعي AnaAqar AI</div></div>
+      <div class="royal-modal-header" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);"><i class="fas fa-robot" style="color: #c084fc;"></i><div class="royal-modal-title">البحث الذكي</div></div>
       <div class="royal-modal-body">
-        <textarea id="aiPromptInput" style="width:100%; height:80px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب مواصفات عقارك أو تحدث بالصوت (مثال: شقة للبيع في دبي بنفس مواصفات بن غاطي)..."></textarea>
+        <textarea id="aiPromptInput" style="width:100%; height:80px; padding:10px; border:2px solid #e2e8f0; border-radius:8px; outline:none; font-family:'Tajawal';" placeholder="اكتب مواصفات عقارك أو تحدث بالصوت (مثال: شقة للبيع في دبي بنفس مواصفات برج سكني)..."></textarea>
         
         <button id="voiceBtn" onclick="startVoiceRecognition()" style="width:100%; margin-top:10px; background:#f1f5f9; color:#1e293b; border:1px solid #cbd5e1; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
           <i class="fas fa-microphone" id="micIcon" style="color:var(--primary-turquoise); font-size:18px;"></i>
@@ -2294,7 +2284,7 @@
     let loadedScrapedList = [];
     let currentTabType = 'sale';
     let propertyCardImageIndices = {};
-    let activeCallPhone = "0501234567";
+    let activeCallPhone = "";
 
     // 🌙 الوضع الليلي: يُطبَّق فوراً قبل أي شي لتفادي وميض الوضع الفاتح، ويُحفظ اختيار المستخدم
     (function initDarkMode() {
@@ -2326,7 +2316,7 @@
     const rawPropertiesData = [
       {
         id: "101",
-        title: "بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
+        title: "برج لوكسوريا السكني، الضاحية 4، مثلث قرية جميرا (JVT)، دبي",
         priceAED: 645000,
         dealType: "sale",
         isGolden: true,
@@ -2334,8 +2324,8 @@
         bedrooms: 1,
         bathrooms: 1,
         area_m2: 336,
-        isVerified: true,
-        has3DTour: true,
+        isVerified: false,
+        has3DTour: false,
         propertyType: "شقة سكنية / استوديو",
         image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800",
         images: [
@@ -2344,7 +2334,7 @@
           "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600"
         ],
         commission: "1.5%",
-        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "سكويا العقارية SEQUOIA", phone: "0501234567", email: "ibrahim.broker@anaaqar.com", avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
+        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "عرض توضيحي — أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
       },
       {
         id: "102",
@@ -2356,8 +2346,8 @@
         bedrooms: 6,
         bathrooms: 7,
         area_m2: 650,
-        isVerified: true,
-        has3DTour: true,
+        isVerified: false,
+        has3DTour: false,
         propertyType: "فيلا مستقلة",
         image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800",
         images: [
@@ -2366,7 +2356,7 @@
           "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=600"
         ],
         commission: "2.0%",
-        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "شركة داماك DAMAC", phone: "0509876543", email: "sara.falasi@damacproperties.com", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
+        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "عرض توضيحي — أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
       },
       {
         id: "103",
@@ -2378,7 +2368,7 @@
         bedrooms: 2,
         bathrooms: 2,
         area_m2: 130,
-        isVerified: true,
+        isVerified: false,
         has3DTour: false,
         propertyType: "شقة سكنية",
         image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800",
@@ -2387,7 +2377,7 @@
           "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600"
         ],
         commission: "5%",
-        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "شريان العقارية", phone: "0505554433", email: "mazen.khaledi@anaaqar.com", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
+        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "عرض توضيحي — أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
       }
     ];
 
@@ -2829,7 +2819,7 @@ ${propertyUrl}`;
     }
 
     function openBrokerCallModal(brokerName, phoneNum) {
-      activeCallPhone = phoneNum || "0501234567";
+      activeCallPhone = phoneNum || "";
       document.getElementById('modalBrokerTitle').innerText = `التواصل مع ${brokerName || 'الوسيط'}`;
       document.getElementById('modalBrokerPhoneNum').innerText = activeCallPhone;
       document.getElementById('modalDirectCallLink').href = `tel:${activeCallPhone}`;
@@ -3013,14 +3003,14 @@ function renderPropertiesList(list) {
       /* 📌 جلب ومطابقة بيانات الوسيط الخاصة بهذا العقار تحديداً */
       const brokerInfo = prop.broker || { 
         brokerId: "b1", 
-        name: "إبراهيم عبد العاطي إبراهيم", 
-        agency: "سكويا العقارية SEQUOIA", 
-        phone: "0501234567", 
-        email: "ibrahim.broker@anaaqar.com",
+        name: "معلن على أنا عقار", 
+        agency: "أنا عقار", 
+        phone: null, 
+        email: null,
         avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" 
       };
 
-      const brokerProfileUrl = `broker-profile.html?id=${brokerInfo.brokerId || 'b1'}&name=${encodeURIComponent(brokerInfo.name)}&agency=${encodeURIComponent(brokerInfo.agency)}&phone=${brokerInfo.phone}&avatar=${encodeURIComponent(brokerInfo.avatar)}`;
+      const brokerProfileUrl = `broker-profile.html?id=${brokerInfo.brokerId || 'b1'}&name=${encodeURIComponent(brokerInfo.name)}&agency=${encodeURIComponent(brokerInfo.agency)}&phone=${brokerInfo.phone || ''}&avatar=${encodeURIComponent(brokerInfo.avatar)}`;
 
       const cardHTML = `
         <div class="bayut-property-card ${isVisited ? 'visited-card' : ''}" id="card-${prop.id}">
@@ -3037,7 +3027,6 @@ function renderPropertiesList(list) {
             <button class="card-img-arrow next" onclick="navigateCardImage('${prop.id}', 'next', event)"><i class="fas fa-chevron-left"></i></button>
             ` : ''}
             ${prop.isVerified ? `<span class="badge-trucheck-tag" title="تم التحقق من رخصة الوسيط"><i class="fas fa-check"></i></span>` : ''}
-            <span class="badge-quality-tag"><i class="fas fa-gem"></i> معلن بجودة عالية</span>
             <button class="btn-card-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite('${prop.id}', event)"><i class="fas fa-heart"></i></button>
             <button class="btn-card-fav ${isCompared ? 'active' : ''}" style="top:auto; bottom:12px; left:12px; z-index:6;" title="أضف للمقارنة" aria-label="أضف للمقارنة" onclick="toggleCompare('${prop.id}', event)"><i class="fas fa-code-compare"></i></button>
           </div>
@@ -3068,8 +3057,8 @@ function renderPropertiesList(list) {
               <div class="card-action-buttons">
                 <button class="btn-card-cta btn-cta-share" onclick="openAffiliateModal('${prop.id}')"><i class="fas fa-share-alt"></i> مشاركة</button>
                 <a href="javascript:void(0)" onclick="goToPropertyDetails('${prop.id}')" class="btn-card-cta btn-cta-view"><i class="fas fa-arrow-left"></i> التفاصيل</a>
-                <button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${brokerInfo.name}', '${brokerInfo.phone}')"><i class="fas fa-phone-alt"></i> اتصل</button>
-                <a href="https://api.whatsapp.com/send?phone=${(brokerInfo.phone || '0501234567').replace(/^0/, '971')}" target="_blank" rel="noopener noreferrer" class="btn-card-cta btn-cta-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                ${brokerInfo.phone ? `<button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${brokerInfo.name}', '${brokerInfo.phone}')"><i class="fas fa-phone-alt"></i> اتصل</button>
+                <a href="https://api.whatsapp.com/send?phone=${String(brokerInfo.phone).replace(/\D/g, '').replace(/^0/, '971')}" target="_blank" rel="noopener noreferrer" class="btn-card-cta btn-cta-whatsapp"><i class="fab fa-whatsapp"></i></a>` : ''}
               </div>
             </div>
           </div>
@@ -3081,9 +3070,9 @@ function renderPropertiesList(list) {
       if ((index + 1) % 5 === 0) {
         container.innerHTML += `
           <div style="background: linear-gradient(135deg, #0f172a, #192038); color: white; padding: 18px; border-radius: 12px; border: 2px solid var(--accent-gold); text-align: center; margin: 10px 0;">
-            <h3 style="font-size: 16px; color: var(--accent-gold); font-weight: 900;"><i class="fas fa-globe-europe"></i> مشاريع الاستثمار الدولي للإقامة الذهبية</h3>
-            <p style="font-size: 12px; color: #e2e8f0; margin: 6px 0;">فرص ممتازة لتملك العقارات في أوروبا بعائد استثماري مضمون!</p>
-            <button onclick="executeSearch()" style="background: var(--accent-gold); color: #192038; font-weight: 900; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 12px;">استكشف العروض الان ❯</button>
+            <h3 style="font-size: 16px; color: var(--accent-gold); font-weight: 900;"><i class="fas fa-bullhorn"></i> لديك عقار للبيع أو الإيجار؟</h3>
+            <p style="font-size: 12px; color: #e2e8f0; margin: 6px 0;">أضف إعلانك على أنا عقار مجانًا لأول 3 أشهر.</p>
+            <a href="add-property.html" style="display:inline-block; background: var(--accent-gold); color: #192038; font-weight: 900; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 12px; text-decoration:none;">أضف عقارك الآن ❯</a>
           </div>
         `;
       }
@@ -3175,7 +3164,7 @@ function renderPropertiesList(list) {
       const RESULTS_CAP = 60;
       if (filtered.length > 0) {
         renderPropertiesList(filtered.slice(0, RESULTS_CAP));
-        document.getElementById('resultsSectionTitle').innerText = `🤖 نتائج البحث بالذكاء الاصطناعي بناءً على: "${query}" (${filtered.length} نتيجة)`;
+        document.getElementById('resultsSectionTitle').innerText = `🔎 نتائج البحث الذكي عن: "${query}" (${filtered.length} نتيجة)`;
       } else {
         renderPropertiesList(allProps.slice(0, RESULTS_CAP));
         alert(`🤖 تم تحليل طلبك: "${query}". عرضنا لك أفضل العروض الحصرية القريبة من طلبك!`);
@@ -3251,7 +3240,7 @@ function renderPropertiesList(list) {
       const titleEl = document.getElementById('resultsSectionTitle');
       if (currentTabType === 'sale') titleEl.innerText = 'عقارات مخصصة للشراء 🔑';
       else if (currentTabType === 'rent') titleEl.innerText = 'عقارات مخصصة للإيجار 🏢';
-      else if (currentTabType === 'golden') titleEl.innerText = 'عقارات مؤهلة للإقامة الذهبية والجنسية 🏆';
+      else if (currentTabType === 'golden') titleEl.innerText = 'عقارات بقيمة تؤهّل للتقدّم للإقامة الذهبية (وفق شروط الجهات الرسمية) 🏆';
       else if (currentTabType === 'roi') titleEl.innerText = 'أعلى فرص الاستثمار العقاري عائداً (ROI) 📈';
       else if (CATEGORY_TITLES[currentTabType]) titleEl.innerText = CATEGORY_TITLES[currentTabType];
 

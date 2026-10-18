@@ -5,9 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>تفاصيل العقار | AnaAqar</title>
   <link rel="icon" type="image/png" href="icons/icon-app-512.png">
+  <script>
+    // 🌙 تطبيق الوضع الليلي فوراً (قبل الرسم) لتفادي الوميض، بنفس اختيار المستخدم المحفوظ من الصفحة الرئيسية
+    (function() {
+      const saved = localStorage.getItem('anaaqar_theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
 
   <meta name="description" content="اطّلع على كافة تفاصيل العقار: السعر، المساحة، الموقع، والمرافق، وتواصل مباشرة مع الوسيط المعلن عبر منصة أنا عقار.">
   <meta name="robots" content="index, follow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://anaaqar.com/property-details.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="تفاصيل العقار | AnaAqar">
@@ -67,9 +76,36 @@
       --dubizzle-border: #e2e8f0;
       --text-dark: #1e293b;
       --text-muted: #64748b;
+      --card-bg: #ffffff;
     }
 
-    * { 
+    [data-theme="dark"] {
+      --primary-turquoise: #2dd4bf;
+      --primary-turquoise-hover: #14b8a6;
+      --turquoise-light: #134e4a;
+      --accent-gold: #fbbf24;
+      --dubizzle-navy: #f1f5f9;
+      --dubizzle-bg: #0f172a;
+      --dubizzle-border: #273549;
+      --text-dark: #e2e8f0;
+      --text-muted: #94a3b8;
+      --card-bg: #1a2436;
+    }
+    [data-theme="dark"] .navbar,
+    [data-theme="dark"] .sub-nav-tabs,
+    [data-theme="dark"] .sub-tab-item,
+    [data-theme="dark"] .info-section-card,
+    [data-theme="dark"] .trubroker-sidebar-card,
+    [data-theme="dark"] .royal-modal-card,
+    [data-theme="dark"] .mobile-sticky-contact-bar {
+      background: var(--card-bg) !important;
+      border-color: var(--dubizzle-border) !important;
+    }
+    [data-theme="dark"] .info-section-card { box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    [data-theme="dark"] img { filter: brightness(0.94); }
+    [data-theme="dark"] ::placeholder { color: #64748b; }
+
+    * {
       box-sizing: border-box !important; 
       margin: 0; 
       padding: 0; 
@@ -149,6 +185,36 @@
       height: 100%;
       object-fit: cover;
       cursor: pointer;
+    }
+
+    /* 🖼️ معرض قابل للسحب: يظهر جزء من الصورة التالية/السابقة أثناء السحب (مثل تطبيقات التواصل) */
+    .gallery-swipe-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      gap: 6px;
+      scrollbar-width: none;
+    }
+    .gallery-swipe-track::-webkit-scrollbar { display: none; }
+    .gallery-swipe-slide {
+      flex: 0 0 90%;
+      height: 100%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .gallery-swipe-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
     }
 
     .nav-arrow-btn {
@@ -515,7 +581,8 @@
 
       <div class="main-image-viewer-container">
         <button class="nav-arrow-btn prev-btn" onclick="prevPropertyImage()"><i class="fas fa-chevron-right"></i></button>
-        <img id="mainPropImg" src="" onclick="openLightboxModal()" alt="صورة العقار">
+        <div class="gallery-swipe-track" id="gallerySwipeTrack"></div>
+        <img id="mainPropImg" src="" style="display:none;" alt="صورة العقار">
         <button class="nav-arrow-btn next-btn" onclick="nextPropertyImage()"><i class="fas fa-chevron-left"></i></button>
       </div>
 
@@ -532,15 +599,13 @@
       <div>
         <div class="sub-nav-tabs">
           <div class="sub-tab-item active" onclick="scrollToSection('secDetails')"><i class="fas fa-list"></i> التفاصيل</div>
-          <div class="sub-tab-item" onclick="scrollToSection('secPlans')"><i class="fas fa-drafting-compass"></i> المخططات</div>
           <div class="sub-tab-item" onclick="scrollToSection('secMortgage')"><i class="fas fa-calculator"></i> رهن عقاري</div>
-          <div class="sub-tab-item" onclick="scrollToSection('secAmenities')"><i class="fas fa-concierge-bell"></i> الخدمات</div>
           <div class="sub-tab-item" onclick="scrollToSection('secLocation')"><i class="fas fa-map-marker-alt"></i> الموقع</div>
         </div>
 
         <div class="property-header-box" id="secDetails">
           <div class="main-price-text" id="propPrice" data-price-aed="645000">AED 645,000</div>
-          <h1 class="property-sub-title" id="propTitle">بن غاطي لوكسوريا، الضاحية 4، مثلث قرية جميرا (JVT)، دبي</h1>
+          <h1 class="property-sub-title" id="propTitle">جاري تحميل بيانات العقار...</h1>
           <p style="color:var(--primary-turquoise); font-weight:800; font-size:12px;">استوديو سكاي لاين │ إطلالة على المسبح والمنتزه</p>
         </div>
 
@@ -579,7 +644,7 @@
           </div>
         </div>
 
-        <div class="info-section-card" id="secAmenities">
+        <div class="info-section-card" id="secAmenities" style="display:none;">
           <div class="info-card-title">الميزات الرئيسية ووسائل الراحة</div>
           <div class="amenities-list-grid">
             <div class="amenity-item-bullet"><i class="fas fa-circle"></i> تخطيط الاستوديو العصري</div>
@@ -597,12 +662,10 @@
 
         <div class="info-section-card">
           <div class="info-card-title">وصف العقار التفصيلي</div>
-          <p style="color:#334155; font-weight:700; font-size:12px; line-height:1.7;" id="propFullDesc">
-            هذه الشقة السكنية الاستوديو للبيع في مشروع Binghatti Luxuria بمثلث قرية جميرا JVT دبي، تقدم تصميماً مدمجاً وفعالاً مثالياً للمقيمين أو المستثمرين. تقع الوحدة في مشروع حديث مرتفع مع مساحات لوبي متعددة وتطل على مناطق المجتمع ذات المناظر الطبيعية والإطلالات المباشرة على أفق المدينة.
-          </p>
+          <p style="color:#334155; font-weight:700; font-size:12px; line-height:1.7;" id="propFullDesc"></p>
         </div>
 
-        <div class="info-section-card" id="secPlans">
+        <div class="info-section-card" id="secPlans" style="display:none;">
           <div class="info-card-title">المخططات الطابقية 3D & 2D</div>
           <div style="text-align:center; padding:10px; background:#f1f5f9; border-radius:8px;">
             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" style="max-width:100%; border-radius:6px; height:180px; object-fit:cover;" alt="المخطط الطابقي">
@@ -633,29 +696,53 @@
           </div>
         </div>
 
+        <!-- 🔔 تنبيه السعر: المستخدم المسجّل دخوله يحفظ سعر مستهدف ويُخزَّن بحسابه -->
+        <div class="info-section-card" id="secPriceAlert">
+          <div class="info-card-title"><i class="fas fa-bell" style="color:var(--accent-gold);"></i> نبّهني لو نزل السعر</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <input type="number" id="alertTargetPrice" placeholder="السعر المستهدف (AED)" style="flex:1; min-width:140px; padding:10px; border:1px solid var(--dubizzle-border); border-radius:8px; font-weight:700; font-size:13px;">
+            <button onclick="handleCreatePriceAlert()" style="background:var(--accent-gold); color:#1e293b; border:none; border-radius:8px; padding:10px 16px; font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap;"><i class="fas fa-bell"></i> فعّل التنبيه</button>
+          </div>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">يتطلب تسجيل الدخول — راح نراجع ونتواصل معك يدوياً لو وصل العقار للسعر المطلوب.</p>
+        </div>
+
+        <!-- ⭐ تقييمات العقار -->
+        <div class="info-section-card" id="secPropertyReviews">
+          <div class="info-card-title"><i class="fas fa-star" style="color:var(--accent-gold);"></i> تقييمات الزوّار</div>
+
+          <div style="background:var(--dubizzle-bg); border-radius:10px; padding:12px; margin-bottom:14px;">
+            <div style="display:flex; gap:4px; margin-bottom:8px;" id="reviewStarsInput">
+              ${[1,2,3,4,5].map(n => `<i class="fas fa-star" data-star="${n}" onclick="setReviewRating(${n})" style="cursor:pointer; color:#cbd5e1; font-size:20px;"></i>`).join('')}
+            </div>
+            <textarea id="reviewCommentInput" placeholder="شاركنا رأيك بهذا العقار (اختياري)..." style="width:100%; min-height:60px; padding:8px; border:1px solid var(--dubizzle-border); border-radius:8px; font-family:inherit; font-size:12.5px; resize:vertical;"></textarea>
+            <button onclick="handleSubmitReview()" style="margin-top:8px; background:var(--primary-turquoise); color:#fff; border:none; border-radius:8px; padding:9px 18px; font-weight:800; font-size:12px; cursor:pointer;">إرسال التقييم</button>
+          </div>
+
+          <div id="propertyReviewsList"><p style="color:var(--text-muted); font-size:12px;">جارِ تحميل التقييمات...</p></div>
+        </div>
+
       </div>
 
       <!-- كارت الوسيط -->
       <div>
         <div class="trubroker-sidebar-card">
           <div class="trubroker-header-bg">
-            <span><i class="fas fa-shield-alt"></i> TruBroker™</span>
-            <span>معتمد</span>
+            <span><i class="fas fa-id-badge"></i> بيانات المعلن</span>
+            <span></span>
           </div>
 
           <div class="broker-profile-center">
             <img id="brokerAvatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" class="broker-avatar-img" alt="صورة الوسيط">
-            <h3 class="broker-name-heading" id="brokerName">إبراهيم عبد العاطي إبراهيم</h3>
-            <p style="font-size:11px; color:var(--text-muted); font-weight:800;" id="brokerAgency">سكويا العقارية SEQUOIA</p>
+            <h3 class="broker-name-heading" id="brokerName"></h3>
+            <p style="font-size:11px; color:var(--text-muted); font-weight:800;" id="brokerAgency"></p>
             
             <div style="margin-top:4px; font-size:11px; font-weight:800; color:var(--primary-turquoise);">
-              <i class="fas fa-envelope"></i> <span id="brokerEmailText">ibrahim.broker@anaaqar.com</span>
+              <i class="fas fa-envelope"></i> <span id="brokerEmailText"></span>
             </div>
           </div>
 
           <div class="broker-tags-row">
-            <span class="broker-tag">💎 معلن بجودة عالية</span>
-            <span class="broker-tag">⚡ سريع الاستجابة</span>
+
           </div>
 
           <div class="broker-contact-buttons">
@@ -690,10 +777,10 @@
 
   <!-- 📱 شريط أزرار اتصل وواتساب مثبت بأسفل الجوال لتسهيل التواصل -->
   <div class="mobile-sticky-contact-bar">
-    <a href="tel:0501234567" class="btn-mobile-contact btn-mob-call">
+    <a href="#" id="mobCallBtn" class="btn-mobile-contact btn-mob-call">
       <i class="fas fa-phone-alt"></i> اتصل بالوسيط
     </a>
-    <a href="https://api.whatsapp.com/send?phone=971501234567" class="btn-mobile-contact btn-mob-wa">
+    <a href="#" id="mobWaBtn" target="_blank" rel="noopener noreferrer" class="btn-mobile-contact btn-mob-wa">
       <i class="fab fa-whatsapp"></i> واتساب
     </a>
   </div>
@@ -708,16 +795,16 @@
 
         <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px; font-weight:900;">
           <div style="font-size:10px; color:var(--text-muted);">رقم الهاتف:</div>
-          <div style="font-size:18px; color:var(--primary-turquoise);" id="modalPhoneVal">0501234567</div>
+          <div style="font-size:18px; color:var(--primary-turquoise);" id="modalPhoneVal"></div>
         </div>
 
         <div style="background:#f1f5f9; padding:8px; border-radius:8px; margin-bottom:12px; font-weight:800; font-size:11px; color:var(--dubizzle-navy);">
           <i class="fas fa-envelope" style="color:var(--primary-turquoise);"></i> البريد الإلكتروني: <br>
-          <strong id="modalEmailVal">ibrahim.broker@anaaqar.com</strong>
+          <strong id="modalEmailVal"></strong>
         </div>
 
         <div style="display:flex; gap:6px;">
-          <a id="directCallAnchor" href="tel:0501234567" class="btn-broker-action btn-call-bg" style="flex:1;">
+          <a id="directCallAnchor" href="#" class="btn-broker-action btn-call-bg" style="flex:1;">
             <i class="fas fa-phone-alt"></i> اتصل الآن
           </a>
           <button class="btn-broker-action btn-email-bg" style="flex:1;" onclick="copyPhoneToClipboard()">
@@ -802,8 +889,8 @@
       return `https://www.google.com/maps?q=${query}&output=embed`;
     }
 
-    let currentBrokerPhone = "0501234567";
-    let currentBrokerEmail = "ibrahim.broker@anaaqar.com";
+    let currentBrokerPhone = "";
+    let currentBrokerEmail = "info@anaaqar.com";
     let currentBrokerId = null;
     let currentPropertyId = null;
     let currentPropertyTitle = "";
@@ -817,18 +904,52 @@
       return localStorage.getItem('anaaqar_affiliate_ref') || 'مباشر';
     }
 
+    let gallerySwipeObserver = null;
+    let suppressGalleryScrollSync = false;
+
+    // 🖼️ يبني شرائح المعرض القابل للسحب (كل صورة شريحة بعرض 90% تترك جزء من جاراتها ظاهر)
+    function renderGallerySwipeTrack() {
+      const track = document.getElementById('gallerySwipeTrack');
+      track.innerHTML = propertyImagesList.map((imgUrl, idx) => `
+        <div class="gallery-swipe-slide" data-idx="${idx}" onclick="openLightboxModal()">
+          <img src="${imgUrl}" alt="صورة العقار ${idx + 1}" ${idx === 0 ? '' : 'loading="lazy"'}>
+        </div>
+      `).join('');
+
+      if (gallerySwipeObserver) gallerySwipeObserver.disconnect();
+      gallerySwipeObserver = new IntersectionObserver((entries) => {
+        if (suppressGalleryScrollSync) return;
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+            const idx = parseInt(entry.target.getAttribute('data-idx'));
+            syncGalleryUIToIndex(idx);
+          }
+        });
+      }, { root: track, threshold: [0.6] });
+
+      track.querySelectorAll('.gallery-swipe-slide').forEach(slide => gallerySwipeObserver.observe(slide));
+    }
+
+    function syncGalleryUIToIndex(index) {
+      currentImgIndex = index;
+      document.getElementById('lightboxImgTarget').src = propertyImagesList[currentImgIndex];
+      document.querySelectorAll('.thumb-img').forEach((t, i) => {
+        t.classList.toggle('active', i === currentImgIndex);
+      });
+    }
+
+    // يُستدعى من الأسهم والمصغّرات: يحرّك المعرض للصورة المطلوبة (السحب اليدوي يعمل بشكل مستقل عبره IntersectionObserver)
     function updateGalleryImage(index) {
       if (propertyImagesList.length === 0) return;
-      currentImgIndex = (index + propertyImagesList.length) % propertyImagesList.length;
-      
-      const activeUrl = propertyImagesList[currentImgIndex];
-      document.getElementById('mainPropImg').src = activeUrl;
-      document.getElementById('lightboxImgTarget').src = activeUrl;
-
-      document.querySelectorAll('.thumb-img').forEach((t, i) => {
-        if (i === currentImgIndex) t.classList.add('active');
-        else t.classList.remove('active');
-      });
+      const targetIndex = (index + propertyImagesList.length) % propertyImagesList.length;
+      const track = document.getElementById('gallerySwipeTrack');
+      const slide = track.querySelector(`.gallery-swipe-slide[data-idx="${targetIndex}"]`);
+      if (slide) {
+        suppressGalleryScrollSync = true;
+        slide.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        setTimeout(() => { suppressGalleryScrollSync = false; }, 400);
+      }
+      syncGalleryUIToIndex(targetIndex);
     }
 
     function prevPropertyImage() { updateGalleryImage(currentImgIndex - 1); }
@@ -844,15 +965,20 @@
       btn.classList.toggle('active', getFavoriteIds().includes(propId.toString()));
     }
 
-    function toggleDetailsFavorite() {
+    async function toggleDetailsFavorite() {
       const urlParams = new URLSearchParams(window.location.search);
       const propId = (urlParams.get('id') || '101').toString();
       const favorites = getFavoriteIds();
       const index = favorites.indexOf(propId);
-      if (index === -1) favorites.push(propId);
+      const willBeFav = index === -1;
+      if (willBeFav) favorites.push(propId);
       else favorites.splice(index, 1);
       localStorage.setItem('anaaqar_favorites', JSON.stringify(favorites));
       refreshDetailsFavButton(propId);
+      try {
+        if (willBeFav) await addSupabaseFavorite(propId);
+        else await removeSupabaseFavorite(propId);
+      } catch (e) {}
     }
 
     (function setupGallerySwipe() {
@@ -994,6 +1120,7 @@
         <img src="${imgUrl}" class="thumb-img ${idx === 0 ? 'active' : ''}" ${idx === 0 ? '' : 'loading="lazy"'} onclick="updateGalleryImage(${idx})">
       `).join('');
 
+      renderGallerySwipeTrack();
       updateGalleryImage(0);
 
       if (property) {
@@ -1033,8 +1160,10 @@
         document.getElementById('brokerAgency').innerText = broker.agency || 'AnaAqar';
         const avatarEl = document.getElementById('brokerAvatar');
         if (avatarEl && broker.avatar) avatarEl.src = broker.avatar;
-        currentBrokerPhone = broker.phone || '971501234567';
+        currentBrokerPhone = broker.phone ? String(broker.phone) : '';
         currentBrokerEmail = broker.email || 'info@anaaqar.com';
+
+        updatePropertySEO(property, propertyImagesList[0], priceAED);
       }
 
       document.getElementById('brokerEmailText').innerText = currentBrokerEmail;
@@ -1042,8 +1171,134 @@
       document.getElementById('modalEmailVal').innerText = currentBrokerEmail;
       document.getElementById('modalPhoneVal').innerText = currentBrokerPhone;
       document.getElementById('directCallAnchor').href = `tel:${currentBrokerPhone}`;
+      // لا رقم حقيقي للمعلن ← نخفي أزرار الاتصال/واتساب ونوجّه الزائر لنموذج الاستفسار بدل رقم وهمي
+      const waNum = currentBrokerPhone.replace(/\D/g, '').replace(/^0/, '971');
+      const mobCall = document.getElementById('mobCallBtn'), mobWa = document.getElementById('mobWaBtn');
+      if (currentBrokerPhone) {
+        if (mobCall) mobCall.href = `tel:${currentBrokerPhone}`;
+        if (mobWa) mobWa.href = `https://api.whatsapp.com/send?phone=${waNum}`;
+      } else {
+        document.querySelectorAll('.btn-whatsapp-bg, .btn-call-bg, .mobile-sticky-contact-bar').forEach(el => { el.style.display = 'none'; });
+        const box = document.querySelector('.broker-contact-buttons');
+        if (box && !document.getElementById('noPhoneNote')) box.insertAdjacentHTML('afterbegin', '<p id="noPhoneNote" style="font-size:12px; color:#64748b; font-weight:700; margin:0 0 8px;">لم يضف المعلن رقم هاتف. أرسل استفسارك عبر البريد وسيصله مباشرة.</p>');
+      }
 
       calculateMortgage();
+      loadPropertyReviewsList();
+    }
+
+    // 🔍 SEO: عنوان الصفحة، وصف الميتا، Open Graph، وبيانات Schema.org منظّمة (RealEstateListing) تُبنى ديناميكياً لكل عقار
+    function updatePropertySEO(property, mainImage, priceAED) {
+      const title = `${property.title || 'عقار'} | AnaAqar`;
+      const desc = property.description
+        ? property.description.slice(0, 160)
+        : `${property.propertyType || 'عقار'} في ${property.city || 'الإمارات'} - ${property.bedrooms ?? ''} غرف، ${property.area_m2 || ''} م² - بسعر ${formatPriceAED(priceAED)}`;
+      const url = `https://anaaqar.com/property-details.html?id=${encodeURIComponent(property.id)}`;
+
+      document.title = title;
+      const setMeta = (sel, attr, val) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, val); };
+      setMeta('meta[name="description"]', 'content', desc);
+      setMeta('link[rel="canonical"]', 'href', url);
+      setMeta('meta[property="og:title"]', 'content', title);
+      setMeta('meta[property="og:description"]', 'content', desc);
+      setMeta('meta[property="og:url"]', 'content', url);
+      if (mainImage) setMeta('meta[property="og:image"]', 'content', mainImage);
+
+      const existing = document.getElementById('propertyJsonLd');
+      if (existing) existing.remove();
+
+      const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "RealEstateListing",
+        "name": property.title || 'عقار',
+        "description": property.description || desc,
+        "url": url,
+        "image": mainImage ? [mainImage] : undefined,
+        "datePosted": property.datePosted || undefined,
+        "offers": {
+          "@type": "Offer",
+          "price": priceAED || undefined,
+          "priceCurrency": "AED",
+          "availability": "https://schema.org/InStock",
+          "businessFunction": property.dealType === 'rent' ? "https://schema.org/LeaseOut" : "https://schema.org/Sell"
+        },
+        "numberOfRooms": property.bedrooms ?? undefined,
+        "numberOfBathroomsTotal": property.bathrooms ?? undefined,
+        "floorSize": property.area_m2 ? { "@type": "QuantitativeValue", "value": property.area_m2, "unitCode": "MTK" } : undefined,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": property.city || 'دبي',
+          "addressCountry": "AE"
+        }
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'propertyJsonLd';
+      script.textContent = JSON.stringify(jsonLd);
+      document.head.appendChild(script);
+    }
+
+    // ⭐ تقييمات العقار
+    let selectedReviewRating = 0;
+    function setReviewRating(n) {
+      selectedReviewRating = n;
+      document.querySelectorAll('#reviewStarsInput i').forEach(star => {
+        const val = parseInt(star.getAttribute('data-star'));
+        star.style.color = val <= n ? '#f59e0b' : '#cbd5e1';
+      });
+    }
+
+    async function handleSubmitReview() {
+      const user = await getCurrentAnaAqarUser();
+      if (!user) { showLoginPrompt('لازم تسجّل دخولك الأول عشان تضيف تقييم.'); return; }
+      if (selectedReviewRating === 0) { alert('اختر عدد النجوم أولاً'); return; }
+      const comment = document.getElementById('reviewCommentInput').value;
+      const { error } = await submitPropertyReview(currentPropertyId, selectedReviewRating, comment);
+      if (error) { alert('حدث خطأ، حاول مرة أخرى'); return; }
+      document.getElementById('reviewCommentInput').value = '';
+      setReviewRating(0);
+      loadPropertyReviewsList();
+    }
+
+    async function loadPropertyReviewsList() {
+      const container = document.getElementById('propertyReviewsList');
+      const reviews = await fetchPropertyReviews(currentPropertyId);
+      if (reviews.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px 0;">لا توجد تقييمات بعد. كن أول من يقيّم هذا العقار.</p>`;
+        return;
+      }
+      container.innerHTML = reviews.map(r => `
+        <div style="border-bottom:1px solid var(--dubizzle-border); padding:10px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:12.5px;">${(r.profiles && r.profiles.full_name) || 'مستخدم'}</span>
+            <span style="color:#f59e0b; font-size:12px;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+          </div>
+          ${r.comment ? `<p style="font-size:12px; color:var(--text-muted); margin-top:4px;">${r.comment}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // 🔔 تنبيهات الأسعار
+    async function handleCreatePriceAlert() {
+      const user = await getCurrentAnaAqarUser();
+      if (!user) { showLoginPrompt('لازم تسجّل دخولك الأول عشان تفعّل تنبيه السعر.'); return; }
+      const target = parseFloat(document.getElementById('alertTargetPrice').value);
+      if (!target || target <= 0) { alert('أدخل سعر مستهدف صحيح'); return; }
+      const currentPrice = parseFloat(document.getElementById('propPrice').getAttribute('data-price-aed')) || 0;
+      const { error } = await createPriceAlert(currentPropertyId, target, currentPrice);
+      if (error) { alert('حدث خطأ، حاول مرة أخرى'); return; }
+      showAnaAqarToastSafe('✅ تم تفعيل التنبيه، راح نتواصل معك لو وصل السعر المطلوب');
+    }
+
+    function showAnaAqarToastSafe(msg) {
+      if (typeof showAnaAqarToast === 'function') showAnaAqarToast(msg, 'success');
+      else alert(msg);
+    }
+
+    function showLoginPrompt(msg) {
+      if (typeof openLoginModal === 'function') { alert(msg); openLoginModal(); }
+      else alert(msg);
     }
 
     async function handleInspectorSubmit(e) {

@@ -107,8 +107,8 @@ function mapSupabasePropertyToAnaAqar(row) {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',
       agency: p.agency || 'AnaAqar',
-      phone: p.phone || '971500000000',
-      whatsapp: p.whatsapp || p.phone || '971500000000',
+      phone: p.phone || null,
+      whatsapp: p.whatsapp || p.phone || null,
       avatar: p.avatar_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'
     },
     featured: false
