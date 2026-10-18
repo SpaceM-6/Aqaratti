@@ -448,6 +448,16 @@
           مطلوب للوسطاء وشركات التطوير حتى يتم اعتماد إعلانك من فريقنا. اختياري لمالك العقار المباشر.
         </p>
 
+        <div class="grid-2">
+          <div class="form-group">
+            <label>رقم تصريح الإعلان من دائرة الأراضي (Trakheesi) <span id="permitRequiredMark" style="color:#dc2626;">*</span></label>
+            <input type="text" id="permitNumberInput" inputmode="numeric" maxlength="30" placeholder="مثال: 7112345678">
+          </div>
+        </div>
+        <p id="permitHint" style="font-size:11px; color:#94a3b8; margin-top:-8px; margin-bottom:10px;">
+          إلزامي لكل عقار في دبي: تشترط دائرة الأراضي والأملاك استخراج تصريح إعلان قبل نشر أي عقار، ويظهر رقمه على الإعلان. اختياري لباقي المدن.
+        </p>
+
         <div class="form-section-title" style="margin-top: 15px;">
           <i class="fas fa-building"></i> مواصفات ونوع العقار
         </div>
@@ -717,7 +727,18 @@
       handleCityChange(citySelect.value);
     }
 
+    // رقم تصريح الإعلان إلزامي لعقارات دبي فقط (اشتراط دائرة الأراضي والأملاك)
+    function updatePermitRequirement(selectedCity) {
+      const input = document.getElementById('permitNumberInput');
+      const mark = document.getElementById('permitRequiredMark');
+      if (!input) return;
+      const isDubai = (selectedCity || '').trim() === 'دبي';
+      input.required = isDubai;
+      if (mark) mark.style.display = isDubai ? 'inline' : 'none';
+    }
+
     function handleCityChange(selectedCity) {
+      updatePermitRequirement(selectedCity);
       const customCityGroup = document.getElementById('customCityGroup');
       const customCityInput = document.getElementById('customCityInput');
 
@@ -784,6 +805,12 @@
 
       const roleValue = document.getElementById('brokerRoleInput').value;
       const licenseValue = document.getElementById('licenseNumberInput').value.trim();
+      const permitValue = (document.getElementById('permitNumberInput')?.value || '').trim();
+      if (document.getElementById('cityInput').value === 'دبي' && !/^[0-9A-Za-z-]{5,30}$/.test(permitValue)) {
+        alert('يرجى إدخال رقم تصريح الإعلان الصادر من دائرة الأراضي والأملاك (Trakheesi). لا يمكن نشر عقار في دبي بدونه.');
+        document.getElementById('permitNumberInput').focus();
+        return;
+      }
       if (roleValue !== 'مالك مباشر' && !licenseValue) {
         const proceedAnyway = confirm('لم تُدخل رقم الرخصة/القيد المهني. الإعلانات التي بلا رقم رخصة قد تستغرق وقتاً أطول للمراجعة والاعتماد. هل تريد المتابعة على أي حال؟');
         if (!proceedAnyway) return;
@@ -822,7 +849,7 @@
       const bedrooms = bedsRaw === 'استوديو' ? 0 : parseInt(bedsRaw) || 0;
       const priceAED = parseFloat(document.getElementById('priceInput').value) || 0;
 
-      const { error } = await supabaseClient.from('properties').insert({
+      const propertyRow = {
         broker_id: user.id,
         title: document.getElementById('titleInput').value.trim(),
         description: document.getElementById('descInput').value.trim(),
@@ -839,8 +866,18 @@
         broker_role: roleValue,
         license_number: licenseValue || null,
         lat: document.getElementById('propLatInput').value ? parseFloat(document.getElementById('propLatInput').value) : null,
-        lng: document.getElementById('propLngInput').value ? parseFloat(document.getElementById('propLngInput').value) : null
-      });
+        lng: document.getElementById('propLngInput').value ? parseFloat(document.getElementById('propLngInput').value) : null,
+        permit_number: permitValue || null
+      };
+
+      let { error } = await supabaseClient.from('properties').insert(propertyRow);
+      // احتياط: إن لم يُضف عمود permit_number بعد في قاعدة البيانات (supabase/property_permit.sql)،
+      // يُحفظ رقم التصريح داخل الوصف بدل أن يفشل نشر الإعلان كله.
+      if (error && /permit_number/.test(error.message || '')) {
+        const { permit_number, ...rest } = propertyRow;
+        if (permit_number) rest.description = `${rest.description || ''}\n\nرقم تصريح الإعلان: ${permit_number}`.trim();
+        ({ error } = await supabaseClient.from('properties').insert(rest));
+      }
 
       submitBtn.disabled = false;
       submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> الاشتراك الآن ونشر العقار (<span id="selectedPriceText">${selectedPlanPrice}</span>)`;

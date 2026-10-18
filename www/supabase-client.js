@@ -10,6 +10,24 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ==================== 📊 قياس الزوار (Google Analytics 4) ====================
+// ضعي هنا معرّف القياس من Google Analytics (يبدأ بـ G-) ليبدأ القياس في كل صفحات الموقع.
+// يبقى فارغاً = لا يُحمَّل أي كود قياس. لا يُقاس الزوار في صفحات الإدارة admin/.
+const ANAAQAR_GA4_ID = '';
+(function loadAnalytics() {
+  if (!/^G-[A-Z0-9]+$/.test(ANAAQAR_GA4_ID)) return;
+  if (location.pathname.indexOf('/admin/') !== -1) return;
+  if (!/(^|\.)anaaqar\.com$/.test(location.hostname)) return; // لا قياس أثناء التجربة المحلية
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANAAQAR_GA4_ID;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', ANAAQAR_GA4_ID);
+})();
+
 // ==================== 📲 Service Worker: تسجيل + تحديث تلقائي ====================
 // هذا الملف يُحمَّل في كل صفحة بالموقع (خلافاً لتسجيل sw.js السابق الذي كان
 // فقط داخل index.html) - كانت أي صفحة أخرى غير index.html، بمافيها صفحات
@@ -79,6 +97,7 @@ function mapSupabasePropertyToAnaAqar(row) {
     totalImagesCount: images.length,
     description: row.description,
     isVerified: !!row.license_number,
+    permitNumber: row.permit_number || null,
     broker: {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',

@@ -3,9 +3,8 @@
    يعرض جدول individual_brokers من Supabase (وسطاء أفراد مسجّلون لدى دائرة
    الأراضي والأملاك بدبي، مستوردون عبر scripts/import-individual-brokers.py)
    بصفحات (50 صف في كل طلب)، مع بحث نصي كامل عبر عمود search_vector.
-   بيانات التواصل (هاتف/بريد) تظهر دائماً بغض النظر عن حالة التفعيل - "غير
-   مفعل" هنا مجرد مؤشر حالة على منصة AnaAqar، وليس حجباً لبيانات عامة أصلاً
-   منشورة رسمياً من دائرة الأراضي والأملاك.
+   بيانات التواصل (هاتف/بريد) لا تظهر إلا للوسيط المفعّل؛ غير المفعّل يظهر له زر
+   "فعّل ملفك" بدلاً منها (claim-profile.html).
    يعتمد على supabaseClient العام المُهيَّأ مسبقاً في supabase-client.js.
 ==================================================================== */
 (function () {
@@ -53,6 +52,8 @@
 
   function brokerCardHTML(b) {
     const isActive = !!b.is_active;
+    // بيانات التواصل تظهر فقط للوسيط المفعّل (وإن فعّل ملفه بنفسه: بشرط موافقته على عرضها)
+    const showContact = isActive && (b.claimed_by == null || b.public_contact_consent === true);
     const photo = b.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200';
 
     return `
@@ -70,11 +71,11 @@
         <a class="claim-link" href="claim-profile.html?dld=${encodeURIComponent(b.dld_broker_number)}" onclick="event.stopPropagation()"><i class="fas fa-user-check"></i> هل هذا ملفك؟ فعّله الآن مجانًا</a>` : ''}
 
         <div class="broker-license">رقم الوسيط: <strong>${b.dld_broker_number}</strong></div>
-        ${b.email ? `<div class="broker-contact-line"><i class="fas fa-envelope"></i> <a href="mailto:${b.email}" onclick="event.stopPropagation()">${b.email}</a></div>` : ''}
+        ${showContact && b.email ? `<div class="broker-contact-line"><i class="fas fa-envelope"></i> <a href="mailto:${b.email}" onclick="event.stopPropagation()">${b.email}</a></div>` : ''}
 
         <div class="broker-actions">
-          ${b.phone ? `<a href="tel:${b.phone}" class="act-call" onclick="event.stopPropagation()"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
-          ${b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+          ${showContact && b.phone ? `<a href="tel:${b.phone}" class="act-call" onclick="event.stopPropagation()"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
+          ${showContact && b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
         </div>
       </div>
     `;

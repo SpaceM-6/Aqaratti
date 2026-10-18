@@ -214,6 +214,8 @@
     }
 
     function renderProfile(b) {
+      // المكتب غير المفعّل: لا تُعرض هواتفه وبريده حتى يتم التعاقد والتفعيل
+      if (!b.is_active) { b = Object.assign({}, b, { phone: null, email: null, mobile: null, whatsapp: null }); }
       const website = b.website ? `https://${b.website.replace(/^https?:\/\//, '')}` : '';
       const inactiveNotice = !b.is_active ? `
         <div class="inactive-notice">

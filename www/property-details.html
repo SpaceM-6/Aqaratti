@@ -510,7 +510,7 @@
 
     <!-- المعرض المتجاوب -->
     <div class="gallery-slider-box">
-      <span class="gallery-badge-trucheck" id="galleryTrucheckBadge" style="display:none;"><i class="fas fa-check-circle"></i> TruCheck™ موثوق</span>
+      <span class="gallery-badge-trucheck" id="galleryTrucheckBadge" style="display:none;"><i class="fas fa-check-circle"></i> إعلان موثّق</span>
       <button class="gallery-fav-btn" id="detailsFavBtn" onclick="toggleDetailsFavorite()"><i class="fas fa-heart"></i></button>
 
       <div class="main-image-viewer-container">
@@ -560,6 +560,7 @@
             <div class="table-row-item"><span class="table-label">نوع العقار:</span> <span class="table-value" id="propCategory">شقة / استوديو</span></div>
             <div class="table-row-item"><span class="table-label">التأثيث:</span> <span class="table-value">مفروشة بالكامل</span></div>
             <div class="table-row-item"><span class="table-label">نوع العرض:</span> <span class="table-value">للبيع</span></div>
+            <div class="table-row-item" id="permitRow" style="display:none;"><span class="table-label">رقم تصريح الإعلان:</span> <span class="table-value" id="permitNumberText" dir="ltr"></span></div>
             <div class="table-row-item"><span class="table-label">حالة التوثيق:</span> <span class="table-value" id="verificationStatusText" style="color:#d97706;">لم يتم التحقق من الرخصة بعد</span></div>
             <div class="table-row-item"><span class="table-label">الرقم المرجعي:</span> <span class="table-value">AnaAqar-103218</span></div>
             <div class="table-row-item"><span class="table-label">تاريخ الإضافة:</span> <span class="table-value">4 أغسطس 2026</span></div>
@@ -1016,10 +1017,14 @@
         const verificationEl = document.getElementById('verificationStatusText');
         if (property.isVerified) {
           document.getElementById('galleryTrucheckBadge').style.display = 'flex';
-          if (verificationEl) { verificationEl.innerText = 'TruCheck™ موثق'; verificationEl.style.color = '#16a34a'; }
+          if (verificationEl) { verificationEl.innerText = 'موثّق ✓'; verificationEl.style.color = '#16a34a'; }
         } else {
           document.getElementById('galleryTrucheckBadge').style.display = 'none';
           if (verificationEl) { verificationEl.innerText = 'لم يتم التحقق من الرخصة بعد'; verificationEl.style.color = '#d97706'; }
+        }
+        if (property.permitNumber) {
+          document.getElementById('permitRow').style.display = '';
+          document.getElementById('permitNumberText').innerText = property.permitNumber;
         }
         const descEl = document.getElementById('propFullDesc');
         if (descEl && property.description) descEl.innerText = property.description;
