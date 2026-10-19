@@ -181,11 +181,13 @@
 
         async function loadRealProperties() {
             let jsonProperties = [];
-            try {
-                const response = await fetch('./properties.json?v=' + Date.now());
-                jsonProperties = await response.json();
-            } catch (err) {
-                jsonProperties = [];
+            if (await aqDemoListingsVisible()) {
+                try {
+                    const response = await fetch('./properties.json?v=' + Date.now());
+                    jsonProperties = await response.json();
+                } catch (err) {
+                    jsonProperties = [];
+                }
             }
             let supabaseProperties = [];
             try {

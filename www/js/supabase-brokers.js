@@ -33,7 +33,7 @@
   }
 
   async function fetchPage(off) {
-    let query = supabaseClient.from('brokers').select('*', { count: 'exact' }).eq('country', COUNTRY);
+    let query = supabaseClient.from('brokers').select(await aqBrokerColumns('brokers'), { count: 'exact' }).eq('country', COUNTRY);
 
     if (activeClass !== 'ALL') query = query.eq('classification', activeClass);
 
@@ -50,6 +50,7 @@
       console.error('تعذر جلب الوسطاء من Supabase:', error);
       return { data: [], count: 0 };
     }
+    await aqAttachBrokerContacts('brokers', data || []);
     return { data: data || [], count: count || 0 };
   }
 

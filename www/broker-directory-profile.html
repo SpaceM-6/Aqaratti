@@ -305,9 +305,10 @@
 
       const { data: broker, error } = await supabaseClient
         .from('brokers')
-        .select('*')
+        .select(await aqBrokerColumns('brokers'))
         .eq('id', id)
         .single();
+      if (broker) await aqAttachBrokerContacts('brokers', broker);
 
       if (error || !broker) {
         renderNotFound();

@@ -1091,11 +1091,11 @@
         property = await fetchOneApprovedSupabaseProperty(propId.replace(/^sb-/, ''));
       }
 
-      if (!property) {
+      if (!property && await aqDemoListingsVisible()) {
         try {
           const res = await fetch('./properties.json?v=' + Date.now());
           const list = await res.json();
-          property = list.find(p => p.id && p.id.toString() === propId) || list[0] || null;
+          property = list.find(p => p.id && p.id.toString() === propId) || null;
         } catch (e) {}
       }
 

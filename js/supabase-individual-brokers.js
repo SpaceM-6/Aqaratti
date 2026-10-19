@@ -32,7 +32,7 @@
   }
 
   async function fetchPage(off) {
-    let query = supabaseClient.from('individual_brokers').select('*', { count: 'exact' }).eq('country', COUNTRY);
+    let query = supabaseClient.from('individual_brokers').select(await aqBrokerColumns('individual_brokers'), { count: 'exact' }).eq('country', COUNTRY);
 
     const q = searchTerm.trim();
     if (q) {
@@ -47,6 +47,7 @@
       console.error('تعذر جلب الوسطاء الأفراد من Supabase:', error);
       return { data: [], count: 0 };
     }
+    await aqAttachBrokerContacts('individual_brokers', data || []);
     return { data: data || [], count: count || 0 };
   }
 

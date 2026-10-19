@@ -3083,7 +3083,9 @@ function renderPropertiesList(list) {
 }
 
     // 📦 مصدر واحد لكل العقارات: loadedScrapedList عند نجاح التحميل، وإلا rawPropertiesData كنسخة احتياطية (بدون تكرار)
+    let demoListingsVisible = true;
     function getAllProperties() {
+      if (!demoListingsVisible) return loadedScrapedList;
       return loadedScrapedList.length > 0 ? loadedScrapedList : rawPropertiesData;
     }
 
@@ -3091,17 +3093,23 @@ function renderPropertiesList(list) {
 
     async function fetchProperties() {
       let jsonProperties = [];
-      try {
-        const response = await fetch('./properties.json?v=' + Date.now());
-        jsonProperties = await response.json();
-      } catch (err) {
-        jsonProperties = [];
-      }
-
       const supabaseProperties = await fetchApprovedSupabaseProperties();
+      // العقارات التجريبية تُعرض فقط إلى أن يصل عدد العقارات الحقيقية المعتمدة إلى 50
+      demoListingsVisible = supabaseProperties.length < AQ_DEMO_HIDE_AT;
+      if (demoListingsVisible) {
+        try {
+          const response = await fetch('./properties.json?v=' + Date.now());
+          jsonProperties = await response.json();
+        } catch (err) {
+          jsonProperties = [];
+        }
+      }
       loadedScrapedList = [...jsonProperties, ...supabaseProperties];
 
-      if (loadedScrapedList.length > 0) {
+      if (!demoListingsVisible) {
+        // عقارات حقيقية فقط: الأحدث أولاً
+        renderPropertiesList([...supabaseProperties].reverse().slice(0, 60));
+      } else if (loadedScrapedList.length > 0) {
         // 🏠 واجهة الموقع الافتراضية تعرض فقط العقارات المميزة (featured)؛ باقي القائمة الكبيرة
         // (بما فيها عقارات الوسطاء الحقيقيين) تظهر فقط كنتائج بحث/فلترة عبر executeSearch().
         const featuredOnly = loadedScrapedList.filter(p => p.featured);

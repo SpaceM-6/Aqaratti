@@ -10,6 +10,66 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ==================== 🔒 بيانات الوسطاء: أعمدة عامة + بيانات تواصل عبر دوال محمية ====================
+// أعمدة phone/email/mobile محجوبة عن القراءة المباشرة (supabase/lock_broker_contacts.sql)، فنقرأ الأعمدة
+// العامة فقط، ثم نجلب بيانات التواصل عبر دالة تتحقق داخل قاعدة البيانات (مفعّل/موافق، أو مدير).
+const AQ_BROKER_COLUMNS = {
+  individual_brokers: ['id', 'dld_broker_number', 'name_ar', 'name_en', 'office_name', 'office_name_en', 'office_number',
+    'office_rank', 'office_logo_url', 'photo_url', 'is_active', 'activated_at', 'country', 'card_rating',
+    'license_issue_date', 'license_expiry_date', 'claimed_by', 'public_contact_consent', 'created_at'],
+  brokers: ['id', 'name_ar', 'name_en', 'license', 'classification', 'website', 'manager', 'activities',
+    'is_active', 'activated_at', 'logo_url', 'country', 'created_at']
+};
+const _aqColsCache = {};
+async function aqBrokerColumns(table) {
+  if (_aqColsCache[table]) return _aqColsCache[table];
+  let cols = [...(AQ_BROKER_COLUMNS[table] || ['id'])];
+  for (let i = 0; i < 12; i++) {
+    const { error } = await supabaseClient.from(table).select(cols.join(',')).limit(1);
+    if (!error) break;
+    const m = /column\s+\S*?\.?"?([a-z_]+)"?\s+does not exist/i.exec(error.message || '');
+    if (!m || !cols.includes(m[1])) break;
+    cols = cols.filter(c => c !== m[1]);
+  }
+  _aqColsCache[table] = cols.join(',');
+  return _aqColsCache[table];
+}
+async function aqAttachBrokerContacts(table, rows) {
+  const list = Array.isArray(rows) ? rows : (rows ? [rows] : []);
+  const ids = list.map(r => r && r.id).filter(v => v != null);
+  if (!ids.length) return rows;
+  const fn = table === 'brokers' ? 'get_office_broker_contacts' : 'get_individual_broker_contacts';
+  let contacts = null;
+  const { data, error } = await supabaseClient.rpc(fn, { p_ids: ids });
+  if (!error) contacts = data || [];
+  else {
+    // قبل تشغيل ملف القفل: الأعمدة ما زالت مقروءة مباشرة (والواجهة تطبّق نفس شرط الإظهار)
+    const extra = table === 'brokers' ? 'id,phone,email' : 'id,phone,email,mobile';
+    const res = await supabaseClient.from(table).select(extra).in('id', ids);
+    contacts = res.error ? [] : (res.data || []);
+  }
+  const byId = new Map(contacts.map(c => [c.id, c]));
+  list.forEach(r => { const c = byId.get(r.id); if (c) Object.assign(r, { phone: c.phone || null, email: c.email || null, mobile: c.mobile || null }); });
+  return rows;
+}
+
+// ==================== 🧪 العقارات التجريبية: تختفي تلقائياً عند وصول 50 عقاراً حقيقياً معتمداً ====================
+const AQ_DEMO_HIDE_AT = 50;
+async function aqDemoListingsVisible() {
+  try {
+    const cached = sessionStorage.getItem('aq_demo_visible');
+    if (cached) { const c = JSON.parse(cached); if (Date.now() - c.t < 10 * 60 * 1000) return c.v; }
+  } catch (e) {}
+  let visible = true;
+  try {
+    const { count, error } = await supabaseClient.from('properties')
+      .select('id', { count: 'exact', head: true }).eq('status', 'approved');
+    if (!error) visible = (count || 0) < AQ_DEMO_HIDE_AT;
+  } catch (e) {}
+  try { sessionStorage.setItem('aq_demo_visible', JSON.stringify({ v: visible, t: Date.now() })); } catch (e) {}
+  return visible;
+}
+
 // ==================== 📊 قياس الزوار (Google Analytics 4) ====================
 // ضعي هنا معرّف القياس من Google Analytics (يبدأ بـ G-) ليبدأ القياس في كل صفحات الموقع.
 // يبقى فارغاً = لا يُحمَّل أي كود قياس. لا يُقاس الزوار في صفحات الإدارة admin/.

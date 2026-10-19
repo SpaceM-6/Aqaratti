@@ -271,8 +271,9 @@
         .join(' & ');
     }
 
+    let AQ_COLS = '*';
     function baseQuery() {
-      let query = supabaseClient.from('brokers').select('*', { count: 'exact' });
+      let query = supabaseClient.from('brokers').select(AQ_COLS, { count: 'exact' });
       if (activeFilter === 'active') query = query.eq('is_active', true);
       if (activeFilter === 'inactive') query = query.eq('is_active', false);
 
@@ -293,6 +294,7 @@
         console.error('تعذر جلب الوسطاء:', error);
         return { data: [], count: 0 };
       }
+      await aqAttachBrokerContacts('brokers', data || []);
       return { data: data || [], count: count || 0 };
     }
 
@@ -420,6 +422,7 @@
     document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
 
     async function init() {
+      AQ_COLS = await aqBrokerColumns('brokers');
       const user = await getCurrentAnaAqarUser();
       if (!user) {
         document.getElementById('appRoot').innerHTML = `

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نتائج البحث | AnaAqar</title>
+    <link rel="icon" type="image/png" href="icons/icon-app-512.png">
 
     <meta name="description" content="تصفح أحدث العقارات المتاحة للبيع والإيجار على منصة أنا عقار مع فلاتر بحث ذكية حسب السعر والموقع ونوع العقار.">
     <meta name="robots" content="index, follow">
@@ -180,11 +181,13 @@
 
         async function loadRealProperties() {
             let jsonProperties = [];
-            try {
-                const response = await fetch('./properties.json?v=' + Date.now());
-                jsonProperties = await response.json();
-            } catch (err) {
-                jsonProperties = [];
+            if (await aqDemoListingsVisible()) {
+                try {
+                    const response = await fetch('./properties.json?v=' + Date.now());
+                    jsonProperties = await response.json();
+                } catch (err) {
+                    jsonProperties = [];
+                }
             }
             let supabaseProperties = [];
             try {

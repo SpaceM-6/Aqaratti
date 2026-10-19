@@ -582,8 +582,10 @@
       const container = document.getElementById('brokerPropertiesContainer');
       let jsonList = [];
       try {
-        const res = await fetch('./properties.json?v=' + Date.now());
-        jsonList = await res.json();
+        if (await aqDemoListingsVisible()) {
+          const res = await fetch('./properties.json?v=' + Date.now());
+          jsonList = await res.json();
+        }
       } catch (e) {}
       const supabaseList = await fetchApprovedSupabaseProperties();
       const combinedList = [...jsonList, ...supabaseList];
