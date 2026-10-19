@@ -24,6 +24,22 @@ const SERVICE_NAMES: Record<string, string> = {
 const esc = (v: unknown) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 
+// denomailer يرمّز العنوان العربي الطويل بطريقة تكسره في Zoho (=?utf-8?Q?...)،
+// لذلك نرمّزه بأنفسنا بصيغة Base64 (RFC 2047) مقسّماً إلى أجزاء قصيرة،
+// ونبدأه بنص إنجليزي حتى لا يعيد denomailer ترميزه.
+function encodeSubject(text: string) {
+  const enc = new TextEncoder();
+  const words: string[] = [];
+  let chunk = "";
+  for (const ch of Array.from(text)) {
+    if (enc.encode(chunk + ch).length > 45) { words.push(chunk); chunk = ""; }
+    chunk += ch;
+  }
+  if (chunk) words.push(chunk);
+  const b64 = (t: string) => btoa(String.fromCharCode(...enc.encode(t)));
+  return "AnaAqar | " + words.map((w) => `=?UTF-8?B?${b64(w)}?=`).join(" ");
+}
+
 function row(label: string, value: unknown) {
   if (value === null || value === undefined || value === "") return "";
   return `<tr><td style="padding:6px 10px;color:#64748b;white-space:nowrap;vertical-align:top">${esc(label)}</td><td style="padding:6px 10px;color:#0f172a;font-weight:600">${esc(value)}</td></tr>`;
@@ -91,7 +107,7 @@ Deno.serve(async (req) => {
     await client.send({
       from: `أنا عقار <${user}>`,
       to: (Deno.env.get("NOTIFY_TO") ?? user).split(",").map((s) => s.trim()).filter(Boolean),
-      subject: m.subject,
+      subject: encodeSubject(m.subject),
       html,
     });
     await client.close();
