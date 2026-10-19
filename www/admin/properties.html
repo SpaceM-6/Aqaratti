@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>مراجعة العقارات | إدارة AnaAqar</title>
+  <link rel="icon" type="image/png" href="../icons/icon-app-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-client.js"></script>
+  <style>
+    :root { --teal:#00a896; --navy:#192038; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:#0f172a; }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    header b { color:var(--teal); font-size:20px; font-weight:900; }
+    header nav { display:flex; gap:14px; flex-wrap:wrap; }
+    header a { color:var(--teal); font-weight:800; text-decoration:none; font-size:14px; }
+    main { max-width:1000px; margin:0 auto; padding:20px 16px 40px; }
+    h1 { font-size:22px; margin:0 0 6px; color:var(--navy); }
+    .sub { color:var(--muted); margin:0 0 14px; font-size:14px; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-bottom:16px; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+    .stat span { display:block; color:var(--muted); font-size:13px; font-weight:700; }
+    .stat b { font-size:24px; color:var(--navy); }
+    .bar { height:6px; background:#e2e8f0; border-radius:99px; margin-top:6px; overflow:hidden; }
+    .bar i { display:block; height:100%; background:var(--teal); }
+    .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+    .pill { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:7px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .pill.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; }
+    .row1 { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:flex-start; }
+    .ttl { font-weight:900; color:var(--navy); font-size:17px; }
+    .price { color:var(--teal); font-weight:900; font-size:16px; margin-top:4px; }
+    .date { color:var(--muted); font-size:12px; }
+    .badge { font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; white-space:nowrap; }
+    .s-pending { background:#fef3c7; color:#92400e; } .s-approved { background:#dcfce7; color:#166534; } .s-rejected { background:#fee2e2; color:#991b1b; }
+    .gallery { display:flex; gap:8px; overflow-x:auto; margin:12px 0; padding-bottom:4px; }
+    .gallery a img { width:130px; height:96px; object-fit:cover; border-radius:10px; display:block; border:1px solid var(--line); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:6px 16px; font-size:14px; margin:8px 0; }
+    .grid div span { color:var(--muted); }
+    .grid div b { font-weight:800; }
+    .warn { color:#b45309; font-weight:800; }
+    .ok { color:#15803d; font-weight:800; }
+    .desc { background:#f8fafc; border-radius:10px; padding:10px 12px; font-size:14px; white-space:pre-wrap; line-height:1.7; margin-top:8px; max-height:180px; overflow:auto; }
+    .reason { background:#fef2f2; color:#991b1b; border-radius:10px; padding:8px 12px; font-size:13px; margin-top:8px; font-weight:700; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .actions button, .actions a { border:0; border-radius:10px; padding:9px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; text-decoration:none; }
+    .b-approve { background:#16a34a; color:#fff; } .b-reject { background:#dc2626; color:#fff; } .b-pending { background:#e0f2fe; color:#075985; } .b-view { background:#f1f5f9; color:var(--navy); } .b-del { background:#fff; color:#991b1b; border:1px solid #fecaca !important; }
+    .empty, .gate { text-align:center; color:var(--muted); padding:40px 16px; font-weight:800; background:#fff; border:1px solid var(--line); border-radius:14px; }
+    .gate i { font-size:34px; display:block; margin-bottom:10px; }
+    .more { display:block; margin:10px auto; }
+  </style>
+</head>
+<body>
+  <header>
+    <b>أنا عقار — الإدارة</b>
+    <nav>
+      <a href="service-requests.html">الطلبات والاستفسارات</a>
+      <a href="individual-brokers.html">الوسطاء</a>
+      <a href="../index.html">العودة للموقع ←</a>
+    </nav>
+  </header>
+  <main id="appRoot">
+    <h1>مراجعة العقارات</h1>
+    <p class="sub">كل عقار يضيفه وسيط أو مالك يبقى مخفيًا حتى تعتمديه هنا. المرفوض لا يظهر على الموقع.</p>
+
+    <div class="stats">
+      <div class="stat"><span>بانتظار المراجعة</span><b id="stPending">—</b></div>
+      <div class="stat"><span>معتمدة ومنشورة</span><b id="stApproved">—</b>
+        <div class="bar"><i id="stBar" style="width:0"></i></div>
+        <span id="stDemo" style="font-size:12px; margin-top:4px;"></span>
+      </div>
+      <div class="stat"><span>مرفوضة</span><b id="stRejected">—</b></div>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="pill active" data-f="pending">بانتظار المراجعة</button>
+      <button class="pill" data-f="approved">المعتمدة</button>
+      <button class="pill" data-f="rejected">المرفوضة</button>
+      <button class="pill" data-f="all">الكل</button>
+    </div>
+    <div id="list"><div class="empty"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div></div>
+    <button class="pill more" id="moreBtn" style="display:none">عرض المزيد</button>
+  </main>
+
+  <script>
+    const PAGE = 20;
+    const STATUS = { pending: ['بانتظار المراجعة', 's-pending'], approved: ['معتمد ومنشور', 's-approved'], rejected: ['مرفوض', 's-rejected'] };
+    const COMPLETION = { ready: 'جاهز', under_construction: 'تحت الإنشاء', off_plan: 'على الخارطة' };
+    const PLANS = { single: 'إعلان واحد', monthly: 'شهري', semi: 'نصف سنوي', yearly: 'سنوي' };
+    let filter = 'pending';
+    let offset = 0;
+    let cache = [];
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const safeUrl = u => /^https?:\/\//i.test(String(u || '')) ? esc(u) : '';
+    const fmtDate = d => d ? new Date(d).toLocaleDateString('ar-EG', { year:'numeric', month:'short', day:'numeric' }) : '—';
+    const item = (label, value, cls = '') => `<div><span>${label}:</span> <b class="${cls}">${value}</b></div>`;
+
+    async function loadStats() {
+      const count = async s => {
+        const { count } = await supabaseClient.from('properties').select('id', { count: 'exact', head: true }).eq('status', s);
+        return count || 0;
+      };
+      const [p, a, r] = await Promise.all([count('pending'), count('approved'), count('rejected')]);
+      document.getElementById('stPending').innerText = p;
+      document.getElementById('stApproved').innerText = a;
+      document.getElementById('stRejected').innerText = r;
+      const limit = typeof AQ_DEMO_HIDE_AT === 'number' ? AQ_DEMO_HIDE_AT : 50;
+      document.getElementById('stBar').style.width = Math.min(100, a / limit * 100) + '%';
+      document.getElementById('stDemo').innerText = a >= limit
+        ? 'العقارات التجريبية مخفية الآن ✅'
+        : `تختفي العقارات التجريبية عند ${limit} (بقي ${limit - a})`;
+    }
+
+    function cardHTML(p) {
+      const st = STATUS[p.status] || [p.status || '—', 's-pending'];
+      const b = p.profiles || {};
+      const imgs = (p.image_urls || []).map(safeUrl).filter(Boolean);
+      const isDubai = /دبي|dubai/i.test(p.city || '');
+      const permit = p.permit_number
+        ? item('رقم التصريح', esc(p.permit_number), 'ok')
+        : item('رقم التصريح', isDubai ? 'غير موجود ⚠️ (مطلوب في دبي)' : 'غير موجود', isDubai ? 'warn' : '');
+      const license = p.broker_role === 'مالك مباشر'
+        ? item('رقم الرخصة', 'مالك مباشر — لا يلزم')
+        : item('رقم الرخصة', p.license_number ? esc(p.license_number) : 'غير موجود ⚠️', p.license_number ? 'ok' : 'warn');
+      const contact = b.phone || b.whatsapp;
+      return `<div class="card" id="card-${esc(p.id)}">
+        <div class="row1">
+          <div>
+            <div class="ttl">${esc(p.title) || 'بدون عنوان'}</div>
+            <div class="price">${Number(p.price_aed || 0).toLocaleString('en-US')} درهم · ${p.deal_type === 'rent' ? 'إيجار' : 'بيع'}</div>
+          </div>
+          <div style="text-align:left">
+            <span class="badge ${st[1]}">${st[0]}</span>
+            <div class="date" style="margin-top:6px">أُضيف ${fmtDate(p.created_at)}</div>
+          </div>
+        </div>
+        ${imgs.length ? `<div class="gallery">${imgs.map(u => `<a href="${u}" target="_blank" rel="noopener"><img src="${u}" loading="lazy" alt=""></a>`).join('')}</div>` : '<p class="warn">لا توجد صور.</p>'}
+        <div class="grid">
+          ${item('المدينة', esc(p.city) || '—')}
+          ${item('النوع', esc(p.property_type) || '—')}
+          ${item('الغرف', p.bedrooms === 0 ? 'استوديو' : esc(p.bedrooms ?? '—'))}
+          ${item('الحمّامات', esc(p.bathrooms ?? '—'))}
+          ${item('المساحة', p.area_m2 ? esc(p.area_m2) + ' م²' : '—')}
+          ${item('حالة الإنجاز', COMPLETION[p.completion_status] || '—')}
+          ${permit}
+          ${license}
+          ${p.no_commission ? item('العمولة', 'بدون عمولة') : ''}
+          ${p.has_offer ? item('العرض', esc(p.offer_text) || 'يوجد عرض') : ''}
+          ${p.lat && p.lng ? `<div><span>الموقع:</span> <a href="https://www.google.com/maps?q=${Number(p.lat)},${Number(p.lng)}" target="_blank" rel="noopener" style="color:var(--teal);font-weight:800">على الخريطة</a></div>` : ''}
+        </div>
+        <div class="grid" style="border-top:1px dashed var(--line); padding-top:8px">
+          ${item('المعلن', esc(b.full_name) || '—')}
+          ${item('صفته', esc(p.broker_role) || '—')}
+          ${b.agency ? item('الجهة', esc(b.agency)) : ''}
+          ${contact ? `<div><span>التواصل:</span> <a href="tel:${esc(contact)}" dir="ltr" style="color:var(--teal);font-weight:800">${esc(contact)}</a></div>` : item('التواصل', 'لا يوجد رقم', 'warn')}
+          ${item('الباقة', PLANS[p.subscription_plan] || esc(p.subscription_plan) || '—')}
+          ${p.trial_ends_at ? item('نهاية الفترة المجانية', fmtDate(p.trial_ends_at)) : ''}
+        </div>
+        ${p.description ? `<div class="desc">${esc(p.description)}</div>` : ''}
+        ${p.status === 'rejected' && p.rejection_reason ? `<div class="reason"><i class="fas fa-circle-info"></i> سبب الرفض: ${esc(p.rejection_reason)}</div>` : ''}
+        <div class="actions">
+          ${p.status !== 'approved' ? `<button class="b-approve" onclick="review('${esc(p.id)}','approved')"><i class="fas fa-check"></i> اعتماد ونشر</button>` : ''}
+          ${p.status !== 'rejected' ? `<button class="b-reject" onclick="review('${esc(p.id)}','rejected')"><i class="fas fa-xmark"></i> رفض</button>` : ''}
+          ${p.status === 'approved' ? `<button class="b-pending" onclick="review('${esc(p.id)}','pending')"><i class="fas fa-eye-slash"></i> إخفاء وإعادته للمراجعة</button>` : ''}
+          ${p.status === 'rejected' ? `<button class="b-pending" onclick="review('${esc(p.id)}','pending')"><i class="fas fa-rotate-left"></i> إعادته للمراجعة</button>` : ''}
+          ${p.status === 'approved' ? `<a class="b-view" href="../property-details.html?id=sb-${encodeURIComponent(p.id)}" target="_blank"><i class="fas fa-up-right-from-square"></i> عرضه على الموقع</a>` : ''}
+          <button class="b-del" onclick="removeProperty('${esc(p.id)}')"><i class="fas fa-trash"></i> حذف نهائي</button>
+        </div>
+      </div>`;
+    }
+
+    async function load(reset = true) {
+      const list = document.getElementById('list');
+      if (reset) { offset = 0; cache = []; list.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>'; }
+      let q = supabaseClient.from('properties')
+        .select('*, profiles(full_name, agency, phone, whatsapp)')
+        .order('created_at', { ascending: filter === 'pending' })
+        .range(offset, offset + PAGE - 1);
+      if (filter !== 'all') q = q.eq('status', filter);
+      const { data, error } = await q;
+      if (error) {
+        list.innerHTML = `<div class="empty">تعذّر تحميل العقارات. تأكدي من تشغيل ملف supabase/property_review.sql.<br><small>${esc(error.message)}</small></div>`;
+        return;
+      }
+      cache = cache.concat(data);
+      offset += data.length;
+      list.innerHTML = cache.length ? cache.map(cardHTML).join('') : '<div class="empty">لا توجد عقارات في هذا القسم.</div>';
+      document.getElementById('moreBtn').style.display = data.length === PAGE ? 'block' : 'none';
+    }
+
+    async function review(id, status) {
+      const patch = { status, reviewed_at: new Date().toISOString(), rejection_reason: null };
+      if (status === 'rejected') {
+        const reason = prompt('سبب الرفض (اختياري — يساعدك لاحقًا عند التواصل مع المعلن):', '');
+        if (reason === null) return;
+        patch.rejection_reason = reason.trim() || null;
+      }
+      const card = document.getElementById('card-' + id);
+      if (card) card.style.opacity = '0.5';
+      let { error } = await supabaseClient.from('properties').update(patch).eq('id', id);
+      if (error && /rejection_reason|reviewed_at/.test(error.message || '')) {
+        ({ error } = await supabaseClient.from('properties').update({ status }).eq('id', id));
+      }
+      if (error) { if (card) card.style.opacity = '1'; alert('تعذّر التحديث: ' + error.message); return; }
+      try { sessionStorage.removeItem('aq_demo_visible'); } catch (e) {}
+      loadStats();
+      load();
+    }
+
+    async function removeProperty(id) {
+      if (!confirm('حذف هذا العقار نهائيًا؟ لا يمكن التراجع عن الحذف.')) return;
+      const { error } = await supabaseClient.from('properties').delete().eq('id', id);
+      if (error) { alert('تعذّر الحذف: ' + error.message); return; }
+      loadStats();
+      load();
+    }
+
+    document.querySelectorAll('#filters .pill').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#filters .pill').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); filter = b.dataset.f; load();
+    }));
+    document.getElementById('moreBtn').addEventListener('click', () => load(false));
+
+    (async function init() {
+      const user = await getCurrentAnaAqarUser();
+      let isAdmin = false;
+      if (user) {
+        const { data } = await supabaseClient.rpc('is_app_admin');
+        isAdmin = data === true;
+      }
+      if (!isAdmin) {
+        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>${user ? 'هذه الصفحة لحساب الإدارة فقط.' : 'يجب تسجيل الدخول بحساب الإدارة.'}<br><a href="../index.html" style="color:var(--teal)">العودة للصفحة الرئيسية</a></div>`;
+        return;
+      }
+      loadStats();
+      load();
+    })();
+  </script>
+</body>
+</html>

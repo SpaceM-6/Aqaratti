@@ -71,7 +71,7 @@ function build(table: string, r: Record<string, unknown>) {
     title: "عقار جديد بانتظار المراجعة",
     rows: row("العنوان", r.title) + row("المدينة", r.city) + row("السعر (AED)", r.price_aed) +
       row("رقم التصريح", r.permit_number) + row("صفة المعلن", r.broker_role) + row("الباقة", r.subscription_plan),
-    link: `${SITE}/dashboard.html`,
+    link: `${SITE}/admin/properties.html`,
   };
 }
 
