@@ -470,7 +470,7 @@
       const { error } = await supabaseClient.from('leads').insert({
         property_id: null,
         property_title: 'استفسار عام من صفحة الوسيط',
-        broker_id: activeBrokerId,
+        broker_id: /^[0-9a-f-]{36}$/i.test(String(activeBrokerId || '')) ? activeBrokerId : null,
         buyer_name: document.getElementById('profileLeadName').value.trim(),
         buyer_email: document.getElementById('profileLeadEmail').value.trim(),
         buyer_phone: document.getElementById('profileLeadPhone').value.trim(),
@@ -485,7 +485,7 @@
         alert('تعذر إرسال استفسارك حالياً، يرجى التواصل مباشرة عبر واتساب أو الاتصال.');
         return;
       }
-      alert("📧 تم إرسال رسالتك بنجاح وسيتواصل معك الوكيل قريباً جداً!");
+      alert("📧 وصل استفسارك، وسيتم التواصل معك قريبًا.");
     }
 
     document.addEventListener('DOMContentLoaded', () => {

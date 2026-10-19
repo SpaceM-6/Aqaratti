@@ -819,7 +819,7 @@
   <div class="royal-modal-overlay" id="emailModal">
     <div class="royal-modal-card">
       <h3 style="margin-bottom:4px; color:var(--dubizzle-navy); font-size:15px;">✉️ أرسل إيميل للوكيل</h3>
-      <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">إرسال مباشر إلى (<span id="modalEmailTarget">ibrahim.broker@anaaqar.com</span>):</p>
+      <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">يصل استفسارك إلى المعلن وإلى فريق أنا عقار (<span id="modalEmailTarget">info@anaaqar.com</span>):</p>
 
       <form onsubmit="handleEmailSubmit(event)">
         <input type="text" id="emailLeadName" class="form-input-modal" required placeholder="الاسم الكريم">
@@ -837,7 +837,7 @@
     <div class="royal-modal-card" style="text-align:center;">
       <i class="fas fa-check-circle" style="font-size:36px; color:#16a34a; margin-bottom:8px;"></i>
       <h3 style="font-size:16px; font-weight:900; color:var(--dubizzle-navy); margin-bottom:4px;">تم الإرسال بنجاح!</h3>
-      <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:12px;">تم إرسال رسالتك البريدية وسيتواصل معك الوسيط قريباً.</p>
+      <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:12px;">وصل طلبك، وسيتم التواصل معك قريبًا على الرقم الذي أدخلته.</p>
       <button class="btn-broker-action btn-call-bg" style="width:100%;" onclick="closeModal('emailSuccessModal')">حسناً</button>
     </div>
   </div>
@@ -1029,9 +1029,9 @@
       submitBtn.innerText = 'جاري الإرسال...';
 
       const { error } = await supabaseClient.from('leads').insert({
-        property_id: currentPropertyId,
+        property_id: String(currentPropertyId || ''),
         property_title: currentPropertyTitle,
-        broker_id: currentBrokerId,
+        broker_id: leadBrokerId(),
         buyer_name: document.getElementById('emailLeadName').value.trim(),
         buyer_email: document.getElementById('emailLeadEmail').value.trim(),
         buyer_phone: document.getElementById('emailLeadPhone').value.trim(),
@@ -1048,6 +1048,11 @@
         return;
       }
       openModal('emailSuccessModal');
+    }
+
+    // رقم حساب الوسيط الحقيقي فقط (UUID)؛ العقارات التجريبية تحمل معرّفات مثل b1 فتُحفظ بدون وسيط ويراها فريق الإدارة
+    function leadBrokerId() {
+      return /^[0-9a-f-]{36}$/i.test(String(currentBrokerId || '')) ? currentBrokerId : null;
     }
 
     function scrollToSection(secId) {
@@ -1178,7 +1183,7 @@
         if (mobCall) mobCall.href = `tel:${currentBrokerPhone}`;
         if (mobWa) mobWa.href = `https://api.whatsapp.com/send?phone=${waNum}`;
       } else {
-        document.querySelectorAll('.btn-whatsapp-bg, .btn-call-bg, .mobile-sticky-contact-bar').forEach(el => { el.style.display = 'none'; });
+        document.querySelectorAll('.broker-contact-buttons .btn-whatsapp-bg, .broker-contact-buttons .btn-call-bg, .mobile-sticky-contact-bar').forEach(el => { el.style.display = 'none'; });
         const box = document.querySelector('.broker-contact-buttons');
         if (box && !document.getElementById('noPhoneNote')) box.insertAdjacentHTML('afterbegin', '<p id="noPhoneNote" style="font-size:12px; color:#64748b; font-weight:700; margin:0 0 8px;">لم يضف المعلن رقم هاتف. أرسل استفسارك عبر البريد وسيصله مباشرة.</p>');
       }
@@ -1310,10 +1315,10 @@
       const propTitle = document.getElementById('propTitle').innerText;
       const ref = getSavedAffiliateRef();
 
-      supabaseClient.from('leads').insert({
-        property_id: currentPropertyId,
+      const { error: viewingError } = await supabaseClient.from('leads').insert({
+        property_id: String(currentPropertyId || ''),
         property_title: currentPropertyTitle,
-        broker_id: currentBrokerId,
+        broker_id: leadBrokerId(),
         buyer_name: buyerName,
         buyer_phone: buyerPhone,
         message: `طلب معاينة ميدانية - الموعد المقترح: ${formattedDateTime}`,
@@ -1331,7 +1336,13 @@
 🤝 *كود المرجع (Ref):* ${ref}`;
 
       closeModal('inspectorModal');
-      window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/^0/, '971')}&text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+      if (currentBrokerPhone) {
+        window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/\D/g, '').replace(/^0/, '971')}&text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+      } else if (viewingError) {
+        alert('تعذر إرسال طلب المعاينة حاليًا، حاول مرة أخرى بعد قليل.');
+      } else {
+        openModal('emailSuccessModal');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {

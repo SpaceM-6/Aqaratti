@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>طلبات الخدمات | إدارة AnaAqar</title>
+  <title>الطلبات والاستفسارات | إدارة AnaAqar</title>
   <link rel="icon" type="image/png" href="../icons/icon-app-512.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -41,8 +41,12 @@
 <body>
   <header><b>أنا عقار — الإدارة</b><a href="../index.html">العودة للموقع ←</a></header>
   <main id="appRoot">
-    <h1>طلبات الخدمات</h1>
-    <p class="sub">الطلبات المرسلة من قسم «خدمات أنا عقار» وزر التواصل العائم في الصفحة الرئيسية.</p>
+    <h1>الطلبات والاستفسارات</h1>
+    <div class="filters" id="kindTabs" style="margin-bottom:8px;">
+      <button class="pill active" data-k="services">طلبات الخدمات</button>
+      <button class="pill" data-k="leads">استفسارات العقارات والمعاينات</button>
+    </div>
+    <p class="sub" id="kindSub">الطلبات المرسلة من قسم «خدمات أنا عقار» وزر التواصل العائم في الصفحة الرئيسية.</p>
     <div class="filters" id="filters">
       <button class="pill active" data-f="open">الجديدة وقيد المتابعة</button>
       <button class="pill" data-f="new">جديدة</button>
@@ -61,21 +65,30 @@
     };
     const STATUS = { new: ['جديد', 'b-new'], contacted: ['تم التواصل', 'b-contacted'], done: ['مكتمل', 'b-done'] };
     let filter = 'open';
+    let kind = 'services';
     const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const waNum = p => String(p || '').replace(/\D/g, '');
 
     async function load() {
       const list = document.getElementById('list');
-      let q = supabaseClient.from('service_requests').select('*').order('created_at', { ascending: false }).limit(200);
-      if (filter === 'open') q = q.in('status', ['new', 'contacted']);
+      const table = kind === 'leads' ? 'leads' : 'service_requests';
+      let q = supabaseClient.from(table).select('*').order('created_at', { ascending: false }).limit(200);
+      if (filter === 'open') q = q.in('status', ['new', 'viewing', 'contacted']);
       else if (filter !== 'all') q = q.eq('status', filter);
       const { data, error } = await q;
       if (error) {
-        list.innerHTML = `<div class="empty">تعذّر تحميل الطلبات. تأكد من تشغيل ملف supabase/service_requests.sql وأن حسابك مضاف كمدير.<br><small>${esc(error.message)}</small></div>`;
+        list.innerHTML = `<div class="empty">تعذّر تحميل الطلبات. تأكد من تشغيل ملف ${kind === 'leads' ? 'supabase/leads.sql' : 'supabase/service_requests.sql'} وأن حسابك مضاف كمدير.<br><small>${esc(error.message)}</small></div>`;
         return;
       }
       if (!data.length) { list.innerHTML = '<div class="empty">لا توجد طلبات في هذا القسم.</div>'; return; }
-      list.innerHTML = data.map(r => {
+      list.innerHTML = data.map(raw => {
+        const r = kind === 'leads' ? {
+          id: raw.id, status: raw.status === 'viewing' ? 'new' : raw.status, created_at: raw.created_at,
+          service: raw.status === 'viewing' ? 'طلب معاينة' : 'استفسار عن عقار',
+          name: raw.buyer_name, phone: raw.buyer_phone, email: raw.buyer_email,
+          city: raw.property_title ? `العقار: ${raw.property_title}` : null,
+          details: raw.message, propertyId: raw.property_id
+        } : raw;
         const st = STATUS[r.status] || STATUS.new;
         return `<div class="card">
           <div class="row1">
@@ -90,6 +103,7 @@
             ${r.city ? `<span><i class="fas fa-location-dot"></i> ${esc(r.city)}</span>` : ''}
           </div>
           ${r.details ? `<div class="details">${esc(r.details)}</div>` : ''}
+          ${r.propertyId ? `<div style="margin-top:8px;"><a href="../property-details.html?id=${encodeURIComponent(r.propertyId)}" target="_blank" style="color:var(--teal); font-weight:800; text-decoration:none;"><i class="fas fa-up-right-from-square"></i> فتح صفحة العقار</a></div>` : ''}
           <div class="actions">
             ${r.status !== 'contacted' ? `<button class="b-contacted" onclick="setStatus(${r.id}, 'contacted')">تم التواصل</button>` : ''}
             ${r.status !== 'done' ? `<button class="b-done" onclick="setStatus(${r.id}, 'done')">مكتمل</button>` : ''}
@@ -100,10 +114,19 @@
     }
 
     async function setStatus(id, status) {
-      const { error } = await supabaseClient.from('service_requests').update({ status }).eq('id', id);
+      const { error } = await supabaseClient.from(kind === 'leads' ? 'leads' : 'service_requests').update({ status }).eq('id', id);
       if (error) { alert('تعذّر التحديث: ' + error.message); return; }
       load();
     }
+
+    document.querySelectorAll('#kindTabs .pill').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#kindTabs .pill').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); kind = b.dataset.k;
+      document.getElementById('kindSub').innerText = kind === 'leads'
+        ? 'استفسارات الزوار وطلبات المعاينة المرسلة من صفحات العقارات.'
+        : 'الطلبات المرسلة من قسم «خدمات أنا عقار» وزر التواصل العائم في الصفحة الرئيسية.';
+      load();
+    }));
 
     document.querySelectorAll('#filters .pill').forEach(b => b.addEventListener('click', () => {
       document.querySelectorAll('#filters .pill').forEach(x => x.classList.remove('active'));
