@@ -36,9 +36,9 @@ create policy "Anyone can send a property inquiry"
 
 drop policy if exists "Brokers read their own leads" on public.leads;
 create policy "Brokers read their own leads"
-  on public.leads for select using (broker_id = auth.uid() or public.is_app_admin());
+  on public.leads for select using (broker_id::text = auth.uid()::text or public.is_app_admin());
 
 drop policy if exists "Brokers update their own leads" on public.leads;
 create policy "Brokers update their own leads"
-  on public.leads for update using (broker_id = auth.uid() or public.is_app_admin())
-  with check (broker_id = auth.uid() or public.is_app_admin());
+  on public.leads for update using (broker_id::text = auth.uid()::text or public.is_app_admin())
+  with check (broker_id::text = auth.uid()::text or public.is_app_admin());
