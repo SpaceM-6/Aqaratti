@@ -934,7 +934,7 @@
       submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText">${selectedPlanPrice}</span>)`;
 
       if (error) {
-        alert('حدث خطأ أثناء إرسال العقار: ' + error.message);
+        alert(aqIsRateLimited(error) ? 'وصلت للحد اليومي لإضافة العقارات (15 عقارًا في اليوم). يمكنك إضافة المزيد غدًا، أو التواصل معنا عبر info@anaaqar.com.' : 'حدث خطأ أثناء إرسال العقار: ' + error.message);
         return;
       }
 

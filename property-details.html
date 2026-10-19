@@ -1044,7 +1044,7 @@
       closeModal('emailModal');
 
       if (error) {
-        alert('تعذر إرسال استفسارك حالياً، يرجى التواصل مباشرة عبر واتساب أو الاتصال.');
+        alert(aqIsRateLimited(error) ? AQ_RATE_LIMIT_MSG : 'تعذر إرسال استفسارك حالياً، يرجى التواصل مباشرة عبر واتساب أو الاتصال.');
         return;
       }
       openModal('emailSuccessModal');
@@ -1339,7 +1339,7 @@
       if (currentBrokerPhone) {
         window.open(`https://api.whatsapp.com/send?phone=${currentBrokerPhone.replace(/\D/g, '').replace(/^0/, '971')}&text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
       } else if (viewingError) {
-        alert('تعذر إرسال طلب المعاينة حاليًا، حاول مرة أخرى بعد قليل.');
+        alert(aqIsRateLimited(viewingError) ? AQ_RATE_LIMIT_MSG : 'تعذر إرسال طلب المعاينة حاليًا، حاول مرة أخرى بعد قليل.');
       } else {
         openModal('emailSuccessModal');
       }

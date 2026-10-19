@@ -3372,7 +3372,7 @@ function renderPropertiesList(list) {
         if (window.gtag) window.gtag('event', 'generate_lead', { service: row.service });
       } catch (err) {
         console.error('service request failed', err);
-        showAnaAqarToast('تعذّر إرسال الطلب الآن، حاول مرة أخرى بعد قليل', 'error');
+        showAnaAqarToast(aqIsRateLimited(err) ? AQ_RATE_LIMIT_MSG : 'تعذّر إرسال الطلب الآن، حاول مرة أخرى بعد قليل', 'error');
       } finally {
         btn.disabled = false;
       }

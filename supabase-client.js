@@ -53,6 +53,13 @@ async function aqAttachBrokerContacts(table, rows) {
   return rows;
 }
 
+// ==================== 🛡️ حدّ الإرسال (supabase/rate_limits.sql) ====================
+// قاعدة البيانات ترفض الطلبات الكثيرة المتتالية برسالة rate_limited؛ هنا نعرض للزائر رسالة مفهومة بدلها.
+const AQ_RATE_LIMIT_MSG = 'وصلنا عدد كبير من الطلبات منك خلال وقت قصير. فريقنا سيتواصل معك قريبًا، ويمكنك المحاولة مجددًا بعد ساعة.';
+function aqIsRateLimited(err) {
+  return !!err && /rate_limited/i.test(String(err.message || err.details || err.hint || err));
+}
+
 // ==================== 🧪 العقارات التجريبية: تختفي تلقائياً عند وصول 50 عقاراً حقيقياً معتمداً ====================
 const AQ_DEMO_HIDE_AT = 50;
 async function aqDemoListingsVisible() {
