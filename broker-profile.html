@@ -610,7 +610,7 @@
                 <span>│</span>
                 <span><i class="fas fa-bath"></i> ${p.bathrooms || 1} حمام</span>
                 <span>│</span>
-                <span><i class="fas fa-ruler-combined"></i> ${p.area_m2} قدم مربع</span>
+                <span><i class="fas fa-ruler-combined"></i> ${p.area_m2 ? p.area_m2 + " م²" : "-"}</span>
               </div>
             </div>
 

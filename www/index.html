@@ -3040,7 +3040,7 @@ function renderPropertiesList(list) {
                 <span>│</span>
                 <span><i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${prop.bathrooms || 1} حمام</span>
                 <span>│</span>
-                <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> ${prop.area_m2} قدم مربع</span>
+                <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> ${prop.area_m2 ? prop.area_m2 + " م²" : "-"}</span>
               </div>
               <span class="property-type-pill">${prop.propertyType || 'شقة سكنية / استوديو'}</span>
             </div>
