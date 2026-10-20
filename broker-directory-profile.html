@@ -97,9 +97,10 @@
     .profile-logo {
       width: 76px; height: 76px;
       border-radius: 16px;
-      object-fit: cover;
+      object-fit: contain;   /* الشعار يظهر كاملًا دون قصّ أو تمطيط */
+      padding: 6px;
       border: 3px solid rgba(255,255,255,0.25);
-      background: #f8fafc;
+      background: #ffffff;
       flex-shrink: 0;
       cursor: zoom-in;
     }

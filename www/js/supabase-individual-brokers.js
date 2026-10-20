@@ -60,7 +60,7 @@
     return `
       <div class="broker-card" onclick="location.href='individual-broker-profile.html?id=${b.id}'">
         <div class="broker-card-top">
-          <img class="broker-logo" style="border-radius:50%;" src="${photo}" alt="${b.name_ar || ''}" loading="lazy">
+          <img class="broker-logo is-photo" src="${photo}" alt="${b.name_ar || ''}" loading="lazy">
           <div class="broker-names">
             <div class="broker-name-ar">${b.name_ar || '-'}</div>
             <div class="broker-name-en">${b.office_name || ''}</div>
