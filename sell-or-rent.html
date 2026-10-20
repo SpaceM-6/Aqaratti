@@ -107,6 +107,11 @@
     .path.accent .btn { background:#fff; color:var(--teal-dark); }
     .path .btn-line { background:var(--teal); color:#fff; }
     .path.gold .btn-line { background:var(--navy); }
+    .tag-gold { color:#8a6d10; }
+    [data-theme="dark"] .tag-gold { color:#f5d77a; }
+    .btn-outline { background:transparent; color:var(--navy); border:1.5px solid var(--navy); padding:9px 14px; font-size:14px; }
+    [data-theme="dark"] .btn-outline { color:#f5d77a; border-color:#d4af37; }
+    [data-theme="dark"] .path.gold .btn-line { background:#d4af37; color:#192038; }
 
     .docs { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .docs .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px; }
@@ -300,12 +305,12 @@
         <a class="btn btn-line" href="add-property.html"><i class="fas fa-plus-circle"></i> أضف عقارك</a>
       </div>
       <div class="path gold">
-        <span class="tag" style="color:#8a6d10">للوسطاء والمكاتب</span>
+        <span class="tag tag-gold">للوسطاء والمكاتب</span>
         <h3>أنت وسيط مرخّص؟</h3>
         <p>انشر عقاراتك مجانًا لأول 3 أشهر، وفعّل ملفك في دليل الوسطاء ليصل إليك العملاء.</p>
         <div style="display:flex; gap:8px; flex-wrap:wrap">
           <a class="btn btn-line" href="add-property.html"><i class="fas fa-bullhorn"></i> انشر عقاراتك</a>
-          <a class="btn" style="background:transparent; color:var(--navy); border:1.5px solid var(--navy); padding:9px 14px; font-size:14px" href="claim-profile.html">فعّل ملفك</a>
+          <a class="btn btn-outline" href="claim-profile.html"><i class="fas fa-id-badge"></i> فعّل ملفك</a>
         </div>
       </div>
     </div>

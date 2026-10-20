@@ -467,6 +467,8 @@
       overflow-x: auto;
       scrollbar-width: none;
       width: 100%;
+      padding: 4px 2px 8px;   /* مساحة للظل حتى لا يُقصّ */
+      align-items: center;
     }
 
     .royal-tab {
@@ -482,12 +484,15 @@
       transition: all 0.3s ease;
     }
 
-    .royal-tab:hover, .royal-tab:active, .royal-tab.active {
+    /* التبويب المختار: بارز في مكانه (لون ممتلئ + إطار فاتح + ظل خفيف) دون أن يرتفع فيُقصّ داخل الشريط */
+    .royal-tab:hover, .royal-tab.active {
       background: var(--primary-turquoise) !important;
-      border-color: var(--primary-turquoise) !important;
-      box-shadow: 0 0 15px rgba(0, 168, 150, 0.8);
-      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.85) !important;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(0, 168, 150, 0.55);
+      transform: none;
     }
+    .royal-tab.active { font-weight: 900; }
 
     .pearl-inputs-grid {
       display: grid;
