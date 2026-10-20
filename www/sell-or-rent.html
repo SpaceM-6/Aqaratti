@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بِع أو أجّر عقارك | أنا عقار AnaAqar</title>
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <meta name="description" content="تريد بيع عقارك أو تأجيره في الإمارات؟ أخبرنا عنه في دقيقة ونوصلك بوسيط مرخّص لدى دائرة الأراضي والأملاك، أو انشر إعلانك بنفسك مجانًا على أنا عقار.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anaaqar.com/sell-or-rent.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="بِع أو أجّر عقارك | أنا عقار">
+  <meta property="og:description" content="أخبرنا عن عقارك ونوصلك بوسيط مرخّص، أو انشر إعلانك بنفسك مجانًا.">
+  <meta property="og:url" content="https://anaaqar.com/sell-or-rent.html">
+  <meta property="og:image" content="https://anaaqar.com/icons/icon-app-1024.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <style>
+    :root {
+      --teal:#00a896; --teal-dark:#028090; --teal-soft:#e6f7f5;
+      --navy:#192038; --navy-2:#24305a; --gold:#d4af37; --gold-soft:#fbf3dc;
+      --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --card:#ffffff;
+    }
+    [data-theme="dark"] { --ink:#e2e8f0; --muted:#94a3b8; --line:#2b3654; --bg:#0f172a; --card:#162039; --teal-soft:#0f2e33; --gold-soft:#2b2615; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+    a { color:inherit; }
+
+    /* شريط علوي */
+    .topbar { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+    [data-theme="dark"] .topbar { background:rgba(15,23,42,.92); }
+    .topbar-in { max-width:1100px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .brand img { height:30px; width:auto; }
+    .brand b { color:var(--teal); font-size:20px; font-weight:900; }
+    .back { text-decoration:none; color:var(--teal); font-weight:800; font-size:14px; white-space:nowrap; }
+
+    /* البطل */
+    .hero { position:relative; overflow:hidden; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 55%, #0b5e63 100%); color:#fff; }
+    .hero::after { content:""; position:absolute; inset:auto -120px -160px auto; width:520px; height:200px; background:url('icons/logo-white.svg') center/contain no-repeat; opacity:.06; transform:rotate(-8deg); pointer-events:none; }
+    .hero-in { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:34px 16px 40px; display:grid; grid-template-columns:1fr 1.05fr; gap:28px; align-items:center; }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; background:rgba(212,175,55,.16); color:#f5d77a; border:1px solid rgba(212,175,55,.35); padding:5px 12px; border-radius:999px; font-weight:800; font-size:13px; }
+    .hero h1 { font-size:clamp(28px, 5vw, 44px); line-height:1.25; margin:14px 0 10px; font-weight:900; }
+    .hero h1 span { color:#5eead4; }
+    .hero p.lead { color:#cbd5e1; font-size:16px; margin:0 0 18px; max-width:520px; }
+    .hero-points { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .hero-points li { display:flex; gap:10px; align-items:flex-start; color:#e2e8f0; font-weight:700; font-size:14px; }
+    .hero-points i { color:var(--gold); margin-top:4px; }
+
+    /* بطاقة النموذج */
+    .form-card { background:var(--card); color:var(--ink); border-radius:22px; padding:20px; box-shadow:0 24px 60px rgba(2,8,23,.35); border:1px solid rgba(255,255,255,.08); }
+    .steps-dots { display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:13px; font-weight:800; color:var(--muted); }
+    .steps-dots .dot { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; background:var(--line); color:var(--muted); font-weight:900; }
+    .steps-dots .dot.on { background:var(--teal); color:#fff; }
+    .steps-dots .bar { flex:1; height:3px; background:var(--line); border-radius:3px; overflow:hidden; }
+    .steps-dots .bar i { display:block; height:100%; width:0; background:var(--teal); transition:width .3s; }
+    .seg { display:grid; grid-template-columns:1fr 1fr; background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:4px; margin-bottom:14px; }
+    .seg button { border:0; background:transparent; padding:10px; border-radius:10px; font-family:inherit; font-weight:900; font-size:15px; color:var(--muted); cursor:pointer; }
+    .seg button.on { background:var(--teal); color:#fff; box-shadow:0 4px 12px rgba(0,168,150,.3); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 12px; }
+    .full { grid-column:1 / -1; }
+    label.f { display:block; font-size:13px; font-weight:800; color:var(--muted); margin-bottom:5px; }
+    label.f em { color:#e11d48; font-style:normal; }
+    .inp, select.inp, textarea.inp { width:100%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:11px 12px; font-family:inherit; font-size:15px; font-weight:600; outline:none; transition:border-color .15s; }
+    .inp:focus { border-color:var(--teal); }
+    textarea.inp { min-height:78px; resize:vertical; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .chips button { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:7px 12px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .chips button.on { border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); }
+    [data-theme="dark"] .chips button.on { color:#5eead4; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:14px; padding:13px 18px; font-family:inherit; font-weight:900; font-size:16px; cursor:pointer; text-decoration:none; }
+    .btn-main { width:100%; background:var(--teal); color:#fff; margin-top:14px; box-shadow:0 8px 20px rgba(0,168,150,.3); }
+    .btn-main:hover { background:var(--teal-dark); }
+    .btn-main:disabled { opacity:.6; cursor:wait; }
+    .btn-ghost { background:transparent; color:var(--muted); padding:8px 6px; font-size:14px; }
+    .fine { font-size:12px; color:var(--muted); margin:10px 0 0; text-align:center; }
+    .hidden { display:none !important; }
+    .done { text-align:center; padding:18px 6px; }
+    .done i { font-size:46px; color:var(--teal); }
+    .done h3 { margin:10px 0 6px; font-size:22px; }
+    .done p { color:var(--muted); margin:0 0 14px; }
+
+    /* أقسام */
+    section.block { max-width:1100px; margin:0 auto; padding:44px 16px 8px; }
+    .sec-title { font-size:clamp(22px, 3.4vw, 30px); font-weight:900; margin:0 0 6px; color:var(--ink); }
+    .sec-sub { color:var(--muted); margin:0 0 22px; }
+    .how { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; counter-reset:s; }
+    .how .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px; position:relative; }
+    .how .card::before { counter-increment:s; content:counter(s); position:absolute; top:16px; left:16px; font-size:40px; font-weight:900; color:var(--teal-soft); line-height:1; }
+    [data-theme="dark"] .how .card::before { color:#1d3a4a; }
+    .how .ic { width:46px; height:46px; border-radius:14px; display:grid; place-items:center; background:var(--teal-soft); color:var(--teal); font-size:20px; margin-bottom:10px; }
+    .how h3 { margin:0 0 6px; font-size:17px; }
+    .how p { margin:0; color:var(--muted); font-size:14px; }
+
+    .paths { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+    .path { border-radius:20px; padding:22px; display:flex; flex-direction:column; gap:8px; border:1px solid var(--line); background:var(--card); }
+    .path.accent { background:linear-gradient(160deg, var(--teal) 0%, var(--teal-dark) 100%); color:#fff; border:0; }
+    .path.gold { background:var(--gold-soft); border-color:#ecdba6; }
+    [data-theme="dark"] .path.gold { border-color:#4a3f1e; }
+    .path .tag { font-size:12px; font-weight:900; opacity:.85; }
+    .path h3 { margin:0; font-size:19px; }
+    .path p { margin:0 0 6px; font-size:14px; opacity:.9; flex:1; }
+    .path .btn { align-self:flex-start; padding:10px 16px; font-size:14px; }
+    .path.accent .btn { background:#fff; color:var(--teal-dark); }
+    .path .btn-line { background:var(--teal); color:#fff; }
+    .path.gold .btn-line { background:var(--navy); }
+
+    .docs { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .docs .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px; }
+    .docs h3 { margin:0 0 10px; font-size:17px; display:flex; align-items:center; gap:8px; }
+    .docs h3 i { color:var(--gold); }
+    .docs ul { margin:0; padding:0 18px 0 0; color:var(--muted); font-size:14px; }
+    .docs li { margin-bottom:6px; }
+    .note { font-size:12px; color:var(--muted); margin-top:10px; }
+
+    .faq details { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:4px 16px; margin-bottom:10px; }
+    .faq summary { cursor:pointer; list-style:none; padding:12px 0; font-weight:900; display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .faq summary::-webkit-details-marker { display:none; }
+    .faq summary::after { content:"+"; font-size:22px; color:var(--teal); font-weight:900; }
+    .faq details[open] summary::after { content:"−"; }
+    .faq details p { margin:0 0 14px; color:var(--muted); font-size:14px; }
+
+    .cta-band { max-width:1100px; margin:40px auto 0; padding:0 16px; }
+    .cta-band .in { background:var(--navy); color:#fff; border-radius:22px; padding:24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .cta-band h3 { margin:0; font-size:20px; }
+    .cta-band p { margin:4px 0 0; color:#cbd5e1; font-size:14px; }
+    .cta-band .btn { background:var(--gold); color:var(--navy); }
+    footer { text-align:center; color:var(--muted); font-size:13px; padding:28px 16px 90px; }
+    footer a { color:var(--teal); text-decoration:none; font-weight:800; }
+
+    @media (max-width: 900px) {
+      .hero-in { grid-template-columns:1fr; padding-top:24px; }
+      .how, .paths { grid-template-columns:1fr; }
+      .docs { grid-template-columns:1fr; }
+    }
+    @media (max-width: 420px) {
+      .grid { grid-template-columns:1fr; }
+      .form-card { padding:16px; border-radius:18px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="index.html"><img src="icons/logo.svg" width="98" height="30" alt=""><b>أنا عقار</b></a>
+      <a class="back" href="index.html"><i class="fas fa-arrow-right"></i> الرئيسية</a>
+    </div>
+  </header>
+
+  <!-- ===== البطل + النموذج ===== -->
+  <div class="hero">
+    <div class="hero-in">
+      <div>
+        <span class="eyebrow"><i class="fas fa-shield-halved"></i> وسطاء مرخّصون لدى دائرة الأراضي والأملاك</span>
+        <h1>عقارك يستحق <span>وسيطًا يُتقن عمله</span></h1>
+        <p class="lead">أخبرنا عن عقارك في أقل من دقيقة، ونرشّح لك وسيطًا مرخّصًا يتولى التسويق والمعاينات والإجراءات حتى إتمام البيع أو التأجير.</p>
+        <ul class="hero-points">
+          <li><i class="fas fa-circle-check"></i> الطلب مجاني ولا يُلزمك بأي شيء</li>
+          <li><i class="fas fa-circle-check"></i> نتواصل معك قبل مشاركة بياناتك مع أي وسيط</li>
+          <li><i class="fas fa-circle-check"></i> أو انشر إعلانك بنفسك مجانًا لأول 3 أشهر</li>
+        </ul>
+      </div>
+
+      <div class="form-card" id="formCard">
+        <div class="steps-dots" aria-hidden="true">
+          <span class="dot on" id="dot1">1</span> عن العقار
+          <span class="bar"><i id="stepBar"></i></span>
+          <span class="dot" id="dot2">2</span> بيانات التواصل
+        </div>
+
+        <form id="listForm" novalidate>
+          <!-- الخطوة 1 -->
+          <div id="step1">
+            <div class="seg" role="tablist">
+              <button type="button" class="on" data-deal="sell">أريد البيع</button>
+              <button type="button" data-deal="rent">أريد التأجير</button>
+            </div>
+            <div class="grid">
+              <div>
+                <label class="f" for="emirate">الإمارة <em>*</em></label>
+                <select class="inp" id="emirate" required>
+                  <option value="">اختر</option>
+                  <option>دبي</option><option>أبوظبي</option><option>الشارقة</option><option>عجمان</option>
+                  <option>رأس الخيمة</option><option>أم القيوين</option><option>الفجيرة</option>
+                </select>
+              </div>
+              <div>
+                <label class="f" for="area">المنطقة / المشروع <em>*</em></label>
+                <input class="inp" id="area" maxlength="80" placeholder="مثال: الخليج التجاري" required>
+              </div>
+              <div class="full">
+                <label class="f">نوع العقار</label>
+                <div class="chips" id="typeChips">
+                  <button type="button" class="on">شقة</button><button type="button">فيلا</button><button type="button">تاون هاوس</button>
+                  <button type="button">بنتهاوس</button><button type="button">أرض</button><button type="button">مكتب</button><button type="button">محل</button><button type="button">أخرى</button>
+                </div>
+              </div>
+              <div>
+                <label class="f" for="beds">غرف النوم</label>
+                <select class="inp" id="beds">
+                  <option value="">—</option><option>استوديو</option><option>1</option><option>2</option><option>3</option>
+                  <option>4</option><option>5</option><option>6</option><option>7+</option>
+                </select>
+              </div>
+              <div>
+                <label class="f" for="size">المساحة (م²)</label>
+                <input class="inp" id="size" type="number" min="1" inputmode="numeric" placeholder="مثال: 120">
+              </div>
+              <div>
+                <label class="f" for="furnish">التأثيث</label>
+                <select class="inp" id="furnish">
+                  <option value="">—</option><option>مفروش</option><option>غير مفروش</option><option>مفروش جزئيًا</option>
+                </select>
+              </div>
+              <div>
+                <label class="f" for="when">متى تريد البدء؟</label>
+                <select class="inp" id="when">
+                  <option>فورًا</option><option>خلال شهر</option><option>خلال 3 أشهر</option><option>أستكشف فقط</option>
+                </select>
+              </div>
+              <div class="full">
+                <label class="f" for="price">السعر المتوقع (درهم) — اختياري</label>
+                <input class="inp" id="price" type="number" min="0" inputmode="numeric" placeholder="اتركه فارغًا إن لم تكن متأكدًا">
+              </div>
+            </div>
+            <button type="button" class="btn btn-main" id="toStep2">متابعة <i class="fas fa-arrow-left"></i></button>
+          </div>
+
+          <!-- الخطوة 2 -->
+          <div id="step2" class="hidden">
+            <div class="grid">
+              <div class="full">
+                <label class="f" for="name">الاسم <em>*</em></label>
+                <input class="inp" id="name" maxlength="100" autocomplete="name" required>
+              </div>
+              <div>
+                <label class="f" for="phone">رقم الهاتف / واتساب <em>*</em></label>
+                <input class="inp" id="phone" type="tel" dir="ltr" maxlength="25" autocomplete="tel" placeholder="+971 5x xxx xxxx" required>
+              </div>
+              <div>
+                <label class="f" for="email">البريد الإلكتروني</label>
+                <input class="inp" id="email" type="email" dir="ltr" maxlength="150" autocomplete="email">
+              </div>
+              <div class="full">
+                <label class="f">أنت</label>
+                <div class="chips" id="roleChips">
+                  <button type="button" class="on">المالك</button><button type="button">وكيل عن المالك</button>
+                </div>
+              </div>
+              <div class="full">
+                <label class="f" for="notes">ملاحظات</label>
+                <textarea class="inp" id="notes" maxlength="800" placeholder="أي تفاصيل تساعد الوسيط: الإطلالة، الطابق، العقار مؤجَّر حاليًا أم لا…"></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-main" id="sendBtn"><i class="fas fa-paper-plane"></i> أرسل الطلب</button>
+            <div style="text-align:center"><button type="button" class="btn btn-ghost" id="backBtn"><i class="fas fa-arrow-right"></i> رجوع</button></div>
+            <p class="fine">بالإرسال توافق على <a href="terms-of-service.html">الشروط</a> و<a href="privacy-policy.html">سياسة الخصوصية</a>.</p>
+          </div>
+        </form>
+
+        <div id="doneBox" class="done hidden">
+          <i class="fas fa-circle-check"></i>
+          <h3>وصلنا طلبك</h3>
+          <p>سيتواصل معك فريق أنا عقار قريبًا لترشيح وسيط مناسب لعقارك.</p>
+          <a class="btn btn-main" href="add-property.html" style="margin-top:0"><i class="fas fa-plus-circle"></i> أو انشر إعلانك بنفسك الآن</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== كيف تعمل ===== -->
+  <section class="block">
+    <h2 class="sec-title">ثلاث خطوات… والباقي علينا</h2>
+    <p class="sec-sub">من طلبك الأول حتى توقيع العقد، تعرف دائمًا ما الخطوة التالية.</p>
+    <div class="how">
+      <div class="card"><div class="ic"><i class="fas fa-pen-to-square"></i></div><h3>أخبرنا عن عقارك</h3><p>بضع معلومات بسيطة عن الموقع والنوع والمساحة، دون أوراق ولا التزامات.</p></div>
+      <div class="card"><div class="ic"><i class="fas fa-user-check"></i></div><h3>نرشّح لك وسيطًا مرخّصًا</h3><p>نختار من وسطاء مسجّلين لدى دائرة الأراضي والأملاك ويعرفون منطقتك، ونعرّفك عليه بعد موافقتك.</p></div>
+      <div class="card"><div class="ic"><i class="fas fa-handshake"></i></div><h3>بيع أو تأجير بثقة</h3><p>يتولى الوسيط التصوير والتسويق والمعاينات والتفاوض والإجراءات الرسمية حتى إتمام الصفقة.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== اختر طريقك ===== -->
+  <section class="block">
+    <h2 class="sec-title">اختر الطريقة التي تناسبك</h2>
+    <p class="sec-sub">سواء كنت مالكًا أو وسيطًا، لك مكان على أنا عقار.</p>
+    <div class="paths">
+      <div class="path accent">
+        <span class="tag">للملاك</span>
+        <h3>دع وسيطًا يتولّى كل شيء</h3>
+        <p>الطريقة الأسهل والأسرع: املأ النموذج في الأعلى ونرشّح لك وسيطًا مرخّصًا.</p>
+        <a class="btn" href="#formCard"><i class="fas fa-arrow-up"></i> ابدأ الطلب</a>
+      </div>
+      <div class="path">
+        <span class="tag" style="color:var(--teal)">للملاك</span>
+        <h3>انشر إعلانك بنفسك</h3>
+        <p>أضف صور عقارك وتفاصيله واستقبل الاستفسارات مباشرة. النشر مجاني لأول 3 أشهر.</p>
+        <a class="btn btn-line" href="add-property.html"><i class="fas fa-plus-circle"></i> أضف عقارك</a>
+      </div>
+      <div class="path gold">
+        <span class="tag" style="color:#8a6d10">للوسطاء والمكاتب</span>
+        <h3>أنت وسيط مرخّص؟</h3>
+        <p>انشر عقاراتك مجانًا لأول 3 أشهر، وفعّل ملفك في دليل الوسطاء ليصل إليك العملاء.</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <a class="btn btn-line" href="add-property.html"><i class="fas fa-bullhorn"></i> انشر عقاراتك</a>
+          <a class="btn" style="background:transparent; color:var(--navy); border:1.5px solid var(--navy); padding:9px 14px; font-size:14px" href="claim-profile.html">فعّل ملفك</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ما تحتاجه ===== -->
+  <section class="block">
+    <h2 class="sec-title">جهّز أوراقك من الآن</h2>
+    <p class="sec-sub">قائمة مختصرة بما يُطلب عادةً، ليمضي كل شيء بسلاسة.</p>
+    <div class="docs">
+      <div class="card">
+        <h3><i class="fas fa-file-signature"></i> عند البيع</h3>
+        <ul>
+          <li>سند ملكية العقار</li>
+          <li>جواز السفر والهوية الإماراتية للمالك (أو وكالة رسمية لمن ينوب عنه)</li>
+          <li>شهادة عدم ممانعة من المطوّر، وتُطلب عادةً قبل نقل الملكية</li>
+          <li>اتفاقية الوساطة الموقّعة مع الوسيط، ثم مذكرة التفاهم مع المشتري</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-key"></i> عند التأجير</h3>
+        <ul>
+          <li>سند الملكية وهوية المالك</li>
+          <li>عقد إيجار موثّق في نظام الإمارة (مثل «إيجاري» في دبي)</li>
+          <li>جاهزية حسابات الكهرباء والماء والتبريد إن وُجدت</li>
+          <li>اتفاق واضح على عدد الدفعات والتأمين وموعد التسليم</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">* المتطلبات والرسوم تختلف بين الإمارات وقد تتغير؛ يوضّحها لك الوسيط بدقة قبل البدء.</p>
+  </section>
+
+  <!-- ===== أسئلة شائعة ===== -->
+  <section class="block faq">
+    <h2 class="sec-title">أسئلة يطرحها الملاك كثيرًا</h2>
+    <p class="sec-sub">إن لم تجد جوابك، راسلنا على <a href="mailto:info@anaaqar.com" style="color:var(--teal); font-weight:800; text-decoration:none">info@anaaqar.com</a>.</p>
+    <details><summary>هل إرسال الطلب يُلزمني بشيء؟</summary><p>لا. الطلب مجاني تمامًا، ولا تبدأ أي التزامات إلا إذا قررت التعاقد مع الوسيط ووقّعت معه اتفاقية الوساطة.</p></details>
+    <details><summary>من سيرى بياناتي؟</summary><p>فريق أنا عقار فقط عند وصول الطلب. نتواصل معك أولًا، ثم نعرّفك على الوسيط المرشّح بعد موافقتك.</p></details>
+    <details><summary>لماذا أتعامل مع وسيط مرخّص؟</summary><p>الوسيط المسجّل لدى الجهة المنظِّمة في الإمارة ملزم بالأنظمة، ويعرف الإجراءات الرسمية والعقود ويختصر عليك الوقت ويحمي حقوقك في الصفقة.</p></details>
+    <details><summary>كم عمولة الوسيط؟</summary><p>تُتفق عليها مسبقًا في اتفاقية الوساطة. الشائع في السوق نحو 2% من قيمة البيع، ونحو 5% من الإيجار السنوي، وهي قابلة للتفاوض وتختلف حسب العقار والإمارة.</p></details>
+    <details><summary>هل يمكنني بيع عقار مؤجَّر حاليًا؟</summary><p>نعم في أغلب الحالات، وينتقل عقد الإيجار إلى المالك الجديد. أما إخلاء المستأجر فله شروط ومدد إخطار نظامية، يشرحها لك الوسيط قبل عرض العقار.</p></details>
+    <details><summary>أريد نشر الإعلان بنفسي، كيف؟</summary><p>من صفحة <a href="add-property.html" style="color:var(--teal); font-weight:800">أضف عقارك</a>: سجّل دخولك، وأضف الصور والتفاصيل، ويظهر إعلانك بعد مراجعة سريعة من فريقنا. النشر مجاني لأول 3 أشهر.</p></details>
+  </section>
+
+  <div class="cta-band">
+    <div class="in">
+      <div>
+        <h3>جاهز تبدأ؟</h3>
+        <p>دقيقة واحدة تفصلك عن وسيط يهتم بعقارك.</p>
+      </div>
+      <a class="btn" href="#formCard"><i class="fas fa-arrow-up"></i> أخبرنا عن عقارك</a>
+    </div>
+  </div>
+
+  <footer>
+    © أنا عقار AnaAqar ·
+    <a href="terms-of-service.html">الشروط والأحكام</a> ·
+    <a href="privacy-policy.html">سياسة الخصوصية</a>
+  </footer>
+
+  <script>
+    (function () {
+      try {
+        const t = localStorage.getItem('anaaqar_theme');
+        if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) {}
+
+      const $ = id => document.getElementById(id);
+      if (typeof window.showAnaAqarToast !== 'function') {
+        window.showAnaAqarToast = (msg, type) => {
+          const t = document.createElement('div');
+          t.textContent = msg;
+          t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;max-width:90vw;padding:12px 18px;border-radius:12px;font-weight:800;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.25);background:' + (type === 'error' ? '#dc2626' : '#00a896');
+          document.body.appendChild(t); setTimeout(() => t.remove(), 4000);
+        };
+      }
+      let deal = 'sell';
+
+      function chipGroup(id) {
+        const wrap = $(id);
+        wrap.addEventListener('click', e => {
+          const b = e.target.closest('button'); if (!b) return;
+          wrap.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+          b.classList.add('on');
+        });
+        return () => (wrap.querySelector('button.on') || {}).innerText || '';
+      }
+      const getType = chipGroup('typeChips');
+      const getRole = chipGroup('roleChips');
+
+      document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.seg button').forEach(x => x.classList.remove('on'));
+        b.classList.add('on'); deal = b.dataset.deal;
+        $('price').placeholder = deal === 'rent' ? 'الإيجار السنوي المتوقع — اختياري' : 'اتركه فارغًا إن لم تكن متأكدًا';
+      }));
+
+      function showStep(n) {
+        $('step1').classList.toggle('hidden', n !== 1);
+        $('step2').classList.toggle('hidden', n !== 2);
+        $('dot2').classList.toggle('on', n === 2);
+        $('stepBar').style.width = n === 2 ? '100%' : '0';
+        if (n === 2) setTimeout(() => $('name').focus(), 50);
+      }
+      function need(el, msg) {
+        if (el.value.trim()) return true;
+        el.focus(); el.style.borderColor = '#e11d48';
+        setTimeout(() => (el.style.borderColor = ''), 1800);
+        if (typeof showAnaAqarToast === 'function') showAnaAqarToast(msg, 'error'); else alert(msg);
+        return false;
+      }
+      $('toStep2').addEventListener('click', () => {
+        if (!need($('emirate'), 'اختر الإمارة') || !need($('area'), 'اكتب المنطقة أو اسم المشروع')) return;
+        showStep(2);
+      });
+      $('backBtn').addEventListener('click', () => showStep(1));
+
+      $('listForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!need($('name'), 'اكتب اسمك') || !need($('phone'), 'اكتب رقم هاتفك')) return;
+        const phone = $('phone').value.trim();
+        if (phone.replace(/\D/g, '').length < 7) { $('phone').value = ''; need($('phone'), 'تأكد من رقم الهاتف'); $('phone').value = phone; return; }
+
+        const lines = [
+          `طلب ${deal === 'rent' ? 'تأجير' : 'بيع'} عقار (صفحة بِع أو أجّر)`,
+          `النوع: ${getType()}`,
+          $('beds').value && `غرف النوم: ${$('beds').value}`,
+          $('size').value && `المساحة: ${$('size').value} م²`,
+          $('furnish').value && `التأثيث: ${$('furnish').value}`,
+          `البدء: ${$('when').value}`,
+          $('price').value && `${deal === 'rent' ? 'الإيجار السنوي المتوقع' : 'السعر المتوقع'}: ${Number($('price').value).toLocaleString('en-US')} درهم`,
+          `صفة المرسل: ${getRole()}`,
+          $('notes').value.trim() && `ملاحظات: ${$('notes').value.trim()}`
+        ].filter(Boolean);
+
+        const row = {
+          service: 'brokerage',
+          name: $('name').value.trim().slice(0, 100),
+          phone: phone.slice(0, 30),
+          email: $('email').value.trim() || null,
+          city: `${$('emirate').value} — ${$('area').value.trim()}`.slice(0, 100),
+          details: lines.join('\n').slice(0, 2000),
+          page: location.pathname
+        };
+        const btn = $('sendBtn'); btn.disabled = true;
+        try {
+          const { error } = await supabaseClient.from('service_requests').insert(row);
+          if (error) throw error;
+          $('listForm').classList.add('hidden');
+          document.querySelector('.steps-dots').classList.add('hidden');
+          $('doneBox').classList.remove('hidden');
+          if (window.gtag) window.gtag('event', 'generate_lead', { service: 'list_property', deal });
+        } catch (err) {
+          console.error('list request failed', err);
+          const msg = (typeof aqIsRateLimited === 'function' && aqIsRateLimited(err)) ? AQ_RATE_LIMIT_MSG : 'تعذّر إرسال الطلب الآن، حاول مرة أخرى بعد قليل.';
+          if (typeof showAnaAqarToast === 'function') showAnaAqarToast(msg, 'error'); else alert(msg);
+        } finally { btn.disabled = false; }
+      });
+    })();
+  </script>
+</body>
+</html>
