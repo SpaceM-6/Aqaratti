@@ -2000,7 +2000,7 @@
         <button class="aq-tile" onclick="openPropertyCategory('ready')"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('offers')"><span class="aq-ico" style="--c:#e11d48"><i class="fas fa-tags"></i></span><b>العروض</b><small>خصومات وخطط سداد خاصة</small></button>
         <button class="aq-tile" onclick="openServiceRequest('citizenship')"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></button>
-        <button class="aq-tile" onclick="openPropertyCategory('no_commission')"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>مباشرة من المالك</small></button>
+        <button class="aq-tile" onclick="openPropertyCategory('no_commission')"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>دون عمولة على المشتري</small></button>
       </div>
 
       <h2 class="aq-block-title" style="margin-top:34px;"><i class="fas fa-briefcase"></i> خدمات أنا عقار</h2>
@@ -2032,7 +2032,7 @@
           <div class="ad-banner-body" style="color:white;">
             <i class="fas fa-bullhorn" style="font-size: 28px; margin-bottom: 8px;"></i>
             <div class="ad-title" style="color:white;">أعلن عن عقارك مجانًا</div>
-            <div class="ad-subtitle" style="color:#e0f2f1;">الاشتراك مجاني لأول 3 أشهر لكل وسيط ومالك عقار.</div>
+            <div class="ad-subtitle" style="color:#e0f2f1;">النشر مجاني لأول 3 أشهر للوسطاء والمكاتب والمطورين.</div>
             <a href="sell-or-rent.html" class="btn-ad-action" style="background:#fff; color:#028090;">أضف عقارك ❯</a>
           </div>
         </div>
@@ -2090,7 +2090,7 @@
         <p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:20px;">يمكنك الاتصال المباشر أو نسَخ الرقم بالتفاصيل التالية:</p>
 
         <div style="background:#f1f5f9; border:1px solid var(--dubizzle-border); padding:15px; border-radius:12px; margin-bottom:15px;">
-          <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:4px;">رقم المالك / الوسيط المباشر:</div>
+          <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:4px;">رقم الوسيط:</div>
           <div style="font-size:24px; font-weight:900; color:var(--primary-turquoise);" id="modalBrokerPhoneNum"></div>
         </div>
 
@@ -3324,7 +3324,7 @@ function renderPropertiesList(list) {
       under_construction: 'مشاريع تحت الإنشاء 🏗️',
       ready: 'عقارات جاهزة للاستلام 🔑',
       offers: 'عروض وخصومات خاصة 🏷️',
-      no_commission: 'عقارات بدون عمولة — مباشرة من المالك 🤝'
+      no_commission: 'عقارات بدون عمولة على المشتري 🤝'
     };
     function openPropertyCategory(type) {
       document.querySelectorAll('.royal-tab').forEach(tab => tab.classList.remove('active'));

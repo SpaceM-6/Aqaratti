@@ -379,7 +379,6 @@
           <div class="form-group">
             <label>صفة المعلن للعقار *</label>
             <select id="brokerRoleInput" required>
-              <option value="مالك مباشر">مالك العقار المباشر 🔑</option>
               <option value="وسيط معتمد">وسيط عقاري مرخص 🌟</option>
               <option value="شركة تطوير">شركة عقارية / تطوير 🏢</option>
             </select>
@@ -404,12 +403,12 @@
 
         <div class="grid-2">
           <div class="form-group">
-            <label>رقم الرخصة التجارية / رقم القيد المهني للوساطة العقارية</label>
-            <input type="text" id="licenseNumberInput" placeholder="مثال: رقم رخصة RERA أو ما يعادلها">
+            <label>رقم الرخصة التجارية / رقم القيد المهني للوساطة العقارية *</label>
+            <input type="text" id="licenseNumberInput" placeholder="مثال: رقم رخصة RERA أو ما يعادلها" required>
           </div>
         </div>
         <p style="font-size:11px; color:#94a3b8; margin-top:-8px; margin-bottom:10px;">
-          مطلوب للوسطاء وشركات التطوير حتى يتم اعتماد إعلانك من فريقنا. اختياري لمالك العقار المباشر.
+          النشر على أنا عقار متاح فقط للوسطاء والمكاتب وشركات التطوير المرخّصة، ويُتحقق من الرخصة قبل اعتماد الإعلان.
         </p>
 
         <div class="grid-2">
@@ -775,9 +774,10 @@
         document.getElementById('permitNumberInput').focus();
         return;
       }
-      if (roleValue !== 'مالك مباشر' && !licenseValue) {
-        const proceedAnyway = confirm('لم تُدخل رقم الرخصة/القيد المهني. الإعلانات التي بلا رقم رخصة قد تستغرق وقتاً أطول للمراجعة والاعتماد. هل تريد المتابعة على أي حال؟');
-        if (!proceedAnyway) return;
+      if (!licenseValue) {
+        alert('رقم الرخصة أو القيد المهني مطلوب؛ النشر متاح فقط للوسطاء والمكاتب والمطورين المرخّصين.');
+        document.getElementById('licenseNumberInput').focus();
+        return;
       }
 
       const user = await getCurrentAnaAqarUser();
