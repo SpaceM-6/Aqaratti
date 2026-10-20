@@ -2,7 +2,7 @@
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v57';
+const CACHE_VERSION = 'v58';
 const CACHE_NAME = `anaaqar-cache-${CACHE_VERSION}`;
 
 // 📄 ملفات يجب أن تكون دائماً حديثة (صفحات HTML وملفات JS الأساسية المسؤولة عن منطق الموقع):
@@ -34,6 +34,8 @@ const APP_SHELL = [
   './icons/icon-app-512.png',
   './icons/icon-app-1024.png',
   './icons/icon-app-maskable-512.png',
+  './icons/app-icon-v3-512.png',
+  './icons/app-icon-maskable-v3-512.png',
   './icons/logo.svg'
 ];
 
