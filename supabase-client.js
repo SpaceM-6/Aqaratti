@@ -5,6 +5,71 @@
    الكتابة في brokers تتم حصراً عبر مفتاح service_role السرّي من scripts/import-to-supabase.py،
    الذي لا يجب أبداً وضعه في أي ملف يعمل داخل المتصفح مثل هذا الملف. */
 
+// ==================== 📱 التطبيق بعرض جوال ثابت ====================
+// إذا فعّل المستخدم «عرض موقع الكمبيوتر» في كروم، يفتح التطبيق المثبّت (PWA) بعرض كمبيوتر مصغّر
+// لأن كروم يتجاهل إعداد العرض في الصفحة. هنا نعيد للتطبيق تخطيط الجوال دائمًا:
+// نقيس عرض شاشة الجهاز الحقيقي، ونفعّل قواعد CSS الخاصة بالجوال ونعطّل قواعد الكمبيوتر، ثم نكبّر الصفحة لتملأ الشاشة.
+// يعمل داخل التطبيق فقط؛ في المتصفح العادي يبقى اختيار المستخدم كما هو.
+(function aqAppMobileLayout() {
+  try {
+    if (/[?&]source=pwa/.test(location.search)) sessionStorage.setItem('aq_in_app', '1');
+  } catch (e) {}
+  function inApp() {
+    let flag = false;
+    try { flag = sessionStorage.getItem('aq_in_app') === '1'; } catch (e) {}
+    return flag || !!window.Capacitor || window.navigator.standalone === true ||
+      ['standalone', 'fullscreen', 'minimal-ui', 'window-controls-overlay'].some(m => window.matchMedia && matchMedia(`(display-mode: ${m})`).matches);
+  }
+  const original = new WeakMap();
+  const WIDTH_RE = /\((min|max)-width\s*:\s*([\d.]+)px\)/gi;
+  function mediaMatchesWidth(text, w) {
+    let ok = true, m;
+    WIDTH_RE.lastIndex = 0;
+    while ((m = WIDTH_RE.exec(text))) {
+      const n = parseFloat(m[2]);
+      if (m[1].toLowerCase() === 'max' ? w > n : w < n) ok = false;
+    }
+    return ok;
+  }
+  function onlyWidthConditions(text) {
+    return /(min|max)-width/i.test(text) && !/,/.test(text) &&
+      text.replace(WIDTH_RE, '').replace(/\b(only|screen|all|and)\b/gi, '').trim() === '';
+  }
+  function eachMediaRule(rules, fn) {
+    for (const r of Array.from(rules || [])) {
+      if (r.type === 4 /* MEDIA_RULE */) { fn(r); eachMediaRule(r.cssRules, fn); }
+      else if (r.cssRules) eachMediaRule(r.cssRules, fn);
+    }
+  }
+  let applied = false;
+  function apply() {
+    const html = document.documentElement;
+    html.style.zoom = '';                       // نقيس العرض الحقيقي قبل أي تكبير
+    const vw = html.clientWidth;
+    const sw = window.screen && screen.width;
+    const isPhone = sw && sw <= 900 && (navigator.maxTouchPoints > 0 || (window.matchMedia && matchMedia('(pointer: coarse)').matches));
+    const needed = inApp() && isPhone && vw > sw + 40;
+    if (!needed && !applied) return;
+    for (const sheet of Array.from(document.styleSheets)) {
+      let rules; try { rules = sheet.cssRules; } catch (e) { continue; } // ملفات CDN الخارجية لا يمكن قراءتها، ولا تحتاج تعديلًا
+      eachMediaRule(rules, r => {
+        const orig = original.has(r) ? original.get(r) : r.media.mediaText;
+        if (!onlyWidthConditions(orig)) return;
+        original.set(r, orig);
+        const target = needed ? (mediaMatchesWidth(orig, sw) ? 'all' : 'not all') : orig;
+        if (r.media.mediaText !== target) r.media.mediaText = target;
+      });
+    }
+    document.documentElement.style.zoom = needed ? String(vw / sw) : '';
+    document.documentElement.classList.toggle('aq-app-forced-mobile', needed);
+    applied = needed;
+  }
+  function run() { try { apply(); } catch (e) { console.warn('app layout', e); } }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+  window.addEventListener('load', run);
+  window.addEventListener('orientationchange', () => setTimeout(run, 300));
+})();
+
 const SUPABASE_URL = 'https://mejkpckkdbmczzypzkkr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lamtwY2trZGJtY3p6eXB6a2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3ODMxNzUsImV4cCI6MjEwMzM1OTE3NX0.e9DqA9JRjhH-scSYwNue6XqowK0u1bMHEOcrcJjZwjo';
 

@@ -2,8 +2,16 @@
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v53';
+const CACHE_VERSION = 'v54';
 const CACHE_NAME = `anaaqar-cache-${CACHE_VERSION}`;
+
+// 📄 ملفات يجب أن تكون دائماً حديثة (صفحات HTML وملفات JS الأساسية المسؤولة عن منطق الموقع):
+// الشبكة أولاً، والكاش فقط كخطة احتياطية عند انقطاع الاتصال. هذا يمنع مشكلة بقاء المستخدمين
+// عالقين على نسخة قديمة من الموقع لأسابيع لمجرد أن الـ Service Worker نفسه لم يتغيّر.
+const ALWAYS_FRESH_EXTENSIONS = ['.html', '.js', '.css'];
+function shouldAlwaysBeFresh(pathname) {
+  return pathname === '/' || ALWAYS_FRESH_EXTENSIONS.some(ext => pathname.endsWith(ext));
+}
 
 // 🧱 واجهة التطبيق الأساسية التي تُخزَّن فور تثبيت الـ Service Worker
 const APP_SHELL = [
@@ -25,7 +33,8 @@ const APP_SHELL = [
   './icons/icon-app-192.png',
   './icons/icon-app-512.png',
   './icons/icon-app-1024.png',
-  './icons/icon-app-maskable-512.png'
+  './icons/icon-app-maskable-512.png',
+  './icons/logo.svg'
 ];
 
 // 📥 التثبيت: تخزين ملفات واجهة التطبيق فوراً
@@ -63,7 +72,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // صفحات وملفات الموقع من نفس النطاق: كاش أولاً لأعلى سرعة تحميل
+  // صفحات HTML وملفات JS/CSS من نفس النطاق: الشبكة أولاً لضمان وصول آخر تحديث دائماً
+  if (url.origin === self.location.origin && shouldAlwaysBeFresh(url.pathname)) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // باقي ملفات الموقع من نفس النطاق (صور، أيقونات): كاش أولاً لأعلى سرعة تحميل - نادراً ما تتغيّر
   if (url.origin === self.location.origin) {
     event.respondWith(cacheFirst(request));
     return;
