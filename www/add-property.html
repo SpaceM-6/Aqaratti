@@ -351,8 +351,8 @@
   <div class="main-container">
     
     <div class="hero-banner">
-      <h1>الاشتراك لإضافة عقار</h1>
-      <p>اختر الباقة المناسبة لاحتياجاتك وانشر عقاراتك لتصل إلى آلاف المشتريين والمستثمرين فوراً</p>
+      <h1>أضف عقارك مجانًا</h1>
+      <p>انشر عقاراتك لتصل إلى المشترين والمستأجرين والمستثمرين — مجانًا بالكامل لأول 3 أشهر</p>
     </div>
 
     <div id="loginRequiredNotice" style="display:none; background:#fef3c7; border:1px solid #f59e0b; color:#92400e; font-weight:800; padding:14px 18px; border-radius:10px; margin-bottom:20px; text-align:center;">
@@ -360,64 +360,13 @@
       <a href="index.html" style="color:var(--primary-turquoise); text-decoration:underline;">اضغط هنا للعودة للصفحة الرئيسية وتسجيل الدخول</a>
     </div>
 
-    <h2 class="pricing-section-title">اختر باقتك — <span style="color:var(--primary-turquoise);">أول 3 أشهر مجانًا</span></h2>
-      <div class="trial-banner">
+    <div class="trial-banner">
         <i class="fas fa-gift"></i>
         <div>
-          <b>الاشتراك مجاني بالكامل لأول 3 أشهر من تاريخ نشر إعلانك.</b>
-          <span>بعد انتهاء الفترة المجانية تُحتسب الباقة التي تختارها الآن. سنُبلغك قبل انتهائها بـ 7 أيام على الأقل، ويمكنك الإلغاء أو تغيير الباقة في أي وقت قبل ذلك دون أي رسوم.</span>
+          <b>النشر مجاني بالكامل لأول 3 أشهر من تاريخ نشر إعلانك.</b>
+          <span>قبل انتهاء الفترة المجانية بـ 7 أيام على الأقل سنتواصل معك لعرض باقات الاشتراك المتاحة، ولن تُحتسب أي رسوم إلا بعد موافقتك واختيارك للباقة.</span>
         </div>
       </div>
-    <div class="pricing-grid">
-      
-      <div class="pricing-card" onclick="selectPlan('single', this)">
-        <div class="plan-name">باقة الإعلان الواحد</div>
-        <div class="price-details-wrapper">
-            <span style="font-size:12px; color:#64748b; font-weight:800;">لعقار واحد</span>
-        </div>
-        <div class="plan-price" data-price-aed="50" data-price-suffix="/ إعلان">AED 50 / إعلان</div>
-        <div class="plan-target">تناسب الملاك ومن يريد الإعلان عن عقار واحد فقط</div>
-        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
-          <button type="button" class="btn-select-plan">اختر الباقة</button>
-      </div>
-
-      <div class="pricing-card" onclick="selectPlan('monthly', this)">
-        <div class="plan-name">الباقة الشهرية</div>
-        <div class="price-details-wrapper">
-          <span style="font-size:12px; color:#64748b; font-weight:800;">باقة قياسية ممتازة</span>
-        </div>
-        <div class="plan-price" data-price-aed="500" data-price-suffix="/ شهر">AED 500 / شهر</div>
-        <div class="plan-target">تناسب الوسطاء المرخصين لعرض عقاراتهم بمرونة</div>
-        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
-          <button type="button" class="btn-select-plan">اختر الباقة</button>
-      </div>
-
-      <div class="pricing-card" onclick="selectPlan('semi', this)">
-        <div class="plan-name">الباقة نصف السنوية</div>
-        <div class="price-details-wrapper">
-          <div class="old-price-box" data-price-aed="3000">AED 3,000</div>
-          <div class="save-badge" data-price-aed="500" data-price-prefix="توفير " data-price-suffix="🔥">توفير AED 500 🔥</div>
-        </div>
-        <div class="plan-price" data-price-aed="2500" data-price-suffix="/ 6 أشهر">AED 2,500 / 6 أشهر</div>
-        <div class="plan-target">تناسب الشركات العقارية والوسطاء المرخصين</div>
-        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
-          <button type="button" class="btn-select-plan">اختر الباقة</button>
-      </div>
-
-      <div class="pricing-card best-value" onclick="selectPlan('yearly', this)">
-        <div class="badge-best">🌟 الأكثر توفيراً</div>
-        <div class="plan-name">الباقة السنوية</div>
-        <div class="price-details-wrapper">
-          <div class="old-price-box" data-price-aed="6000">AED 6,000</div>
-          <div class="save-badge" data-price-aed="2001" data-price-prefix="توفير " data-price-suffix="🎉">توفير AED 2,001 🎉</div>
-        </div>
-        <div class="plan-price" data-price-aed="3999" data-price-suffix="/ سنة">AED 3,999 / سنة</div>
-        <div class="plan-target">تناسب الشركات العقارية والوسطاء للاستخدام المتواصل</div>
-        <div class="trial-chip">🎁 مجانًا أول 3 أشهر</div>
-          <button type="button" class="btn-select-plan">اختر الباقة</button>
-      </div>
-
-    </div>
 
     <div class="form-card">
       <form id="addPropertyForm" onsubmit="handlePropertySubmit(event)">
@@ -638,12 +587,8 @@
         </div>
 
         <div id="paymentArea">
-          <div class="payment-notice-box" id="paymentNotice">
-            ⚠️ يرجى اختيار إحدى باقات الاشتراك في الأعلى أولاً ليظهر زر الاشتراك والنشر!
-          </div>
-
-          <button type="submit" id="submitBtn" class="btn-submit" style="display: none;">
-            <i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText"></span>)
+          <button type="submit" id="submitBtn" class="btn-submit">
+            <i class="fas fa-check-circle"></i> انشر عقارك مجانًا (أول 3 أشهر)
           </button>
         </div>
 
@@ -684,8 +629,6 @@
 
   <script>
     let dealType = 'sale';
-    let selectedPlanCode = '';
-    let selectedPlanPrice = '';
     let uploadedImagesList = [];
 
     const countryCities = {
@@ -702,19 +645,6 @@
       "قبرص": ["كل المدن", "ليماسول", "لارنكا"],
       "اليونان": ["كل المدن", "أثينا", "سانتوريني"]
     };
-
-    function selectPlan(planCode, cardEl) {
-      selectedPlanCode = planCode;
-      selectedPlanPrice = cardEl.querySelector('.plan-price').innerText;
-
-      document.querySelectorAll('.pricing-card').forEach(card => card.classList.remove('selected'));
-      cardEl.classList.add('selected');
-
-      document.getElementById('paymentNotice').style.display = 'none';
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.style.display = 'block';
-      document.getElementById('selectedPriceText').innerText = selectedPlanPrice;
-    }
 
     function selectType(type, el) {
       dealType = type;
@@ -832,11 +762,6 @@
     async function handlePropertySubmit(e) {
       e.preventDefault();
 
-      if (!selectedPlanCode) {
-        alert('يرجى اختيار باقة الاشتراك أولاً!');
-        return;
-      }
-
       if (!document.getElementById('agreeTermsInput').checked) {
         alert('يجب الموافقة على الشروط والأحكام وسياسة الخصوصية قبل نشر العقار.');
         return;
@@ -911,7 +836,6 @@
         no_commission: document.getElementById('noCommissionInput').checked,
         has_offer: document.getElementById('hasOfferInput').checked,
         offer_text: document.getElementById('hasOfferInput').checked ? (document.getElementById('offerTextInput').value.trim() || null) : null,
-        subscription_plan: selectedPlanCode || null,
         trial_ends_at: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
       };
 
@@ -931,7 +855,7 @@
       }
 
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> ابدأ مجانًا 3 أشهر وانشر العقار (ثم <span id="selectedPriceText">${selectedPlanPrice}</span>)`;
+      submitBtn.innerHTML = `<i class="fas fa-check-circle"></i> انشر عقارك مجانًا (أول 3 أشهر)`;
 
       if (error) {
         alert(aqIsRateLimited(error) ? 'وصلت للحد اليومي لإضافة العقارات (15 عقارًا في اليوم). يمكنك إضافة المزيد غدًا، أو التواصل معنا عبر info@anaaqar.com.' : 'حدث خطأ أثناء إرسال العقار: ' + error.message);
@@ -939,7 +863,7 @@
       }
 
       // 💳 بوابة الدفع الفعلية غير مفعّلة بعد — الاشتراك يبقى صوريًا حالياً بانتظار ربط وسيلة دفع حقيقية
-      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته. اشتراكك مجاني لأول 3 أشهر.');
+      alert('✅ تم استلام إعلان عقارك بنجاح! سيظهر على الموقع بعد مراجعته. النشر مجاني لأول 3 أشهر.');
       window.location.href = 'index.html';
     }
 
