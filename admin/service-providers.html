@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>دليل الخدمات | إدارة AnaAqar</title>
+  <link rel="icon" type="image/png" href="../icons/app-icon-v3-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-client.js"></script>
+  <style>
+    :root { --teal:#00a896; --navy:#192038; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:#0f172a; }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    header b { color:var(--teal); font-size:20px; font-weight:900; }
+    header nav { display:flex; gap:14px; flex-wrap:wrap; }
+    header a { color:var(--teal); font-weight:800; text-decoration:none; font-size:14px; }
+    main { max-width:1050px; margin:0 auto; padding:20px 16px 40px; }
+    h1 { font-size:22px; margin:0 0 6px; color:var(--navy); }
+    .sub { color:var(--muted); margin:0 0 14px; font-size:14px; }
+    .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+    .pill { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:7px 13px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .pill.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+    .btn { border:0; border-radius:10px; padding:9px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .b-teal { background:var(--teal); color:#fff; } .b-gray { background:#f1f5f9; color:var(--navy); } .b-red { background:#fff; color:#991b1b; border:1px solid #fecaca; }
+    .b-green { background:#16a34a; color:#fff; } .b-amber { background:#fef3c7; color:#92400e; }
+    .row { background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:10px; display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+    .row img, .row .ph { width:56px; height:56px; border-radius:12px; object-fit:contain; background:#fff; border:1px solid var(--line); padding:4px; flex-shrink:0; }
+    .row .ph { display:grid; place-items:center; font-weight:900; color:#fff; background:var(--teal); border:0; }
+    .info { flex:1; min-width:220px; font-size:13px; color:var(--muted); }
+    .info b { font-size:15px; color:var(--navy); }
+    .tags { display:flex; gap:5px; flex-wrap:wrap; margin:4px 0; }
+    .tag { font-size:11px; font-weight:900; padding:3px 8px; border-radius:999px; background:#f1f5f9; color:var(--navy); }
+    .t-on { background:#dcfce7; color:#166534; } .t-off { background:#fee2e2; color:#991b1b; } .t-new { background:#e0f2fe; color:#075985; }
+    .acts { display:flex; gap:6px; flex-wrap:wrap; }
+    .empty, .gate { text-align:center; color:var(--muted); padding:40px 16px; font-weight:800; background:#fff; border:1px solid var(--line); border-radius:14px; }
+    .modal { position:fixed; inset:0; background:rgba(2,8,23,.55); z-index:50; display:none; align-items:center; justify-content:center; padding:12px; }
+    .modal.open { display:flex; }
+    .sheet { background:#fff; width:100%; max-width:620px; max-height:94vh; overflow:auto; border-radius:18px; padding:18px; }
+    .fg { margin-bottom:9px; } .fg label { display:block; font-size:12px; font-weight:800; color:var(--muted); margin-bottom:3px; }
+    .fg input, .fg select, .fg textarea { width:100%; border:1.5px solid var(--line); border-radius:10px; padding:9px 11px; font-family:inherit; font-size:14px; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .checks { display:flex; gap:14px; flex-wrap:wrap; margin:6px 0 10px; font-weight:800; font-size:14px; }
+    @media (max-width: 560px) { .two { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <b>أنا عقار — الإدارة</b>
+    <nav>
+      <a href="properties.html">مراجعة العقارات</a>
+      <a href="service-requests.html">الطلبات والاستفسارات</a>
+      <a href="../services-directory.html" target="_blank">عرض الدليل ↗</a>
+      <a href="../index.html">العودة للموقع ←</a>
+    </nav>
+  </header>
+  <main id="appRoot">
+    <h1>دليل الخدمات</h1>
+    <p class="sub">شركات الاستشارات القانونية، والإقامة وتأسيس الشركات، والهندسة، والمقاولات، والديكور. لا يظهر في الموقع إلا المفعّل.</p>
+    <div class="bar" id="catBar"></div>
+    <div class="bar">
+      <button class="pill active" data-s="all">الكل</button>
+      <button class="pill" data-s="pending">طلبات إدراج جديدة</button>
+      <button class="pill" data-s="active">مفعّلة</button>
+      <button class="pill" data-s="inactive">غير مفعّلة</button>
+      <span style="flex:1"></span>
+      <button class="btn b-teal" id="addBtn"><i class="fas fa-plus"></i> إضافة شركة</button>
+    </div>
+    <div id="list"><div class="empty"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div></div>
+  </main>
+
+  <div class="modal" id="edit">
+    <div class="sheet">
+      <h3 id="editTitle" style="margin:0 0 10px">إضافة شركة</h3>
+      <form id="f">
+        <input type="hidden" id="fId">
+        <div class="two">
+          <div class="fg"><label>نوع الخدمة *</label><select id="fCat" required></select></div>
+          <div class="fg"><label>الإمارة</label><select id="fEmirate"></select></div>
+        </div>
+        <div class="two">
+          <div class="fg"><label>الاسم بالعربية *</label><input id="fNameAr" required maxlength="120"></div>
+          <div class="fg"><label>الاسم بالإنجليزية</label><input id="fNameEn" dir="ltr" maxlength="120"></div>
+        </div>
+        <div class="two">
+          <div class="fg"><label>المنطقة</label><input id="fArea" maxlength="100"></div>
+          <div class="fg"><label>رقم الرخصة</label><input id="fLic" maxlength="60"></div>
+        </div>
+        <div class="two">
+          <div class="fg"><label>الهاتف</label><input id="fPhone" dir="ltr" maxlength="30"></div>
+          <div class="fg"><label>واتساب</label><input id="fWa" dir="ltr" maxlength="30"></div>
+        </div>
+        <div class="two">
+          <div class="fg"><label>البريد</label><input id="fEmail" dir="ltr" maxlength="150"></div>
+          <div class="fg"><label>الموقع الإلكتروني</label><input id="fWeb" dir="ltr" maxlength="200"></div>
+        </div>
+        <div class="fg"><label>نبذة</label><textarea id="fDesc" rows="3" maxlength="600"></textarea></div>
+        <div class="two">
+          <div class="fg"><label>رابط الشعار</label><input id="fLogo" dir="ltr"></div>
+          <div class="fg"><label>أو ارفع الشعار (PNG/JPG/SVG/WebP)</label><input id="fLogoFile" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp"></div>
+        </div>
+        <div class="two">
+          <div class="fg"><label>ترتيب الظهور (الأصغر أولًا)</label><input id="fSort" type="number" value="0"></div>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" id="fActive"> مفعّلة (تظهر في الموقع)</label>
+          <label><input type="checkbox" id="fVerified"> رخصة موثّقة</label>
+          <label><input type="checkbox" id="fFeatured"> مميّزة</label>
+        </div>
+        <div class="acts">
+          <button class="btn b-teal" type="submit" id="saveBtn"><i class="fas fa-floppy-disk"></i> حفظ</button>
+          <button class="btn b-gray" type="button" id="cancelBtn">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const CATS = { legal: 'الاستشارات القانونية', residency: 'الإقامة وتأسيس الشركات', engineering: 'الاستشارات الهندسية', contracting: 'المقاولات', interior: 'تصميم الديكور' };
+    const EMIRATES = ['دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة', 'أم القيوين', 'الفجيرة', 'العين'];
+    const $ = id => document.getElementById(id);
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    let cat = 'all', status = 'all', rows = [];
+
+    $('catBar').innerHTML = `<button class="pill active" data-c="all">كل الأقسام</button>` + Object.entries(CATS).map(([k, t]) => `<button class="pill" data-c="${k}">${t}</button>`).join('');
+    $('fCat').innerHTML = Object.entries(CATS).map(([k, t]) => `<option value="${k}">${t}</option>`).join('');
+    $('fEmirate').innerHTML = '<option value="">—</option>' + EMIRATES.map(e => `<option>${e}</option>`).join('');
+
+    function bindPills(sel, attr, set) {
+      document.querySelectorAll(sel).forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll(sel).forEach(x => x.classList.remove('active')); b.classList.add('active'); set(b.dataset[attr]); load();
+      }));
+    }
+
+    async function load() {
+      let q = supabaseClient.from('service_providers').select('*').order('created_at', { ascending: false }).limit(500);
+      if (cat !== 'all') q = q.eq('category', cat);
+      if (status === 'active') q = q.eq('is_active', true);
+      if (status === 'inactive') q = q.eq('is_active', false);
+      if (status === 'pending') q = q.eq('is_active', false).eq('submitted_by_public', true);
+      const { data, error } = await q;
+      if (error) { $('list').innerHTML = `<div class="empty">تعذّر التحميل. تأكدي من تشغيل ملف supabase/service_providers.sql.<br><small>${esc(error.message)}</small></div>`; return; }
+      rows = data;
+      $('list').innerHTML = rows.length ? rows.map(r => `<div class="row">
+          ${r.logo_url ? `<img src="${esc(r.logo_url)}" alt="">` : `<div class="ph">${esc((r.name_ar || '؟').charAt(0))}</div>`}
+          <div class="info">
+            <b>${esc(r.name_ar)}</b> ${r.name_en ? `<span dir="ltr">· ${esc(r.name_en)}</span>` : ''}
+            <div class="tags">
+              <span class="tag">${CATS[r.category] || esc(r.category)}</span>
+              <span class="tag ${r.is_active ? 't-on' : 't-off'}">${r.is_active ? 'مفعّلة' : 'غير مفعّلة'}</span>
+              ${r.submitted_by_public && !r.is_active ? '<span class="tag t-new">طلب إدراج من الموقع</span>' : ''}
+              ${r.is_verified ? '<span class="tag t-on">موثّقة</span>' : ''}${r.is_featured ? '<span class="tag" style="background:#fef3c7;color:#92400e">مميّزة</span>' : ''}
+            </div>
+            ${[r.emirate, r.area].filter(Boolean).map(esc).join('، ')} ${r.phone ? ` · <a href="tel:${esc(r.phone)}" dir="ltr">${esc(r.phone)}</a>` : ''} ${r.license_number ? ` · رخصة: ${esc(r.license_number)}` : ' · <span style="color:#b45309">بلا رقم رخصة</span>'}
+          </div>
+          <div class="acts">
+            <button class="btn ${r.is_active ? 'b-amber' : 'b-green'}" onclick="toggleActive(${r.id}, ${!r.is_active})">${r.is_active ? 'إخفاء' : 'تفعيل'}</button>
+            <button class="btn b-gray" onclick="openEdit(${r.id})"><i class="fas fa-pen"></i> تعديل</button>
+            <button class="btn b-red" onclick="removeRow(${r.id})"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>`).join('') : '<div class="empty">لا توجد شركات في هذا القسم بعد. اضغطي «إضافة شركة».</div>';
+    }
+
+    async function toggleActive(id, val) {
+      const { error } = await supabaseClient.from('service_providers').update({ is_active: val, updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) return alert('تعذّر التحديث: ' + error.message);
+      load();
+    }
+    async function removeRow(id) {
+      if (!confirm('حذف هذه الشركة نهائيًا من الدليل؟')) return;
+      const { error } = await supabaseClient.from('service_providers').delete().eq('id', id);
+      if (error) return alert('تعذّر الحذف: ' + error.message);
+      load();
+    }
+
+    function openEdit(id) {
+      const r = rows.find(x => x.id === id) || {};
+      $('editTitle').textContent = id ? 'تعديل شركة' : 'إضافة شركة';
+      $('fId').value = id || '';
+      $('fCat').value = r.category || (cat !== 'all' ? cat : 'legal');
+      $('fEmirate').value = r.emirate || '';
+      $('fNameAr').value = r.name_ar || ''; $('fNameEn').value = r.name_en || '';
+      $('fArea').value = r.area || ''; $('fLic').value = r.license_number || '';
+      $('fPhone').value = r.phone || ''; $('fWa').value = r.whatsapp || '';
+      $('fEmail').value = r.email || ''; $('fWeb').value = r.website || '';
+      $('fDesc').value = r.description || ''; $('fLogo').value = r.logo_url || ''; $('fLogoFile').value = '';
+      $('fSort').value = r.sort_order || 0;
+      $('fActive').checked = id ? !!r.is_active : true; $('fVerified').checked = !!r.is_verified; $('fFeatured').checked = !!r.is_featured;
+      $('edit').classList.add('open');
+    }
+    $('addBtn').addEventListener('click', () => openEdit(null));
+    $('cancelBtn').addEventListener('click', () => $('edit').classList.remove('open'));
+
+    $('f').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = $('saveBtn'); btn.disabled = true;
+      try {
+        let logo = $('fLogo').value.trim() || null;
+        const file = $('fLogoFile').files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) throw new Error('حجم الشعار أكبر من 2 ميغابايت');
+          const ext = (file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '');
+          const path = `${$('fCat').value}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+          const up = await supabaseClient.storage.from('service-logos').upload(path, file, { contentType: file.type, upsert: false });
+          if (up.error) throw up.error;
+          logo = supabaseClient.storage.from('service-logos').getPublicUrl(path).data.publicUrl;
+        }
+        const row = {
+          category: $('fCat').value, emirate: $('fEmirate').value || null,
+          name_ar: $('fNameAr').value.trim(), name_en: $('fNameEn').value.trim() || null,
+          area: $('fArea').value.trim() || null, license_number: $('fLic').value.trim() || null,
+          phone: $('fPhone').value.trim() || null, whatsapp: $('fWa').value.trim() || null,
+          email: $('fEmail').value.trim() || null, website: $('fWeb').value.trim() || null,
+          description: $('fDesc').value.trim() || null, logo_url: logo,
+          sort_order: parseInt($('fSort').value) || 0,
+          is_active: $('fActive').checked, is_verified: $('fVerified').checked, is_featured: $('fFeatured').checked,
+          updated_at: new Date().toISOString()
+        };
+        const id = $('fId').value;
+        const { error } = id
+          ? await supabaseClient.from('service_providers').update(row).eq('id', id)
+          : await supabaseClient.from('service_providers').insert(row);
+        if (error) throw error;
+        $('edit').classList.remove('open'); load();
+      } catch (err) { alert('تعذّر الحفظ: ' + (err.message || err)); }
+      finally { btn.disabled = false; }
+    });
+
+    bindPills('#catBar .pill', 'c', v => cat = v);
+    bindPills('.bar .pill[data-s]', 's', v => status = v);
+
+    (async function init() {
+      const user = await getCurrentAnaAqarUser();
+      let isAdmin = false;
+      if (user) { const { data } = await supabaseClient.rpc('is_app_admin'); isAdmin = data === true; }
+      if (!isAdmin) {
+        $('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock" style="font-size:30px;display:block;margin-bottom:8px"></i>${user ? 'هذه الصفحة لحساب الإدارة فقط.' : 'يجب تسجيل الدخول بحساب الإدارة.'}<br><a href="../index.html" style="color:var(--teal)">العودة للصفحة الرئيسية</a></div>`;
+        return;
+      }
+      load();
+    })();
+  </script>
+</body>
+</html>

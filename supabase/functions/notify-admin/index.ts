@@ -65,6 +65,16 @@ function build(table: string, r: Record<string, unknown>) {
       link: `${SITE}/admin/service-requests.html`,
     };
   }
+  if (table === "service_providers") {
+    const cat = SERVICE_NAMES[String(r.category)] ?? String(r.category ?? "");
+    return {
+      subject: `🏢 طلب إدراج شركة في دليل الخدمات: ${r.name_ar ?? ""}`,
+      title: `طلب إدراج جديد — ${cat}`,
+      rows: row("الشركة", r.name_ar) + row("بالإنجليزية", r.name_en) + row("الإمارة", r.emirate) + row("المنطقة", r.area) +
+        row("الهاتف", r.phone) + row("البريد", r.email) + row("الموقع", r.website) + row("رقم الرخصة", r.license_number) + row("نبذة", r.description),
+      link: `${SITE}/admin/service-providers.html`,
+    };
+  }
   // properties
   return {
     subject: `🏠 عقار جديد بانتظار المراجعة — ${r.title ?? ""}`,
@@ -83,7 +93,7 @@ Deno.serve(async (req) => {
   let payload: { table?: string; record?: Record<string, unknown> };
   try { payload = await req.json(); } catch { return new Response("Bad request", { status: 400 }); }
   const table = String(payload.table ?? "");
-  if (!["service_requests", "leads", "properties"].includes(table) || !payload.record) {
+  if (!["service_requests", "leads", "properties", "service_providers"].includes(table) || !payload.record) {
     return new Response("Ignored", { status: 200 });
   }
 
