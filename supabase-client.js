@@ -5,6 +5,27 @@
    الكتابة في brokers تتم حصراً عبر مفتاح service_role السرّي من scripts/import-to-supabase.py،
    الذي لا يجب أبداً وضعه في أي ملف يعمل داخل المتصفح مثل هذا الملف. */
 
+// ==================== 🛡️ حماية الواجهة ====================
+// 1) منع عرض الموقع داخل إطار (iframe) في مواقع أخرى — يحمي من خداع النقر وانتحال الواجهة.
+// 2) إذا نُسخت ملفات الموقع ورُفعت على نطاق آخر، يُحوَّل الزائر تلقائيًا إلى anaaqar.com.
+(function aqFrontGuard() {
+  try {
+    if (window.top !== window.self) {
+      window.top.location.replace(window.self.location.href);
+      return;
+    }
+  } catch (e) {
+    try { document.documentElement.style.display = 'none'; } catch (_) {}
+    return;
+  }
+  const host = location.hostname;
+  const allowed = host === '' || host === 'anaaqar.com' || host === 'www.anaaqar.com' ||
+    host === 'localhost' || host === '127.0.0.1' || /\.translate\.goog$/.test(host);
+  if (!allowed) {
+    location.replace('https://anaaqar.com' + location.pathname.replace(/^\/Aqaratti(?=\/)/i, '') + location.search + location.hash);
+  }
+})();
+
 // ==================== 📱 التطبيق بعرض جوال ثابت ====================
 // إذا فعّل المستخدم «عرض موقع الكمبيوتر» في كروم، يفتح التطبيق المثبّت (PWA) بعرض كمبيوتر مصغّر
 // لأن كروم يتجاهل إعداد العرض في الصفحة. هنا نعيد للتطبيق تخطيط الجوال دائمًا:

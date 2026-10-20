@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /dashboard.html
+Disallow: /admin/
+Disallow: /supabase/
+Disallow: /scripts/
 
 # منع زحف روبوتات تدريب الذكاء الاصطناعي بالجملة على محتوى ملكية الوسطاء والعقارات
 User-agent: GPTBot
@@ -16,6 +19,36 @@ Disallow: /
 User-agent: meta-externalagent
 Disallow: /
 User-agent: Applebot-Extended
+Disallow: /
+
+# روبوتات جمع البيانات والتحليل التجاري
+User-agent: ClaudeBot
+Disallow: /
+User-agent: anthropic-ai
+Disallow: /
+User-agent: PerplexityBot
+Disallow: /
+User-agent: Diffbot
+Disallow: /
+User-agent: ImagesiftBot
+Disallow: /
+User-agent: omgili
+Disallow: /
+User-agent: omgilibot
+Disallow: /
+User-agent: cohere-ai
+Disallow: /
+User-agent: YouBot
+Disallow: /
+User-agent: DataForSeoBot
+Disallow: /
+User-agent: PetalBot
+Disallow: /
+User-agent: MJ12bot
+Disallow: /
+User-agent: AhrefsBot
+Disallow: /
+User-agent: SemrushBot
 Disallow: /
 
 Sitemap: https://anaaqar.com/sitemap.xml
