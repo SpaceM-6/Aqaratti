@@ -1680,6 +1680,12 @@
     .aq-tile small { font-size: 12px; color: #64748b; line-height: 1.5; }
     .aq-ico { width: 42px; height: 42px; border-radius: 12px; display:grid; place-items:center; font-size:18px; color: var(--c); background: color-mix(in srgb, var(--c) 12%, #fff); margin-bottom: 4px; }
     .aq-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .aq-mini-grid { display:grid; grid-template-columns:repeat(8, minmax(0, 1fr)); gap:10px; }
+    .aq-mini { display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; text-decoration:none; background:var(--card-bg, #fff); border:1px solid var(--dubizzle-border, #e2e8f0); border-radius:14px; padding:12px 4px; color:inherit; transition:border-color .15s, transform .15s; }
+    .aq-mini:hover { border-color:var(--primary-turquoise); transform:translateY(-2px); }
+    .aq-mini b { font-size:12px; font-weight:800; line-height:1.35; }
+    @media (max-width: 900px) { .aq-mini-grid { grid-template-columns:repeat(4, minmax(0, 1fr)); } }
+    @media (max-width: 380px) { .aq-mini-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); } .aq-mini b { font-size:11px; } }
     @media (max-width: 900px) { .aq-grid, .aq-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 380px) { .aq-tile { padding: 12px; } .aq-tile b { font-size: 14px; } }
     .aq-label { display:block; font-size:13px; font-weight:800; color:#334155; margin:10px 0 5px; }
@@ -1700,6 +1706,8 @@
     [data-theme="dark"] .aq-tile, [data-theme="dark"] .aq-fab-menu { background:#1e293b; border-color:#334155; }
     [data-theme="dark"] .aq-tile b, [data-theme="dark"] .aq-block-title, [data-theme="dark"] .aq-fab-menu a, [data-theme="dark"] .aq-fab-menu button { color:#f1f5f9; }
     [data-theme="dark"] .aq-tile small { color:#94a3b8; }
+    [data-theme="dark"] .aq-mini { background:#1e293b; border-color:#334155; }
+    [data-theme="dark"] .aq-mini b { color:#f1f5f9; }
     [data-theme="dark"] .aq-input { background:#0f172a; color:#f1f5f9; border-color:#334155; }
     [data-theme="dark"] .aq-label { color:#cbd5e1; }
 
@@ -2001,7 +2009,7 @@
         <button class="aq-tile" onclick="openPropertyCategory('under_construction')"><span class="aq-ico" style="--c:#f59e0b"><i class="fas fa-helmet-safety"></i></span><b>مشاريع تحت الإنشاء</b><small>استلام خلال الفترة القادمة</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('ready')"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('offers')"><span class="aq-ico" style="--c:#e11d48"><i class="fas fa-tags"></i></span><b>العروض</b><small>خصومات وخطط سداد خاصة</small></button>
-        <button class="aq-tile" onclick="openServiceRequest('citizenship')"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></button>
+        <button class="aq-tile" onclick="location.href='services-directory.html?cat=immigration'"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></button>
         <button class="aq-tile" onclick="openPropertyCategory('no_commission')"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>دون عمولة على المشتري</small></button>
       </div>
 
@@ -2011,11 +2019,31 @@
         <button class="aq-tile" onclick="openServiceRequest('brokerage')"><span class="aq-ico" style="--c:#2563eb"><i class="fas fa-handshake"></i></span><b>خدمات الوساطة العقارية</b><small>بيع أو تأجير عقارك عبر وسيط</small></button>
         <button class="aq-tile" onclick="location.href='services-directory.html?cat=residency'"><span class="aq-ico" style="--c:#9333ea"><i class="fas fa-id-card"></i></span><b>الإقامة وتأسيس الشركات</b><small>إجراءات الإقامة والرخص التجارية</small></button>
         <button class="aq-tile" onclick="location.href='services-directory.html?cat=legal'"><span class="aq-ico" style="--c:#475569"><i class="fas fa-scale-balanced"></i></span><b>الاستشارات القانونية</b><small>عقود ونزاعات وتوثيق</small></button>
-        <button class="aq-tile" onclick="openServiceRequest('property_services')"><span class="aq-ico" style="--c:#db2777"><i class="fas fa-building-circle-check"></i></span><b>خدمات عقارية</b><small>إدارة الأملاك والتقييم والصيانة</small></button>
+        <button class="aq-tile" onclick="location.href='services-directory.html?cat=property_mgmt'"><span class="aq-ico" style="--c:#db2777"><i class="fas fa-building-circle-check"></i></span><b>إدارة العقارات</b><small>إدارة الأملاك والتأجير والمتابعة</small></button>
         <button class="aq-tile" onclick="location.href='services-directory.html?cat=engineering'"><span class="aq-ico" style="--c:#65a30d"><i class="fas fa-compass-drafting"></i></span><b>استشارات هندسية</b><small>تصميم وإشراف وفحص عقار</small></button>
         <button class="aq-tile" onclick="location.href='services-directory.html?cat=contracting'"><span class="aq-ico" style="--c:#92400e"><i class="fas fa-trowel-bricks"></i></span><b>المقاولات</b><small>بناء وتشطيب وترميم</small></button>
         <button class="aq-tile" onclick="location.href='services-directory.html?cat=interior'"><span class="aq-ico" style="--c:#ea580c"><i class="fas fa-couch"></i></span><b>تصميم الديكور</b><small>تصميم داخلي وتأثيث</small></button>
       </div>
+      <h2 class="aq-block-title" style="margin-top:34px;"><i class="fas fa-house-chimney-user"></i> خدمات بيتك
+        <a href="services-directory.html" style="margin-inline-start:auto; font-size:14px; color:var(--primary-turquoise); text-decoration:none; font-weight:800;">كل الأقسام ←</a></h2>
+      <div class="aq-mini-grid" id="aqMiniServices"></div>
+      <script>
+        (function () {
+          var list = [
+            ['maintenance','الصيانة المنزلية','fa-screwdriver-wrench','#0369a1'], ['cleaning','النظافة','fa-broom','#0891b2'],
+            ['pest','مكافحة الحشرات','fa-bug','#4d7c0f'], ['garden','الحدائق','fa-seedling','#15803d'],
+            ['pools','المسابح','fa-water-ladder','#0284c7'], ['lighting','الإضاءة','fa-lightbulb','#ca8a04'],
+            ['smart_home','المنازل الذكية','fa-house-signal','#7c3aed'], ['security','الأمن والسلامة','fa-shield-halved','#b91c1c'],
+            ['movers','نقل الأثاث','fa-truck-moving','#a16207'], ['domestic','الخدم والسائقون','fa-people-roof','#be185d'],
+            ['care','رعاية الأطفال وكبار السن','fa-hand-holding-medical','#e11d48'], ['pets','الحيوانات الأليفة','fa-paw','#c2410c'],
+            ['car_rental','تأجير السيارات','fa-car','#1d4ed8'], ['immigration','الهجرة والجنسية','fa-passport','#b45309'],
+            ['recruitment','التوظيف','fa-user-tie','#334155'], ['property_mgmt','إدارة العقارات','fa-building-user','#db2777']
+          ];
+          document.getElementById('aqMiniServices').innerHTML = list.map(function (x) {
+            return '<a class="aq-mini" href="services-directory.html?cat=' + x[0] + '"><span class="aq-ico" style="--c:' + x[3] + '"><i class="fas ' + x[2] + '"></i></span><b>' + x[1] + '</b></a>';
+          }).join('');
+        })();
+      </script>
     </div>
   </section>
 

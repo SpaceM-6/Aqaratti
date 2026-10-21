@@ -19,6 +19,10 @@ const SERVICE_NAMES: Record<string, string> = {
   general: "تواصل عام", brokerage: "خدمات الوساطة العقارية", residency: "الإقامة وتأسيس الشركات",
   legal: "الاستشارات القانونية", property_services: "خدمات عقارية", engineering: "استشارات هندسية",
   contracting: "المقاولات", interior: "تصميم الديكور", citizenship: "الجنسية عبر الاستثمار",
+  property_mgmt: "إدارة العقارات", maintenance: "الصيانة المنزلية", cleaning: "شركات النظافة", pest: "مكافحة الحشرات",
+  garden: "العناية بالحدائق", pools: "المسابح", lighting: "الإضاءة", smart_home: "المنازل الذكية", security: "الأمن والسلامة",
+  movers: "نقل الأثاث", domestic: "الخدم المنزلي والسائقون", care: "جليسات الأطفال وكبار السن والتمريض المنزلي",
+  pets: "رعاية الحيوانات الأليفة", car_rental: "تأجير السيارات", immigration: "الهجرة والجنسية", recruitment: "التوظيف",
 };
 
 const esc = (v: unknown) =>

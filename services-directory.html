@@ -16,6 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="js/service-categories.js"></script>
   <style>
     :root { --teal:#00a896; --teal-dark:#028090; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
             --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --card:#ffffff; }
@@ -82,6 +83,15 @@
     .pf-contacts a, .pf-contacts div { display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--ink); font-weight:700; font-size:14px; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:10px 12px; word-break:break-word; }
     .pf-contacts i { color:var(--teal); width:18px; text-align:center; }
     .pf-src { font-size:11px; color:var(--muted); margin-top:14px; }
+    .cat-tile .logo.ph { font-size:24px; }
+    @media (max-width: 620px) {
+      .grid.cat-grid { grid-template-columns:repeat(2, 1fr); gap:10px; }
+      .cat-grid .cat-tile { padding:12px; gap:6px; }
+      .cat-grid .co-top { flex-direction:column; align-items:flex-start; gap:8px; }
+      .cat-grid .logo { width:46px; height:46px; font-size:19px !important; }
+      .cat-grid .co-name b { font-size:14px; }
+      .cat-grid .desc { -webkit-line-clamp:2; font-size:12px; }
+    }
     .count { color:var(--muted); font-size:13px; font-weight:700; margin:4px 0 12px; }
 
     .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
@@ -240,13 +250,7 @@
   <script>
   (function () {
     try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}
-    const CATS = {
-      legal:       { t: 'الاستشارات القانونية', i: 'fa-scale-balanced', d: 'مكاتب محاماة ومستشارون قانونيون في العقود العقارية ونزاعات الإيجار والبيع والتوثيق.' },
-      residency:   { t: 'الإقامة وتأسيس الشركات', i: 'fa-id-card', d: 'شركات تأسيس الأعمال واستخراج الرخص التجارية وخدمات الإقامة للمستثمرين.' },
-      engineering: { t: 'الاستشارات الهندسية', i: 'fa-compass-drafting', d: 'مكاتب هندسية للتصميم والإشراف وفحص العقارات قبل الشراء أو الاستلام.' },
-      contracting: { t: 'المقاولات', i: 'fa-trowel-bricks', d: 'شركات البناء والتشطيب والترميم والصيانة الإنشائية.' },
-      interior:    { t: 'تصميم الديكور', i: 'fa-couch', d: 'مصممو الديكور الداخلي وشركات التأثيث والتجهيز.' }
-    };
+    const CATS = window.AQ_SERVICE_CATS;
     const EMIRATES = ['دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة', 'أم القيوين', 'الفجيرة', 'العين'];
     const PAGE = 12;
     const $ = id => document.getElementById(id);
@@ -261,11 +265,12 @@
     };
 
     let cat = new URLSearchParams(location.search).get('cat');
-    if (!CATS[cat]) cat = 'legal';
+    const landing = !CATS[cat];
+    if (landing) cat = Object.keys(CATS)[0];
     let all = [], emirate = '', query = '', page = 1;
 
     function renderHead() {
-      $('tabs').innerHTML = Object.entries(CATS).map(([k, c]) =>
+      $('tabs').innerHTML = `<a class="tab" href="services-directory.html"><i class="fas fa-grip"></i> كل الأقسام</a>` + Object.entries(CATS).map(([k, c]) =>
         `<a class="tab ${k === cat ? 'on' : ''}" href="?cat=${k}" data-k="${k}"><i class="fas ${c.i}"></i> ${c.t}</a>`).join('');
       $('catTitle').textContent = CATS[cat].t;
       $('catDesc').textContent = CATS[cat].d;
@@ -479,6 +484,19 @@
       } catch (err) { console.error(err); toast(failMsg(err), true); } finally { b.disabled = false; }
     });
 
+    if (landing) {
+      // صفحة كل الأقسام
+      $('tabs').innerHTML = '';
+      $('catTitle').textContent = 'دليل الخدمات';
+      $('catDesc').textContent = 'شركات موثوقة في الإمارات لكل ما يحتاجه بيتك وعقارك: من القانون والهندسة إلى الصيانة والنظافة والنقل.';
+      document.querySelector('.tools').style.display = 'none';
+      $('reqTitle').textContent = 'اطلب خدمة';
+      $('grid').classList.add('cat-grid');
+      $('grid').innerHTML = Object.entries(CATS).map(([k, c]) => `<a class="co cat-tile" href="?cat=${k}" style="text-decoration:none">
+          <div class="co-top"><div class="logo ph" style="background:${c.c}"><i class="fas ${c.i}"></i></div>
+          <div class="co-name"><b>${c.t}</b></div></div><p class="desc">${c.d}</p></a>`).join('');
+      return;
+    }
     renderHead(); load();
   })();
   </script>

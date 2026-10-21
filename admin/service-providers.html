@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../supabase-client.js"></script>
+  <script src="../js/service-categories.js"></script>
   <style>
     :root { --teal:#00a896; --navy:#192038; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; }
     * { box-sizing:border-box; }
@@ -129,7 +130,7 @@
   </div>
 
   <script>
-    const CATS = { legal: 'الاستشارات القانونية', residency: 'الإقامة وتأسيس الشركات', engineering: 'الاستشارات الهندسية', contracting: 'المقاولات', interior: 'تصميم الديكور' };
+    const CATS = Object.fromEntries(Object.entries(window.AQ_SERVICE_CATS).map(([k, v]) => [k, v.t]));
     const EMIRATES = ['دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة', 'أم القيوين', 'الفجيرة', 'العين'];
     const $ = id => document.getElementById(id);
     const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
