@@ -99,7 +99,14 @@
           <div class="fg"><label>البريد</label><input id="fEmail" dir="ltr" maxlength="150"></div>
           <div class="fg"><label>الموقع الإلكتروني</label><input id="fWeb" dir="ltr" maxlength="200"></div>
         </div>
-        <div class="fg"><label>نبذة</label><textarea id="fDesc" rows="3" maxlength="600"></textarea></div>
+        <div class="fg"><label>نبذة قصيرة (تظهر على البطاقة)</label><textarea id="fDesc" rows="2" maxlength="600"></textarea></div>
+        <div class="fg"><label>نبذة كاملة عن الشركة (في الملف)</label><textarea id="fAbout" rows="3" maxlength="2000"></textarea></div>
+        <div class="fg"><label>سابقة الأعمال (كل مشروع في سطر)</label><textarea id="fPortfolio" rows="3"></textarea></div>
+        <div class="fg"><label>نبذة عن فريق العمل</label><input id="fTeam" maxlength="400"></div>
+        <div class="two">
+          <div class="fg"><label>العنوان</label><input id="fAddress" maxlength="300"></div>
+          <div class="fg"><label>رابط الموقع على خرائط Google</label><input id="fMap" dir="ltr" maxlength="500"></div>
+        </div>
         <div class="two">
           <div class="fg"><label>رابط الشعار</label><input id="fLogo" dir="ltr"></div>
           <div class="fg"><label>أو ارفع الشعار (PNG/JPG/SVG/WebP)</label><input id="fLogoFile" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp"></div>
@@ -189,7 +196,7 @@
       $('fArea').value = r.area || ''; $('fLic').value = r.license_number || '';
       $('fPhone').value = r.phone || ''; $('fWa').value = r.whatsapp || '';
       $('fEmail').value = r.email || ''; $('fWeb').value = r.website || '';
-      $('fDesc').value = r.description || ''; $('fLogo').value = r.logo_url || ''; $('fLogoFile').value = '';
+      $('fDesc').value = r.description || ''; $('fAbout').value = r.about || ''; $('fTeam').value = r.team_info || ''; $('fAddress').value = r.address || ''; $('fMap').value = r.map_url || ''; $('fPortfolio').value = (r.portfolio || []).join('\n'); $('fLogo').value = r.logo_url || ''; $('fLogoFile').value = '';
       $('fSort').value = r.sort_order || 0; $('fFounded').value = r.founded_year || '';
       $('fActive').checked = id ? !!r.is_active : true; $('fVerified').checked = !!r.is_verified; $('fFeatured').checked = !!r.is_featured;
       $('edit').classList.add('open');
@@ -218,6 +225,9 @@
           phone: $('fPhone').value.trim() || null, whatsapp: $('fWa').value.trim() || null,
           email: $('fEmail').value.trim() || null, website: $('fWeb').value.trim() || null,
           description: $('fDesc').value.trim() || null, logo_url: logo,
+          about: $('fAbout').value.trim() || null, team_info: $('fTeam').value.trim() || null,
+          address: $('fAddress').value.trim() || null, map_url: $('fMap').value.trim() || null,
+          portfolio: $('fPortfolio').value.split('\n').map(x => x.trim()).filter(Boolean),
           sort_order: parseInt($('fSort').value) || 0,
           founded_year: parseInt($('fFounded').value) || null,
           is_active: $('fActive').checked, is_verified: $('fVerified').checked, is_featured: $('fFeatured').checked,

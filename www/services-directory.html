@@ -68,6 +68,20 @@
     .more-btn { border:0; background:var(--teal-soft); color:var(--teal-dark); border-radius:10px; padding:8px 12px; font-family:inherit; font-weight:900; font-size:13px; cursor:pointer; white-space:nowrap; }
     [data-theme="dark"] .more-btn { color:#5eead4; }
     .est { color:var(--muted); font-size:12px; font-weight:800; }
+    .co-name b.lnk { cursor:pointer; }
+    .co-name b.lnk:hover { color:var(--teal); }
+    .a-more { background:transparent !important; color:var(--teal) !important; border:1.5px solid var(--teal); }
+    .pf-top { display:flex; gap:14px; align-items:center; margin-bottom:12px; }
+    .pf-top .logo { width:76px; height:76px; }
+    .pf-sec { margin:14px 0 0; }
+    .pf-sec h4 { margin:0 0 6px; font-size:15px; display:flex; gap:6px; align-items:center; }
+    .pf-sec h4 i { color:var(--teal); }
+    .pf-sec p, .pf-sec li { color:var(--muted); font-size:14px; line-height:1.8; margin:0; }
+    .pf-sec ul { margin:0; padding:0 18px 0 0; }
+    .pf-contacts { display:grid; gap:8px; }
+    .pf-contacts a, .pf-contacts div { display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--ink); font-weight:700; font-size:14px; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:10px 12px; word-break:break-word; }
+    .pf-contacts i { color:var(--teal); width:18px; text-align:center; }
+    .pf-src { font-size:11px; color:var(--muted); margin-top:14px; }
     .count { color:var(--muted); font-size:13px; font-weight:700; margin:4px 0 12px; }
 
     .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
@@ -166,6 +180,11 @@
     <div class="pager" id="pager"></div>
   </main>
 
+  <!-- ملف الشركة -->
+  <div class="modal" id="pfModal" role="dialog" aria-modal="true">
+    <div class="sheet" id="pfBody"></div>
+  </div>
+
   <!-- طلب خدمة -->
   <div class="modal" id="reqModal" role="dialog" aria-modal="true">
     <div class="sheet">
@@ -261,6 +280,7 @@
     });
 
     const COLS = 'id, category, name_ar, name_en, logo_url, emirate, area, description, phone, whatsapp, email, website, is_verified, is_featured, sort_order';
+    const EXTRA = ', founded_year, about, address, map_url, portfolio, team_info, source_url';
     let sortMode = 'top';
     $('sort').addEventListener('change', () => { sortMode = $('sort').value; page = 1; render(); });
     const nameOf = r => (r.name_ar || r.name_en || '').trim();
@@ -278,7 +298,7 @@
       $('grid').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
       $('pager').innerHTML = ''; $('count').textContent = '';
       const { data, error } = await supabaseClient.from('service_providers')
-        .select(COLS + ', founded_year')
+        .select(COLS + EXTRA)
         .eq('category', cat).eq('is_active', true).limit(1000);
       let rowsData = data;
       if (error) { // قبل تشغيل ملف الأعمدة الجديدة
@@ -311,7 +331,7 @@
       const web = safeUrl(r.website);
       return `<article class="co ${r.is_featured ? 'feat' : ''}">
         <div class="co-top">${logo}
-          <div class="co-name"><b>${esc(r.name_ar)}</b>${r.name_en ? `<small>${esc(r.name_en)}</small>` : ''}</div>
+          <div class="co-name"><b class="lnk" data-pf="${r.id}">${esc(r.name_ar)}</b>${r.name_en ? `<small>${esc(r.name_en)}</small>` : ''}</div>
         </div>
         ${(r.is_verified || r.is_featured) ? `<div class="badges">${r.is_verified ? '<span class="bdg bdg-v"><i class="fas fa-circle-check"></i> رخصة موثّقة</span>' : ''}${r.is_featured ? '<span class="bdg bdg-f"><i class="fas fa-star"></i> مميّزة</span>' : ''}</div>` : ''}
         ${loc ? `<div class="loc"><i class="fas fa-location-dot"></i> ${loc}</div>` : ''}
@@ -322,6 +342,7 @@
           ${wa.length >= 7 ? `<a class="a-wa" href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
           ${web ? `<a class="a-web" href="${esc(web)}" target="_blank" rel="noopener nofollow"><i class="fas fa-globe"></i> الموقع</a>`
                 : (r.email ? `<a class="a-web" href="mailto:${esc(r.email)}"><i class="fas fa-envelope"></i> بريد</a>` : '')}
+          <a class="a-more" href="javascript:void(0)" data-pf="${r.id}"><i class="fas fa-circle-info"></i> الملف الكامل</a>
         </div>
       </article>`;
     }
@@ -371,6 +392,40 @@
         $('pager').innerHTML = html;
       } else $('pager').innerHTML = '';
     }
+    function mapLink(r) {
+      const m = safeUrl(r.map_url);
+      if (m && /google\.[a-z.]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps/i.test(m)) return m;
+      const q = [r.name_en || r.name_ar, r.address || r.area, r.emirate, 'الإمارات'].filter(Boolean).join(' ');
+      return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+    }
+    function openProfile(id) {
+      const r = all.find(x => x.id === id); if (!r) return;
+      const initials = esc(nameOf(r).charAt(0));
+      const logo = safeUrl(r.logo_url) ? `<img class="logo" src="${esc(safeUrl(r.logo_url))}" alt="" onerror="this.outerHTML='<div class=&quot;logo ph&quot;>${initials}</div>'">` : `<div class="logo ph">${initials}</div>`;
+      const port = Array.isArray(r.portfolio) ? r.portfolio.filter(Boolean) : [];
+      const web = safeUrl(r.website), wa = digits(r.whatsapp || r.phone);
+      $('pfBody').innerHTML = `<button class="x" data-close>&times;</button>
+        <div class="pf-top">${logo}<div class="co-name"><b style="font-size:19px">${esc(r.name_ar)}</b>${r.name_en ? `<small>${esc(r.name_en)}</small>` : ''}
+          <div class="loc" style="margin-top:4px">${CATS[r.category] ? CATS[r.category].t : ''}${r.founded_year ? ` · تأسست عام ${esc(r.founded_year)}` : ''}</div></div></div>
+        ${(r.is_verified || r.is_featured) ? `<div class="badges">${r.is_verified ? '<span class="bdg bdg-v"><i class="fas fa-circle-check"></i> رخصة موثّقة</span>' : ''}${r.is_featured ? '<span class="bdg bdg-f"><i class="fas fa-star"></i> مميّزة</span>' : ''}</div>` : ''}
+        ${(r.about || r.description) ? `<div class="pf-sec"><h4><i class="fas fa-building"></i> نبذة عن الشركة</h4><p>${esc(r.about || r.description)}</p></div>` : ''}
+        ${port.length ? `<div class="pf-sec"><h4><i class="fas fa-briefcase"></i> سابقة الأعمال</h4><ul>${port.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+        ${r.team_info ? `<div class="pf-sec"><h4><i class="fas fa-users"></i> فريق العمل</h4><p>${esc(r.team_info)}</p></div>` : ''}
+        <div class="pf-sec"><h4><i class="fas fa-address-card"></i> التواصل والموقع</h4><div class="pf-contacts">
+          ${r.phone ? `<a href="tel:${esc(r.phone)}"><i class="fas fa-phone"></i><span dir="ltr">${esc(r.phone)}</span></a>` : ''}
+          ${wa.length >= 7 ? `<a href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+          ${r.email ? `<a href="mailto:${esc(r.email)}"><i class="fas fa-envelope"></i><span dir="ltr">${esc(r.email)}</span></a>` : ''}
+          ${web ? `<a href="${esc(web)}" target="_blank" rel="noopener nofollow"><i class="fas fa-globe"></i><span dir="ltr">${esc(web.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</span></a>` : ''}
+          ${(r.address || r.area) ? `<div><i class="fas fa-location-dot"></i>${esc([r.address || r.area, r.address ? '' : r.emirate].filter(Boolean).join('، '))}</div>` : ''}
+          <a href="${esc(mapLink(r))}" target="_blank" rel="noopener"><i class="fas fa-map-location-dot"></i> عرض الموقع على الخريطة</a>
+        </div></div>
+        ${safeUrl(r.source_url) ? `<p class="pf-src">مصدر البيانات: <a href="${esc(safeUrl(r.source_url))}" target="_blank" rel="noopener nofollow" style="color:var(--teal)">الموقع الرسمي / المصدر</a>. للتصحيح راسلنا على info@anaaqar.com</p>` : ''}`;
+      $('pfModal').classList.add('open');
+    }
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-pf]'); if (!t) return;
+      e.preventDefault(); openProfile(+t.dataset.pf);
+    });
     $('grid').addEventListener('click', e => {
       const b = e.target.closest('.more-btn'); if (!b) return;
       emirate = b.dataset.em; page = 1; renderEmirates(); render(); window.scrollTo({ top: $('emirates').offsetTop - 120, behavior: 'smooth' });
