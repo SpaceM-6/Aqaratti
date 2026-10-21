@@ -45,6 +45,8 @@ declare
   v_rec     jsonb := to_jsonb(new);
 begin
   if public.is_app_admin() then return new; end if;
+  -- الإدخال المباشر من SQL Editor (بلا طلب API) لا يخضع للحدود
+  if coalesce(current_setting('request.jwt.claims', true), '') = '' then return new; end if;
 
   begin
     v_headers := current_setting('request.headers', true)::json;

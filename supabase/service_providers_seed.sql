@@ -4,6 +4,12 @@
 -- آمن لو أُعيد تشغيله: لا يكرّر شركة موجودة بنفس القسم والإمارة والاسم.
 -- يُنفَّذ بعد service_providers.sql من Supabase → SQL Editor.
 -- ============================================================================
+-- تعطيل مؤقت لحماية الإغراق أثناء الإدراج الجماعي من SQL Editor (تُعاد في آخر الملف)
+do $$ begin
+  if exists (select 1 from pg_trigger where tgname = 'aq_rate_limit_service_providers') then
+    alter table public.service_providers disable trigger aq_rate_limit_service_providers;
+  end if;
+end $$;
 alter table public.service_providers add column if not exists founded_year int;
 alter table public.service_providers add column if not exists source_url text;
 alter table public.service_providers add column if not exists about text;
@@ -354,6 +360,13 @@ where not exists (select 1 from public.service_providers where category = 'resid
 insert into public.service_providers (category, name_ar, name_en, emirate, area, phone, website, founded_year, description, source_url, about, logo_url, email, address, map_url, portfolio, team_info, is_active)
 select 'residency', 'Crowe Mak L.L.C.', 'Crowe Mak L.L.C.', 'الشارقة', 'كورنيش البحيرة', '+971 6 544 4344', 'https://www.crowe.com/ae', null, 'تدقيق وضرائب واستشارات، مع خدمات تأسيس الشركات والترخيص والدعم المؤسسي.', 'https://www.crowe.com/ae/contact-us', 'شركة Crowe Mak عضو في شبكة Crowe Global، وتذكر أن لديها أكثر من 35 عاماً من الخبرة في الإمارات. لها مكاتب في دبي وأبوظبي والشارقة، وتقدم تأسيس الشركات في سوق أبوظبي العالمي والمناطق الحرة.', null, null, '1602، البرج الذهبي، كورنيش البحيرة، الشارقة', null, array['تأسيس الشركات في سوق أبوظبي العالمي (ADGM)', 'تأسيس شركات المناطق الحرة', 'تأسيس الشركات القابضة وذات الغرض الخاص', 'الترخيص والتجديد', 'خدمات السكرتارية والامتثال']::text[], null, true
 where not exists (select 1 from public.service_providers where category = 'residency' and emirate = 'الشارقة' and lower(coalesce(name_en, name_ar)) = lower('Crowe Mak L.L.C.'));
+
+-- إعادة تفعيل حماية الإغراق
+do $$ begin
+  if exists (select 1 from pg_trigger where tgname = 'aq_rate_limit_service_providers') then
+    alter table public.service_providers enable trigger aq_rate_limit_service_providers;
+  end if;
+end $$;
 
 -- للتأكد: عدد الشركات في كل قسم وإمارة
 select category, emirate, count(*) from public.service_providers where is_active group by 1, 2 order by 1, 3 desc;
