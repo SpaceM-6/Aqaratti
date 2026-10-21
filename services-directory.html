@@ -494,7 +494,12 @@
       $('grid').classList.add('cat-grid');
       $('grid').innerHTML = Object.entries(CATS).map(([k, c]) => `<a class="co cat-tile" href="?cat=${k}" style="text-decoration:none">
           <div class="co-top"><div class="logo ph" style="background:${c.c}"><i class="fas ${c.i}"></i></div>
-          <div class="co-name"><b>${c.t}</b></div></div><p class="desc">${c.d}</p></a>`).join('');
+          <div class="co-name"><b>${c.t}</b><small class="cat-count" data-cc="${k}" style="direction:rtl;text-align:right;color:var(--teal);font-weight:800"></small></div></div><p class="desc">${c.d}</p></a>`).join('');
+      // عدد الشركات في كل قسم
+      supabaseClient.from('service_providers').select('category').eq('is_active', true).limit(5000).then(({ data }) => {
+        const n = {}; (data || []).forEach(r => { n[r.category] = (n[r.category] || 0) + 1; });
+        document.querySelectorAll('[data-cc]').forEach(el => { const v = n[el.dataset.cc]; el.textContent = v ? `${v} شركة` : ''; });
+      });
       return;
     }
     renderHead(); load();
