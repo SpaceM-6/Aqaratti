@@ -58,6 +58,16 @@
     .em span { color:var(--muted); font-weight:700; }
     .em.on { border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); }
     [data-theme="dark"] .em.on { color:#5eead4; }
+    .sort { display:flex; align-items:center; gap:6px; border:1.5px solid var(--line); background:var(--card); border-radius:12px; padding:0 10px; color:var(--muted); }
+    .sort select { border:0; background:transparent; color:var(--ink); font-family:inherit; font-weight:800; font-size:14px; padding:10px 2px; outline:none; cursor:pointer; }
+    .em-sec { margin:6px 0 22px; }
+    .em-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 10px; }
+    .em-head h2 { margin:0; font-size:19px; font-weight:900; display:flex; align-items:center; gap:8px; }
+    .em-head h2 i { color:var(--teal); }
+    .em-head h2 span { color:var(--muted); font-size:14px; font-weight:700; }
+    .more-btn { border:0; background:var(--teal-soft); color:var(--teal-dark); border-radius:10px; padding:8px 12px; font-family:inherit; font-weight:900; font-size:13px; cursor:pointer; white-space:nowrap; }
+    [data-theme="dark"] .more-btn { color:#5eead4; }
+    .est { color:var(--muted); font-size:12px; font-weight:800; }
     .count { color:var(--muted); font-size:13px; font-weight:700; margin:4px 0 12px; }
 
     .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
@@ -139,6 +149,14 @@
   <main>
     <div class="tools">
       <div class="search"><i class="fas fa-magnifying-glass"></i><input id="q" type="search" placeholder="ابحث باسم الشركة…" autocomplete="off"></div>
+      <label class="sort"><i class="fas fa-arrow-down-wide-short"></i>
+        <select id="sort" aria-label="ترتيب">
+          <option value="top">الأبرز أولًا</option>
+          <option value="az">أبجديًا</option>
+          <option value="oldest">الأقدم تأسيسًا</option>
+          <option value="newest">الأحدث تأسيسًا</option>
+        </select>
+      </label>
     </div>
     <div class="emirates" id="emirates"></div>
     <div class="count" id="count"></div>
@@ -242,15 +260,32 @@
       emirate = ''; query = ''; $('q').value = ''; page = 1; renderHead(); load();
     });
 
+    const COLS = 'id, category, name_ar, name_en, logo_url, emirate, area, description, phone, whatsapp, email, website, is_verified, is_featured, sort_order';
+    let sortMode = 'top';
+    $('sort').addEventListener('change', () => { sortMode = $('sort').value; page = 1; render(); });
+    const nameOf = r => (r.name_ar || r.name_en || '').trim();
+    function sortRows(rows) {
+      const by = {
+        top: (a, b) => (b.is_featured - a.is_featured) || (b.is_verified - a.is_verified) || ((a.sort_order || 0) - (b.sort_order || 0)) || ((a.founded_year || 9999) - (b.founded_year || 9999)) || nameOf(a).localeCompare(nameOf(b), 'ar'),
+        az: (a, b) => nameOf(a).localeCompare(nameOf(b), 'ar'),
+        oldest: (a, b) => ((a.founded_year || 9999) - (b.founded_year || 9999)) || nameOf(a).localeCompare(nameOf(b), 'ar'),
+        newest: (a, b) => ((b.founded_year || 0) - (a.founded_year || 0)) || nameOf(a).localeCompare(nameOf(b), 'ar')
+      }[sortMode];
+      return rows.slice().sort(by);
+    }
+
     async function load() {
       $('grid').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
       $('pager').innerHTML = ''; $('count').textContent = '';
       const { data, error } = await supabaseClient.from('service_providers')
-        .select('id, category, name_ar, name_en, logo_url, emirate, area, description, phone, whatsapp, email, website, is_verified, is_featured, sort_order')
-        .eq('category', cat).eq('is_active', true)
-        .order('is_featured', { ascending: false }).order('sort_order', { ascending: true }).order('name_ar', { ascending: true })
-        .limit(1000);
-      all = error ? [] : (data || []);
+        .select(COLS + ', founded_year')
+        .eq('category', cat).eq('is_active', true).limit(1000);
+      let rowsData = data;
+      if (error) { // قبل تشغيل ملف الأعمدة الجديدة
+        const r2 = await supabaseClient.from('service_providers').select(COLS).eq('category', cat).eq('is_active', true).limit(1000);
+        rowsData = r2.error ? [] : r2.data;
+      }
+      all = rowsData || [];
       renderEmirates(); render();
     }
 
@@ -280,6 +315,7 @@
         </div>
         ${(r.is_verified || r.is_featured) ? `<div class="badges">${r.is_verified ? '<span class="bdg bdg-v"><i class="fas fa-circle-check"></i> رخصة موثّقة</span>' : ''}${r.is_featured ? '<span class="bdg bdg-f"><i class="fas fa-star"></i> مميّزة</span>' : ''}</div>` : ''}
         ${loc ? `<div class="loc"><i class="fas fa-location-dot"></i> ${loc}</div>` : ''}
+        ${r.founded_year ? `<div class="est"><i class="fas fa-calendar"></i> تأسست عام ${esc(r.founded_year)}</div>` : ''}
         ${r.description ? `<p class="desc">${esc(r.description)}</p>` : ''}
         <div class="co-actions">
           ${r.phone ? `<a class="a-call" href="tel:${esc(r.phone)}"><i class="fas fa-phone"></i> اتصال</a>` : ''}
@@ -291,7 +327,7 @@
     }
 
     function render() {
-      let rows = all;
+      let rows = sortRows(all);
       if (emirate) rows = rows.filter(r => r.emirate === emirate);
       if (query) rows = rows.filter(r => (r.name_ar || '').toLowerCase().includes(query) || (r.name_en || '').toLowerCase().includes(query));
       const total = rows.length, pages = Math.max(1, Math.ceil(total / PAGE));
@@ -309,6 +345,20 @@
           </div></div>`;
         return;
       }
+      // كل الإمارات بلا بحث: أقسام منفصلة لكل إمارة
+      if (!emirate && !query) {
+        const groups = EMIRATES.map(e => [e, rows.filter(r => r.emirate === e)]).filter(([, l]) => l.length);
+        const other = rows.filter(r => !EMIRATES.includes(r.emirate));
+        if (other.length) groups.push(['إمارات أخرى', other]);
+        $('count').textContent = `${total} شركة في ${groups.length} ${groups.length > 2 ? 'إمارات' : 'إمارة'}`;
+        $('grid').innerHTML = groups.map(([e, l]) => `<section class="em-sec" style="grid-column:1/-1">
+            <div class="em-head"><h2><i class="fas fa-location-dot"></i> ${esc(e)} <span>(${l.length})</span></h2>
+              ${l.length > 6 && EMIRATES.includes(e) ? `<button class="more-btn" data-em="${esc(e)}">عرض الكل في ${esc(e)}</button>` : ''}</div>
+            <div class="grid">${l.slice(0, 6).map(card).join('')}</div>
+          </section>`).join('');
+        $('pager').innerHTML = '';
+        return;
+      }
       $('count').textContent = total ? `عرض ${(page - 1) * PAGE + 1}–${Math.min(page * PAGE, total)} من ${total} شركة` : 'لا توجد نتائج مطابقة';
       $('grid').innerHTML = slice.length ? slice.map(card).join('') : `<div class="empty" style="grid-column:1/-1"><i class="fas fa-magnifying-glass"></i><h3>لا نتائج</h3><p>جرّب اسمًا آخر أو إمارة أخرى.</p></div>`;
 
@@ -321,6 +371,10 @@
         $('pager').innerHTML = html;
       } else $('pager').innerHTML = '';
     }
+    $('grid').addEventListener('click', e => {
+      const b = e.target.closest('.more-btn'); if (!b) return;
+      emirate = b.dataset.em; page = 1; renderEmirates(); render(); window.scrollTo({ top: $('emirates').offsetTop - 120, behavior: 'smooth' });
+    });
     $('pager').addEventListener('click', e => {
       const b = e.target.closest('button[data-p]'); if (!b || b.disabled) return;
       page = +b.dataset.p; render(); window.scrollTo({ top: $('grid').offsetTop - 120, behavior: 'smooth' });

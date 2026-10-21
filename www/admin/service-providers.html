@@ -106,6 +106,7 @@
         </div>
         <div class="two">
           <div class="fg"><label>ترتيب الظهور (الأصغر أولًا)</label><input id="fSort" type="number" value="0"></div>
+          <div class="fg"><label>سنة التأسيس</label><input id="fFounded" type="number" min="1900" max="2100" placeholder="مثال: 1998"></div>
         </div>
         <div class="checks">
           <label><input type="checkbox" id="fActive"> مفعّلة (تظهر في الموقع)</label>
@@ -189,7 +190,7 @@
       $('fPhone').value = r.phone || ''; $('fWa').value = r.whatsapp || '';
       $('fEmail').value = r.email || ''; $('fWeb').value = r.website || '';
       $('fDesc').value = r.description || ''; $('fLogo').value = r.logo_url || ''; $('fLogoFile').value = '';
-      $('fSort').value = r.sort_order || 0;
+      $('fSort').value = r.sort_order || 0; $('fFounded').value = r.founded_year || '';
       $('fActive').checked = id ? !!r.is_active : true; $('fVerified').checked = !!r.is_verified; $('fFeatured').checked = !!r.is_featured;
       $('edit').classList.add('open');
     }
@@ -218,6 +219,7 @@
           email: $('fEmail').value.trim() || null, website: $('fWeb').value.trim() || null,
           description: $('fDesc').value.trim() || null, logo_url: logo,
           sort_order: parseInt($('fSort').value) || 0,
+          founded_year: parseInt($('fFounded').value) || null,
           is_active: $('fActive').checked, is_verified: $('fVerified').checked, is_featured: $('fFeatured').checked,
           updated_at: new Date().toISOString()
         };
