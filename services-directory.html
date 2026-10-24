@@ -22,7 +22,8 @@
             --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --card:#ffffff; }
     [data-theme="dark"] { --ink:#e2e8f0; --muted:#94a3b8; --line:#2b3654; --bg:#0f172a; --card:#162039; --teal-soft:#0f2e33; }
     * { box-sizing:border-box; }
-    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:var(--ink); }
+    html, body { overflow-x:hidden; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:var(--ink); -webkit-tap-highlight-color:transparent; }
     a { color:inherit; }
     .topbar { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
     [data-theme="dark"] .topbar { background:rgba(15,23,42,.94); }
@@ -49,20 +50,20 @@
 
     main { max-width:1150px; margin:0 auto; padding:16px 16px 90px; }
     .tools { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
-    .search { flex:1; min-width:220px; position:relative; }
+    .search { flex:1 1 220px; min-width:0; position:relative; }
     .search input { width:100%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:11px 40px 11px 12px; font-family:inherit; font-size:15px; outline:none; }
     .search input:focus { border-color:var(--teal); }
     .search i { position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); }
     .emirates { display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding:4px 0 8px; }
     .emirates::-webkit-scrollbar { display:none; }
-    .em { flex:0 0 auto; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:6px 12px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .em { flex:0 0 auto; min-height:38px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:6px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
     .em span { color:var(--muted); font-weight:700; }
     .em.on { border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); }
     [data-theme="dark"] .em.on { color:#5eead4; }
     .sort { display:flex; align-items:center; gap:6px; border:1.5px solid var(--line); background:var(--card); border-radius:12px; padding:0 10px; color:var(--muted); }
     .sort select { border:0; background:transparent; color:var(--ink); font-family:inherit; font-weight:800; font-size:14px; padding:10px 2px; outline:none; cursor:pointer; }
     .em-sec { margin:6px 0 22px; }
-    .em-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 10px; }
+    .em-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 10px; margin:0 0 10px; }
     .em-head h2 { margin:0; font-size:19px; font-weight:900; display:flex; align-items:center; gap:8px; }
     .em-head h2 i { color:var(--teal); }
     .em-head h2 span { color:var(--muted); font-size:14px; font-weight:700; }
@@ -73,7 +74,7 @@
     .co-name b.lnk:hover { color:var(--teal); }
     .a-more { background:transparent !important; color:var(--teal) !important; border:1.5px solid var(--teal); }
     .pf-top { display:flex; gap:14px; align-items:center; margin-bottom:12px; }
-    .pf-top .logo { width:76px; height:76px; }
+    .pf-top .logo-wrap, .pf-top .logo { width:76px; height:76px; }
     .pf-sec { margin:14px 0 0; }
     .pf-sec h4 { margin:0 0 6px; font-size:15px; display:flex; gap:6px; align-items:center; }
     .pf-sec h4 i { color:var(--teal); }
@@ -85,7 +86,7 @@
     .pf-src { font-size:11px; color:var(--muted); margin-top:14px; }
     .cat-tile .logo.ph { font-size:24px; }
     @media (max-width: 620px) {
-      .grid.cat-grid { grid-template-columns:repeat(2, 1fr); gap:10px; }
+      .grid.cat-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; }
       .cat-grid .cat-tile { padding:12px; gap:6px; }
       .cat-grid .co-top { flex-direction:column; align-items:flex-start; gap:8px; }
       .cat-grid .logo { width:46px; height:46px; font-size:19px !important; }
@@ -94,15 +95,19 @@
     }
     .count { color:var(--muted); font-size:13px; font-weight:700; margin:4px 0 12px; }
 
-    .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
-    .co { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:10px; transition:box-shadow .15s, border-color .15s; }
+    .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
+    .grid > * { min-width:0; }
+    .co { min-width:0; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:10px; transition:box-shadow .15s, border-color .15s; }
     .co:hover { border-color:var(--teal); box-shadow:0 10px 26px rgba(25,32,56,.08); }
     .co.feat { border-color:#ecdba6; box-shadow:0 0 0 1px #ecdba6 inset; }
     .co-top { display:flex; gap:12px; align-items:center; }
+    .logo-wrap { position:relative; width:64px; height:64px; flex-shrink:0; }
+    .logo-wrap .logo { position:absolute; inset:0; }
+    .logo-wrap img.logo { background:#fff; }
     .logo { width:64px; height:64px; border-radius:14px; border:1px solid var(--line); background:#fff; object-fit:contain; padding:5px; flex-shrink:0; }
     .logo.ph { display:grid; place-items:center; font-weight:900; font-size:22px; color:#fff; background:linear-gradient(135deg, var(--teal), var(--teal-dark)); padding:0; border:0; }
-    .co-name { min-width:0; }
-    .co-name b { display:block; font-size:16px; font-weight:900; line-height:1.35; }
+    .co-name { min-width:0; flex:1; }
+    .co-name b { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; font-size:16px; font-weight:900; line-height:1.35; text-align:start; }
     .co-name small { display:block; color:var(--muted); font-size:12px; direction:ltr; text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .badges { display:flex; gap:6px; flex-wrap:wrap; }
     .bdg { font-size:11px; font-weight:900; padding:3px 9px; border-radius:999px; }
@@ -111,7 +116,8 @@
     .loc i { color:var(--teal); }
     .desc { color:var(--muted); font-size:13px; line-height:1.7; margin:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
     .co-actions { display:flex; gap:6px; margin-top:auto; flex-wrap:wrap; }
-    .co-actions a { flex:1; min-width:80px; text-decoration:none; text-align:center; border-radius:10px; padding:9px 6px; font-weight:900; font-size:13px; }
+    .co-actions a { flex:1 1 0; min-width:0; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; white-space:nowrap; text-decoration:none; text-align:center; border-radius:10px; padding:8px 6px; font-weight:900; font-size:13px; }
+    .co-actions a.a-more { flex-basis:100%; }
     .a-call { background:var(--navy); color:#fff; }
     [data-theme="dark"] .a-call { background:#2b3a66; }
     .a-wa { background:#16a34a; color:#fff; }
@@ -145,8 +151,8 @@
     .ok { text-align:center; padding:10px 0; }
     .ok i { font-size:44px; color:var(--teal); }
 
-    @media (max-width: 960px) { .grid { grid-template-columns:repeat(2, 1fr); } }
-    @media (max-width: 620px) { .grid { grid-template-columns:1fr; } .row2 { grid-template-columns:1fr; } }
+    @media (max-width: 960px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 620px) { .grid { grid-template-columns:minmax(0, 1fr); } .row2 { grid-template-columns:1fr; } }
     @media (min-width: 700px) { .modal { align-items:center; } .sheet { border-radius:20px; } }
   </style>
 </head>
@@ -326,17 +332,28 @@
     });
     let qt; $('q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => { query = $('q').value.trim().toLowerCase(); page = 1; render(); }, 200); });
 
+    // الشعار: الحرف الأول دائماً في الخلفية، والصورة فوقه؛ إن فشلت تُزال فيبقى الحرف
+    function logoBox(r, initials, lazy) {
+      const u = safeUrl(r.logo_url);
+      return `<div class="logo-wrap"><div class="logo ph">${initials}</div>${u ? `<img class="logo" src="${esc(u)}" alt="${esc(r.name_ar || '')}" ${lazy ? 'loading="lazy"' : ''} data-logo>` : ''}</div>`;
+    }
+    // الاسم الإنجليزي يظهر تحت العربي فقط إن كان مختلفاً عنه
+    function enSub(r) {
+      const en = (r.name_en || '').trim();
+      return en && en.toLowerCase() !== (r.name_ar || '').trim().toLowerCase() ? `<small>${esc(en)}</small>` : '';
+    }
+    document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.hasAttribute('data-logo')) t.remove(); }, true);
+    document.addEventListener('load', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.hasAttribute('data-logo') && t.naturalWidth < 8) t.remove(); }, true);
+
     function card(r) {
       const initials = esc((r.name_ar || '؟').trim().charAt(0));
-      const logo = safeUrl(r.logo_url)
-        ? `<img class="logo" src="${esc(safeUrl(r.logo_url))}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;logo ph&quot;>${initials}</div>'">`
-        : `<div class="logo ph">${initials}</div>`;
+      const logo = logoBox(r, initials, true);
       const loc = [r.emirate, r.area].filter(Boolean).map(esc).join('، ');
       const wa = digits(r.whatsapp || r.phone);
       const web = safeUrl(r.website);
       return `<article class="co ${r.is_featured ? 'feat' : ''}">
         <div class="co-top">${logo}
-          <div class="co-name"><b class="lnk" data-pf="${r.id}">${esc(r.name_ar)}</b>${r.name_en ? `<small>${esc(r.name_en)}</small>` : ''}</div>
+          <div class="co-name"><b class="lnk" dir="auto" data-pf="${r.id}">${esc(r.name_ar)}</b>${enSub(r)}</div>
         </div>
         ${(r.is_verified || r.is_featured) ? `<div class="badges">${r.is_verified ? '<span class="bdg bdg-v"><i class="fas fa-circle-check"></i> رخصة موثّقة</span>' : ''}${r.is_featured ? '<span class="bdg bdg-f"><i class="fas fa-star"></i> مميّزة</span>' : ''}</div>` : ''}
         ${loc ? `<div class="loc"><i class="fas fa-location-dot"></i> ${loc}</div>` : ''}
@@ -406,11 +423,11 @@
     function openProfile(id) {
       const r = all.find(x => x.id === id); if (!r) return;
       const initials = esc(nameOf(r).charAt(0));
-      const logo = safeUrl(r.logo_url) ? `<img class="logo" src="${esc(safeUrl(r.logo_url))}" alt="" onerror="this.outerHTML='<div class=&quot;logo ph&quot;>${initials}</div>'">` : `<div class="logo ph">${initials}</div>`;
+      const logo = logoBox(r, initials, false);
       const port = Array.isArray(r.portfolio) ? r.portfolio.filter(Boolean) : [];
       const web = safeUrl(r.website), wa = digits(r.whatsapp || r.phone);
       $('pfBody').innerHTML = `<button class="x" data-close>&times;</button>
-        <div class="pf-top">${logo}<div class="co-name"><b style="font-size:19px">${esc(r.name_ar)}</b>${r.name_en ? `<small>${esc(r.name_en)}</small>` : ''}
+        <div class="pf-top">${logo}<div class="co-name"><b dir="auto" style="font-size:19px;-webkit-line-clamp:4">${esc(r.name_ar)}</b>${enSub(r)}
           <div class="loc" style="margin-top:4px">${CATS[r.category] ? CATS[r.category].t : ''}${r.founded_year ? ` · تأسست عام ${esc(r.founded_year)}` : ''}</div></div></div>
         ${(r.is_verified || r.is_featured) ? `<div class="badges">${r.is_verified ? '<span class="bdg bdg-v"><i class="fas fa-circle-check"></i> رخصة موثّقة</span>' : ''}${r.is_featured ? '<span class="bdg bdg-f"><i class="fas fa-star"></i> مميّزة</span>' : ''}</div>` : ''}
         ${(r.about || r.description) ? `<div class="pf-sec"><h4><i class="fas fa-building"></i> نبذة عن الشركة</h4><p>${esc(r.about || r.description)}</p></div>` : ''}

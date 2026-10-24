@@ -306,8 +306,10 @@
       border: 1px solid #cbd5e1;
       color: var(--dubizzle-navy);
       padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 14px;
+      min-width: 40px;
+      min-height: 38px;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
     }
 
@@ -655,10 +657,11 @@
 
     .bayut-main-content-layout {
       display: grid;
-      grid-template-columns: 1fr 300px;
+      grid-template-columns: minmax(0, 1fr) 300px;
       gap: 25px;
       align-items: start;
     }
+    .bayut-main-content-layout > *, .properties-grid > * { min-width: 0; }
 
     .properties-grid {
       display: flex;
@@ -1099,7 +1102,7 @@
       border-top: 1px solid var(--dubizzle-border);
       box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
       z-index: 9999999;
-      padding: 8px 12px;
+      padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
       justify-content: space-around;
       align-items: center;
     }
@@ -1108,7 +1111,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      justify-content: center;
+      min-width: 58px;
+      min-height: 46px;
+      gap: 3px;
       color: #64748b;
       text-decoration: none;
       font-size: 11px;
@@ -1129,7 +1135,7 @@
     /* ==================== 📱📱 إصلاح وتنسيق الجوال واللابتوب ==================== */
     @media (max-width: 992px) {
       .bayut-main-content-layout {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: minmax(0, 1fr) !important;
       }
       .bayut-sidebar-ads {
         position: static;

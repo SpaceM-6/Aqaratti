@@ -114,6 +114,13 @@
         .btn-apply:hover {
             background: #21965a;
         }
+        html, body { overflow-x: hidden; }
+        @media (max-width: 760px) {
+            .search-page-layout { flex-direction: column; padding: 16px; gap: 16px; }
+            .filter-sidebar, .results-column { flex: none; width: 100%; min-width: 0; }
+            .navbar-bayut, .nav-right { flex-wrap: wrap; gap: 10px; min-width: 0; }
+            .main-menu { flex-wrap: wrap; }
+        }
     </style>
 </head>
 <body>
