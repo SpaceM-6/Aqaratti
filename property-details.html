@@ -636,6 +636,7 @@
           </div>
         </div>
 
+        <p style="margin:-6px 0 14px; text-align:left;"><a href="report.html" id="reportListingLink" style="color:#94a3b8; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-flag"></i> إبلاغ عن هذا الإعلان</a></p>
         <div class="info-section-card" id="secLocation">
           <div class="info-card-title">موقع العقار على الخريطة</div>
           <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:10px;">
@@ -1355,5 +1356,13 @@
     });
   </script>
 
+  <script>
+    document.getElementById('reportListingLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      var t = (document.querySelector('h1') || {}).textContent || '';
+      location.href = 'report.html?kind=listing&target=' + encodeURIComponent(t.trim().slice(0, 180)) + '&url=' + encodeURIComponent('property-details.html' + location.search);
+    });
+  </script>
+  <script src="js/aq-engage.js" defer></script>
 </body>
 </html>

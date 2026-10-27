@@ -1724,6 +1724,11 @@
     .pw-toggle:hover, .pw-toggle:focus-visible { color: var(--primary-turquoise); background: rgba(0,168,150,.08); outline: none; }
   
     /* ==================== ✨ تحسينات تجربة المستخدم (القائمة الجانبية، زر التواصل، الهيرو، بطاقة العقار) ==================== */
+    .aq-results-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .aq-results-head .section-title { margin-bottom: 0; }
+    .aq-save-search { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--primary-turquoise); background: #e6f7f5; color: #028090; border-radius: 999px; padding: 9px 16px; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; min-height: 42px; }
+    .aq-save-search:hover { background: var(--primary-turquoise); color: #fff; }
+    [data-theme="dark"] .aq-save-search { background: #0f2e33; color: #5eead4; }
     html.aq-noscroll, html.aq-noscroll body { overflow: hidden !important; }
     .aq-drawer-overlay { position: fixed; inset: 0; background: rgba(2, 8, 23, .5); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 2147483000; }
     .aq-drawer-overlay.open { opacity: 1; pointer-events: auto; }
@@ -2145,7 +2150,10 @@
 
   <!-- 📊 قسم المحتوى التفاعلي (عرض العقارات على اليمين + الإعلانات على اليسار) -->
   <section class="properties-section">
-    <h2 class="section-title" id="resultsSectionTitle">العقارات المتاحة حصرياً</h2>
+    <div class="aq-results-head">
+      <h2 class="section-title" id="resultsSectionTitle">العقارات المتاحة حصرياً</h2>
+      <button type="button" class="aq-save-search" onclick="window.AQEngage && AQEngage.saveSearch()"><i class="fas fa-bell"></i> احفظ هذا البحث</button>
+    </div>
     
     <div class="bayut-main-content-layout">
 
@@ -2354,7 +2362,8 @@
       <a href="javascript:void(0)" onclick="aqDrawerGo('resultsSectionTitle')"><i class="fas fa-building"></i> العقارات المتاحة</a>
       <a href="brokers-directory.html"><i class="fas fa-building-user"></i> دليل الوسطاء والمكاتب</a>
       <a href="services-directory.html"><i class="fas fa-screwdriver-wrench"></i> دليل الخدمات</a>
-      <a href="javascript:void(0)" onclick="aqDrawer(false); openFavoritesModal()"><i class="fas fa-heart"></i> المفضلة</a>
+      <a href="offers.html"><i class="fas fa-tags"></i> العروض</a>
+      <a href="my.html"><i class="fas fa-bookmark"></i> قوائمي: المفضلة والبحوث والإشعارات <span data-aqe-notif-count style="color:#e11d48;font-weight:900"></span></a>
 
       <div class="aq-dr-label">للوسطاء والمطورين</div>
       <a href="sell-or-rent.html" class="aq-dr-hl"><i class="fas fa-circle-plus"></i> أضف عقارك</a>
@@ -2362,7 +2371,9 @@
       <a href="dashboard.html"><i class="fas fa-gauge"></i> لوحة التحكم</a>
 
       <div class="aq-dr-label">المساعدة</div>
-      <a href="javascript:void(0)" onclick="aqDrawer(false); openServiceRequest('general')"><i class="fas fa-headset"></i> تواصل معنا</a>
+      <a href="javascript:void(0)" data-open-chat><i class="fas fa-comment-dots"></i> تحدث معنا الآن</a>
+      <a href="javascript:void(0)" onclick="aqDrawer(false); openServiceRequest('general')"><i class="fas fa-headset"></i> أرسل طلبًا أو استفسارًا</a>
+      <a href="report.html"><i class="fas fa-flag"></i> إبلاغ عن مخالفة أو شكوى</a>
       <button type="button" onclick="toggleAnaaqarDarkMode()"><i class="fas fa-circle-half-stroke"></i> الوضع الليلي / النهاري</button>
       <a href="terms-of-service.html"><i class="fas fa-file-contract"></i> الشروط والأحكام</a>
       <a href="privacy-policy.html"><i class="fas fa-shield-halved"></i> سياسة الخصوصية</a>
@@ -3711,5 +3722,6 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
+  <script src="js/aq-engage.js" defer></script>
 </body>
 </html>

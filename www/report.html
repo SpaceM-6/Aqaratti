@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإبلاغ والشكاوى | أنا عقار AnaAqar</title>
+  <meta name="description" content="بلّغ عن إعلان مضلل أو وسيط مخالف أو أي مشكلة واجهتك على أنا عقار.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <section class="head"><div class="head-in">
+    <h1><i class="fas fa-flag"></i> الإبلاغ والشكاوى</h1>
+    <p>ساعدنا في إبقاء أنا عقار موثوقة: بلّغ عن إعلان مضلل، أو وسيط مخالف، أو أي مشكلة واجهتك. يصل بلاغك إلى الإدارة مباشرة.</p>
+  </div></section>
+  <main>
+    <form class="form" id="rf" novalidate>
+      <div class="fg"><label for="kind">نوع البلاغ</label>
+        <select id="kind">
+          <option value="listing">إعلان عقار مضلل أو غير صحيح</option>
+          <option value="broker">وسيط أو مكتب عقاري</option>
+          <option value="company">شركة في دليل الخدمات</option>
+          <option value="site">مشكلة في الموقع أو التطبيق</option>
+          <option value="other">شكوى أو ملاحظة أخرى</option>
+        </select></div>
+      <div class="fg" id="targetWrap"><label for="target">العقار أو الجهة المعنية (اختياري)</label>
+        <input id="target" maxlength="200" placeholder="عنوان الإعلان، أو اسم الوسيط أو الشركة"></div>
+      <div class="fg"><label for="details">التفاصيل</label>
+        <textarea id="details" maxlength="2000" required placeholder="اشرح ما حدث بإيجاز، وأي معلومة تساعدنا على المتابعة"></textarea></div>
+      <div class="row2">
+        <div class="fg"><label for="name">الاسم (اختياري)</label><input id="name" maxlength="80" autocomplete="name"></div>
+        <div class="fg"><label for="phone">رقم الجوال (اختياري)</label><input id="phone" type="tel" dir="ltr" maxlength="30" autocomplete="tel"></div>
+      </div>
+      <div class="fg"><label for="email">البريد الإلكتروني (اختياري)</label><input id="email" type="email" dir="ltr" maxlength="120" autocomplete="email"></div>
+      <p class="hint">بياناتك تصل للإدارة فقط ولا تُعرض لأحد، وتساعدنا على التواصل معك إن احتجنا توضيحًا.</p>
+      <button class="btn btn-teal" type="submit" id="sendBtn" style="width:100%"><i class="fas fa-paper-plane"></i> إرسال البلاغ</button>
+    </form>
+  </main>
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const p = new URLSearchParams(location.search);
+      if (p.get('kind')) $('kind').value = p.get('kind');
+      if (p.get('target')) $('target').value = p.get('target').slice(0, 200);
+      const targetUrl = (p.get('url') || '').slice(0, 400);
+      $('rf').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const details = $('details').value.trim();
+        if (details.length < 5) { alert('اكتب تفاصيل البلاغ'); return; }
+        const btn = $('sendBtn'); btn.disabled = true;
+        const row = { kind: $('kind').value, target: $('target').value.trim() || null, target_url: targetUrl || null, details,
+          name: $('name').value.trim() || null, phone: $('phone').value.trim() || null, email: $('email').value.trim() || null };
+        const { error } = await supabaseClient.from('reports').insert(row);
+        btn.disabled = false;
+        if (error) {
+          alert(typeof aqIsRateLimited === 'function' && aqIsRateLimited(error) ? AQ_RATE_LIMIT_MSG : 'تعذّر الإرسال الآن، حاول مرة أخرى أو راسلنا على info@anaaqar.com');
+          return;
+        }
+        $('rf').innerHTML = '<div class="ok"><i class="fas fa-circle-check"></i><h2>وصلنا بلاغك، شكرًا لك</h2><p class="hint">تراجعه الإدارة في أقرب وقت، وإن تركت رقمك قد نتواصل معك للتوضيح.</p><a class="btn btn-soft" href="index.html">العودة للرئيسية</a></div>';
+      });
+    })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

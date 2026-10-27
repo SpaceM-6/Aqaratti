@@ -57,6 +57,7 @@
       <a href="properties.html">مراجعة العقارات</a>
       <a href="service-requests.html">الطلبات والاستفسارات</a>
       <a href="../services-directory.html" target="_blank">عرض الدليل ↗</a>
+      <a href="index.html" style="font-weight:900">← لوحة التحكم</a>
       <a href="../index.html">العودة للموقع ←</a>
     </nav>
   </header>
@@ -252,7 +253,7 @@
       let isAdmin = false;
       if (user) { const { data } = await supabaseClient.rpc('is_app_admin'); isAdmin = data === true; }
       if (!isAdmin) {
-        $('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock" style="font-size:30px;display:block;margin-bottom:8px"></i>${user ? 'هذه الصفحة لحساب الإدارة فقط.' : 'يجب تسجيل الدخول بحساب الإدارة.'}<br><a href="../index.html" style="color:var(--teal)">العودة للصفحة الرئيسية</a></div>`;
+        $('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock" style="font-size:30px;display:block;margin-bottom:8px"></i>${user ? 'هذه الصفحة لحساب الإدارة فقط.' : 'يجب تسجيل الدخول بحساب الإدارة.'}<br><a href="index.html" style="color:var(--teal)">تسجيل الدخول من لوحة التحكم</a></div>`;
         return;
       }
       load();

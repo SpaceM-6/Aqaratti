@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>لوحة التحكم | إدارة أنا عقار</title>
+  <link rel="icon" type="image/png" href="../icons/app-icon-v3-512.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-client.js"></script>
+  <style>
+    :root { --teal:#00a896; --teal-d:#028090; --teal-s:#e6f7f5; --navy:#192038; --gold:#d4af37; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; --red:#e11d48; }
+    * { box-sizing:border-box; }
+    html, body { overflow-x:hidden; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:#0f172a; line-height:1.6; }
+    [hidden] { display:none !important; }
+    header.top { background:var(--navy); color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; position:sticky; top:0; z-index:30; }
+    header.top b { font-size:18px; font-weight:900; display:flex; align-items:center; gap:8px; }
+    header.top b img { height:26px; }
+    header.top a, header.top button { color:#e2e8f0; background:none; border:0; font:inherit; font-weight:800; font-size:14px; cursor:pointer; text-decoration:none; }
+    main { max-width:1100px; margin:0 auto; padding:18px 16px 60px; }
+    h1 { font-size:24px; margin:0 0 4px; color:var(--navy); }
+    h2 { font-size:19px; margin:0 0 10px; color:var(--navy); }
+    .sub { color:var(--muted); margin:0 0 16px; font-size:14px; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin-bottom:18px; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px; }
+    .stat b { display:block; font-size:26px; font-weight:900; color:var(--navy); line-height:1.2; }
+    .stat span { color:var(--muted); font-size:13px; font-weight:700; }
+    .group { font-size:13px; font-weight:900; color:var(--muted); margin:18px 0 8px; }
+    .tiles { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:10px; }
+    .tile { position:relative; display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px; text-decoration:none; color:var(--navy); cursor:pointer; text-align:right; font:inherit; transition:border-color .15s, box-shadow .15s; }
+    .tile:hover { border-color:var(--teal); box-shadow:0 8px 20px rgba(25,32,56,.07); }
+    .tile .ic { flex:0 0 auto; width:48px; height:48px; border-radius:14px; display:grid; place-items:center; font-size:20px; }
+    .tile .tx { flex:1; min-width:0; }
+    .tile .tx b { display:block; font-size:16px; }
+    .tile .tx small { display:block; color:var(--muted); font-size:13px; line-height:1.5; }
+    .tile .tn { flex:0 0 auto; background:var(--red); color:#fff; border-radius:999px; min-width:28px; padding:0 8px; text-align:center; font-size:14px; font-weight:900; }
+    .tile .tn:empty { display:none; }
+    .tile.hot { border-color:var(--red); }
+    .secbar { position:sticky; top:52px; z-index:20; display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:10px 14px; margin-bottom:14px; }
+    .secbar a { color:var(--teal-d); font-weight:900; text-decoration:none; white-space:nowrap; }
+    .secbar b { font-size:18px; color:var(--navy); }
+    .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; border:0; border-radius:10px; padding:9px 14px; font-family:inherit; font-weight:800; font-size:14px; cursor:pointer; text-decoration:none; background:var(--navy); color:#fff; min-height:40px; }
+    .btn.teal { background:var(--teal); } .btn.soft { background:var(--teal-s); color:var(--teal-d); } .btn.red { background:#fee2e2; color:#b91c1c; } .btn.ghost { background:#fff; color:var(--navy); border:1.5px solid var(--line); }
+    .btn.sm { padding:5px 10px; min-height:34px; font-size:13px; }
+    .btn:disabled { opacity:.5; }
+    .pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+    .pill { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:6px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .pill.on { background:var(--teal); border-color:var(--teal); color:#fff; }
+    .fg { margin-bottom:10px; } .fg label { display:block; font-size:13px; font-weight:800; color:var(--muted); margin-bottom:3px; }
+    .fg input, .fg select, .fg textarea { width:100%; border:1.5px solid var(--line); border-radius:10px; padding:9px 11px; font-family:inherit; font-size:15px; background:#fff; outline:none; }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--teal); }
+    .fg textarea { min-height:80px; resize:vertical; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width:640px) { .grid2 { grid-template-columns:1fr; } }
+    .item { display:flex; gap:10px; align-items:flex-start; justify-content:space-between; border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-top:8px; background:#fff; }
+    .item.off { opacity:.55; }
+    .item .tx { flex:1; min-width:0; } .item .tx b { display:block; } .item .tx small { color:var(--muted); display:block; }
+    .item .acts { display:flex; gap:6px; flex-wrap:wrap; flex:0 0 auto; }
+    .badge { font-size:12px; font-weight:900; padding:3px 10px; border-radius:999px; background:#e0f2fe; color:#075985; }
+    .badge.new { background:#fee2e2; color:#b91c1c; } .badge.reviewing { background:#fef3c7; color:#92400e; } .badge.done { background:#dcfce7; color:#166534; }
+    .empty, .gate { text-align:center; color:var(--muted); padding:34px 16px; font-weight:800; background:#fff; border:1px dashed var(--line); border-radius:14px; }
+    .gate { max-width:420px; margin:40px auto; border-style:solid; text-align:right; }
+    .details { background:#f8fafc; border-radius:10px; padding:10px 12px; font-size:14px; white-space:pre-wrap; line-height:1.7; margin:8px 0; }
+    /* الدردشة */
+    .chat-wrap { display:grid; grid-template-columns:320px minmax(0,1fr); gap:12px; min-height:60vh; }
+    @media (max-width:820px) { .chat-wrap { grid-template-columns:minmax(0,1fr); } .chat-wrap.open .threads { display:none; } .chat-wrap:not(.open) .conv { display:none; } }
+    .threads { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:auto; max-height:72vh; }
+    .th { display:block; width:100%; text-align:right; border:0; border-bottom:1px solid var(--line); background:#fff; padding:12px 14px; font:inherit; cursor:pointer; }
+    .th:hover, .th.on { background:var(--teal-s); }
+    .th b { display:flex; justify-content:space-between; gap:6px; font-size:15px; } .th small { display:block; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .th .un { background:var(--red); color:#fff; border-radius:999px; padding:0 7px; font-size:12px; }
+    .th.closed { opacity:.6; }
+    .conv { background:#fff; border:1px solid var(--line); border-radius:14px; display:flex; flex-direction:column; max-height:72vh; min-height:60vh; }
+    .conv-h { padding:10px 14px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
+    .conv-h b { font-size:16px; } .conv-h .meta { display:flex; gap:10px; flex-wrap:wrap; font-size:13px; } .conv-h a { color:var(--teal-d); font-weight:800; text-decoration:none; }
+    .msgs { flex:1; overflow:auto; padding:14px; background:#f6f8fb; display:flex; flex-direction:column; gap:8px; }
+    .m { max-width:78%; padding:8px 12px; border-radius:14px; font-size:15px; white-space:pre-wrap; word-break:break-word; }
+    .m small { display:block; font-size:11px; opacity:.7; }
+    .m.user { align-self:flex-start; background:#fff; border:1px solid var(--line); }
+    .m.admin { align-self:flex-end; background:var(--teal); color:#fff; }
+    .composer { display:flex; gap:8px; padding:10px; border-top:1px solid var(--line); }
+    .composer textarea { flex:1; border:1.5px solid var(--line); border-radius:12px; padding:9px 11px; font:inherit; font-size:15px; resize:none; min-height:44px; max-height:140px; }
+    .quick { display:flex; gap:6px; flex-wrap:wrap; padding:0 10px 10px; }
+    .quick button { border:1px solid var(--line); background:#fff; border-radius:999px; padding:4px 10px; font:inherit; font-size:12.5px; cursor:pointer; }
+    table { width:100%; border-collapse:collapse; font-size:14px; } th, td { text-align:right; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--muted); font-size:13px; }
+    .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--navy); color:#fff; padding:10px 16px; border-radius:12px; font-weight:800; z-index:99; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <b><img src="../icons/logo-white.svg" alt="">لوحة التحكم</b>
+    <span style="display:flex;gap:16px;align-items:center"><a href="../index.html" target="_blank">فتح الموقع ↗</a><button id="logoutBtn" hidden>خروج</button></span>
+  </header>
+  <main id="root"><div class="empty"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div></main>
+
+  <template id="tplApp">
+    <!-- ===== الرئيسية ===== -->
+    <div id="home">
+      <h1>أهلًا بك في لوحة تحكم أنا عقار</h1>
+      <p class="sub">كل ما يحتاج متابعتك في مكان واحد. الأرقام الحمراء تعني أن هناك ما ينتظرك.</p>
+      <div class="stats" id="stats"></div>
+
+      <div class="group">يحتاج متابعتك</div>
+      <div class="tiles">
+        <a class="tile" href="properties.html"><span class="ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-house-circle-check"></i></span><span class="tx"><b>مراجعة العقارات</b><small>اعتماد أو رفض الإعلانات الجديدة</small></span><span class="tn" id="tnProps"></span></a>
+        <a class="tile" href="#s-chat"><span class="ic" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-comment-dots"></i></span><span class="tx"><b>الدردشة المباشرة</b><small>محادثات الزوار مع خدمة العملاء</small></span><span class="tn" id="tnChat"></span></a>
+        <a class="tile" href="service-requests.html"><span class="ic" style="background:#fef3c7;color:#92400e"><i class="fas fa-bell-concierge"></i></span><span class="tx"><b>الطلبات والاستفسارات</b><small>طلبات الخدمات والمعاينات وطلبات الملاك</small></span><span class="tn" id="tnReq"></span></a>
+        <a class="tile" href="#s-reports"><span class="ic" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-flag"></i></span><span class="tx"><b>البلاغات والشكاوى</b><small>الإعلانات المضللة والمخالفات</small></span><span class="tn" id="tnRep"></span></a>
+        <a class="tile" href="service-providers.html"><span class="ic" style="background:#ede9fe;color:#6d28d9"><i class="fas fa-screwdriver-wrench"></i></span><span class="tx"><b>دليل الخدمات</b><small>الشركات وطلبات الإدراج الجديدة</small></span><span class="tn" id="tnProv"></span></a>
+      </div>
+
+      <div class="group">محتوى الموقع</div>
+      <div class="tiles">
+        <a class="tile" href="#s-news"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-bullhorn"></i></span><span class="tx"><b>شريط الجديد</b><small>الأخبار المتحركة أعلى الموقع</small></span></a>
+        <a class="tile" href="#s-offers"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-tags"></i></span><span class="tx"><b>العروض</b><small>صفحة العروض وشاراتها على العقارات</small></span></a>
+        <a class="tile" href="#s-tips"><span class="ic" style="background:#dcfce7;color:#166534"><i class="fas fa-lightbulb"></i></span><span class="tx"><b>نصائح اليوم</b><small>نصيحة تظهر للزوار مرة كل يوم</small></span></a>
+        <a class="tile" href="#s-broadcast"><span class="ic" style="background:#e0f2fe;color:#075985"><i class="fas fa-paper-plane"></i></span><span class="tx"><b>إشعار للمستخدمين</b><small>رسالة تصل لكل الحسابات المسجّلة</small></span></a>
+        <a class="tile" href="#s-searches"><span class="ic" style="background:#f1f5f9;color:#334155"><i class="fas fa-magnifying-glass-chart"></i></span><span class="tx"><b>البحوث المحفوظة</b><small>ماذا يبحث عنه الزوار</small></span></a>
+      </div>
+
+      <div class="group">الأدلة المهنية</div>
+      <div class="tiles">
+        <a class="tile" href="brokers.html"><span class="ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-building-user"></i></span><span class="tx"><b>المكاتب العقارية</b><small>تفعيل وتعديل بيانات المكاتب</small></span></a>
+        <a class="tile" href="individual-brokers.html"><span class="ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-user-tie"></i></span><span class="tx"><b>الوسطاء الأفراد</b><small>دليل الوسطاء المرخّصين</small></span></a>
+        <a class="tile" href="developers.html"><span class="ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-city"></i></span><span class="tx"><b>المطوّرون</b><small>دليل المطوّرين العقاريين</small></span></a>
+      </div>
+    </div>
+
+    <!-- ===== شريط القسم ===== -->
+    <div class="secbar" id="secBar" hidden><a href="#" id="secBack">→ لوحة التحكم</a><b id="secTitle"></b></div>
+
+    <!-- ===== الدردشة ===== -->
+    <section data-sec="chat">
+      <div class="pills" id="chatFilter"><button class="pill on" data-f="open">المفتوحة</button><button class="pill" data-f="closed">المغلقة</button><button class="pill" data-f="all">الكل</button></div>
+      <div class="chat-wrap" id="chatWrap">
+        <div class="threads" id="threads"><div class="empty">جاري التحميل...</div></div>
+        <div class="conv" id="conv"><div class="empty" style="margin:auto;border:0">اختر محادثة من القائمة</div></div>
+      </div>
+    </section>
+
+    <!-- ===== البلاغات ===== -->
+    <section data-sec="reports">
+      <div class="pills" id="repFilter"><button class="pill on" data-f="open">الجديدة وقيد المراجعة</button><button class="pill" data-f="done">المنتهية</button><button class="pill" data-f="all">الكل</button></div>
+      <div id="repList"></div>
+    </section>
+
+    <!-- ===== شريط الجديد ===== -->
+    <section data-sec="news">
+      <div class="card"><h2 id="newsFormT">إضافة خبر للشريط</h2>
+        <form id="newsForm">
+          <input type="hidden" id="newsId">
+          <div class="fg"><label>نص الخبر (حتى 200 حرف)</label><input id="newsBody" maxlength="200" required placeholder="مثال: أول 3 أشهر مجانًا للوسطاء والمكاتب"></div>
+          <div class="grid2">
+            <div class="fg"><label>رابط عند الضغط (اختياري)</label><input id="newsUrl" dir="ltr" placeholder="offers.html أو https://..."></div>
+            <div class="fg"><label>يختفي بعد تاريخ (اختياري)</label><input id="newsEnds" type="date"></div>
+          </div>
+          <div class="grid2">
+            <div class="fg"><label>الترتيب (الأصغر أولًا)</label><input id="newsSort" type="number" value="0"></div>
+            <div class="fg"><label>الحالة</label><select id="newsActive"><option value="1">ظاهر</option><option value="0">مخفي</option></select></div>
+          </div>
+          <button class="btn teal" type="submit">حفظ</button> <button class="btn ghost" type="button" id="newsCancel" hidden>إلغاء التعديل</button>
+        </form></div>
+      <div id="newsList"></div>
+    </section>
+
+    <!-- ===== العروض ===== -->
+    <section data-sec="offers">
+      <div class="card"><h2 id="offFormT">إضافة عرض</h2>
+        <form id="offForm">
+          <input type="hidden" id="offId">
+          <div class="fg"><label>عنوان العرض</label><input id="offTitle" maxlength="120" required placeholder="مثال: خطة سداد 1% شهريًا في دبي هيلز"></div>
+          <div class="fg"><label>التفاصيل</label><textarea id="offBody" maxlength="1000"></textarea></div>
+          <div class="grid2">
+            <div class="fg"><label>الشارة على البطاقة (مثل: خصم 10%)</label><input id="offBadge" maxlength="30"></div>
+            <div class="fg"><label>ينتهي في (اختياري)</label><input id="offEnds" type="date"></div>
+          </div>
+          <div class="fg"><label>أرقام العقارات المشمولة (اختياري، افصل بفاصلة)</label><input id="offProps" dir="ltr" placeholder="sb-12, sb-15">
+            <small style="color:var(--muted)">رقم العقار يظهر في رابط صفحته بعد ?id= . تظهر شارة العرض على بطاقات هذه العقارات.</small></div>
+          <div class="grid2">
+            <div class="fg"><label>رابط صورة (اختياري)</label><input id="offImg" dir="ltr" placeholder="https://..."></div>
+            <div class="fg"><label>رابط التفاصيل (اختياري)</label><input id="offUrl" dir="ltr" placeholder="https://..."></div>
+          </div>
+          <div class="grid2">
+            <div class="fg"><label>الترتيب</label><input id="offSort" type="number" value="0"></div>
+            <div class="fg"><label>الحالة</label><select id="offActive"><option value="1">ظاهر</option><option value="0">مخفي</option></select></div>
+          </div>
+          <button class="btn teal" type="submit">حفظ</button> <button class="btn ghost" type="button" id="offCancel" hidden>إلغاء التعديل</button>
+          <a class="btn soft" href="../offers.html" target="_blank">معاينة صفحة العروض ↗</a>
+        </form></div>
+      <div id="offList"></div>
+    </section>
+
+    <!-- ===== النصائح ===== -->
+    <section data-sec="tips">
+      <div class="card"><h2 id="tipFormT">إضافة نصيحة</h2>
+        <form id="tipForm">
+          <input type="hidden" id="tipId">
+          <div class="fg"><label>النصيحة (حتى 400 حرف)</label><textarea id="tipBody" maxlength="400" required></textarea></div>
+          <div class="grid2">
+            <div class="fg"><label>الترتيب</label><input id="tipSort" type="number" value="0"></div>
+            <div class="fg"><label>الحالة</label><select id="tipActive"><option value="1">ظاهرة</option><option value="0">مخفية</option></select></div>
+          </div>
+          <button class="btn teal" type="submit">حفظ</button> <button class="btn ghost" type="button" id="tipCancel" hidden>إلغاء التعديل</button>
+        </form>
+        <p class="sub" style="margin:10px 0 0">تظهر نصيحة واحدة للزائر مرة في اليوم، بالتناوب بين النصائح الظاهرة.</p></div>
+      <div id="tipList"></div>
+    </section>
+
+    <!-- ===== الإشعار العام ===== -->
+    <section data-sec="broadcast">
+      <div class="card"><h2>إرسال إشعار لكل المستخدمين المسجّلين</h2>
+        <p class="sub">يظهر في صفحة «قوائمي» عند كل مستخدم له حساب، مع تنبيه في الموقع. استعمله للعروض المهمة والأخبار الكبيرة فقط.</p>
+        <form id="bcForm">
+          <div class="fg"><label>العنوان</label><input id="bcTitle" maxlength="160" required></div>
+          <div class="fg"><label>النص (اختياري)</label><textarea id="bcBody" maxlength="600"></textarea></div>
+          <div class="fg"><label>رابط (اختياري)</label><input id="bcUrl" dir="ltr" placeholder="offers.html"></div>
+          <button class="btn teal" type="submit"><i class="fas fa-paper-plane"></i> إرسال</button>
+        </form></div>
+    </section>
+
+    <!-- ===== البحوث المحفوظة ===== -->
+    <section data-sec="searches">
+      <div class="card"><h2>آخر البحوث المحفوظة</h2><p class="sub">تساعدك على معرفة الطلب الحقيقي: أي إمارة، وأي سعر، وبيع أم إيجار.</p><div id="srchList"></div></div>
+    </section>
+  </template>
+
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const sb = supabaseClient;
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const fmt = (t) => { try { return new Date(t).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { return ''; } };
+    const waNum = (p) => String(p || '').replace(/\D/g, '').replace(/^0/, '971');
+    const toast = (m) => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); };
+    const setupMsg = (e) => /does not exist|schema cache|relation/.test((e && e.message) || '') ? 'هذا القسم يحتاج تشغيل ملف supabase/engagement.sql أولًا.' : 'تعذّر التحميل: ' + esc(e && e.message);
+
+    // ===== الدخول =====
+    async function boot() {
+      const { data } = await sb.auth.getSession();
+      if (!data.session) return loginForm();
+      const { data: isAdmin, error } = await sb.rpc('is_app_admin');
+      $('logoutBtn').hidden = false;
+      if (error || !isAdmin) {
+        $('root').innerHTML = '<div class="gate"><h2>هذا الحساب ليس حساب إدارة</h2><p class="sub">سجّل الخروج وادخل بحساب الإدارة.</p></div>';
+        return;
+      }
+      $('root').innerHTML = ''; $('root').appendChild($('tplApp').content.cloneNode(true));
+      wire(); route(); loadStats();
+      setInterval(() => { if (!document.hidden) loadStats(); }, 30000);
+    }
+    function loginForm() {
+      $('root').innerHTML = `<form class="gate" id="lf"><h2><i class="fas fa-lock"></i> دخول الإدارة</h2>
+        <div class="fg"><label>البريد الإلكتروني</label><input id="le" type="email" dir="ltr" autocomplete="username" required></div>
+        <div class="fg"><label>كلمة المرور</label><input id="lp" type="password" dir="ltr" autocomplete="current-password" required></div>
+        <button class="btn teal" style="width:100%" type="submit">دخول</button><p class="sub" id="lmsg" style="margin:8px 0 0"></p></form>`;
+      $('lf').onsubmit = async (e) => {
+        e.preventDefault();
+        const { error } = await sb.auth.signInWithPassword({ email: $('le').value.trim(), password: $('lp').value });
+        if (error) { $('lmsg').textContent = 'بيانات الدخول غير صحيحة.'; return; }
+        boot();
+      };
+    }
+    $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+    // ===== التنقل بين الأقسام =====
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'نصائح اليوم', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة' };
+    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches() };
+    let current = '';
+    function route() {
+      const m = /^#s-(\w+)/.exec(location.hash); const k = m && TITLES[m[1]] ? m[1] : '';
+      current = k;
+      $('home').hidden = !!k; $('secBar').hidden = !k;
+      document.querySelectorAll('section[data-sec]').forEach((s) => { s.hidden = s.dataset.sec !== k; });
+      if (k) { $('secTitle').textContent = TITLES[k]; if (LOADERS[k]) LOADERS[k](); }
+      else loadStats();
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', route);
+
+    // ===== الإحصاءات =====
+    async function loadStats() {
+      const { data, error } = await sb.rpc('admin_stats');
+      const box = $('stats'); if (!box) return;
+      if (error) { box.innerHTML = `<div class="empty" style="grid-column:1/-1">${setupMsg(error)}</div>`; return; }
+      const s = data || {};
+      const cells = [['approved_properties', 'عقار منشور'], ['pending_properties', 'بانتظار المراجعة'], ['users', 'حساب مسجّل'], ['active_providers', 'شركة في الدليل'], ['saved_searches', 'بحث محفوظ'], ['active_offers', 'عرض ساري']];
+      box.innerHTML = cells.map(([k, l]) => `<div class="stat"><b>${Number(s[k] || 0).toLocaleString('en-US')}</b><span>${l}</span></div>`).join('');
+      const tn = (id, n) => { const el = $(id); if (!el) return; el.textContent = n ? n : ''; el.closest('.tile').classList.toggle('hot', !!n); };
+      tn('tnProps', s.pending_properties); tn('tnChat', s.unread_chat); tn('tnReq', (s.new_requests || 0) + (s.new_leads || 0)); tn('tnRep', s.new_reports); tn('tnProv', s.pending_providers);
+      document.title = (s.unread_chat ? `(${s.unread_chat}) ` : '') + 'لوحة التحكم | إدارة أنا عقار';
+    }
+
+    function wire() {
+      $('secBack').onclick = (e) => { e.preventDefault(); location.hash = ''; };
+      document.querySelectorAll('#chatFilter .pill').forEach((b) => b.onclick = () => { document.querySelectorAll('#chatFilter .pill').forEach((x) => x.classList.toggle('on', x === b)); chatFilter = b.dataset.f; loadThreads(); });
+      document.querySelectorAll('#repFilter .pill').forEach((b) => b.onclick = () => { document.querySelectorAll('#repFilter .pill').forEach((x) => x.classList.toggle('on', x === b)); repFilter = b.dataset.f; loadReports(); });
+      wireCrud('news'); wireCrud('offers'); wireCrud('tips');
+      $('bcForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if (!confirm('سيصل هذا الإشعار لكل المستخدمين المسجّلين. إرسال؟')) return;
+        const { data, error } = await sb.rpc('admin_broadcast', { p_title: $('bcTitle').value.trim(), p_body: $('bcBody').value.trim() || null, p_url: $('bcUrl').value.trim() || null });
+        if (error) return alert(setupMsg(error));
+        toast(`تم الإرسال إلى ${data} مستخدم`); e.target.reset();
+      };
+    }
+
+    // ===== الدردشة =====
+    let chatFilter = 'open', threads = [], openId = null, lastMsg = 0, chatTimer = null;
+    async function loadThreads() {
+      let q = sb.from('chat_threads').select('id,name,phone,email,page,status,last_at,last_preview,last_sender,unread_admin,created_at').order('last_at', { ascending: false }).limit(300);
+      if (chatFilter !== 'all') q = q.eq('status', chatFilter);
+      const { data, error } = await q;
+      if (error) { $('threads').innerHTML = `<div class="empty" style="border:0">${setupMsg(error)}</div>`; return; }
+      threads = data || [];
+      $('threads').innerHTML = threads.length ? threads.map((t) => `<button class="th ${t.id === openId ? 'on' : ''} ${t.status === 'closed' ? 'closed' : ''}" data-id="${t.id}">
+          <b><span>${esc(t.name)}</span>${t.unread_admin ? `<span class="un">${t.unread_admin}</span>` : ''}</b>
+          <small>${t.last_sender === 'admin' ? 'أنت: ' : ''}${esc(t.last_preview || '')}</small><small>${fmt(t.last_at)}</small></button>`).join('')
+        : '<div class="empty" style="border:0">لا محادثات هنا.</div>';
+      $('threads').querySelectorAll('.th').forEach((b) => b.onclick = () => openThread(b.dataset.id));
+      clearTimeout(chatTimer);
+      chatTimer = setTimeout(() => { if (current === 'chat') { loadThreads(); if (openId) pollMsgs(); } }, 6000);
+    }
+    async function openThread(id) {
+      openId = id; lastMsg = 0;
+      const t = threads.find((x) => x.id === id) || {};
+      $('chatWrap').classList.add('open');
+      $('conv').innerHTML = `<div class="conv-h"><div><button class="btn ghost sm" id="convBack" style="margin-left:6px">→</button><b>${esc(t.name)}</b>
+          <div class="meta">${t.phone ? `<a href="tel:${esc(t.phone)}" dir="ltr"><i class="fas fa-phone"></i> ${esc(t.phone)}</a><a href="https://wa.me/${waNum(t.phone)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+          ${t.email ? `<a href="mailto:${esc(t.email)}" dir="ltr">${esc(t.email)}</a>` : ''}<span style="color:var(--muted)">بدأت ${fmt(t.created_at)}${t.page ? ' · من ' + esc(t.page) : ''}</span></div></div>
+          <button class="btn ${t.status === 'closed' ? 'soft' : 'ghost'} sm" id="convToggle">${t.status === 'closed' ? 'إعادة فتح' : 'إغلاق المحادثة'}</button></div>
+        <div class="msgs" id="msgs"></div>
+        <div class="quick">${['أهلًا بك في أنا عقار، كيف نقدر نساعدك؟', 'شكرًا لتواصلك، سنرسل لك الخيارات المناسبة قريبًا.', 'هل تفضّل أن نتواصل معك على واتساب؟', 'تم، أي خدمة أخرى؟'].map((q) => `<button type="button">${esc(q)}</button>`).join('')}</div>
+        <form class="composer" id="composer"><textarea id="reply" rows="1" maxlength="2000" placeholder="اكتب ردك..."></textarea><button class="btn teal" type="submit"><i class="fas fa-paper-plane"></i></button></form>`;
+      $('convBack').onclick = () => { $('chatWrap').classList.remove('open'); openId = null; };
+      $('convToggle').onclick = async () => { await sb.from('chat_threads').update({ status: t.status === 'closed' ? 'open' : 'closed' }).eq('id', id); t.status = t.status === 'closed' ? 'open' : 'closed'; loadThreads(); openThread(id); };
+      document.querySelectorAll('.quick button').forEach((b) => b.onclick = () => { $('reply').value = b.textContent; $('reply').focus(); });
+      $('reply').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('composer').requestSubmit(); } });
+      $('composer').onsubmit = async (e) => {
+        e.preventDefault();
+        const body = $('reply').value.trim(); if (!body) return;
+        const { error } = await sb.from('chat_messages').insert({ thread_id: id, sender: 'admin', body });
+        if (error) return alert('تعذّر الإرسال: ' + error.message);
+        $('reply').value = ''; pollMsgs(); loadThreads();
+      };
+      await pollMsgs();
+      await sb.from('chat_threads').update({ unread_admin: 0 }).eq('id', id);
+      loadThreads(); loadStats();
+    }
+    async function pollMsgs() {
+      if (!openId) return;
+      const { data } = await sb.from('chat_messages').select('id,sender,body,created_at').eq('thread_id', openId).gt('id', lastMsg).order('id').limit(500);
+      const box = $('msgs'); if (!box || !data) return;
+      data.forEach((m) => { lastMsg = Math.max(lastMsg, m.id); box.insertAdjacentHTML('beforeend', `<div class="m ${m.sender}">${esc(m.body)}<small>${fmt(m.created_at)}</small></div>`); });
+      if (data.length) { box.scrollTop = box.scrollHeight; if (data.some((m) => m.sender === 'user')) sb.from('chat_threads').update({ unread_admin: 0 }).eq('id', openId).then(() => {}); }
+    }
+
+    // ===== البلاغات =====
+    let repFilter = 'open';
+    const KINDS = { listing: 'إعلان عقار', broker: 'وسيط أو مكتب', company: 'شركة خدمات', site: 'مشكلة في الموقع', other: 'أخرى' };
+    const RST = { new: 'جديد', reviewing: 'قيد المراجعة', done: 'منتهٍ' };
+    async function loadReports() {
+      let q = sb.from('reports').select('*').order('created_at', { ascending: false }).limit(300);
+      if (repFilter === 'open') q = q.in('status', ['new', 'reviewing']); else if (repFilter === 'done') q = q.eq('status', 'done');
+      const { data, error } = await q;
+      const box = $('repList');
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      if (!data.length) { box.innerHTML = '<div class="empty">لا بلاغات هنا.</div>'; return; }
+      const safe = (u) => /^(https?:\/\/|[a-z0-9_\-]+\.html)/i.test(u || '') ? u : '';
+      box.innerHTML = data.map((r) => `<div class="card">
+        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b><i class="fas fa-flag" style="color:var(--red)"></i> ${esc(KINDS[r.kind] || r.kind)}${r.target ? ' — ' + esc(r.target) : ''}</b>
+          <span><span class="badge ${r.status}">${RST[r.status]}</span> <small style="color:var(--muted)">${fmt(r.created_at)}</small></span></div>
+        <div class="details">${esc(r.details)}</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:14px">${r.name ? `<span><i class="fas fa-user"></i> ${esc(r.name)}</span>` : ''}${r.phone ? `<a href="tel:${esc(r.phone)}" dir="ltr">${esc(r.phone)}</a><a href="https://wa.me/${waNum(r.phone)}" target="_blank" rel="noopener">واتساب</a>` : ''}${r.email ? `<a href="mailto:${esc(r.email)}" dir="ltr">${esc(r.email)}</a>` : ''}${safe(r.target_url) ? `<a href="../${esc(safe(r.target_url))}" target="_blank">فتح المعني بالبلاغ ↗</a>` : ''}</div>
+        <div class="fg" style="margin-top:8px"><label>ملاحظة الإدارة (لا تظهر لأحد)</label><input data-note="${r.id}" value="${esc(r.admin_note || '')}"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${['new', 'reviewing', 'done'].filter((s) => s !== r.status).map((s) => `<button class="btn sm ${s === 'done' ? 'teal' : 'ghost'}" data-st="${s}" data-id="${r.id}">${s === 'done' ? 'تم التعامل معه' : s === 'reviewing' ? 'قيد المراجعة' : 'إعادة كجديد'}</button>`).join('')}
+          <button class="btn sm red" data-del="${r.id}">حذف</button></div></div>`).join('');
+      box.querySelectorAll('[data-st]').forEach((b) => b.onclick = async () => { await sb.from('reports').update({ status: b.dataset.st }).eq('id', b.dataset.id); loadReports(); });
+      box.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف البلاغ نهائيًا؟')) return; await sb.from('reports').delete().eq('id', b.dataset.del); loadReports(); });
+      box.querySelectorAll('[data-note]').forEach((i) => i.onchange = async () => { await sb.from('reports').update({ admin_note: i.value.trim() || null }).eq('id', i.dataset.note); toast('حُفظت الملاحظة'); });
+    }
+
+    // ===== الشريط والعروض والنصائح (إضافة وتعديل وحذف) =====
+    const CRUD = {
+      news: { table: 'site_news', p: 'news', list: 'newsList', ftitle: 'newsFormT', label: 'خبر',
+        read: () => ({ body: $('newsBody').value.trim(), url: $('newsUrl').value.trim() || null, ends_on: $('newsEnds').value || null, sort: +$('newsSort').value || 0, is_active: $('newsActive').value === '1' }),
+        fill: (r) => { $('newsBody').value = r.body; $('newsUrl').value = r.url || ''; $('newsEnds').value = r.ends_on || ''; $('newsSort').value = r.sort; $('newsActive').value = r.is_active ? '1' : '0'; },
+        row: (r) => `<b>${esc(r.body)}</b><small>${r.url ? esc(r.url) + ' · ' : ''}${r.ends_on ? 'حتى ' + esc(r.ends_on) : 'بلا تاريخ انتهاء'} · ترتيب ${r.sort}</small>` },
+      offers: { table: 'site_offers', p: 'off', list: 'offList', ftitle: 'offFormT', label: 'عرض',
+        read: () => ({ title: $('offTitle').value.trim(), body: $('offBody').value.trim() || null, badge: $('offBadge').value.trim() || null, ends_on: $('offEnds').value || null,
+          property_ids: $('offProps').value.split(/[,،\s]+/).map((x) => x.trim()).filter(Boolean), image_url: $('offImg').value.trim() || null, url: $('offUrl').value.trim() || null, sort: +$('offSort').value || 0, is_active: $('offActive').value === '1' }),
+        fill: (r) => { $('offTitle').value = r.title; $('offBody').value = r.body || ''; $('offBadge').value = r.badge || ''; $('offEnds').value = r.ends_on || ''; $('offProps').value = (r.property_ids || []).join(', '); $('offImg').value = r.image_url || ''; $('offUrl').value = r.url || ''; $('offSort').value = r.sort; $('offActive').value = r.is_active ? '1' : '0'; },
+        row: (r) => `<b>${r.badge ? `<span class="badge new">${esc(r.badge)}</span> ` : ''}${esc(r.title)}</b><small>${r.ends_on ? 'ينتهي ' + esc(r.ends_on) : 'بلا تاريخ انتهاء'}${(r.property_ids || []).length ? ' · العقارات: ' + esc(r.property_ids.join('، ')) : ''}</small>` },
+      tips: { table: 'daily_tips', p: 'tip', list: 'tipList', ftitle: 'tipFormT', label: 'نصيحة',
+        read: () => ({ body: $('tipBody').value.trim(), sort: +$('tipSort').value || 0, is_active: $('tipActive').value === '1' }),
+        fill: (r) => { $('tipBody').value = r.body; $('tipSort').value = r.sort; $('tipActive').value = r.is_active ? '1' : '0'; },
+        row: (r) => `<b style="font-weight:600">${esc(r.body)}</b><small>ترتيب ${r.sort}</small>` }
+    };
+    const rows = {};
+    function wireCrud(k) {
+      const c = CRUD[k];
+      const form = $(c.p + 'Form'), idEl = $(c.p + 'Id'), cancel = $(c.p + 'Cancel');
+      const reset = () => { form.reset(); idEl.value = ''; cancel.hidden = true; $(c.ftitle).textContent = 'إضافة ' + c.label; };
+      cancel.onclick = reset;
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const v = c.read(), id = idEl.value;
+        const { error } = id ? await sb.from(c.table).update(v).eq('id', id) : await sb.from(c.table).insert(v);
+        if (error) return alert(setupMsg(error));
+        toast(id ? 'تم التعديل' : 'تمت الإضافة'); reset(); loadList(k); sessionStorage.removeItem('aqe_pub');
+      };
+      c.reset = reset;
+    }
+    async function loadList(k) {
+      const c = CRUD[k];
+      const { data, error } = await sb.from(c.table).select('*').order('sort').order('created_at', { ascending: false });
+      const box = $(c.list);
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      rows[k] = data || [];
+      const today = new Date().toISOString().slice(0, 10);
+      box.innerHTML = rows[k].length ? rows[k].map((r) => {
+        const expired = r.ends_on && r.ends_on < today;
+        return `<div class="item ${r.is_active && !expired ? '' : 'off'}"><div class="tx">${c.row(r)}${expired ? '<small style="color:var(--red)">انتهت مدته</small>' : ''}</div>
+          <div class="acts"><button class="btn sm ghost" data-ed="${r.id}">تعديل</button><button class="btn sm soft" data-tg="${r.id}">${r.is_active ? 'إخفاء' : 'إظهار'}</button><button class="btn sm red" data-del="${r.id}">حذف</button></div></div>`;
+      }).join('') : '<div class="empty">لا شيء بعد. أضف أول ' + c.label + ' من النموذج أعلاه.</div>';
+      box.querySelectorAll('[data-ed]').forEach((b) => b.onclick = () => { const r = rows[k].find((x) => String(x.id) === b.dataset.ed); c.fill(r); $(c.p + 'Id').value = r.id; $(c.p + 'Cancel').hidden = false; $(c.ftitle).textContent = 'تعديل ' + c.label; window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      box.querySelectorAll('[data-tg]').forEach((b) => b.onclick = async () => { const r = rows[k].find((x) => String(x.id) === b.dataset.tg); await sb.from(c.table).update({ is_active: !r.is_active }).eq('id', r.id); loadList(k); sessionStorage.removeItem('aqe_pub'); });
+      box.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف نهائيًا؟')) return; await sb.from(c.table).delete().eq('id', b.dataset.del); loadList(k); sessionStorage.removeItem('aqe_pub'); });
+    }
+
+    // ===== البحوث المحفوظة =====
+    async function loadSearches() {
+      const { data, error } = await sb.from('saved_searches').select('name,criteria,notify,created_at').order('created_at', { ascending: false }).limit(200);
+      const box = $('srchList');
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      if (!data.length) { box.innerHTML = '<div class="empty">لا بحوث محفوظة بعد.</div>'; return; }
+      const cities = {}; data.forEach((s) => { const c = (s.criteria || {}).city || 'كل الإمارات'; cities[c] = (cities[c] || 0) + 1; });
+      box.innerHTML = `<p><b>الأكثر طلبًا:</b> ${Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([c, n]) => `${esc(c)} (${n})`).join(' · ')}</p>
+        <div style="overflow-x:auto"><table><tr><th>البحث</th><th>النوع</th><th>الإمارة</th><th>أقصى سعر</th><th>التاريخ</th></tr>
+        ${data.map((s) => { const c = s.criteria || {}; return `<tr><td>${esc(s.name)}</td><td>${c.deal === 'rent' ? 'إيجار' : c.deal === 'sale' ? 'شراء' : esc(c.tab || '—')}</td><td>${esc(c.city || '—')}</td><td>${c.max_price ? Number(c.max_price).toLocaleString('en-US') : '—'}</td><td>${fmt(s.created_at)}</td></tr>`; }).join('')}</table></div>`;
+    }
+
+    boot();
+  })();
+  </script>
+</body>
+</html>

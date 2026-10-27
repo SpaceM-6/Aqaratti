@@ -42,7 +42,7 @@
   </style>
 </head>
 <body>
-  <header><b>أنا عقار — الإدارة</b><span style="display:flex;gap:14px;flex-wrap:wrap"><a href="properties.html">مراجعة العقارات</a><a href="service-providers.html">دليل الخدمات</a><a href="../index.html">العودة للموقع ←</a></span></header>
+  <header><b>أنا عقار — الإدارة</b><span style="display:flex;gap:14px;flex-wrap:wrap"><a href="index.html" style="font-weight:900">← لوحة التحكم</a><a href="properties.html">مراجعة العقارات</a><a href="service-providers.html">دليل الخدمات</a><a href="../index.html">العودة للموقع ←</a></span></header>
   <main id="appRoot">
     <h1>الطلبات والاستفسارات</h1>
     <div class="filters" id="kindTabs" style="margin-bottom:8px;">
@@ -140,7 +140,7 @@
     (async function init() {
       const user = await getCurrentAnaAqarUser();
       if (!user) {
-        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>يجب تسجيل الدخول بحساب الإدارة.<br><a href="../index.html" style="color:var(--teal)">العودة للصفحة الرئيسية لتسجيل الدخول</a></div>`;
+        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>يجب تسجيل الدخول بحساب الإدارة.<br><a href="index.html" style="color:var(--teal)">تسجيل الدخول من لوحة التحكم</a></div>`;
         return;
       }
       load();

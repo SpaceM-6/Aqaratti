@@ -63,6 +63,7 @@
       <a href="service-requests.html">الطلبات والاستفسارات</a>
       <a href="service-providers.html">دليل الخدمات</a>
       <a href="individual-brokers.html">الوسطاء</a>
+      <a href="index.html" style="font-weight:900">← لوحة التحكم</a>
       <a href="../index.html">العودة للموقع ←</a>
     </nav>
   </header>
@@ -236,7 +237,7 @@
         isAdmin = data === true;
       }
       if (!isAdmin) {
-        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>${user ? 'هذه الصفحة لحساب الإدارة فقط.' : 'يجب تسجيل الدخول بحساب الإدارة.'}<br><a href="../index.html" style="color:var(--teal)">العودة للصفحة الرئيسية</a></div>`;
+        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>${user ? 'هذه الصفحة لحساب الإدارة فقط.' : 'يجب تسجيل الدخول بحساب الإدارة.'}<br><a href="index.html" style="color:var(--teal)">تسجيل الدخول من لوحة التحكم</a></div>`;
         return;
       }
       loadStats();

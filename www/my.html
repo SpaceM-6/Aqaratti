@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قوائمي | أنا عقار AnaAqar</title>
+  <meta name="description" content="المفضلة والبحوث المحفوظة والإشعارات في أنا عقار.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <section class="head"><div class="head-in">
+    <h1><i class="fas fa-bookmark"></i> قوائمي</h1>
+    <p>العقارات التي أعجبتك مع ملاحظاتك عليها، وبحوثك المحفوظة، وإشعاراتك في مكان واحد.</p>
+  </div></section>
+  <main>
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-t="favs" role="tab"><i class="fas fa-heart"></i> المفضلة <span class="n" id="nFavs"></span></button>
+      <button class="tab" data-t="searches" role="tab"><i class="fas fa-bell"></i> البحوث المحفوظة <span class="n" id="nSearches"></span></button>
+      <button class="tab" data-t="notifications" role="tab"><i class="fas fa-inbox"></i> الإشعارات <span class="n" id="nNotifs"></span></button>
+    </div>
+    <section id="p-favs"><div class="grid"><div class="skel"></div><div class="skel"></div></div></section>
+    <section id="p-searches" hidden></section>
+    <section id="p-notifications" hidden></section>
+  </main>
+  <script src="currency.js"></script>
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const LS = { get: (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+      const price = (n) => (typeof formatPriceAED === 'function' ? formatPriceAED(n || 0) : 'AED ' + Number(n || 0).toLocaleString('en-US'));
+      const notes = { get: (id) => (LS.get('aq_notes', {}) || {})[id] || '', set: (id, t) => { const n = LS.get('aq_notes', {}) || {}; if (t) n[id] = t.slice(0, 1000); else delete n[id]; LS.set('aq_notes', n); } };
+      let user = null;
+
+      // ===== التبويبات =====
+      function show(t) {
+        document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('on', b.dataset.t === t));
+        ['favs', 'searches', 'notifications'].forEach((k) => { $('p-' + k).hidden = k !== t; });
+        if (location.hash !== '#' + t) history.replaceState(null, '', '#' + t);
+      }
+      document.querySelectorAll('.tab').forEach((b) => b.onclick = () => show(b.dataset.t));
+
+      // ===== المفضلة =====
+      async function allProperties(ids) {
+        const out = {};
+        try {
+          if (await aqDemoListingsVisible()) {
+            const list = await fetch('properties.json').then((r) => r.json()).catch(() => []);
+            list.forEach((p) => { if (ids.includes(String(p.id))) out[p.id] = p; });
+          }
+        } catch (e) {}
+        if (ids.some((id) => String(id).startsWith('sb-'))) {
+          try { (await fetchApprovedSupabaseProperties()).forEach((p) => { if (ids.includes(String(p.id))) out[p.id] = p; }); } catch (e) {}
+        }
+        return out;
+      }
+      async function renderFavs() {
+        let ids = LS.get('anaaqar_favorites', []).map(String);
+        if (user) { try { const remote = await fetchSupabaseFavoriteIds(); ids = Array.from(new Set([...(remote || []).map(String), ...ids])); LS.set('anaaqar_favorites', ids); } catch (e) {} }
+        $('nFavs').textContent = ids.length ? `(${ids.length})` : '';
+        const box = $('p-favs');
+        if (!ids.length) { box.innerHTML = '<div class="empty"><i class="fas fa-heart"></i><h2>لا شيء في المفضلة بعد</h2><p>اضغط على ❤ في أي عقار ليظهر هنا، وأضف عليه ملاحظاتك.</p><a class="btn btn-teal" href="index.html#search">تصفّح العقارات</a></div>'; return; }
+        const props = await allProperties(ids);
+        box.innerHTML = '<div class="grid">' + ids.map((id) => {
+          const p = props[id];
+          if (!p) return `<article class="card"><div class="in"><h3>عقار لم يعد متاحًا</h3><p>ربما بيع أو أُوقف إعلانه.</p><div class="acts"><button class="btn btn-red sm" data-rm="${esc(id)}"><i class="fas fa-trash"></i> إزالة</button></div></div></article>`;
+          const img = (p.imagesList && p.imagesList[0]) || (p.images && p.images[0]) || p.image || '';
+          return `<article class="card">
+            <a class="img" href="property-details.html?id=${encodeURIComponent(id)}" style="background-image:url('${esc(img)}')" aria-label="${esc(p.title)}"><span class="bdg" style="background:${p.dealType === 'rent' ? '#2563eb' : '#00a896'}">${p.dealType === 'rent' ? 'للإيجار' : 'للبيع'}</span></a>
+            <div class="in">
+              <div class="price">${esc(price(p.priceAED || p.price))}</div>
+              <h3>${esc(p.title)}</h3>
+              ${p.city ? `<div class="meta"><i class="fas fa-location-dot"></i> ${esc(p.city)}</div>` : ''}
+              <textarea class="note" data-note="${esc(id)}" rows="2" maxlength="1000" placeholder="ملاحظتك الخاصة: مثل «زرته، الإطلالة ممتازة»">${esc(notes.get(id))}</textarea>
+              <div class="acts">
+                <a class="btn btn-teal sm" href="property-details.html?id=${encodeURIComponent(id)}"><i class="fas fa-arrow-left"></i> التفاصيل</a>
+                <button class="btn btn-red sm" data-rm="${esc(id)}"><i class="fas fa-trash"></i> إزالة</button>
+              </div>
+            </div>
+          </article>`;
+        }).join('') + '</div><p class="hint" style="margin-top:12px"><i class="fas fa-lock"></i> ملاحظاتك محفوظة على جهازك فقط، ولا يراها أحد غيرك.</p>';
+        box.querySelectorAll('[data-note]').forEach((t) => { let tm; t.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(() => notes.set(t.dataset.note, t.value.trim()), 400); }); });
+        box.querySelectorAll('[data-rm]').forEach((b) => b.onclick = async () => {
+          const id = b.dataset.rm;
+          LS.set('anaaqar_favorites', LS.get('anaaqar_favorites', []).map(String).filter((x) => x !== id));
+          if (user) { try { await removeSupabaseFavorite(id); } catch (e) {} }
+          renderFavs();
+        });
+      }
+
+      // ===== البحوث المحفوظة =====
+      const critText = (c) => (window.AQEngage ? AQEngage.criteriaName(c || {}) : '');
+      const runUrl = (c) => (window.AQEngage ? AQEngage.searchUrl(c || {}) : 'index.html');
+      async function renderSearches() {
+        const box = $('p-searches');
+        let local = LS.get('aq_saved_searches', []);
+        let remote = [];
+        if (user) { const r = await supabaseClient.from('saved_searches').select('*').order('created_at', { ascending: false }); remote = r.error ? [] : r.data; }
+        const remoteKeys = new Set(remote.map((x) => JSON.stringify(x.criteria)));
+        local = local.filter((x) => !remoteKeys.has(JSON.stringify(x.criteria)));
+        const all = [...remote.map((x) => ({ ...x, server: true })), ...local];
+        $('nSearches').textContent = all.length ? `(${all.length})` : '';
+        if (!all.length) { box.innerHTML = '<div class="empty"><i class="fas fa-bell"></i><h2>لا بحوث محفوظة بعد</h2><p>ابحث في الصفحة الرئيسية ثم اضغط «احفظ هذا البحث» لنبلغك عند نزول عقار مطابق.</p><a class="btn btn-teal" href="index.html#search">ابدأ البحث</a></div>'; return; }
+        box.innerHTML = (user ? '' : '<div class="row" style="background:var(--teal-soft);border-color:var(--teal)"><div class="ic"><i class="fas fa-circle-info"></i></div><div class="tx"><b>سجّل الدخول لتصلك التنبيهات</b><span class="hint">البحوث محفوظة على جهازك. بعد تسجيل الدخول ننبّهك تلقائيًا عند نزول عقار يطابقها.</span><div class="acts"><a class="btn btn-teal sm" href="index.html">تسجيل الدخول</a></div></div></div>') +
+          all.map((s) => `<div class="row">
+            <div class="ic"><i class="fas fa-magnifying-glass"></i></div>
+            <div class="tx"><b>${esc(s.name || critText(s.criteria))}</b>
+              <span class="hint">${s.server ? (s.notify ? '<i class="fas fa-bell" style="color:var(--teal)"></i> التنبيهات مفعّلة' : '<i class="fas fa-bell-slash"></i> التنبيهات متوقفة') : 'محفوظ على هذا الجهاز'}</span>
+              <div class="acts">
+                <a class="btn btn-teal sm" href="${esc(runUrl(s.criteria))}"><i class="fas fa-play"></i> اعرض النتائج</a>
+                ${s.server ? `<button class="btn btn-soft sm" data-tg="${esc(s.id)}" data-v="${s.notify ? '0' : '1'}">${s.notify ? 'إيقاف التنبيهات' : 'تفعيل التنبيهات'}</button>` : ''}
+                <button class="btn btn-red sm" data-del="${esc(s.id)}" data-srv="${s.server ? 1 : 0}"><i class="fas fa-trash"></i> حذف</button>
+              </div></div></div>`).join('');
+        box.querySelectorAll('[data-tg]').forEach((b) => b.onclick = async () => { await supabaseClient.from('saved_searches').update({ notify: b.dataset.v === '1' }).eq('id', b.dataset.tg); renderSearches(); });
+        box.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => {
+          if (b.dataset.srv === '1') await supabaseClient.from('saved_searches').delete().eq('id', b.dataset.del);
+          else LS.set('aq_saved_searches', LS.get('aq_saved_searches', []).filter((x) => x.id !== b.dataset.del));
+          renderSearches();
+        });
+        // نقل البحوث المحلية إلى الحساب بعد تسجيل الدخول لتعمل التنبيهات
+        if (user && local.length) {
+          const { error } = await supabaseClient.from('saved_searches').insert(local.map((x) => ({ name: x.name || critText(x.criteria), criteria: x.criteria })));
+          if (!error) { LS.set('aq_saved_searches', []); renderSearches(); }
+        }
+      }
+
+      // ===== الإشعارات =====
+      async function renderNotifs() {
+        const box = $('p-notifications');
+        if (!user) { box.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i><h2>سجّل الدخول لرؤية إشعاراتك</h2><p>تصلك هنا تنبيهات العقارات المطابقة لبحوثك، وأخبار العروض الجديدة.</p><a class="btn btn-teal" href="index.html">تسجيل الدخول</a></div>'; return; }
+        const r = await supabaseClient.from('user_notifications').select('*').order('id', { ascending: false }).limit(100);
+        const list = r.error ? [] : r.data;
+        const unread = list.filter((x) => !x.read_at).length;
+        $('nNotifs').textContent = unread ? `(${unread})` : '';
+        if (!list.length) { box.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i><h2>لا إشعارات بعد</h2><p>احفظ بحثًا لنبلغك عند نزول عقار مطابق.</p></div>'; return; }
+        const safe = (u) => /^(https?:\/\/|[a-z0-9_\-]+\.html)/i.test(u || '') ? u : '';
+        box.innerHTML = (unread ? '<div class="acts" style="margin-bottom:10px"><button class="btn btn-soft sm" id="readAll"><i class="fas fa-check-double"></i> تعليم الكل كمقروء</button></div>' : '') +
+          list.map((n) => `<div class="row ${n.read_at ? '' : 'unread'}">
+            <div class="ic"><i class="fas ${n.kind === 'match' ? 'fa-house-circle-check' : 'fa-bullhorn'}"></i></div>
+            <div class="tx"><b>${esc(n.title)}</b>${n.body ? `<span class="hint">${esc(n.body)}</span>` : ''}
+              <div class="meta">${new Date(n.created_at).toLocaleString('ar-EG')}</div>
+              ${safe(n.url) ? `<div class="acts"><a class="btn btn-teal sm" data-open="${n.id}" href="${esc(safe(n.url))}">فتح</a></div>` : ''}</div></div>`).join('');
+        const rb = $('readAll');
+        if (rb) rb.onclick = async () => { await supabaseClient.from('user_notifications').update({ read_at: new Date().toISOString() }).is('read_at', null); renderNotifs(); window.AQEngage && AQEngage.refreshNotifications(); };
+        box.querySelectorAll('[data-open]').forEach((a) => a.addEventListener('click', () => { supabaseClient.from('user_notifications').update({ read_at: new Date().toISOString() }).eq('id', a.dataset.open).then(() => {}); }));
+      }
+
+      (async function init() {
+        try { user = await getCurrentAnaAqarUser(); } catch (e) { user = null; }
+        const h = (location.hash || '').replace('#', '');
+        show(['favs', 'searches', 'notifications'].includes(h) ? h : 'favs');
+        renderFavs(); renderSearches(); renderNotifs();
+      })();
+    })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>
