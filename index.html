@@ -1742,6 +1742,7 @@
     .aq-dr-label { font-size: 11px; font-weight: 900; color: #94a3b8; padding: 14px 10px 6px; }
     .aq-dr-body a, .aq-dr-body button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 10px; border: 0; background: none; border-radius: 12px; color: #0f172a; font-family: inherit; font-size: 14.5px; font-weight: 800; text-decoration: none; text-align: right; cursor: pointer; }
     .aq-dr-body a:hover, .aq-dr-body button:hover, .aq-dr-body a:active { background: #f0fdfa; }
+    .aq-dr-body [hidden] { display: none !important; }
     .aq-dr-body i { width: 22px; text-align: center; color: var(--primary-turquoise); font-size: 16px; }
     .aq-dr-body .aq-dr-hl { background: #fff7e0; color: #7c5a00; }
     .aq-dr-body .aq-dr-hl i { color: #b8860b; }
@@ -2368,7 +2369,7 @@
       <div class="aq-dr-label">للوسطاء والمطورين</div>
       <a href="sell-or-rent.html" class="aq-dr-hl"><i class="fas fa-circle-plus"></i> أضف عقارك</a>
       <a href="claim-profile.html"><i class="fas fa-user-check"></i> فعّل ملفك كوسيط</a>
-      <a href="dashboard.html"><i class="fas fa-gauge"></i> لوحة التحكم</a>
+      <a href="admin/index.html" data-admin-only hidden><i class="fas fa-gauge"></i> لوحة التحكم</a>
 
       <div class="aq-dr-label">المساعدة</div>
       <a href="javascript:void(0)" data-open-chat><i class="fas fa-comment-dots"></i> تحدث معنا الآن</a>

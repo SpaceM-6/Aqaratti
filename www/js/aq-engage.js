@@ -406,6 +406,16 @@
     }, function () { return 0; });
   }
 
+  // روابط الإدارة (مثل «لوحة التحكم») مخفية للجميع، وتظهر لحساب الإدارة فقط
+  function showAdminLinks(u) {
+    var links = document.querySelectorAll('[data-admin-only]'), c = sb();
+    links.forEach(function (el) { el.hidden = true; });
+    if (!u || !c || !links.length) return;
+    c.rpc('is_app_admin').then(function (r) {
+      if (!r.error && r.data === true) links.forEach(function (el) { el.hidden = false; });
+    }, function () {});
+  }
+
   // ===================== حفظ البحث =====================
   function currentCriteria() {
     var val = function (id) { var el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
@@ -493,7 +503,8 @@
     runSearchFromUrl();
     setTimeout(checkUnread, 1500);
     setInterval(checkUnread, 45000);
-    getUser().then(unreadNotifications);
+    getUser().then(function (u) { unreadNotifications(); showAdminLinks(u); });
+    try { sb() && sb().auth.onAuthStateChange(function (_e, session) { user = (session && session.user) || null; showAdminLinks(user); }); } catch (e) {}
     setInterval(function () { if (!document.hidden) unreadNotifications(); }, 120000);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
