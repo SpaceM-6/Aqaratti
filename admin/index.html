@@ -119,7 +119,7 @@
       <div class="tiles">
         <a class="tile" href="#s-news"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-bullhorn"></i></span><span class="tx"><b>شريط الجديد</b><small>الأخبار المتحركة أعلى الموقع</small></span></a>
         <a class="tile" href="#s-offers"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-tags"></i></span><span class="tx"><b>العروض</b><small>صفحة العروض وشاراتها على العقارات</small></span></a>
-        <a class="tile" href="#s-tips"><span class="ic" style="background:#dcfce7;color:#166534"><i class="fas fa-lightbulb"></i></span><span class="tx"><b>نصائح اليوم</b><small>نصيحة تظهر للزوار مرة كل يوم</small></span></a>
+        <a class="tile" href="#s-tips"><span class="ic" style="background:#dcfce7;color:#166534"><i class="fas fa-bell"></i></span><span class="tx"><b>التنبيهات اليومية</b><small>تنبيه يظهر للزوار مرة كل يوم</small></span></a>
         <a class="tile" href="#s-broadcast"><span class="ic" style="background:#e0f2fe;color:#075985"><i class="fas fa-paper-plane"></i></span><span class="tx"><b>إشعار للمستخدمين</b><small>رسالة تصل لكل الحسابات المسجّلة</small></span></a>
         <a class="tile" href="#s-searches"><span class="ic" style="background:#f1f5f9;color:#334155"><i class="fas fa-magnifying-glass-chart"></i></span><span class="tx"><b>البحوث المحفوظة</b><small>ماذا يبحث عنه الزوار</small></span></a>
       </div>
@@ -198,17 +198,17 @@
 
     <!-- ===== النصائح ===== -->
     <section data-sec="tips">
-      <div class="card"><h2 id="tipFormT">إضافة نصيحة</h2>
+      <div class="card"><h2 id="tipFormT">إضافة تنبيه</h2>
         <form id="tipForm">
           <input type="hidden" id="tipId">
-          <div class="fg"><label>النصيحة (حتى 400 حرف)</label><textarea id="tipBody" maxlength="400" required></textarea></div>
+          <div class="fg"><label>نص التنبيه (حتى 400 حرف)</label><textarea id="tipBody" maxlength="400" required></textarea></div>
           <div class="grid2">
             <div class="fg"><label>الترتيب</label><input id="tipSort" type="number" value="0"></div>
             <div class="fg"><label>الحالة</label><select id="tipActive"><option value="1">ظاهرة</option><option value="0">مخفية</option></select></div>
           </div>
           <button class="btn teal" type="submit">حفظ</button> <button class="btn ghost" type="button" id="tipCancel" hidden>إلغاء التعديل</button>
         </form>
-        <p class="sub" style="margin:10px 0 0">تظهر نصيحة واحدة للزائر مرة في اليوم، بالتناوب بين النصائح الظاهرة.</p></div>
+        <p class="sub" style="margin:10px 0 0">يظهر تنبيه واحد للزائر مرة في اليوم بعنوان «تنبيه»، بالتناوب بين التنبيهات الظاهرة.</p></div>
       <div id="tipList"></div>
     </section>
 
@@ -269,7 +269,7 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'نصائح اليوم', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة' };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة' };
     const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches() };
     let current = '';
     function route() {
@@ -396,7 +396,7 @@
           property_ids: $('offProps').value.split(/[,،\s]+/).map((x) => x.trim()).filter(Boolean), image_url: $('offImg').value.trim() || null, url: $('offUrl').value.trim() || null, sort: +$('offSort').value || 0, is_active: $('offActive').value === '1' }),
         fill: (r) => { $('offTitle').value = r.title; $('offBody').value = r.body || ''; $('offBadge').value = r.badge || ''; $('offEnds').value = r.ends_on || ''; $('offProps').value = (r.property_ids || []).join(', '); $('offImg').value = r.image_url || ''; $('offUrl').value = r.url || ''; $('offSort').value = r.sort; $('offActive').value = r.is_active ? '1' : '0'; },
         row: (r) => `<b>${r.badge ? `<span class="badge new">${esc(r.badge)}</span> ` : ''}${esc(r.title)}</b><small>${r.ends_on ? 'ينتهي ' + esc(r.ends_on) : 'بلا تاريخ انتهاء'}${(r.property_ids || []).length ? ' · العقارات: ' + esc(r.property_ids.join('، ')) : ''}</small>` },
-      tips: { table: 'daily_tips', p: 'tip', list: 'tipList', ftitle: 'tipFormT', label: 'نصيحة',
+      tips: { table: 'daily_tips', p: 'tip', list: 'tipList', ftitle: 'tipFormT', label: 'تنبيه',
         read: () => ({ body: $('tipBody').value.trim(), sort: +$('tipSort').value || 0, is_active: $('tipActive').value === '1' }),
         fill: (r) => { $('tipBody').value = r.body; $('tipSort').value = r.sort; $('tipActive').value = r.is_active ? '1' : '0'; },
         row: (r) => `<b style="font-weight:600">${esc(r.body)}</b><small>ترتيب ${r.sort}</small>` }

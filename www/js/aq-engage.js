@@ -1,4 +1,4 @@
-// مزايا التفاعل في أنا عقار: شريط الجديد، شارات العروض، نصيحة اليوم، الترحيب أول مرة،
+// مزايا التفاعل في أنا عقار: شريط الجديد، شارات العروض، التنبيه اليومي، الترحيب أول مرة،
 // الدردشة المباشرة مع خدمة العملاء، إشعارات المستخدم، حفظ البحث، وملاحظات العقارات.
 // يعتمد على supabaseClient من supabase-client.js، ويعمل بأمان إن لم تُفعَّل الجداول بعد.
 (function () {
@@ -165,7 +165,7 @@
     });
   }
 
-  // ===================== نصيحة اليوم =====================
+  // ===================== التنبيه اليومي =====================
   function dailyTip() {
     if (!isIndex || LS.get('aqe_tip_day', '') === today() || SS.get('aqe_welcomed_now')) return;
     loadPublic().then(function (d) {
@@ -175,7 +175,7 @@
       setTimeout(function () {
         var el = document.createElement('div');
         el.className = 'aqe-tip'; el.setAttribute('role', 'status');
-        el.innerHTML = '<button class="x" type="button" aria-label="إغلاق">×</button><b>💡 نصيحة اليوم</b><p>' + esc(tips[n].body) + '</p>';
+        el.innerHTML = '<button class="x" type="button" aria-label="إغلاق">×</button><b>🔔 تنبيه</b><p>' + esc(tips[n].body) + '</p>';
         document.body.appendChild(el);
         var close = function () { el.remove(); LS.set('aqe_tip_day', today()); };
         el.querySelector('.x').onclick = close;
