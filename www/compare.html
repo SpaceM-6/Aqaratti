@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المقارنة | أنا عقار AnaAqar</title>
+  <meta name="description" content="قارن العقارات والمشاريع جنبا إلى جنب على أنا عقار.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="js/aq-public.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <style>
+    .wrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:18px; }
+    table.c { border-collapse:collapse; width:100%; min-width:640px; font-size:14.5px; }
+    table.c th, table.c td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:right; vertical-align:top; }
+    table.c th { color:var(--muted); font-size:13px; width:130px; background:var(--bg); position:sticky; right:0; }
+    table.c td img { width:100%; max-width:220px; aspect-ratio:16/10; object-fit:cover; border-radius:12px; }
+    table.c td b { font-size:15.5px; } .best { color:#00897b; font-weight:900; }
+    @media print { .topbar, .noprint, .aqe-ticker, .aqe-chat, .aqe-tip, .aqe-ov { display:none !important; } body { background:#fff; } .wrap { overflow:visible; border:0; } table.c { min-width:0; font-size:12px; } table.c th { position:static; } td img, th { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+  </style>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-code-compare"></i> المقارنة</h1><p>قارن حتى 4 عقارات أو مشاريع جنبًا إلى جنب، واحفظ المقارنة PDF أو شاركها.</p></div></section>
+  <main>
+    <div class="acts noprint" style="margin-bottom:12px"><button class="btn btn-teal" onclick="window.print()"><i class="fas fa-file-pdf"></i> حفظ PDF أو طباعة</button><button class="btn btn-ghost" id="share"><i class="fas fa-share-nodes"></i> مشاركة</button><button class="btn btn-red" id="clear">مسح المقارنة</button></div>
+    <div id="out"><div class="skel"></div></div>
+  </main>
+  <script>
+  (function () {
+    const { esc, money } = AQPublic;
+    const qs = new URLSearchParams(location.search);
+    let ids = qs.get('ids') ? qs.get('ids').split(',').slice(0, 4) : AQPublic.compare.get();
+    const out = document.getElementById('out');
+    document.getElementById('clear').onclick = () => { try { localStorage.setItem('anaaqar_compare', '[]'); } catch (e) {} ids = []; draw([]); };
+    document.getElementById('share').onclick = async () => { const url = location.origin + location.pathname + '?ids=' + ids.join(','); try { if (navigator.share) await navigator.share({ title: 'مقارنة عقارات — أنا عقار', url }); else { await navigator.clipboard.writeText(url); AQPublic.toast('نُسخ رابط المقارنة'); } } catch (e) {} };
+    function draw(items) {
+      if (!items.length) { out.innerHTML = '<div class="empty"><i class="fas fa-code-compare"></i><h2>لا شيء للمقارنة بعد</h2><p>اضغط زر «قارن» على أي عقار أو مشروع ليظهر هنا.</p><a class="btn btn-teal" href="index.html">تصفّح العقارات</a> <a class="btn btn-ghost" href="projects.html">المشاريع</a></div>'; return; }
+      const prices = items.map((x) => x.price).filter(Boolean), minP = Math.min(...prices);
+      const ppm = items.map((x) => x.price && x.area ? x.price / x.area : null), minPpm = Math.min(...ppm.filter(Boolean));
+      const rows = [
+        ['', (x) => x.img ? `<img src="${esc(x.img)}" alt="">` : ''],
+        ['الاسم', (x) => `<b>${esc(x.title)}</b><div class="noprint"><a href="${x.url}" style="color:var(--teal);font-weight:800">التفاصيل</a></div>`],
+        ['النوع', (x) => x.kind === 'project' ? 'مشروع على الخارطة' : (x.deal === 'rent' ? 'إيجار' : 'بيع') + (x.ptype ? ' — ' + esc(x.ptype) : '')],
+        ['السعر', (x) => `<span class="${x.price === minP && items.length > 1 ? 'best' : ''}">${x.kind === 'project' ? 'يبدأ من ' : ''}${money(x.price)}</span>`],
+        ['المدينة', (x) => esc(x.city || '—')],
+        ['المساحة', (x) => x.area ? x.area + ' م²' : '—'],
+        ['سعر المتر', (x, i) => ppm[i] ? `<span class="${ppm[i] === minPpm && items.length > 1 ? 'best' : ''}">${money(Math.round(ppm[i]))}</span>` : '—'],
+        ['غرف النوم', (x) => x.beds ?? '—'], ['الحمامات', (x) => x.baths ?? '—'],
+        ['التسليم أو الحالة', (x) => esc(x.status || '—')],
+        ['خطة السداد', (x) => x.plan && x.plan.length ? x.plan.map((p) => esc(p.percent) + '% ' + esc(p.label)).join('<br>') : '—'],
+        ['العمولة', (x) => x.kind === 'project' ? 'من المطوّر مباشرة' : x.noCommission ? '<span class="best">بدون عمولة</span>' : esc(x.commission || '—')],
+        ['عروض', (x) => x.offer ? esc(x.offer) : '—']
+      ];
+      out.innerHTML = `<div class="wrap"><table class="c">${rows.map(([h, f]) => `<tr><th>${h}</th>${items.map((x, i) => `<td>${f(x, i)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+    }
+    (async () => {
+      const needProps = ids.some((i) => !i.startsWith('project-')), projIds = ids.filter((i) => i.startsWith('project-')).map((i) => i.slice(8));
+      const [props, projs] = await Promise.all([needProps ? AQPublic.loadListings() : [], projIds.length ? supabaseClient.from('projects').select('*').in('id', projIds).then((r) => r.data || []) : []]);
+      const items = ids.map((id) => {
+        if (id.startsWith('project-')) { const p = projs.find((x) => String(x.id) === id.slice(8)); if (!p) return null; const u = (p.unit_types || []).find((x) => x.size);
+          return { kind: 'project', title: p.name, url: 'project.html?id=' + p.id, img: (p.images || [])[0], price: p.price_from, city: [p.area, p.city].filter(Boolean).join('، '), area: u ? parseFloat(u.size) : null, status: 'التسليم ' + (p.handover || '—'), plan: p.payment_plan }; }
+        const p = props.find((x) => String(x.id) === id); if (!p) return null;
+        return { kind: 'property', title: p.title, url: 'property-details.html?id=' + encodeURIComponent(p.id), img: p.image, price: p.priceAED, deal: p.dealType, ptype: p.propertyType, city: p.city, area: p.area_m2, beds: p.bedrooms, baths: p.bathrooms, status: p.completionStatus || 'جاهز', commission: p.commission, noCommission: p.noCommission, offer: p.hasOffer ? (p.offerText || 'عليه عرض') : '' };
+      }).filter(Boolean);
+      draw(items);
+    })();
+  })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

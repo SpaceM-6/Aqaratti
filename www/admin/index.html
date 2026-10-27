@@ -115,6 +115,15 @@
         <a class="tile" href="service-providers.html"><span class="ic" style="background:#ede9fe;color:#6d28d9"><i class="fas fa-screwdriver-wrench"></i></span><span class="tx"><b>دليل الخدمات</b><small>الشركات وطلبات الإدراج الجديدة</small></span><span class="tn" id="tnProv"></span></a>
       </div>
 
+      <div class="group">البوابة المهنية</div>
+      <div class="tiles">
+        <a class="tile" href="#s-accounts"><span class="ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-id-card"></i></span><span class="tx"><b>الحسابات المهنية</b><small>توثيق الوسطاء والمكاتب والمطوّرين</small></span><span class="tn" id="tnAcc"></span></a>
+        <a class="tile" href="#s-projects"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-city"></i></span><span class="tx"><b>مراجعة المشاريع</b><small>مشاريع المطوّرين على الخارطة</small></span><span class="tn" id="tnPrj"></span></a>
+        <a class="tile" href="#s-buyers"><span class="ic" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-magnifying-glass-location"></i></span><span class="tx"><b>طلبات المشترين</b><small>ما يطلبه الزوار من «اطلب عقارك»</small></span><span class="tn" id="tnBuy"></span></a>
+        <a class="tile" href="#s-campaigns"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-envelope-open-text"></i></span><span class="tx"><b>الحملات البريدية</b><small>رسائل للمستخدمين أو المهنيين</small></span></a>
+        <a class="tile" href="#s-ai"><span class="ic" style="background:#ede9fe;color:#6d28d9"><i class="fas fa-wand-magic-sparkles"></i></span><span class="tx"><b>المساعد الذكي</b><small>حالة الخدمة واستهلاكها</small></span></a>
+      </div>
+
       <div class="group">محتوى الموقع</div>
       <div class="tiles">
         <a class="tile" href="#s-news"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-bullhorn"></i></span><span class="tx"><b>شريط الجديد</b><small>الأخبار المتحركة أعلى الموقع</small></span></a>
@@ -228,6 +237,43 @@
     <section data-sec="searches">
       <div class="card"><h2>آخر البحوث المحفوظة</h2><p class="sub">تساعدك على معرفة الطلب الحقيقي: أي إمارة، وأي سعر، وبيع أم إيجار.</p><div id="srchList"></div></div>
     </section>
+    <!-- ===== الحسابات المهنية ===== -->
+    <section data-sec="accounts">
+      <div class="pills" id="accFilter"><button class="pill on" data-f="">الكل</button><button class="pill" data-f="broker">وسطاء</button><button class="pill" data-f="office">مكاتب</button><button class="pill" data-f="developer">مطوّرون</button></div>
+      <div class="card"><p class="sub" style="margin:0">تحقق من رقم الترخيص في سجل دائرة الأراضي والأملاك (تطبيق Dubai REST أو موقع DLD) ثم اضغط «توثيق». الحساب الموثّق تظهر له بيانات تواصل المشترين في «طلبات المشترين» وعلامة التوثيق.</p></div>
+      <div id="accList"></div>
+    </section>
+
+    <!-- ===== مراجعة المشاريع ===== -->
+    <section data-sec="projects">
+      <div class="pills" id="prjFilter"><button class="pill on" data-f="pending">بانتظار المراجعة</button><button class="pill" data-f="approved">المنشورة</button><button class="pill" data-f="rejected">المرفوضة</button></div>
+      <div id="prjList"></div>
+    </section>
+
+    <!-- ===== طلبات المشترين ===== -->
+    <section data-sec="buyers">
+      <div class="pills" id="buyFilter"><button class="pill on" data-f="open">المفتوحة</button><button class="pill" data-f="closed">المغلقة</button></div>
+      <div id="buyList"></div>
+    </section>
+
+    <!-- ===== الحملات البريدية ===== -->
+    <section data-sec="campaigns">
+      <div class="card"><h2>حملة بريدية جديدة</h2>
+        <p class="sub">تُرسل من بريد الموقع (Zoho) على دفعات، وفي أسفل كل رسالة رابط إلغاء الاشتراك. لا تصل لمن ألغى اشتراكه.</p>
+        <form id="cmpForm">
+          <div class="fg"><label>إلى</label><select id="cmpAud"><option value="pros">كل المهنيين (وسطاء ومكاتب ومطوّرون)</option><option value="broker">الوسطاء الأفراد</option><option value="office">المكاتب العقارية</option><option value="developer">المطوّرون</option><option value="user">الزوار المسجّلون</option><option value="all">كل الحسابات</option></select></div>
+          <div class="fg"><label>عنوان الرسالة</label><input id="cmpSub" maxlength="150" required></div>
+          <div class="fg"><label>نص الرسالة</label><textarea id="cmpBody" maxlength="5000" required style="min-height:160px"></textarea></div>
+          <button class="btn teal" type="submit"><i class="fas fa-paper-plane"></i> حفظ وإرسال</button>
+          <p class="sub" id="cmpMsg" style="margin:8px 0 0"></p>
+        </form></div>
+      <div id="cmpList"></div>
+    </section>
+
+    <!-- ===== المساعد الذكي ===== -->
+    <section data-sec="ai">
+      <div class="card" id="aiBox"></div>
+    </section>
   </template>
 
   <script>
@@ -238,7 +284,7 @@
     const fmt = (t) => { try { return new Date(t).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { return ''; } };
     const waNum = (p) => String(p || '').replace(/\D/g, '').replace(/^0/, '971');
     const toast = (m) => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); };
-    const setupMsg = (e) => /does not exist|schema cache|relation/.test((e && e.message) || '') ? 'هذا القسم يحتاج تشغيل ملف supabase/engagement.sql أولًا.' : 'تعذّر التحميل: ' + esc(e && e.message);
+    const setupMsg = (e) => /does not exist|schema cache|relation/.test((e && e.message) || '') ? 'هذا القسم يحتاج تشغيل ملفي supabase/engagement.sql و supabase/portal.sql أولًا.' : 'تعذّر التحميل: ' + esc(e && e.message);
 
     // ===== الدخول =====
     async function boot() {
@@ -269,8 +315,8 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة' };
-    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches() };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي' };
+    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi() };
     let current = '';
     function route() {
       const m = /^#s-(\w+)/.exec(location.hash); const k = m && TITLES[m[1]] ? m[1] : '';
@@ -289,10 +335,10 @@
       const box = $('stats'); if (!box) return;
       if (error) { box.innerHTML = `<div class="empty" style="grid-column:1/-1">${setupMsg(error)}</div>`; return; }
       const s = data || {};
-      const cells = [['approved_properties', 'عقار منشور'], ['pending_properties', 'بانتظار المراجعة'], ['users', 'حساب مسجّل'], ['active_providers', 'شركة في الدليل'], ['saved_searches', 'بحث محفوظ'], ['active_offers', 'عرض ساري']];
+      const cells = [['approved_properties', 'عقار منشور'], ['pending_properties', 'بانتظار المراجعة'], ['users', 'حساب مسجّل'], ['active_providers', 'شركة في الدليل'], ['saved_searches', 'بحث محفوظ'], ['active_offers', 'عرض ساري'], ['pro_accounts', 'حساب مهني'], ['new_buyer_requests', 'طلب شراء هذا الأسبوع']];
       box.innerHTML = cells.map(([k, l]) => `<div class="stat"><b>${Number(s[k] || 0).toLocaleString('en-US')}</b><span>${l}</span></div>`).join('');
       const tn = (id, n) => { const el = $(id); if (!el) return; el.textContent = n ? n : ''; el.closest('.tile').classList.toggle('hot', !!n); };
-      tn('tnProps', s.pending_properties); tn('tnChat', s.unread_chat); tn('tnReq', (s.new_requests || 0) + (s.new_leads || 0)); tn('tnRep', s.new_reports); tn('tnProv', s.pending_providers);
+      tn('tnProps', s.pending_properties); tn('tnChat', s.unread_chat); tn('tnReq', (s.new_requests || 0) + (s.new_leads || 0)); tn('tnRep', s.new_reports); tn('tnProv', s.pending_providers); tn('tnAcc', s.unverified_accounts); tn('tnPrj', s.pending_projects); tn('tnBuy', s.new_buyer_requests);
       document.title = (s.unread_chat ? `(${s.unread_chat}) ` : '') + 'لوحة التحكم | إدارة أنا عقار';
     }
 
@@ -300,6 +346,9 @@
       $('secBack').onclick = (e) => { e.preventDefault(); location.hash = ''; };
       document.querySelectorAll('#chatFilter .pill').forEach((b) => b.onclick = () => { document.querySelectorAll('#chatFilter .pill').forEach((x) => x.classList.toggle('on', x === b)); chatFilter = b.dataset.f; loadThreads(); });
       document.querySelectorAll('#repFilter .pill').forEach((b) => b.onclick = () => { document.querySelectorAll('#repFilter .pill').forEach((x) => x.classList.toggle('on', x === b)); repFilter = b.dataset.f; loadReports(); });
+      const pills = (id, fn) => document.querySelectorAll('#' + id + ' .pill').forEach((b) => b.onclick = () => { document.querySelectorAll('#' + id + ' .pill').forEach((x) => x.classList.toggle('on', x === b)); fn(b.dataset.f); });
+      pills('accFilter', (f) => { accFilter = f; loadAccounts(); }); pills('prjFilter', (f) => { prjFilter = f; loadProjects(); }); pills('buyFilter', (f) => { buyFilter = f; loadBuyers(); });
+      $('cmpForm').onsubmit = createCampaign;
       wireCrud('news'); wireCrud('offers'); wireCrud('tips');
       $('bcForm').onsubmit = async (e) => {
         e.preventDefault();
@@ -443,6 +492,121 @@
       box.innerHTML = `<p><b>الأكثر طلبًا:</b> ${Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([c, n]) => `${esc(c)} (${n})`).join(' · ')}</p>
         <div style="overflow-x:auto"><table><tr><th>البحث</th><th>النوع</th><th>الإمارة</th><th>أقصى سعر</th><th>التاريخ</th></tr>
         ${data.map((s) => { const c = s.criteria || {}; return `<tr><td>${esc(s.name)}</td><td>${c.deal === 'rent' ? 'إيجار' : c.deal === 'sale' ? 'شراء' : esc(c.tab || '—')}</td><td>${esc(c.city || '—')}</td><td>${c.max_price ? Number(c.max_price).toLocaleString('en-US') : '—'}</td><td>${fmt(s.created_at)}</td></tr>`; }).join('')}</table></div>`;
+    }
+
+    // ===== الحسابات المهنية =====
+    let accFilter = '';
+    const ATYPE = { broker: 'وسيط فرد', office: 'مكتب عقاري', developer: 'مطوّر', user: 'زائر' };
+    async function loadAccounts() {
+      const { data, error } = await sb.rpc('admin_accounts', { p_type: accFilter || null });
+      const box = $('accList');
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      if (!data.length) { box.innerHTML = '<div class="empty">لا حسابات مهنية بعد. رابط التسجيل للمهنيين: anaaqar.com/pro.html</div>'; return; }
+      box.innerHTML = data.map((a) => `<div class="item ${a.verified ? '' : ''}"><div class="tx"><b>${esc(a.company_name || a.full_name || '—')} ${a.verified ? '<span class="badge done">موثّق</span>' : '<span class="badge new">غير موثّق</span>'}</b>
+        <small>${ATYPE[a.account_type] || esc(a.account_type)}${a.company_name && a.full_name ? ' · ' + esc(a.full_name) : ''} · ترخيص: <b dir="ltr" style="display:inline">${esc(a.license_no || 'لم يُضف')}</b> · ${a.listings} إعلان${a.office_id ? ' · عضو في مكتب' : ''}</small>
+        <small><a href="mailto:${esc(a.email)}" dir="ltr">${esc(a.email)}</a>${a.phone ? ` · <a href="tel:${esc(a.phone)}" dir="ltr">${esc(a.phone)}</a> · <a href="https://wa.me/${waNum(a.phone)}" target="_blank" rel="noopener">واتساب</a>` : ''} · سجّل ${fmt(a.created_at)}</small></div>
+        <div class="acts"><button class="btn sm ${a.verified ? 'ghost' : 'teal'}" data-vf="${a.id}" data-v="${a.verified ? '0' : '1'}">${a.verified ? 'إلغاء التوثيق' : 'توثيق'}</button></div></div>`).join('');
+      box.querySelectorAll('[data-vf]').forEach((b) => b.onclick = async () => {
+        const v = b.dataset.v === '1';
+        const { error } = await sb.from('profiles').update({ verified: v, verified_at: v ? new Date().toISOString() : null }).eq('id', b.dataset.vf);
+        if (error) return alert(setupMsg(error));
+        if (v) await sb.from('user_notifications').insert({ user_id: b.dataset.vf, title: 'تم توثيق حسابك المهني ✅', body: 'تظهر الآن علامة «موثّق» على ملفك، وبيانات تواصل المشترين في طلبات المشترين.', url: 'pro.html#requests' }).then(() => {}, () => {});
+        toast(v ? 'تم التوثيق' : 'أُلغي التوثيق'); loadAccounts(); loadStats();
+      });
+    }
+
+    // ===== مراجعة المشاريع =====
+    let prjFilter = 'pending';
+    async function loadProjects() {
+      const { data, error } = await sb.from('projects').select('*').eq('review_status', prjFilter).order('updated_at', { ascending: false }).limit(200);
+      const box = $('prjList');
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      if (!data.length) { box.innerHTML = '<div class="empty">لا مشاريع هنا.</div>'; return; }
+      const ids = [...new Set(data.map((p) => p.developer_id))];
+      const dv = {}; const r = await sb.from('profiles').select('id,company_name,full_name,verified').in('id', ids); (r.data || []).forEach((x) => { dv[x.id] = x; });
+      box.innerHTML = data.map((p) => { const d = dv[p.developer_id] || {}; const plan = (p.payment_plan || []).map((x) => esc(x.percent) + '% ' + esc(x.label)).join(' · ');
+        return `<div class="card"><div style="display:flex;gap:12px;flex-wrap:wrap">${(p.images || [])[0] ? `<img src="${esc(p.images[0])}" alt="" style="width:150px;height:100px;object-fit:cover;border-radius:12px">` : ''}
+          <div style="flex:1;min-width:200px"><b style="font-size:16px">${esc(p.name)}</b><div class="sub" style="margin:2px 0">${esc(d.company_name || d.full_name || '—')}${d.verified ? ' ✅' : ' (غير موثّق)'} · ${esc([p.area, p.city].filter(Boolean).join('، '))} · يبدأ من ${p.price_from ? Number(p.price_from).toLocaleString('en-US') + ' درهم' : '—'} · التسليم ${esc(p.handover || '—')}</div>
+          ${plan ? `<div class="sub">خطة السداد: ${plan}</div>` : ''}<div class="sub">${(p.unit_types || []).length} نوع وحدة · ${(p.images || []).length} صورة${p.brochure_url ? ` · <a href="${esc(p.brochure_url)}" target="_blank">الكتيّب</a>` : ''}</div></div></div>
+          ${p.description ? `<div class="details">${esc(p.description)}</div>` : ''}
+          <div class="fg" style="margin-top:8px"><label>ملاحظة للمطوّر (تظهر له عند الرفض)</label><input data-rn="${p.id}" value="${esc(p.review_note || '')}"></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${p.review_status !== 'approved' ? `<button class="btn sm teal" data-rv="approved" data-id="${p.id}">اعتماد ونشر</button>` : `<a class="btn sm soft" href="../project.html?id=${p.id}" target="_blank">عرض ↗</a>`}${p.review_status !== 'rejected' ? `<button class="btn sm ghost" data-rv="rejected" data-id="${p.id}">رفض</button>` : ''}<button class="btn sm red" data-pdel="${p.id}">حذف</button></div></div>`; }).join('');
+      box.querySelectorAll('[data-rv]').forEach((b) => b.onclick = async () => {
+        const note = (box.querySelector(`[data-rn="${b.dataset.id}"]`) || {}).value || null;
+        if (b.dataset.rv === 'rejected' && !note) return alert('اكتب سبب الرفض في خانة الملاحظة أولًا.');
+        const p = data.find((x) => String(x.id) === b.dataset.id);
+        const { error } = await sb.from('projects').update({ review_status: b.dataset.rv, review_note: b.dataset.rv === 'rejected' ? note : null }).eq('id', b.dataset.id);
+        if (error) return alert(setupMsg(error));
+        await sb.from('user_notifications').insert({ user_id: p.developer_id, title: b.dataset.rv === 'approved' ? 'نُشر مشروعك: ' + p.name : 'مشروعك يحتاج تعديلًا: ' + p.name, body: b.dataset.rv === 'approved' ? 'أصبح المشروع ظاهرًا في صفحة المشاريع.' : note, url: b.dataset.rv === 'approved' ? 'project.html?id=' + p.id : 'pro.html#projects' }).then(() => {}, () => {});
+        toast(b.dataset.rv === 'approved' ? 'نُشر المشروع' : 'رُفض المشروع'); loadProjects(); loadStats();
+      });
+      box.querySelectorAll('[data-pdel]').forEach((b) => b.onclick = async () => { if (!confirm('حذف المشروع نهائيًا؟')) return; await sb.from('projects').delete().eq('id', b.dataset.pdel); loadProjects(); });
+    }
+
+    // ===== طلبات المشترين =====
+    let buyFilter = 'open';
+    async function loadBuyers() {
+      const { data, error } = await sb.from('buyer_requests').select('*').eq('status', buyFilter).order('created_at', { ascending: false }).limit(300);
+      const box = $('buyList');
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      if (!data.length) { box.innerHTML = '<div class="empty">لا طلبات هنا. صفحة الطلب: anaaqar.com/request.html</div>'; return; }
+      box.innerHTML = data.map((r) => `<div class="item"><div class="tx"><b>${r.deal === 'rent' ? 'إيجار' : 'شراء'}${r.property_type ? ' — ' + esc(r.property_type) : ''}${r.city ? ' في ' + esc(r.city) : ''}${r.max_budget ? ' · حتى ' + Number(r.max_budget).toLocaleString('en-US') + ' درهم' : ''}${r.min_bedrooms != null ? ' · ' + r.min_bedrooms + '+ غرف' : ''}</b>
+        ${r.notes ? `<small>${esc(r.notes)}</small>` : ''}<small>${esc(r.name)} · <a href="tel:${esc(r.phone)}" dir="ltr">${esc(r.phone)}</a> · <a href="https://wa.me/${waNum(r.phone)}" target="_blank" rel="noopener">واتساب</a>${r.email ? ` · <a href="mailto:${esc(r.email)}" dir="ltr">${esc(r.email)}</a>` : ''} · ${r.contact_consent ? 'وافق على مشاركة رقمه' : '<b style="color:var(--red);display:inline">لم يوافق على مشاركة رقمه</b>'} · ${fmt(r.created_at)}</small></div>
+        <div class="acts"><button class="btn sm ${r.status === 'open' ? 'ghost' : 'soft'}" data-bs="${r.id}" data-v="${r.status === 'open' ? 'closed' : 'open'}">${r.status === 'open' ? 'إغلاق' : 'إعادة فتح'}</button></div></div>`).join('');
+      box.querySelectorAll('[data-bs]').forEach((b) => b.onclick = async () => { await sb.from('buyer_requests').update({ status: b.dataset.v }).eq('id', b.dataset.bs); loadBuyers(); });
+    }
+
+    // ===== الحملات البريدية =====
+    const AUD = { pros: 'كل المهنيين', broker: 'الوسطاء', office: 'المكاتب', developer: 'المطوّرون', user: 'الزوار المسجّلون', all: 'كل الحسابات' };
+    async function loadCampaigns() {
+      const { data, error } = await sb.from('email_campaigns').select('*').order('created_at', { ascending: false }).limit(50);
+      const box = $('cmpList');
+      if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
+      box.innerHTML = (data || []).map((c) => `<div class="item"><div class="tx"><b>${esc(c.subject)}</b><small>${AUD[c.audience] || esc(c.audience)} · ${c.status === 'done' ? 'اكتملت' : c.status === 'sending' ? 'متوقفة في المنتصف' : 'مسودة'} · أُرسلت ${c.sent_count} رسالة · ${fmt(c.created_at)}</small></div>
+        <div class="acts">${c.status !== 'done' ? `<button class="btn sm teal" data-send="${c.id}">${c.sent_count ? 'متابعة الإرسال' : 'إرسال'}</button>` : ''}<button class="btn sm red" data-cdel="${c.id}">حذف</button></div></div>`).join('') || '<div class="empty">لا حملات بعد.</div>';
+      box.querySelectorAll('[data-send]').forEach((b) => b.onclick = () => sendCampaign(+b.dataset.send));
+      box.querySelectorAll('[data-cdel]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الحملة من السجل؟')) return; await sb.from('email_campaigns').delete().eq('id', b.dataset.cdel); loadCampaigns(); });
+    }
+    async function createCampaign(e) {
+      e.preventDefault();
+      const row = { audience: $('cmpAud').value, subject: $('cmpSub').value.trim(), body: $('cmpBody').value.trim() };
+      if (!confirm(`إرسال «${row.subject}» إلى ${AUD[row.audience]}؟`)) return;
+      const { data, error } = await sb.from('email_campaigns').insert(row).select('id').single();
+      if (error) return alert(setupMsg(error));
+      e.target.reset(); sendCampaign(data.id);
+    }
+    async function sendCampaign(id) {
+      const msg = $('cmpMsg');
+      const { data: s } = await sb.auth.getSession();
+      const url = (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : sb.supabaseUrl) + '/functions/v1/send-campaign';
+      for (let i = 0; i < 200; i++) {
+        msg.textContent = 'جاري الإرسال... لا تغلق الصفحة';
+        let r;
+        try { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + s.session.access_token }, body: JSON.stringify({ campaign_id: id }) }).then((x) => x.json()); }
+        catch (er) { msg.textContent = 'تعذّر الاتصال بدالة الإرسال. تأكد من إنشاء دالة send-campaign في Supabase.'; break; }
+        if (r.error) { msg.textContent = r.error === 'forbidden' ? 'هذا الحساب ليس حساب إدارة.' : 'تعذّر الإرسال: ' + r.error; break; }
+        msg.textContent = `أُرسلت ${r.total ?? r.sent} رسالة${r.remaining ? `، المتبقي ${r.remaining}` : ''}`;
+        if (r.done) { msg.textContent = `اكتملت الحملة: ${r.total ?? r.sent} رسالة ✅`; break; }
+      }
+      loadCampaigns();
+    }
+
+    // ===== المساعد الذكي =====
+    async function loadAi() {
+      const box = $('aiBox');
+      box.innerHTML = '<div class="empty" style="border:0">جاري الفحص...</div>';
+      let state = 'unknown', reply = '';
+      try { const { data, error } = await sb.functions.invoke('ai-assistant', { body: { message: 'مرحبا، اختبار من لوحة التحكم' } });
+        if (error) { const st = error.context && error.context.status; state = st === 503 ? 'nokey' : st === 429 ? 'limit' : 'missing'; } else { state = 'ok'; reply = data && data.reply; } } catch (e) { state = 'missing'; }
+      const day = new Date(Date.now() - 864e5).toISOString();
+      const u = await sb.from('ai_usage').select('n,hour').eq('key', 'all').gte('hour', day);
+      const used = (u.data || []).reduce((a, x) => a + x.n, 0);
+      const S = { ok: ['يعمل ✅', 'teal'], nokey: ['الدالة موجودة لكن ينقصها مفتاح ANTHROPIC_API_KEY', 'red'], limit: ['يعمل، لكن بلغ حد الاستخدام هذه الساعة', 'gold'], missing: ['دالة ai-assistant غير منشورة بعد', 'red'], unknown: ['غير معروف', 'ghost'] };
+      box.innerHTML = `<h2>حالة المساعد الذكي: ${S[state][0]}</h2>
+        <p class="sub">المساعد يجيب الزوار في نافذة «البحث الذكي» في الصفحة الرئيسية، ويقترح عقارات ومشاريع من الموقع فقط. عند تعطله يعود البحث تلقائيًا للبحث العادي بالكلمات.</p>
+        <p><b>الأسئلة خلال آخر 24 ساعة:</b> ${used}</p>
+        ${reply ? `<p class="sub"><b>رد تجريبي:</b> ${esc(reply)}</p>` : ''}
+        <p class="sub">الحدود: 20 سؤالًا في الساعة لكل زائر، و1500 في الساعة للموقع كله. التكلفة تُدفع لشركة Anthropic حسب الاستهلاك، ويمكن وضع سقف شهري من console.anthropic.com.</p>`;
     }
 
     boot();

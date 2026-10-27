@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اطلب عقارك | أنا عقار AnaAqar</title>
+  <meta name="description" content="اكتب مواصفات العقار الذي تبحث عنه ويصل طلبك للوسطاء والمطورين الموثقين.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="js/aq-public.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <section class="head"><div class="head-in">
+    <h1><i class="fas fa-magnifying-glass-location"></i> اطلب عقارك</h1>
+    <p>اكتب ما تبحث عنه مرة واحدة، ونرسل طلبك تلقائيًا للوسطاء والمطوّرين الموثّقين الذين لديهم عقارات مطابقة، ونبلغك بكل عقار جديد يناسبك.</p>
+  </div></section>
+  <main>
+    <form class="form" id="f" novalidate>
+      <div class="tabs" style="margin-bottom:12px"><button type="button" class="tab on" data-d="sale">أريد الشراء</button><button type="button" class="tab" data-d="rent">أريد الاستئجار</button></div>
+      <div class="row2"><div class="fg"><label>المدينة أو المنطقة</label><input id="city" placeholder="دبي، دبي مارينا..." list="cities"><datalist id="cities"><option>دبي</option><option>أبوظبي</option><option>الشارقة</option><option>عجمان</option><option>رأس الخيمة</option></datalist></div>
+      <div class="fg"><label>نوع العقار</label><select id="type"><option value="">أي نوع</option><option>شقة</option><option>فيلا</option><option>تاون هاوس</option><option>استوديو</option><option>أرض</option><option>مكتب</option><option>محل تجاري</option></select></div>
+      <div class="fg"><label>الميزانية القصوى (درهم)</label><input id="budget" type="number" inputmode="numeric" placeholder="مثال: 1500000"></div>
+      <div class="fg"><label>أقل عدد غرف نوم</label><select id="beds"><option value="">أي عدد</option><option value="0">استوديو</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div></div>
+      <div class="fg"><label>تفاصيل إضافية</label><textarea id="notes" placeholder="قريب من مترو، إطلالة بحرية، موعد الانتقال..."></textarea></div>
+      <div class="row2"><div class="fg"><label>الاسم</label><input id="name" autocomplete="name" required></div><div class="fg"><label>رقم الجوال أو واتساب</label><input id="phone" type="tel" dir="ltr" autocomplete="tel" required></div></div>
+      <div class="fg"><label>البريد (اختياري)</label><input id="email" type="email" dir="ltr" autocomplete="email"></div>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;margin:6px 0 14px"><input type="checkbox" id="consent" checked style="width:20px;height:20px;accent-color:var(--teal);flex:0 0 auto"> أوافق على مشاركة رقمي مع الوسطاء والمطوّرين الموثّقين الذين لديهم عقارات تطابق طلبي فقط.</label>
+      <button class="btn btn-teal" style="width:100%" id="go">أرسل طلبي</button>
+      <p class="hint" id="msg"></p>
+    </form>
+  </main>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    let deal = 'sale';
+    document.querySelectorAll('.tab[data-d]').forEach((b) => b.onclick = () => { deal = b.dataset.d; document.querySelectorAll('.tab[data-d]').forEach((x) => x.classList.toggle('on', x === b)); });
+    try { const pr = JSON.parse(localStorage.getItem('aq_profile') || '{}'); if (pr.city) $('city').value = pr.city; if (pr.budget) $('budget').value = pr.budget; } catch (e) {}
+    $('f').onsubmit = async (e) => {
+      e.preventDefault();
+      const name = $('name').value.trim(), phone = $('phone').value.trim();
+      if (name.length < 2 || phone.replace(/\D/g, '').length < 7) return ($('msg').textContent = 'اكتب اسمك ورقم جوال صحيحًا.');
+      $('go').disabled = true;
+      const u = typeof getCurrentAnaAqarUser === 'function' ? await getCurrentAnaAqarUser().catch(() => null) : null;
+      const row = { name, phone, email: $('email').value.trim() || null, deal, city: $('city').value.trim() || null, property_type: $('type').value || null,
+        max_budget: +$('budget').value || null, min_bedrooms: $('beds').value === '' ? null : +$('beds').value, notes: $('notes').value.trim() || null, contact_consent: $('consent').checked };
+      if (u && u.id) row.user_id = u.id;
+      const { error } = await supabaseClient.from('buyer_requests').insert(row);
+      $('go').disabled = false;
+      if (error) return ($('msg').textContent = (typeof aqIsRateLimited === 'function' && aqIsRateLimited(error)) ? AQ_RATE_LIMIT_MSG : 'تعذّر الإرسال، حاول لاحقًا.');
+      const q = new URLSearchParams({ tab: deal, ...(row.city ? { q: row.city } : {}), ...(row.max_budget ? { max: row.max_budget } : {}) });
+      $('f').innerHTML = `<div class="ok"><i class="fas fa-circle-check"></i><h2>وصل طلبك</h2><p class="hint">أرسلناه للوسطاء والمطوّرين الذين لديهم عقارات مطابقة، وسيتواصلون معك قريبًا.${u ? ' وستصلك إشعارات بكل عقار جديد يطابق طلبك.' : ' سجّل الدخول لتصلك إشعارات العقارات المطابقة الجديدة.'}</p>
+        <div class="acts" style="justify-content:center"><a class="btn btn-teal" href="index.html?${q}">شاهد العقارات المطابقة الآن</a><a class="btn btn-ghost" href="calculator.html">حاسبة التمويل</a></div></div>`;
+    };
+  })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

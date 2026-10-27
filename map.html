@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خريطة العقارات | أنا عقار AnaAqar</title>
+  <meta name="description" content="تصفح العقارات والمشاريع على الخريطة في دبي والإمارات.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="js/aq-public.js"></script>
+</head>
+<body data-no-ticker>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <style>
+    body { overflow:hidden; }
+    #map { position:fixed; top:57px; right:0; left:0; bottom:0; z-index:1; background:#e5e7eb; }
+    .mbar { position:fixed; top:68px; right:12px; left:12px; z-index:500; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; pointer-events:none; }
+    .mbar::-webkit-scrollbar { display:none; }
+    .mbar > * { pointer-events:auto; flex:0 0 auto; box-shadow:0 4px 14px rgba(0,0,0,.15); }
+    .mbar .tab { min-height:38px; padding:7px 14px; }
+    .cnt { position:fixed; bottom:16px; right:12px; z-index:500; background:var(--card); color:var(--ink); border-radius:12px; padding:8px 12px; font-weight:800; font-size:13px; box-shadow:0 4px 14px rgba(0,0,0,.15); }
+    .leaflet-popup-content { font-family:'Tajawal',sans-serif; direction:rtl; text-align:right; margin:10px 12px; min-width:200px; }
+    .pp img { width:100%; height:110px; object-fit:cover; border-radius:10px; margin-bottom:6px; }
+    .pp b { display:block; font-size:14px; line-height:1.4; } .pp .pr { color:#00897b; font-weight:900; } .pp a { color:#00a896; font-weight:900; }
+    .pp small { color:#64748b; display:block; }
+    .pin { background:#00a896; color:#fff; border:2px solid #fff; border-radius:10px; font:800 11px Tajawal,sans-serif; padding:2px 6px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,.3); transform:translate(-50%,-100%); display:inline-block; }
+    .pin.rent { background:#192038; } .pin.prj { background:#d4af37; color:#192038; }
+  </style>
+  <div id="map" role="region" aria-label="خريطة العقارات"></div>
+  <div class="mbar">
+    <button class="tab on" data-l="all">الكل</button><button class="tab" data-l="sale">للبيع</button><button class="tab" data-l="rent">للإيجار</button><button class="tab" data-l="projects">مشاريع على الخارطة</button>
+    <button class="tab" id="near"><i class="fas fa-location-crosshairs"></i> قربي</button>
+  </div>
+  <div class="cnt" id="cnt">جاري التحميل...</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+  (function () {
+    const { esc, money, guessCoords } = AQPublic;
+    const qs = new URLSearchParams(location.search);
+    if (typeof L === 'undefined') { document.getElementById('cnt').textContent = 'تعذّر تحميل الخريطة، تحقق من الاتصال.'; return; }
+    const map = L.map('map', { zoomControl: false }).setView([+qs.get('lat') || 25.13, +qs.get('lng') || 55.22], +qs.get('z') || 11);
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+    const short = (n) => !n ? '' : n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : n;
+    let points = [], layer = L.layerGroup().addTo(map), mode = qs.get('layer') || 'all';
+    function icon(p) { return L.divIcon({ className: '', html: `<span class="pin ${p.kind === 'project' ? 'prj' : p.deal === 'rent' ? 'rent' : ''}">${p.kind === 'project' ? '<i class="fas fa-city"></i> ' : ''}${short(p.price)}</span>`, iconSize: null }); }
+    function draw() {
+      layer.clearLayers();
+      const shown = points.filter((p) => mode === 'all' || (mode === 'projects' ? p.kind === 'project' : p.kind === 'property' && p.deal === mode));
+      shown.forEach((p) => L.marker([p.lat, p.lng], { icon: icon(p) }).bindPopup(`<div class="pp">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}<b>${esc(p.title)}</b><span class="pr">${p.kind === 'project' ? 'يبدأ من ' : ''}${money(p.price)}</span>${p.approx ? '<small>الموقع تقريبي حسب المنطقة</small>' : ''}<a href="${p.url}">عرض التفاصيل ←</a></div>`).addTo(layer));
+      document.getElementById('cnt').textContent = shown.length + (mode === 'projects' ? ' مشروع' : ' عقار') + ' على الخريطة';
+      document.querySelectorAll('.mbar [data-l]').forEach((b) => b.classList.toggle('on', b.dataset.l === mode));
+    }
+    document.querySelectorAll('.mbar [data-l]').forEach((b) => b.onclick = () => { mode = b.dataset.l; draw(); });
+    document.getElementById('near').onclick = () => navigator.geolocation && navigator.geolocation.getCurrentPosition((pos) => { map.setView([pos.coords.latitude, pos.coords.longitude], 14); L.circleMarker([pos.coords.latitude, pos.coords.longitude], { radius: 8, color: '#2563eb', fillOpacity: .8 }).addTo(map); }, () => AQPublic.toast('لم نتمكن من تحديد موقعك'));
+    Promise.all([AQPublic.loadListings(), AQPublic.loadProjects()]).then(([props, projs]) => {
+      props.forEach((p) => {
+        let la = p.lat, ln = p.lng, approx = false;
+        if (la == null || ln == null) { const g = guessCoords(p.title + ' ' + (p.city || ''), p.id); if (!g) return; [la, ln] = g; approx = true; }
+        points.push({ kind: 'property', deal: p.dealType === 'rent' ? 'rent' : 'sale', lat: la, lng: ln, approx, price: p.priceAED, title: p.title, img: p.image, url: 'property-details.html?id=' + encodeURIComponent(p.id) });
+      });
+      projs.forEach((p) => {
+        let la = p.lat, ln = p.lng, approx = false;
+        if (la == null || ln == null) { const g = guessCoords([p.area, p.city, p.name].join(' '), 'p' + p.id); if (!g) return; [la, ln] = g; approx = true; }
+        points.push({ kind: 'project', lat: la, lng: ln, approx, price: p.price_from, title: p.name, img: (p.images || [])[0], url: 'project.html?id=' + p.id });
+      });
+      draw();
+    });
+  })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

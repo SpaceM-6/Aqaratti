@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حاسبة التمويل العقاري | أنا عقار AnaAqar</title>
+  <meta name="description" content="احسب القسط الشهري للتمويل العقاري والدفعة الأولى ورسوم الشراء في دبي.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="js/aq-public.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <style>
+    .lay { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+    @media (max-width:820px) { .lay { grid-template-columns:minmax(0,1fr); } }
+    .box { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; }
+    .big { font-size:clamp(28px,6vw,40px); font-weight:900; color:#00897b; line-height:1.2; } [data-theme="dark"] .big { color:#5eead4; }
+    .kv { display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:15px; } .kv:last-child { border:0; } .kv b { white-space:nowrap; }
+    .rng { display:flex; gap:10px; align-items:center; } .rng input[type=range] { flex:1; accent-color:var(--teal); } .rng output { min-width:62px; font-weight:900; text-align:left; }
+    .donut { width:150px; height:150px; border-radius:50%; margin:6px auto 12px; position:relative; }
+    .donut::after { content:''; position:absolute; inset:26px; background:var(--card); border-radius:50%; }
+    .lg { display:flex; gap:14px; justify-content:center; font-size:13px; font-weight:800; } .lg i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-left:5px; }
+  </style>
+  <section class="head"><div class="head-in">
+    <h1><i class="fas fa-calculator"></i> حاسبة التمويل العقاري</h1>
+    <p>احسب القسط الشهري وما تحتاجه من دفعة أولى ورسوم شراء تقريبية في دبي، أو اعرف أقصى سعر يناسب دخلك.</p>
+  </div></section>
+  <main>
+    <div class="tabs"><button class="tab on" data-m="pay">القسط الشهري</button><button class="tab" data-m="aff">كم أستطيع أن أشتري؟</button></div>
+    <div class="lay">
+      <div class="box" id="inputs">
+        <div id="payIn">
+          <div class="fg"><label>سعر العقار (درهم)</label><input id="price" type="number" inputmode="numeric" value="1500000"></div>
+          <div class="row2"><div class="fg"><label>الإقامة</label><select id="res"><option value="expat">مقيم (غير مواطن)</option><option value="national">مواطن إماراتي</option></select></div>
+          <div class="fg"><label>نوع العقار</label><select id="kind"><option value="ready">جاهز - أول عقار</option><option value="second">جاهز - عقار ثانٍ أو أكثر</option><option value="offplan">على الخارطة</option></select></div></div>
+          <div class="fg"><label>الدفعة الأولى</label><div class="rng"><input type="range" id="down" min="15" max="90" value="20"><output id="downO"></output></div><span class="hint" id="downHint"></span></div>
+        </div>
+        <div id="affIn" hidden>
+          <div class="fg"><label>الدخل الشهري (درهم)</label><input id="inc" type="number" inputmode="numeric" value="30000"></div>
+          <div class="fg"><label>التزامات شهرية حالية (أقساط وبطاقات)</label><input id="debt" type="number" inputmode="numeric" value="0"></div>
+          <div class="fg"><label>المبلغ المتوفر للدفعة الأولى والرسوم (درهم)</label><input id="cash" type="number" inputmode="numeric" value="400000"></div>
+        </div>
+        <div class="fg"><label>نسبة الفائدة السنوية</label><div class="rng"><input type="range" id="rate" min="2" max="9" step="0.05" value="4.25"><output id="rateO"></output></div></div>
+        <div class="fg"><label>مدة التمويل</label><div class="rng"><input type="range" id="yrs" min="5" max="25" value="25"><output id="yrsO"></output></div></div>
+      </div>
+      <div class="box" id="out"></div>
+    </div>
+    <p class="hint" style="margin-top:14px">الأرقام تقديرية للاسترشاد فقط ولا تعد عرض تمويل. النسب المعتمدة: حدود التمويل حسب تعليمات مصرف الإمارات المركزي، ورسوم دائرة الأراضي والأملاك في دبي 4% ورسوم تسجيل الرهن 0.25%، ونسبة الالتزامات الشهرية القصوى 50% من الدخل. تأكد من البنك قبل أي قرار.</p>
+    <div class="acts" style="margin-top:10px"><a class="btn btn-teal" href="index.html"><i class="fas fa-magnifying-glass"></i> ابحث عن عقار بهذه الميزانية</a><a class="btn btn-ghost" href="request.html">اطلب عقارًا يناسبك</a></div>
+  </main>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const m = (n) => Math.round(n).toLocaleString('en-US') + ' درهم';
+    const qs = new URLSearchParams(location.search); if (+qs.get('price')) $('price').value = +qs.get('price');
+    let mode = 'pay';
+    const maxLtv = () => { const res = $('res').value, k = $('kind').value, p = +$('price').value || 0;
+      if (k === 'offplan') return 50;
+      if (k === 'second') return res === 'national' ? 65 : 60;
+      return res === 'national' ? (p > 5e6 ? 70 : 85) : (p > 5e6 ? 70 : 80); };
+    const pmt = (loan, rate, yrs) => { const r = rate / 1200, n = yrs * 12; return r ? loan * r / (1 - Math.pow(1 + r, -n)) : loan / n; };
+    const fees = (price, loan) => ({ dld: price * 0.04 + 580, mort: loan ? loan * 0.0025 + 290 : 0, agent: price * 0.02 * 1.05, val: loan ? 3150 : 0, trustee: price >= 5e5 ? 4200 : 2100 });
+    function calc() {
+      const rate = +$('rate').value, yrs = +$('yrs').value;
+      $('rateO').textContent = rate.toFixed(2) + '%'; $('yrsO').textContent = yrs + ' سنة';
+      if (mode === 'pay') {
+        const minDown = 100 - maxLtv(); $('down').min = minDown; if (+$('down').value < minDown) $('down').value = minDown;
+        const price = +$('price').value || 0, dp = +$('down').value, loan = price * (1 - dp / 100);
+        $('downO').textContent = dp + '%'; $('downHint').textContent = 'الحد الأدنى للدفعة الأولى في حالتك ' + minDown + '% (' + m(price * minDown / 100) + ')';
+        const mo = pmt(loan, rate, yrs), total = mo * yrs * 12, interest = total - loan, f = fees(price, loan), feeSum = f.dld + f.mort + f.agent + f.val + f.trustee;
+        const pct = total + price * dp / 100 ? Math.round(interest / (loan + interest) * 100) : 0;
+        $('out').innerHTML = `<div class="hint">القسط الشهري التقريبي</div><div class="big">${m(mo)}</div>
+          <div class="donut" style="background:conic-gradient(var(--teal) 0 ${100 - pct}%, var(--gold) ${100 - pct}% 100%)"></div>
+          <div class="lg"><span><i style="background:var(--teal)"></i>أصل التمويل</span><span><i style="background:var(--gold)"></i>الفوائد ${pct}%</span></div>
+          <div class="kv"><span>مبلغ التمويل</span><b>${m(loan)}</b></div><div class="kv"><span>الدفعة الأولى</span><b>${m(price * dp / 100)}</b></div>
+          <div class="kv"><span>إجمالي الفوائد</span><b>${m(interest)}</b></div><div class="kv"><span>الدخل الشهري المطلوب تقريبًا</span><b>${m(mo / 0.5)}</b></div>
+          <h3 style="margin:14px 0 4px">رسوم الشراء التقريبية</h3>
+          <div class="kv"><span>دائرة الأراضي 4% + رسوم إدارية</span><b>${m(f.dld)}</b></div><div class="kv"><span>تسجيل الرهن 0.25%</span><b>${m(f.mort)}</b></div>
+          <div class="kv"><span>عمولة الوسيط 2% + ضريبة</span><b>${m(f.agent)}</b></div><div class="kv"><span>التقييم ومكتب أمين التسجيل</span><b>${m(f.val + f.trustee)}</b></div>
+          <div class="kv" style="font-size:16.5px"><span><b>المبلغ النقدي المطلوب عند الشراء</b></span><b style="color:var(--teal)">${m(price * dp / 100 + feeSum)}</b></div>`;
+      } else {
+        const inc = +$('inc').value || 0, debt = +$('debt').value || 0, cash = +$('cash').value || 0;
+        const maxMo = Math.max(0, inc * 0.5 - debt), r = rate / 1200, n = yrs * 12, maxLoan = r ? maxMo * (1 - Math.pow(1 + r, -n)) / r : maxMo * n;
+        // أعلى سعر يحقق: الدفعة (20%) + الرسوم (≈ 7.3%) ≤ النقد، والتمويل ≤ 80% وضمن القدرة
+        let lo = 0, hi = 5e7; for (let i = 0; i < 60; i++) { const p = (lo + hi) / 2, loan = Math.min(maxLoan, p * 0.8), f = fees(p, loan), need = p - loan + f.dld + f.mort + f.agent + f.val + f.trustee; if (need <= cash) lo = p; else hi = p; }
+        const price = lo, loan = Math.min(maxLoan, price * 0.8);
+        $('out').innerHTML = `<div class="hint">أقصى سعر عقار تقريبي يناسبك</div><div class="big">${m(price)}</div>
+          <div class="kv"><span>أقصى قسط شهري (50% من الدخل ناقص الالتزامات)</span><b>${m(maxMo)}</b></div><div class="kv"><span>مبلغ التمويل المتوقع</span><b>${m(loan)}</b></div>
+          <div class="kv"><span>القسط الشهري على هذا التمويل</span><b>${m(pmt(loan, rate, yrs))}</b></div><div class="kv"><span>دفعة أولى + رسوم من مالك</span><b>${m(cash)}</b></div>
+          <a class="btn btn-teal" style="width:100%;margin-top:12px" href="index.html?max=${Math.round(price)}">اعرض العقارات حتى ${m(price)}</a>`;
+      }
+    }
+    document.querySelectorAll('.tab[data-m]').forEach((b) => b.onclick = () => { mode = b.dataset.m; document.querySelectorAll('.tab[data-m]').forEach((x) => x.classList.toggle('on', x === b)); $('payIn').hidden = mode !== 'pay'; $('affIn').hidden = mode !== 'aff'; calc(); });
+    document.getElementById('inputs').addEventListener('input', calc);
+    calc();
+  })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

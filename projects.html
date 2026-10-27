@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مشاريع على الخارطة | أنا عقار AnaAqar</title>
+  <meta name="description" content="مشاريع المطورين العقاريين في دبي والإمارات مع خطط السداد وأنواع الوحدات وموعد التسليم على أنا عقار.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="js/aq-public.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <style>
+    .flt { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:8px; margin-bottom:16px; }
+    .flt input, .flt select { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:10px 12px; font:inherit; min-width:0; }
+    @media (max-width:760px) { .flt { grid-template-columns:1fr 1fr; } .flt input { grid-column:1/-1; } }
+    .plan-mini { display:flex; height:8px; border-radius:6px; overflow:hidden; gap:2px; }
+    .plan-mini i { display:block; background:var(--teal); } .plan-mini i:nth-child(2n) { background:var(--gold); } .plan-mini i:nth-child(3n) { background:var(--navy); }
+    .st { position:absolute; top:12px; left:12px; background:rgba(25,32,56,.85); color:#fff; font-size:12px; font-weight:900; padding:5px 11px; border-radius:999px; }
+  </style>
+  <section class="head"><div class="head-in">
+    <h1><i class="fas fa-city"></i> مشاريع على الخارطة</h1>
+    <p>مشاريع المطوّرين العقاريين مع خطط السداد وأنواع الوحدات وموعد التسليم، تراجعها إدارة أنا عقار قبل نشرها.</p>
+  </div></section>
+  <main>
+    <div class="flt">
+      <input id="q" placeholder="ابحث باسم المشروع أو المنطقة">
+      <select id="city"><option value="">كل المدن</option></select>
+      <select id="st"><option value="">كل الحالات</option><option value="on_sale">متاح للبيع</option><option value="announced">معلن قريبًا</option><option value="sold_out">مباع بالكامل</option></select>
+      <select id="max"><option value="">أي سعر</option><option value="1000000">حتى مليون</option><option value="2000000">حتى 2 مليون</option><option value="5000000">حتى 5 ملايين</option></select>
+    </div>
+    <div class="acts" style="margin:-4px 0 14px"><a class="btn btn-soft sm" href="map.html?layer=projects"><i class="fas fa-map-location-dot"></i> عرض على الخريطة</a><a class="btn btn-ghost sm" href="calculator.html"><i class="fas fa-calculator"></i> حاسبة التمويل</a></div>
+    <div class="grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  </main>
+  <script>
+  (function () {
+    const { esc, money } = AQPublic;
+    const ST = { announced: 'معلن قريبًا', on_sale: 'متاح للبيع', sold_out: 'مباع بالكامل' };
+    let all = [];
+    const box = document.getElementById('list');
+    function draw() {
+      const q = document.getElementById('q').value.trim().toLowerCase(), c = document.getElementById('city').value, s = document.getElementById('st').value, mx = +document.getElementById('max').value || 0;
+      const rows = all.filter((p) => (!q || [p.name, p.area, p.city, p.description].join(' ').toLowerCase().includes(q)) && (!c || p.city === c) && (!s || p.sale_status === s) && (!mx || (p.price_from && p.price_from <= mx)));
+      if (!all.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-city"></i><h2>المشاريع قادمة قريبًا</h2><p>نضيف مشاريع المطوّرين المعتمدين تباعًا. أنت مطوّر عقاري؟ أضف مشروعك مجانًا من بوابة المهنيين.</p><a class="btn btn-teal" href="pro.html">بوابة المطوّرين</a> <a class="btn btn-ghost" href="request.html">أخبرنا بما تبحث عنه</a></div>`; return; }
+      box.innerHTML = rows.map((p) => {
+        const plan = Array.isArray(p.payment_plan) ? p.payment_plan : [];
+        return `<a class="card" href="project.html?id=${p.id}" style="text-decoration:none"><div class="img" style="background-image:url('${esc((p.images || [])[0] || '')}')"><span class="st">${ST[p.sale_status] || ''}</span></div>
+          <div class="in"><h2>${esc(p.name)}</h2><div class="meta"><i class="fas fa-location-dot"></i> ${esc([p.area, p.city].filter(Boolean).join('، '))}${p.handover ? ' · التسليم ' + esc(p.handover) : ''}</div>
+          ${p.price_from ? `<div class="price">يبدأ من ${money(p.price_from)}</div>` : ''}
+          ${plan.length ? `<div class="plan-mini">${plan.map((x) => `<i style="width:${Number(x.percent) || 0}%" title="${esc(x.label)} ${esc(x.percent)}%"></i>`).join('')}</div><div class="meta">خطة السداد: ${plan.map((x) => esc(x.percent) + '/').join('').replace(/\/$/, '')}</div>` : ''}</div></a>`;
+      }).join('') || '<div class="empty" style="grid-column:1/-1"><i class="fas fa-filter"></i><h2>لا مشاريع بهذه الشروط</h2></div>';
+    }
+    AQPublic.loadProjects().then((l) => {
+      all = l;
+      const cities = [...new Set(l.map((p) => p.city).filter(Boolean))];
+      document.getElementById('city').insertAdjacentHTML('beforeend', cities.map((c) => `<option>${esc(c)}</option>`).join(''));
+      draw();
+    });
+    ['q', 'city', 'st', 'max'].forEach((id) => document.getElementById(id).addEventListener('input', draw));
+  })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

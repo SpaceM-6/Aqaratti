@@ -97,6 +97,23 @@ function build(table: string, r: Record<string, unknown>) {
       link: `${SITE}/admin/index.html#s-reports`,
     };
   }
+  if (table === "projects") {
+    return {
+      subject: `🏗️ مشروع جديد من مطوّر بانتظار المراجعة — ${r.name ?? ""}`,
+      title: "مشروع على الخارطة بانتظار المراجعة",
+      rows: row("المشروع", r.name) + row("المدينة", r.city) + row("المنطقة", r.area) + row("التسليم", r.handover) + row("السعر يبدأ من (AED)", r.price_from),
+      link: `${SITE}/admin/index.html#s-projects`,
+    };
+  }
+  if (table === "buyer_requests") {
+    return {
+      subject: `🔎 طلب مشترٍ جديد — ${r.deal === "rent" ? "إيجار" : "شراء"}${r.city ? " في " + r.city : ""}`,
+      title: "طلب عقار جديد من مشترٍ",
+      rows: row("الاسم", r.name) + row("الهاتف", r.phone) + row("البريد", r.email) + row("النوع", r.deal === "rent" ? "إيجار" : "شراء") +
+        row("المدينة", r.city) + row("نوع العقار", r.property_type) + row("الغرف (حد أدنى)", r.min_bedrooms) + row("الميزانية (AED)", r.max_budget) + row("ملاحظات", r.notes),
+      link: `${SITE}/admin/index.html#s-buyers`,
+    };
+  }
   // properties
   return {
     subject: `🏠 عقار جديد بانتظار المراجعة — ${r.title ?? ""}`,
@@ -115,7 +132,7 @@ Deno.serve(async (req) => {
   let payload: { table?: string; record?: Record<string, unknown> };
   try { payload = await req.json(); } catch { return new Response("Bad request", { status: 400 }); }
   const table = String(payload.table ?? "");
-  if (!["service_requests", "leads", "properties", "service_providers", "chat_messages", "reports"].includes(table) || !payload.record) {
+  if (!["service_requests", "leads", "properties", "service_providers", "chat_messages", "reports", "projects", "buyer_requests"].includes(table) || !payload.record) {
     return new Response("Ignored", { status: 200 });
   }
 

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مشروع على الخارطة | أنا عقار AnaAqar</title>
+  <meta name="description" content="تفاصيل المشروع وخطة السداد وأنواع الوحدات وكتيب المشروع على أنا عقار.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="js/aq-public.js"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="projects.html">المشاريع ←</a>
+  </div></header>
+  <style>
+    .hero-img { aspect-ratio:16/8; border-radius:20px; background:#0f172a center/cover; position:relative; overflow:hidden; }
+    .thumbs { display:flex; gap:8px; overflow-x:auto; margin:8px 0 16px; }
+    .thumbs img { width:90px; height:62px; object-fit:cover; border-radius:10px; cursor:pointer; flex:0 0 auto; border:2px solid transparent; }
+    .thumbs img.on { border-color:var(--teal); }
+    .lay { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:18px; }
+    @media (max-width:900px) { .lay { grid-template-columns:minmax(0,1fr); } }
+    .box { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-bottom:14px; }
+    .box h2 { margin:0 0 10px; font-size:18px; font-weight:900; }
+    .facts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .facts div { background:var(--bg); border-radius:12px; padding:10px; } .facts b { display:block; font-size:16px; } .facts span { color:var(--muted); font-size:12.5px; font-weight:700; }
+    @media (max-width:520px) { .facts { grid-template-columns:1fr 1fr; } }
+    .planbar { display:flex; height:16px; border-radius:8px; overflow:hidden; gap:2px; margin:6px 0 12px; }
+    .planbar i { display:block; } .c0 { background:var(--teal); } .c1 { background:var(--gold); } .c2 { background:var(--navy); } .c3 { background:#7c3aed; } .c4 { background:#e11d48; } .c5 { background:#0284c7; }
+    table.t { width:100%; border-collapse:collapse; font-size:14.5px; } table.t th { text-align:right; color:var(--muted); font-size:13px; padding:8px 4px; } table.t td { padding:9px 4px; border-top:1px solid var(--line); }
+    .dot { display:inline-block; width:10px; height:10px; border-radius:3px; margin-left:6px; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; } .chips span { background:var(--teal-soft); color:var(--teal-dark); border-radius:999px; padding:5px 12px; font-size:13.5px; font-weight:800; }
+    .sticky { position:sticky; top:72px; }
+    .print-only { display:none; }
+    @media print {
+      .topbar, .noprint, .aqe-ticker, .aqe-chat, .aqe-tip, .aqe-ov, .thumbs { display:none !important; }
+      .print-only { display:block; } body { background:#fff; } main { padding:0; } .lay { grid-template-columns:1fr; } .box { break-inside:avoid; border-color:#ddd; }
+      .hero-img { aspect-ratio:16/7; -webkit-print-color-adjust:exact; print-color-adjust:exact; } .planbar i { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    }
+  </style>
+  <main id="root"><div class="skel"></div></main>
+  <script>
+  (function () {
+    const { esc, money } = AQPublic;
+    const ST = { announced: 'معلن قريبًا', on_sale: 'متاح للبيع', sold_out: 'مباع بالكامل' };
+    const id = new URLSearchParams(location.search).get('id');
+    const root = document.getElementById('root');
+    async function load() {
+      if (!id) return notFound();
+      const r = await supabaseClient.from('projects').select('*').eq('id', id).maybeSingle();
+      const p = r.data; if (!p) return notFound();
+      const dv = await supabaseClient.from('profiles').select('full_name,company_name,phone,whatsapp,logo_url,verified').eq('id', p.developer_id).maybeSingle();
+      render(p, dv.data || {});
+    }
+    function notFound() { root.innerHTML = '<div class="empty"><i class="fas fa-city"></i><h2>المشروع غير متاح</h2><p>ربما أزيل أو ما زال قيد المراجعة.</p><a class="btn btn-teal" href="projects.html">كل المشاريع</a></div>'; }
+    function render(p, dv) {
+      document.title = p.name + ' | أنا عقار';
+      const imgs = (p.images || []).filter(Boolean), plan = Array.isArray(p.payment_plan) ? p.payment_plan : [], units = Array.isArray(p.unit_types) ? p.unit_types : [];
+      const devName = dv.company_name || dv.full_name || 'المطوّر';
+      const phone = (dv.whatsapp || dv.phone || '').replace(/\D/g, '');
+      const inCmp = AQPublic.compare.get().includes('project-' + p.id);
+      const priceOpts = units.filter((u) => u.price).map((u) => `<option value="${u.price}">${esc(u.type)} — ${money(u.price)}</option>`).join('');
+      root.innerHTML = `
+        <div class="print-only" style="text-align:center;margin-bottom:10px"><b style="color:#00a896;font-size:22px">أنا عقار</b> · anaaqar.com</div>
+        <div class="hero-img" id="hero" style="background-image:url('${esc(imgs[0] || '')}')"></div>
+        ${imgs.length > 1 ? `<div class="thumbs">${imgs.map((u, i) => `<img src="${esc(u)}" alt="" data-i="${i}" class="${i ? '' : 'on'}" loading="lazy">`).join('')}</div>` : '<div style="height:14px"></div>'}
+        <div class="lay"><div>
+          <div class="box"><h1 style="margin:0 0 4px;font-size:clamp(22px,4vw,30px);font-weight:900">${esc(p.name)}</h1>
+            <div class="meta"><i class="fas fa-location-dot"></i> ${esc([p.area, p.city].filter(Boolean).join('، '))} · ${esc(devName)}${dv.verified ? ' <i class="fas fa-circle-check" style="color:var(--teal)" title="مطوّر موثّق"></i>' : ''}</div>
+            <div class="facts" style="margin-top:12px"><div><b>${p.price_from ? money(p.price_from) : '—'}</b><span>السعر يبدأ من</span></div><div><b>${esc(p.handover || '—')}</b><span>موعد التسليم</span></div><div><b>${ST[p.sale_status]}</b><span>حالة البيع</span></div></div>
+            ${p.description ? `<p style="white-space:pre-wrap;line-height:1.9;margin:14px 0 0">${esc(p.description)}</p>` : ''}</div>
+          ${plan.length ? `<div class="box"><h2><i class="fas fa-money-bill-wave" style="color:var(--teal)"></i> خطة السداد</h2>
+            <div class="planbar">${plan.map((x, i) => `<i class="c${i % 6}" style="width:${Number(x.percent) || 0}%"></i>`).join('')}</div>
+            ${priceOpts || p.price_from ? `<div class="fg noprint"><label>احسب الدفعات على سعر</label><select id="pp">${priceOpts || `<option value="${p.price_from}">السعر الابتدائي — ${money(p.price_from)}</option>`}</select></div>` : ''}
+            <table class="t"><tr><th>المرحلة</th><th>النسبة</th><th>المبلغ التقريبي</th></tr>${plan.map((x, i) => `<tr><td><span class="dot c${i % 6}"></span>${esc(x.label)}</td><td>${esc(x.percent)}%</td><td data-pct="${Number(x.percent) || 0}">—</td></tr>`).join('')}</table>
+            <p class="hint">المبالغ تقديرية، والخطة النهائية حسب عقد المطوّر.</p></div>` : ''}
+          ${units.length ? `<div class="box"><h2><i class="fas fa-layer-group" style="color:var(--teal)"></i> أنواع الوحدات</h2><table class="t"><tr><th>النوع</th><th>المساحة</th><th>السعر يبدأ من</th></tr>${units.map((u) => `<tr><td>${esc(u.type)}</td><td>${u.size ? esc(u.size) + ' م²' : '—'}</td><td>${u.price ? money(u.price) : '—'}</td></tr>`).join('')}</table></div>` : ''}
+          ${(p.amenities || []).length ? `<div class="box"><h2><i class="fas fa-star" style="color:var(--teal)"></i> المرافق</h2><div class="chips">${p.amenities.map((a) => `<span>${esc(a)}</span>`).join('')}</div></div>` : ''}
+        </div><aside><div class="sticky">
+          <div class="box noprint"><h2>اطلب التفاصيل والأسعار</h2>
+            <form id="inq"><div class="fg"><input id="iN" placeholder="الاسم" required></div><div class="fg"><input id="iP" type="tel" dir="ltr" placeholder="رقم الجوال" required></div><div class="fg"><textarea id="iM" style="min-height:70px" placeholder="رسالتك (اختياري)"></textarea></div>
+            <button class="btn btn-teal" style="width:100%">إرسال للمطوّر</button></form><p class="hint" id="iMsg"></p>
+            <div class="acts" style="margin-top:8px">${phone ? `<a class="btn btn-soft sm" target="_blank" rel="noopener" href="https://wa.me/${phone}?text=${encodeURIComponent('مرحبًا، أستفسر عن مشروع ' + p.name + ' المعروض في أنا عقار')}"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+            <button class="btn btn-ghost sm" id="cmp">${inCmp ? '<i class="fas fa-check"></i> في المقارنة' : '<i class="fas fa-code-compare"></i> قارن'}</button>
+            <button class="btn btn-ghost sm" onclick="window.print()"><i class="fas fa-file-pdf"></i> كتيّب PDF</button>
+            ${p.brochure_url ? `<a class="btn btn-ghost sm" target="_blank" rel="noopener" href="${esc(p.brochure_url)}"><i class="fas fa-download"></i> كتيّب المطوّر</a>` : ''}
+            <a class="btn btn-ghost sm" href="calculator.html?price=${p.price_from || ''}"><i class="fas fa-calculator"></i> التمويل</a>
+            ${p.lat && p.lng ? `<a class="btn btn-ghost sm" href="map.html?lat=${p.lat}&lng=${p.lng}&z=14"><i class="fas fa-map"></i> الخريطة</a>` : ''}</div></div>
+          <div class="print-only box">للاستفسار: anaaqar.com/project.html?id=${p.id}</div>
+        </div></aside></div>`;
+      root.querySelectorAll('.thumbs img').forEach((im) => im.onclick = () => { document.getElementById('hero').style.backgroundImage = `url('${im.src}')`; root.querySelectorAll('.thumbs img').forEach((x) => x.classList.toggle('on', x === im)); });
+      const calc = () => { const sel = document.getElementById('pp'); if (!sel) return; const price = +sel.value; root.querySelectorAll('[data-pct]').forEach((td) => { td.textContent = money(Math.round(price * td.dataset.pct / 100)); }); };
+      const pp = document.getElementById('pp'); if (pp) { pp.onchange = calc; calc(); }
+      document.getElementById('cmp').onclick = (e) => { const on = AQPublic.compare.toggle('project-' + p.id); if (on === null) return AQPublic.toast('يمكن مقارنة 4 عناصر كحد أقصى'); e.currentTarget.innerHTML = on ? '<i class="fas fa-check"></i> في المقارنة' : '<i class="fas fa-code-compare"></i> قارن'; AQPublic.toast(on ? 'أضيف للمقارنة — افتح صفحة المقارنة من القائمة' : 'أزيل من المقارنة'); };
+      document.getElementById('inq').onsubmit = async (e) => {
+        e.preventDefault();
+        const n = document.getElementById('iN').value.trim(), ph = document.getElementById('iP').value.trim();
+        if (n.length < 2 || ph.replace(/\D/g, '').length < 7) return (document.getElementById('iMsg').textContent = 'اكتب الاسم ورقم جوال صحيحًا.');
+        const { error } = await supabaseClient.from('leads').insert({ broker_id: p.developer_id, property_id: 'project-' + p.id, property_title: 'مشروع: ' + p.name, buyer_name: n, buyer_phone: ph, message: document.getElementById('iM').value.trim() || null, source: 'صفحة المشروع', status: 'new' });
+        document.getElementById('iMsg').textContent = error ? ((typeof aqIsRateLimited === 'function' && aqIsRateLimited(error)) ? AQ_RATE_LIMIT_MSG : 'تعذّر الإرسال، حاول لاحقًا.') : 'وصل طلبك للمطوّر، وسيتواصل معك قريبًا.';
+        if (!error) e.target.reset();
+      };
+    }
+    load();
+  })();
+  </script>
+  <script src="js/aq-engage.js" defer></script>
+</body>
+</html>

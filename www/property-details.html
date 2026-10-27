@@ -636,7 +636,7 @@
           </div>
         </div>
 
-        <p style="margin:-6px 0 14px; text-align:left;"><a href="report.html" id="reportListingLink" style="color:#94a3b8; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-flag"></i> إبلاغ عن هذا الإعلان</a></p>
+        <p style="margin:-6px 0 14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;"><a href="calculator.html" id="calcLink" hidden style="color:#00a896; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-calculator"></i> احسب القسط الشهري لهذا العقار</a><a href="report.html" id="reportListingLink" style="color:#94a3b8; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-flag"></i> إبلاغ عن هذا الإعلان</a></p>
         <div class="info-section-card" id="secLocation">
           <div class="info-card-title">موقع العقار على الخريطة</div>
           <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:10px;">
@@ -1172,6 +1172,16 @@
         currentBrokerEmail = broker.email || 'info@anaaqar.com';
 
         updatePropertySEO(property, propertyImagesList[0], priceAED);
+        // 📊 عدّاد المشاهدات لعقارات الوسطاء (مرة واحدة لكل زيارة)، يظهر للوسيط في بوابة المهنيين
+        try {
+          const vk = 'aq_viewed_' + propId;
+          if (propId.startsWith('sb-') && !sessionStorage.getItem(vk) && typeof supabaseClient !== 'undefined') {
+            sessionStorage.setItem(vk, '1');
+            supabaseClient.rpc('track_view', { p_id: propId }).then(() => {}, () => {});
+          }
+        } catch (e) {}
+        const calc = document.getElementById('calcLink');
+        if (calc && priceAED && property.dealType !== 'rent') { calc.href = 'calculator.html?price=' + Math.round(priceAED); calc.hidden = false; }
       }
 
       document.getElementById('brokerEmailText').innerText = currentBrokerEmail;
