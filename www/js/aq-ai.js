@@ -20,7 +20,7 @@
     if (r.error) { const st = r.error.context && r.error.context.status; throw new Error(st === 503 ? 'not_configured' : st === 401 ? 'login_required' : st === 429 ? 'rate_limited' : 'failed'); }
     return r.data;
   }
-  const errText = (e) => ({ not_configured: 'أدوات الذكاء الاصطناعي لم تُفعَّل بعد في الموقع.', login_required: 'سجّل الدخول أولًا لاستخدام هذه الأداة.', rate_limited: 'وصلت للحد المسموح هذه الساعة، حاول لاحقًا.' }[e && e.message] || 'تعذّر الاتصال بأداة الذكاء الاصطناعي، حاول مرة أخرى.');
+  const errText = (e) => ({ not_configured: 'أدوات الذكاء الاصطناعي لم تُفعَّل بعد في الموقع.', login_required: 'سجّل الدخول أولًا لاستخدام هذه الأداة.', rate_limited: 'وصلت أداة الذكاء الاصطناعي إلى حد الاستخدام المسموح، حاول لاحقًا.' }[e && e.message] || 'تعذّر الاتصال بأداة الذكاء الاصطناعي، حاول مرة أخرى.');
 
   // ---------- 1) عدالة السعر ----------
   function comparables(p, pool, opts) {

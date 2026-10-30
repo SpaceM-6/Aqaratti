@@ -595,18 +595,26 @@
     async function loadAi() {
       const box = $('aiBox');
       box.innerHTML = '<div class="empty" style="border:0">جاري الفحص...</div>';
-      let state = 'unknown', reply = '';
-      try { const { data, error } = await sb.functions.invoke('ai-assistant', { body: { message: 'مرحبا، اختبار من لوحة التحكم' } });
-        if (error) { const st = error.context && error.context.status; state = st === 503 ? 'nokey' : st === 429 ? 'limit' : 'missing'; } else { state = 'ok'; reply = data && data.reply; } } catch (e) { state = 'missing'; }
-      const day = new Date(Date.now() - 864e5).toISOString();
-      const u = await sb.from('ai_usage').select('n,hour').eq('key', 'all').gte('hour', day);
-      const used = (u.data || []).reduce((a, x) => a + x.n, 0);
-      const S = { ok: ['يعمل ✅', 'teal'], nokey: ['الدالة موجودة لكن ينقصها مفتاح ANTHROPIC_API_KEY', 'red'], limit: ['يعمل، لكن بلغ حد الاستخدام هذه الساعة', 'gold'], missing: ['دالة ai-assistant غير منشورة بعد', 'red'], unknown: ['غير معروف', 'ghost'] };
-      box.innerHTML = `<h2>حالة المساعد الذكي: ${S[state][0]}</h2>
-        <p class="sub">المساعد يجيب الزوار في نافذة «البحث الذكي» في الصفحة الرئيسية، ويقترح عقارات ومشاريع من الموقع فقط. عند تعطله يعود البحث تلقائيًا للبحث العادي بالكلمات.</p>
-        <p><b>الأسئلة خلال آخر 24 ساعة:</b> ${used}</p>
-        ${reply ? `<p class="sub"><b>رد تجريبي:</b> ${esc(reply)}</p>` : ''}
-        <p class="sub">الحدود: 20 سؤالًا في الساعة لكل زائر، و1500 في الساعة للموقع كله. التكلفة تُدفع لشركة Anthropic حسب الاستهلاك، ويمكن وضع سقف شهري من console.anthropic.com.</p>`;
+      // فحص مجاني: رسالة فارغة لا تصل للذكاء الاصطناعي، فقط تكشف هل الدالة والمفتاح موجودان
+      let state = 'missing';
+      try { const { error } = await sb.functions.invoke('ai-assistant', { body: { message: '' } });
+        const st = error && error.context && error.context.status;
+        state = !error ? 'ok' : st === 400 ? 'ok' : st === 503 ? 'nokey' : st === 429 ? 'limit' : 'missing'; } catch (e) { state = 'missing'; }
+      const dayStart = new Date(); dayStart.setUTCHours(0, 0, 0, 0);
+      const [d, w] = await Promise.all([
+        sb.from('ai_usage').select('n').eq('key', 'ai-day').eq('hour', dayStart.toISOString()).maybeSingle(),
+        sb.from('ai_usage').select('n,hour').eq('key', 'ai-day').gte('hour', new Date(Date.now() - 30 * 864e5).toISOString())
+      ]);
+      const today = (d.data && d.data.n) || 0, month = (w.data || []).reduce((a, x) => a + x.n, 0);
+      const S = { ok: 'يعمل ✅', nokey: 'الدوال منشورة لكن ينقصها مفتاح ANTHROPIC_API_KEY', limit: 'يعمل، لكن بلغ حد الاستخدام', missing: 'دالة ai-assistant غير منشورة بعد' };
+      const pct = Math.min(100, Math.round(today / 300 * 100));
+      box.innerHTML = `<h2>حالة الذكاء الاصطناعي: ${S[state]}</h2>
+        <p class="sub">يشمل البحث الذكي، وكاتب الإعلانات، وتحليل الصور، ونبذة المناطق، والرد المقترح على العملاء. عند التوقف يعمل الموقع طبيعيًا بدونها.</p>
+        <p><b>الطلبات اليوم:</b> ${today} من 300 (الحد اليومي)</p>
+        <div style="height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 12px"><i style="display:block;height:100%;width:${pct}%;background:${pct > 85 ? 'var(--red)' : 'var(--teal)'}"></i></div>
+        <p><b>آخر 30 يومًا:</b> ${month} طلبًا</p>
+        <p class="sub">الحد اليومي للموقع كله 300 طلب حتى يكفي الرصيد الشهري؛ عند بلوغه تتوقف الأدوات حتى منتصف الليل (بتوقيت غرينتش) ويعود البحث العادي. ملخصات المناطق المحفوظة لا تُحسب.
+        لتغيير الحد أضيفي في Supabase ← Edge Functions ← Secrets سرًّا باسم AI_DAILY_LIMIT وقيمته الرقم الجديد. وراجعي الاستهلاك الفعلي بالدولار من صفحة Usage في Claude Console.</p>`;
     }
 
     boot();

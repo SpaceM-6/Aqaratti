@@ -5,7 +5,8 @@
 //   POST { action: "suggest_reply",  lead:{...}, tone? }                  ← للمسجلين فقط: رد مقترح على عميل
 //   POST { action: "area_summary",   area, city, stats:{...} }            ← للجميع، مع حفظ النتيجة 30 يومًا
 //
-// الإعدادات (Edge Functions → Secrets): ANTHROPIC_API_KEY (نفس مفتاح المساعد الذكي)، AI_MODEL اختياري
+// الإعدادات (Edge Functions → Secrets): ANTHROPIC_API_KEY (نفس مفتاح المساعد الذكي)، AI_MODEL اختياري،
+//   AI_DAILY_LIMIT اختياري: الحد اليومي المشترك مع ai-assistant (الافتراضي 300 طلب في اليوم)
 // SUPABASE_URL و SUPABASE_ANON_KEY و SUPABASE_SERVICE_ROLE_KEY متاحة تلقائيًا.
 // ============================================================================
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -66,7 +67,27 @@ Deno.serve(async (req) => {
   };
   const ip = (req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "").split(",")[0].trim();
   const who = userId ? "u:" + userId : "ip:" + (await sha(ip || "none"));
+  // ملخص المنطقة المحفوظ لا يُحسب من حدود الاستخدام لأنه لا يكلّف شيئًا
+  let cachedArea: unknown = null;
+  if (action === "area_summary") {
+    const ck0 = "area:" + (String(body.area ?? "").slice(0, 80).trim() + "|" + String(body.city ?? "").slice(0, 40).trim()).toLowerCase();
+    const { data: c0 } = await sb.from("ai_cache").select("value,created_at").eq("key", ck0).maybeSingle();
+    if (c0 && Date.now() - new Date(c0.created_at).getTime() < 30 * 864e5) cachedArea = { ...c0.value, cached: true };
+  }
+  if (cachedArea) return json(cachedArea);
   if (!(await bump("tools-all", 2000)) || !(await bump("tools:" + who, userId ? 60 : 15))) return json({ error: "rate_limited" }, 429);
+
+  // ===== الحد اليومي للموقع كله (مشترك بين المساعد والأدوات) حتى يكفي الرصيد الشهري =====
+  const dailyLimit = Number(Deno.env.get("AI_DAILY_LIMIT") || 300);
+  const dayStart = new Date(); dayStart.setUTCHours(0, 0, 0, 0);
+  const bumpDay = async () => {
+    const { data } = await sb.from("ai_usage").select("n").eq("key", "ai-day").eq("hour", dayStart.toISOString()).maybeSingle();
+    const n = (data?.n ?? 0) + 1;
+    if (n > dailyLimit) return false;
+    await sb.from("ai_usage").upsert({ key: "ai-day", hour: dayStart.toISOString(), n });
+    return true;
+  };
+  if (!(await bumpDay())) return json({ error: "daily_limit" }, 429);
 
   try {
     // ---------- 1) كتابة الإعلان ----------

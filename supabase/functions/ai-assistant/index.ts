@@ -7,7 +7,8 @@
 //   ANTHROPIC_API_KEY   مفتاح Anthropic API (من console.anthropic.com)
 //   AI_MODEL            اختياري، الافتراضي claude-haiku-5-5 (الأقل تكلفة)
 // SUPABASE_URL و SUPABASE_SERVICE_ROLE_KEY متاحان تلقائيًا داخل Supabase.
-// حدود الاستخدام: 20 سؤالًا في الساعة لكل زائر، و1500 سؤالًا في الساعة للموقع كله.
+// حدود الاستخدام: 20 سؤالًا في الساعة لكل زائر، و1500 في الساعة للموقع كله، وحد يومي مشترك مع ai-tools
+// (300 طلب في اليوم افتراضيًا، ويُغيَّر بإضافة السر AI_DAILY_LIMIT).
 // ============================================================================
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -53,7 +54,18 @@ Deno.serve(async (req) => {
     await sb.from("ai_usage").upsert({ key: k, hour: hour.toISOString(), n });
     return true;
   };
+  // ===== الحد اليومي للموقع كله (مشترك بين المساعد والأدوات) حتى يكفي الرصيد الشهري =====
+  const dailyLimit = Number(Deno.env.get("AI_DAILY_LIMIT") || 300);
+  const dayStart = new Date(); dayStart.setUTCHours(0, 0, 0, 0);
+  const bumpDay = async () => {
+    const { data } = await sb.from("ai_usage").select("n").eq("key", "ai-day").eq("hour", dayStart.toISOString()).maybeSingle();
+    const n = (data?.n ?? 0) + 1;
+    if (n > dailyLimit) return false;
+    await sb.from("ai_usage").upsert({ key: "ai-day", hour: dayStart.toISOString(), n });
+    return true;
+  };
   if (!(await bump("all", 1500)) || !(await bump("ip:" + (await sha(ip || "none")), 20))) return json({ error: "rate_limited" }, 429);
+  if (!(await bumpDay())) return json({ error: "daily_limit" }, 429);
 
   // ===== المرشّحون: عقارات ومشاريع منشورة =====
   const items: Item[] = [];
