@@ -22,6 +22,7 @@
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="js/aq-ai.js" defer></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -340,6 +341,11 @@
     .footer-col ul li { margin-bottom: 8px; }
     .footer-col ul li a { color: #9ca3af; text-decoration: none; }
       .form-group label > input[type="checkbox"] { width:20px !important; height:20px; flex:0 0 auto; margin:0; accent-color:#00a896; }
+    .aq-ai-box { margin-top:10px; }
+    .aq-ai-btn { width:100%; border:0; border-radius:12px; padding:12px 14px; background:linear-gradient(135deg,#8b5cf6,#00a896); color:#fff; font:inherit; font-weight:800; font-size:14px; cursor:pointer; display:flex; gap:8px; align-items:center; justify-content:center; }
+    .aq-ai-btn:disabled { opacity:.7; cursor:wait; }
+    .aq-ai-note { margin-top:8px; background:#f5f3ff; border:1px solid #ddd6fe; color:#3b0764; border-radius:12px; padding:10px 12px; font-size:13.5px; line-height:1.8; font-weight:600; }
+    .aq-ai-note.bad { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
     .aq-chips { display:flex; flex-wrap:wrap; gap:8px; }
     .aq-chip { display:inline-flex !important; align-items:center; gap:6px; border:1.5px solid #e2e8f0; border-radius:999px; padding:7px 12px; font-weight:700 !important; cursor:pointer; margin:0 !important; font-size:14px; }
     .aq-chip:has(input:checked) { border-color:#00a896; background:#e6f7f5; color:#028090; }
@@ -605,6 +611,10 @@
             <input type="file" id="fileImageInput" accept="image/*" multiple style="display: none;" onchange="previewUploadedImages(event)">
           </div>
           <div id="imagePreviewContainer" class="image-preview-container"></div>
+          <div class="aq-ai-box" id="aiImgBox" hidden>
+            <button type="button" class="aq-ai-btn" id="aiImgBtn" onclick="aqAnalyzeImages()"><i class="fas fa-wand-magic-sparkles"></i> حلّل الصور واملأ تفاصيل العقار تلقائيًا</button>
+            <div id="aiImgOut" class="aq-ai-out"></div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -615,6 +625,10 @@
         <div class="form-group">
           <label>وصف العقار والميزات</label>
           <textarea id="descInput" rows="4" placeholder="اكتب تفاصيل العقار المميزة..."></textarea>
+          <div class="aq-ai-box">
+            <button type="button" class="aq-ai-btn" id="aiWriteBtn" onclick="aqWriteListing()"><i class="fas fa-pen-nib"></i> اكتب العنوان والوصف بالذكاء الاصطناعي (عربي وإنجليزي)</button>
+            <div id="aiWriteOut" class="aq-ai-out"></div>
+          </div>
         </div>
 
         <div class="form-group" style="display:flex; align-items:flex-start; gap:8px; margin-top:10px;">
@@ -762,6 +776,69 @@
     }
 
     let selectedImageFiles = [];
+    let aqImageHashes = [];
+    const aqVal = (id) => { const el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+    const aqAiMsg = (box, html, bad) => { document.getElementById(box).innerHTML = `<div class="aq-ai-note ${bad ? 'bad' : ''}">${html}</div>`; };
+
+    // ✍️ كتابة الإعلان بالذكاء الاصطناعي من البيانات المدخلة فقط
+    async function aqWriteListing() {
+      const btn = document.getElementById('aiWriteBtn');
+      if (!window.AQAI) return;
+      const data = {
+        deal: dealType === 'rent' ? 'إيجار' : 'بيع', category: aqVal('propertyCategoryInput'), unit_type: (document.getElementById('unitTypeInput') || {}).selectedOptions?.[0]?.text || '',
+        city: aqVal('cityInput'), area: aqVal('areaInput'), price_aed: aqVal('priceInput'), bedrooms: aqVal('bedsInput'), bathrooms: aqVal('bathsInput'), size_m2: aqVal('sizeInput'),
+        status: document.getElementById('completionStatusInput').selectedOptions[0].text, furnishing: (document.getElementById('furnishingInput') || {}).selectedOptions?.[0]?.text || '',
+        sea: (document.getElementById('seaAccessInput') || {}).selectedOptions?.[0]?.text || '', luxury: document.getElementById('isLuxuryInput')?.checked ? 'نعم' : '',
+        amenities: [...document.querySelectorAll('input[name="amenity"]:checked')].map(x => x.parentNode.textContent.trim()),
+        nearby: [...document.querySelectorAll('input[name="nearby"]:checked')].map(x => x.parentNode.textContent.trim()),
+        no_commission: document.getElementById('noCommissionInput').checked ? 'نعم' : '', offer: aqVal('offerTextInput'),
+        broker_notes: aqVal('descInput'), current_title: aqVal('titleInput')
+      };
+      if (!data.price_aed && !data.size_m2 && !data.broker_notes) return aqAiMsg('aiWriteOut', 'املأ بيانات العقار الأساسية أولًا (السعر والمساحة والغرف)، أو اكتب ملاحظاتك في الوصف ليبني عليها.', true);
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الكتابة...';
+      try {
+        const r = await AQAI.call('write_listing', { data });
+        document.getElementById('titleInput').value = r.title_ar || data.current_title;
+        document.getElementById('descInput').value = (r.description_ar || '') + (r.description_en ? `\n\n— English —\n${r.title_en ? r.title_en + '\n' : ''}${r.description_en}` : '');
+        aqAiMsg('aiWriteOut', '✅ كُتب العنوان والوصف. راجعهما وعدّل ما تريد قبل النشر؛ النص مبني على البيانات التي أدخلتها فقط.');
+      } catch (e) { aqAiMsg('aiWriteOut', AQAI.errText(e), true); }
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-pen-nib"></i> أعد الكتابة بالذكاء الاصطناعي';
+    }
+
+    // 🖼️ تحليل الصور: يملأ نوع الوحدة والفرش والإطلالة والمزايا، وينبّه لجودة الصور وتكرارها
+    async function aqComputeHashes() {
+      if (aqImageHashes.length || !window.AQAI) return aqImageHashes;
+      for (const f of selectedImageFiles.slice(0, 15)) { try { aqImageHashes.push(await AQAI.dHash(f)); } catch (e) {} }
+      return aqImageHashes;
+    }
+    async function aqDuplicateCheck() {
+      const hashes = await aqComputeHashes();
+      if (!hashes.length) return [];
+      try { const { data } = await supabaseClient.rpc('find_duplicate_images', { p_hashes: hashes }); return data || []; } catch (e) { return []; }
+    }
+    async function aqAnalyzeImages() {
+      const btn = document.getElementById('aiImgBtn');
+      if (!selectedImageFiles.length || !window.AQAI) return;
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحليل الصور...';
+      const notes = [];
+      try {
+        const imgs = []; for (const f of selectedImageFiles.slice(0, 4)) imgs.push(await AQAI.toDataUrl(f, 768));
+        const r = await AQAI.call('analyze_images', { images: imgs });
+        const set = (id, v) => { const el = document.getElementById(id); if (el && v && !el.value) { el.value = v; notes.push(el.selectedOptions[0].text); } };
+        set('unitTypeInput', r.unit_type); set('furnishingInput', r.furnishing); set('seaAccessInput', r.sea_access);
+        if (r.is_luxury && !document.getElementById('isLuxuryInput').checked) { document.getElementById('isLuxuryInput').checked = true; notes.push('فاخر'); }
+        (r.amenities || []).forEach(a => { const c = document.querySelector(`input[name="amenity"][value="${a}"]`); if (c && !c.checked) { c.checked = true; notes.push(c.parentNode.textContent.trim()); } });
+        let html = r.summary ? `<b>ما في الصور:</b> ${aqEsc(r.summary)}<br>` : '';
+        html += notes.length ? `<b>عُبّئ تلقائيًا:</b> ${notes.map(aqEsc).join('، ')} — راجعها قبل النشر.` : 'لم نجد في الصور ما يُعبّأ تلقائيًا.';
+        if ((r.quality || []).length) html += `<br><b>ملاحظات على الصور:</b><ul style="margin:4px 0;padding-inline-start:18px">${r.quality.map(q => `<li>${aqEsc(q)}</li>`).join('')}</ul>`;
+        aqAiMsg('aiImgOut', html);
+      } catch (e) { aqAiMsg('aiImgOut', AQAI.errText(e), true); }
+      const dups = await aqDuplicateCheck();
+      const other = dups.filter(d => !d.same_owner);
+      if (other.length) document.getElementById('aiImgOut').insertAdjacentHTML('beforeend', `<div class="aq-ai-note bad">⚠️ بعض هذه الصور تشبه صور ${other.length} إعلان آخر على المنصة. استخدم صورًا حقيقية للعقار نفسه؛ الإعلانات بصور منسوخة تُرفض في المراجعة.</div>`);
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> أعد تحليل الصور';
+    }
+    function aqEsc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
     function previewUploadedImages(e) {
       const files = e.target.files;
@@ -769,6 +846,7 @@
       previewContainer.innerHTML = "";
       uploadedImagesList = [];
       selectedImageFiles = Array.from(files);
+      aqImageHashes = []; document.getElementById('aiImgBox').hidden = !selectedImageFiles.length; document.getElementById('aiImgOut').innerHTML = '';
 
       selectedImageFiles.forEach(file => {
         const reader = new FileReader();
@@ -827,6 +905,9 @@
         window.location.href = 'index.html';
         return;
       }
+      // 🔎 كشف تكرار الصور مع إعلانات منشورة أخرى قبل الإرسال
+      const dupsAtSubmit = (await aqDuplicateCheck()).filter(d => !d.same_owner);
+      if (dupsAtSubmit.length && !confirm('بعض صورك تشبه صور إعلان آخر منشور على المنصة. الإعلانات بصور منسوخة تُرفض في المراجعة. هل تريد المتابعة على أي حال؟')) return;
 
       let selectedCity = document.getElementById('cityInput').value;
       if (selectedCity === 'كل المدن') {
@@ -883,12 +964,13 @@
         is_luxury: document.getElementById('isLuxuryInput').checked,
         amenities: [...document.querySelectorAll('input[name="amenity"]:checked')].map(x => x.value),
         nearby: [...document.querySelectorAll('input[name="nearby"]:checked')].map(x => x.value),
+        image_hashes: await aqComputeHashes(),
         trial_ends_at: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
       };
 
       // احتياط: إن لم تُضف الأعمدة الجديدة بعد في قاعدة البيانات (supabase/property_listing_fields.sql)،
       // يُحذف العمود غير الموجود ويُعاد الحفظ بدل أن يفشل نشر الإعلان كله (ورقم التصريح يُحفظ داخل الوصف).
-      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at', 'unit_type', 'furnishing', 'sea_access', 'is_luxury', 'amenities', 'nearby'];
+      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at', 'unit_type', 'furnishing', 'sea_access', 'is_luxury', 'amenities', 'nearby', 'image_hashes'];
       let rowToSave = { ...propertyRow };
       let { error } = await supabaseClient.from('properties').insert(rowToSave);
       for (let attempt = 0; error && attempt < OPTIONAL_COLUMNS.length; attempt++) {

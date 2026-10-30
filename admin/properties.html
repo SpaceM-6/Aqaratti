@@ -194,6 +194,18 @@
       offset += data.length;
       list.innerHTML = cache.length ? cache.map(cardHTML).join('') : '<div class="empty">لا توجد عقارات في هذا القسم.</div>';
       document.getElementById('moreBtn').style.display = data.length === PAGE ? 'block' : 'none';
+      checkDuplicates(data);
+    }
+
+    // 🔎 كشف الصور المكررة: يقارن بصمات صور الإعلان بصور الإعلانات الأخرى
+    async function checkDuplicates(rows) {
+      for (const p of rows) {
+        if (!(p.image_hashes || []).length) continue;
+        const { data, error } = await supabaseClient.rpc('find_duplicate_images', { p_hashes: p.image_hashes, p_exclude: p.id });
+        if (error || !data || !data.length) continue;
+        const card = document.getElementById('card-' + p.id); if (!card) continue;
+        card.querySelector('.gallery, .warn')?.insertAdjacentHTML('afterend', `<div class="reason" style="background:#fff7ed;border-color:#fed7aa;color:#9a3412"><i class="fas fa-clone"></i> صور هذا الإعلان تشبه صور ${data.length} إعلان آخر: ${data.map(d => `<a href="#card-${esc(d.property_id)}" onclick="window.open('../property-details.html?id=sb-${esc(d.property_id)}','_blank');return false" style="color:inherit;font-weight:800">${esc(d.title)}</a>`).join('، ')}. تحقّق قبل الاعتماد.</div>`);
+      }
     }
 
     async function review(id, status) {

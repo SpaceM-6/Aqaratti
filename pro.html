@@ -51,6 +51,7 @@
     .pill2 { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:900; padding:3px 10px; border-radius:999px; background:#f1f5f9; color:#334155; }
     .st-new { background:#e0f2fe; color:#075985; } .st-contacted { background:#fef3c7; color:#92400e; } .st-viewing { background:#ede9fe; color:#5b21b6; }
     .st-negotiating { background:#ffedd5; color:#9a3412; } .st-won { background:#dcfce7; color:#166534; } .st-lost { background:#f1f5f9; color:#64748b; }
+    .sc-hot { background:#fee2e2; color:#b91c1c; } .sc-warm { background:#fef3c7; color:#92400e; } .sc-cold { background:#e0f2fe; color:#075985; }
     .st-approved { background:#dcfce7; color:#166534; } .st-pending { background:#fef3c7; color:#92400e; } .st-rejected { background:#fee2e2; color:#b91c1c; } .st-paused, .st-sold, .st-rented { background:#f1f5f9; color:#475569; }
     .list .li { display:flex; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
     .list .li:last-child { border-bottom:0; }
@@ -97,6 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
+  <script src="js/aq-ai.js"></script>
   <script>
   (function () {
     'use strict';
@@ -283,22 +285,25 @@
     }
 
     // ===================== العملاء (CRM) =====================
-    let stageFilter = 'all', leadQ = '';
-    const leadRow = (l) => `<div class="li lead" data-open="${l.id}"><div class="tx"><b>${esc(l.buyer_name)}</b><small>${esc(l.property_title || l.requirements || l.message || '')}</small><small>${fmtD(l.created_at)}${l.source && l.source !== 'website' ? ' · ' + esc(l.source) : ''}${me.account_type === 'office' && l.broker_id !== user.id ? ' · ' + esc(memberName(l.broker_id)) : ''}</small></div><span class="pill2 st-${l.stage || 'new'}">${STAGES[l.stage || 'new']}</span></div>`;
+    let stageFilter = 'all', leadQ = '', leadSort = 'new';
+    const scorePill = (l) => { if (!window.AQAI || ['won', 'lost'].includes(l.stage)) return ''; const sc = AQAI.leadScore(l); return `<span class="pill2 sc-${sc.cls}" title="جدية العميل ${sc.score}/100${sc.why && sc.why.length ? ': ' + sc.why.join('، ') : ''}">${sc.label}</span>`; };
+    const leadRow = (l) => `<div class="li lead" data-open="${l.id}"><div class="tx"><b>${esc(l.buyer_name)}</b><small>${esc(l.property_title || l.requirements || l.message || '')}</small><small>${fmtD(l.created_at)}${l.source && l.source !== 'website' ? ' · ' + esc(l.source) : ''}${me.account_type === 'office' && l.broker_id !== user.id ? ' · ' + esc(memberName(l.broker_id)) : ''}</small></div><span style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${scorePill(l)}<span class="pill2 st-${l.stage || 'new'}">${STAGES[l.stage || 'new']}</span></span></div>`;
     function wireLeadOpen(root) { root.querySelectorAll('[data-open]').forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); openLead(+el.dataset.open); })); }
     async function renderLeads() {
       const m = $('main');
       try { await loadLeads(); } catch (e) { m.innerHTML = `<div class="empty">${setupErr(e)}</div>`; return; }
       const counts = {}; leads.forEach((l) => { const s = l.stage || 'new'; counts[s] = (counts[s] || 0) + 1; });
-      const rows = leads.filter((l) => (stageFilter === 'all' || (l.stage || 'new') === stageFilter) && (!leadQ || [l.buyer_name, l.buyer_phone, l.property_title, l.requirements].join(' ').toLowerCase().includes(leadQ)));
+      let rows = leads.filter((l) => (stageFilter === 'all' || (l.stage || 'new') === stageFilter) && (!leadQ || [l.buyer_name, l.buyer_phone, l.property_title, l.requirements].join(' ').toLowerCase().includes(leadQ)));
+      if (leadSort === 'score' && window.AQAI) rows = rows.slice().sort((a, b) => AQAI.leadScore(b).score - AQAI.leadScore(a).score);
       m.innerHTML = `<h1 class="pg">العملاء</h1><p class="pgsub">كل استفسار على عقاراتك يصل هنا تلقائيًا. انقل العميل بين المراحل حتى تتم الصفقة.</p>
-        <div class="acts" style="margin-bottom:12px"><button class="btn btn-teal" id="addLead"><i class="fas fa-user-plus"></i> إضافة عميل</button><button class="btn btn-ghost" id="csv"><i class="fas fa-file-arrow-down"></i> تصدير Excel (CSV)</button></div>
+        <div class="acts" style="margin-bottom:12px"><button class="btn btn-teal" id="addLead"><i class="fas fa-user-plus"></i> إضافة عميل</button><button class="btn btn-ghost" id="csv"><i class="fas fa-file-arrow-down"></i> تصدير Excel (CSV)</button><button class="btn btn-soft" id="sortLeads"><i class="fas fa-fire"></i> ${leadSort === 'score' ? 'ترتيب: الأكثر جدية' : 'رتّب حسب الجدية'}</button></div>
         <div class="fg"><input id="lq" placeholder="ابحث بالاسم أو الرقم أو العقار" value="${esc(leadQ)}"></div>
         <div class="stages"><button data-s="all" class="${stageFilter === 'all' ? 'on' : ''}">الكل <span>${leads.length}</span></button>${Object.entries(STAGES).map(([k, t]) => `<button data-s="${k}" class="${stageFilter === k ? 'on' : ''}">${t} <span>${counts[k] || 0}</span></button>`).join('')}</div>
         <div class="panel list">${rows.map(leadRow).join('') || '<p class="mut">لا عملاء في هذه المرحلة.</p>'}</div>`;
       m.querySelectorAll('.stages button').forEach((b) => b.onclick = () => { stageFilter = b.dataset.s; renderLeads(); });
       let qt; $('lq').oninput = () => { clearTimeout(qt); qt = setTimeout(() => { leadQ = $('lq').value.trim().toLowerCase(); renderLeads(); setTimeout(() => { const i = $('lq'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 0); }, 350); };
       $('addLead').onclick = addLeadForm;
+      $('sortLeads').onclick = () => { leadSort = leadSort === 'score' ? 'new' : 'score'; renderLeads(); };
       $('csv').onclick = () => {
         const head = ['الاسم', 'الهاتف', 'البريد', 'العقار', 'المرحلة', 'الميزانية', 'المتطلبات', 'المصدر', 'التاريخ'];
         const lines = [head].concat(rows.map((l) => [l.buyer_name, l.buyer_phone, l.buyer_email, l.property_title, STAGES[l.stage || 'new'], l.budget, l.requirements || l.message, l.source, new Date(l.created_at).toISOString().slice(0, 10)]));
@@ -341,6 +346,9 @@
       const d = overlay(`<h2 style="margin-top:0">${esc(l.buyer_name)}</h2>
         <div class="quick">${l.buyer_phone ? `<a class="btn btn-teal sm" data-log="call" href="tel:${esc(l.buyer_phone)}"><i class="fas fa-phone"></i> اتصال</a>` : ''}${l.buyer_email ? `<a class="btn btn-soft sm" data-log="email" href="mailto:${esc(l.buyer_email)}"><i class="fas fa-envelope"></i> بريد</a>` : ''}</div>
         ${l.buyer_phone ? `<div class="panel" style="padding:12px"><b style="font-size:14px"><i class="fab fa-whatsapp" style="color:#16a34a"></i> رسائل واتساب جاهزة</b>${tpls.map((t, i) => `<a class="row" style="margin:6px 0;text-decoration:none" target="_blank" rel="noopener" data-log="whatsapp" href="https://wa.me/${wa(l.buyer_phone)}?text=${encodeURIComponent(fill(t))}"><div class="tx" style="font-size:13.5px">${esc(fill(t))}</div></a>`).join('')}<button class="btn btn-ghost sm" id="editTpl">تعديل القوالب</button></div>` : ''}
+        <div class="panel" style="padding:12px;border-color:#ddd6fe"><b style="font-size:14px"><i class="fas fa-wand-magic-sparkles" style="color:#8b5cf6"></i> رد مقترح بالذكاء الاصطناعي</b> ${scorePill(l)}
+          <div class="quick"><select id="aiTone" style="border:1.5px solid var(--line);border-radius:10px;padding:6px;font:inherit;background:var(--card);color:var(--ink)"><option>ودية</option><option>رسمية</option><option>مختصرة</option><option>بالإنجليزية</option></select><button class="btn btn-soft sm" id="aiReplyBtn">اقترح ردًا</button></div>
+          <div id="aiReplyOut"></div></div>
         <div class="panel" style="padding:12px">
           <div class="mut">${l.buyer_phone ? `<span dir="ltr">${esc(l.buyer_phone)}</span> · ` : ''}${l.buyer_email ? esc(l.buyer_email) + ' · ' : ''}${fmt(l.created_at)}</div>
           ${l.property_title ? `<p style="margin:6px 0"><b>العقار:</b> ${l.property_id ? `<a href="property-details.html?id=${encodeURIComponent(l.property_id)}" target="_blank">${esc(l.property_title)}</a>` : esc(l.property_title)}</p>` : ''}
@@ -367,6 +375,22 @@
       };
       loadTl();
       d.el.querySelectorAll('[data-log]').forEach((a) => a.addEventListener('click', () => { sb.from('lead_activities').insert({ lead_id: id, actor_id: user.id, kind: a.dataset.log, body: a.dataset.log === 'whatsapp' ? (a.textContent || '').trim().slice(0, 500) : null }).then(loadTl); if ((l.stage || 'new') === 'new') sb.from('leads').update({ stage: 'contacted' }).eq('id', id).then(() => { l.stage = 'contacted'; q('#dStage').value = 'contacted'; }); }));
+      q('#aiReplyBtn').onclick = async () => {
+        const btn = q('#aiReplyBtn'), out = q('#aiReplyOut');
+        if (!window.AQAI) return;
+        btn.disabled = true; btn.textContent = 'جاري الكتابة...';
+        try {
+          const acts = await sb.from('lead_activities').select('kind,body,outcome,created_at').eq('lead_id', id).order('id', { ascending: false }).limit(8);
+          const r = await AQAI.call('suggest_reply', { tone: q('#aiTone').value, lead: { me: me.full_name, name: l.buyer_name, property: l.property_title, message: l.message, requirements: l.requirements, budget: l.budget, stage: STAGES[l.stage || 'new'],
+            activities: (acts.data || []).map((a) => `${KINDS[a.kind][0]}${a.outcome ? ' (' + a.outcome + ')' : ''}: ${a.body || ''}`) } });
+          out.innerHTML = `<div class="row" style="margin:8px 0;white-space:pre-wrap"><div class="tx" style="font-size:14px">${esc(r.reply)}</div></div>
+            <div class="mut">جدية العميل حسب الذكاء الاصطناعي: ${'★'.repeat(r.intent_score)}${'☆'.repeat(5 - r.intent_score)} — ${esc(r.intent_reason)}${r.next_step ? '<br>الخطوة التالية المقترحة: ' + esc(r.next_step) : ''}</div>
+            <div class="quick">${l.buyer_phone ? `<a class="btn btn-teal sm" target="_blank" rel="noopener" data-log="whatsapp" href="https://wa.me/${wa(l.buyer_phone)}?text=${encodeURIComponent(r.reply)}"><i class="fab fa-whatsapp"></i> إرسال واتساب</a>` : ''}<button class="btn btn-ghost sm" id="aiCopy">نسخ</button></div>`;
+          q('#aiCopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(r.reply); toast('نُسخ الرد'); };
+          out.querySelectorAll('[data-log]').forEach((a) => a.addEventListener('click', () => sb.from('lead_activities').insert({ lead_id: id, actor_id: user.id, kind: 'whatsapp', body: r.reply.slice(0, 500) }).then(loadTl)));
+        } catch (e) { out.innerHTML = `<p class="mut" style="color:var(--red)">${esc(AQAI.errText(e))}</p>`; }
+        btn.disabled = false; btn.textContent = 'اقترح ردًا آخر';
+      };
       const et = q('#editTpl'); if (et) et.onclick = () => {
         const v = prompt('اكتب القوالب، كل قالب في سطر. يمكنك استعمال {name} و{property} و{me}', tpls.join('\n'));
         if (v != null) { LS.set('aq_wa_tpl', v.split('\n').map((x) => x.trim()).filter(Boolean)); d.close(); openLead(id); }
@@ -468,7 +492,7 @@
         <div class="gridf"><div class="fg"><label>السعر (درهم)</label><input id="eP" type="number" value="${esc(x.price_aed || '')}"></div><div class="fg"><label>المدينة</label><input id="eC" value="${esc(x.city || '')}"></div>
         <div class="fg"><label>غرف النوم</label><input id="eB" type="number" value="${esc(x.bedrooms ?? '')}"></div><div class="fg"><label>الحمامات</label><input id="eBa" type="number" value="${esc(x.bathrooms ?? '')}"></div>
         <div class="fg"><label>المساحة (م²)</label><input id="eA" type="number" value="${esc(x.area_m2 || '')}"></div><div class="fg"><label>رقم التصريح</label><input id="ePm" dir="ltr" value="${esc(x.permit_number || '')}"></div></div>
-        <div class="fg"><label>الوصف</label><textarea id="eD" style="min-height:140px">${esc(x.description || '')}</textarea></div>
+        <div class="fg"><label>الوصف</label><textarea id="eD" style="min-height:140px">${esc(x.description || '')}</textarea><button type="button" class="btn btn-soft sm" id="eAi" style="margin-top:6px"><i class="fas fa-pen-nib"></i> أعد كتابة العنوان والوصف بالذكاء الاصطناعي</button><p class="mut" id="eAiMsg"></p></div>
         <div class="gridf"><div class="fg"><label>الفرش</label><select id="eFu">${[['', 'غير محدد'], ['furnished', 'مفروش'], ['unfurnished', 'غير مفروش'], ['partly', 'مفروش جزئيًا']].map(([k, t]) => `<option value="${k}" ${(x.furnishing || '') === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
         <div class="fg"><label>البحر والإطلالة</label><select id="eSea">${[['', 'لا يوجد'], ['beachfront', 'على البحر مباشرة'], ['sea_view', 'إطلالة بحرية'], ['near_sea', 'قريب من البحر']].map(([k, t]) => `<option value="${k}" ${(x.sea_access || '') === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div></div>
         <label class="chk"><input type="checkbox" id="eLx" ${x.is_luxury ? 'checked' : ''}> عقار فاخر (Luxury)</label>
@@ -477,6 +501,17 @@
         <div class="fg"><input id="eOt" placeholder="نص العرض" value="${esc(x.offer_text || '')}"></div>
         <button class="btn btn-teal" style="width:100%">حفظ وإرسال للمراجعة</button></form>`);
       const q = (s) => d.el.querySelector(s);
+      q('#eAi').onclick = async () => {
+        const b = q('#eAi'); b.disabled = true; b.textContent = 'جاري الكتابة...';
+        try {
+          const r = await AQAI.call('write_listing', { data: { deal: x.deal_type === 'rent' ? 'إيجار' : 'بيع', title: q('#eT').value, city: q('#eC').value, price_aed: q('#eP').value, bedrooms: q('#eB').value, bathrooms: q('#eBa').value, size_m2: q('#eA').value,
+            furnishing: q('#eFu').selectedOptions[0].text, sea: q('#eSea').selectedOptions[0].text, luxury: q('#eLx').checked ? 'نعم' : '', broker_notes: q('#eD').value } });
+          if (r.title_ar) q('#eT').value = r.title_ar;
+          q('#eD').value = (r.description_ar || '') + (r.description_en ? `\n\n— English —\n${r.title_en ? r.title_en + '\n' : ''}${r.description_en}` : '');
+          q('#eAiMsg').textContent = 'راجع النص قبل الحفظ؛ كُتب من بيانات الإعلان فقط.';
+        } catch (er) { q('#eAiMsg').textContent = AQAI.errText(er); }
+        b.disabled = false; b.innerHTML = '<i class="fas fa-pen-nib"></i> أعد الكتابة';
+      };
       q('#ef').onsubmit = async (e) => {
         e.preventDefault();
         const p = { title: q('#eT').value.trim(), price_aed: q('#eP').value, city: q('#eC').value.trim(), bedrooms: q('#eB').value, bathrooms: q('#eBa').value, area_m2: q('#eA').value,
