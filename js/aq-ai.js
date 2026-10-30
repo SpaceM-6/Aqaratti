@@ -250,7 +250,7 @@
   async function requestFromChat(history, fallbackDeal) {
     addCss();
     let draft = { deal: fallbackDeal === 'rent' ? 'rent' : 'sale', city: '', property_type: '', min_bedrooms: null, max_budget: null, notes: (history || []).filter((h) => h.role === 'user').map((h) => h.content).join(' — ').slice(0, 1400) };
-    const ov = document.createElement('div');
+    const ov = document.createElement('div'); ov.className = 'aqi-ov';
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:rgba(2,8,23,.55);display:flex;align-items:' + (innerWidth > 760 ? 'center' : 'flex-end') + ';justify-content:center;font-family:Tajawal,sans-serif;direction:rtl';
     ov.innerHTML = `<form class="aqi-card" style="width:min(560px,100%);max-height:92vh;overflow:auto;margin:0;border-radius:${innerWidth > 760 ? '20px' : '20px 20px 0 0'}" novalidate>
       <h3><i class="fas fa-paper-plane" style="color:#00a896"></i> أرسل طلبك للوسطاء الموثّقين</h3>
