@@ -4,6 +4,7 @@
 //   POST { action: "analyze_images", images:["data:image/jpeg;base64,..."] } ← للمسجلين فقط: صفات العقار من الصور وملاحظات جودة
 //   POST { action: "suggest_reply",  lead:{...}, tone? }                  ← للمسجلين فقط: رد مقترح على عميل
 //   POST { action: "area_summary",   area, city, stats:{...} }            ← للجميع، مع حفظ النتيجة 30 يومًا
+//   POST { action: "extract_request", history:[{role,content}] }          ← للجميع: معايير طلب العميل من محادثة البحث
 //
 // الإعدادات (Edge Functions → Secrets): ANTHROPIC_API_KEY (نفس مفتاح المساعد الذكي)، AI_MODEL اختياري،
 //   AI_DAILY_LIMIT اختياري: الحد اليومي المشترك مع ai-assistant (الافتراضي 300 طلب في اليوم)
@@ -139,6 +140,18 @@ Deno.serve(async (req) => {
 أعد JSON فقط: {"reply":"","intent_score":1,"intent_reason":"","next_step":""}`,
         `اسم الوسيط: ${clip(l.me, 60)}\nالعميل: ${clip(l.name, 80)}\nالعقار: ${clip(l.property, 200)}\nرسالته: ${clip(l.message, 1000)}\nالمتطلبات: ${clip(l.requirements, 600)}\nالميزانية: ${clip(l.budget, 30)}\nالمرحلة: ${clip(l.stage, 30)}\nالنبرة المطلوبة: ${clip(body.tone || "ودية", 30)}\nآخر التواصل:\n${acts}`, 600);
       return json({ reply: clip(r.reply, 1200), intent_score: Math.max(1, Math.min(5, Number(r.intent_score) || 3)), intent_reason: clip(r.intent_reason, 200), next_step: clip(r.next_step, 200) });
+    }
+
+    // ---------- 5) تحويل محادثة البحث إلى طلب يصل للوسطاء ----------
+    if (action === "extract_request") {
+      const conv = (Array.isArray(body.history) ? body.history : []).slice(-10)
+        .map((h: { role?: string; content?: string }) => `${h.role === "assistant" ? "المساعد" : "العميل"}: ${clip(h.content, 600)}`).join("\n");
+      if (conv.length < 5) return json({ error: "empty" }, 400);
+      const r = await claude(key, `استخرج من محادثة عميل يبحث عن عقار معايير طلبه فقط كما قالها العميل، دون تخمين.
+أعد JSON فقط: {"deal":"sale|rent","city":"","property_type":"شقة|فيلا|تاون هاوس|استوديو|أرض|مكتب|محل تجاري|","min_bedrooms":null,"max_budget":null,"notes":"ملخص قصير بالعربية لما يريده العميل (الموقع، المزايا، موعد الانتقال...)"}`, conv, 400);
+      return json({ deal: r.deal === "rent" ? "rent" : "sale", city: clip(r.city, 80), property_type: clip(r.property_type, 60),
+        min_bedrooms: Number.isFinite(Number(r.min_bedrooms)) && r.min_bedrooms !== null ? Math.max(0, Math.min(20, Math.round(Number(r.min_bedrooms)))) : null,
+        max_budget: Number(r.max_budget) > 0 ? Math.round(Number(r.max_budget)) : null, notes: clip(r.notes, 1400) });
     }
 
     // ---------- 4) ملخص المنطقة ----------

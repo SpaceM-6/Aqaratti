@@ -47,7 +47,7 @@
     let furn = p.furnishing || null;
     if (!furn) furn = /غير مفروش|بدون فرش|unfurnished/i.test(t) ? 'unfurnished' : /مفروش(ة)? جزئي|نصف مفروش|شبه مفروش/.test(t) ? 'partly' : /مفروش|مؤثث|furnished/i.test(t) ? 'furnished' : null;
     const price = Number(p.priceAED || p.price || 0);
-    const luxury = p.isLuxury === true || /فاخر|فخم|لوكس|راقٍ|راقي|luxury/i.test(t) || unit === 'penthouse' || (p.dealType === 'rent' ? price >= 400000 : price >= 5000000);
+    const luxury = p.isLuxury === true || /فاخر|فخم|لوكس|luxury/i.test(t) || unit === 'penthouse' || (p.dealType === 'rent' ? price >= 400000 : price >= 5000000);
     let sea = p.seaAccess || null;
     if (!sea) {
       if (/على البحر مباشرة|واجهة (بحرية|مائية)|شاطئية|شاطئ خاص|beachfront/i.test(t) || inArea(t, 'beachfront')) sea = 'beachfront';
@@ -73,7 +73,7 @@
 
   function match(p) {
     const a = attrs(p);
-    if (S.pmin !== '' && a.price < +S.pmin) return false;
+    // حدّا السعر (من/إلى) تطبّقهما خانتا السعر في البحث الرئيسي، وتُزامَن معهما خانتا هذه القائمة
     // الحد الأقصى للسعر تطبّقه خانة «السعر الأقصى» في البحث الرئيسي (تُزامَن معها هذه الخانة)
     const k = S.aunit === 'sqft' ? 1 / SQFT : 1;
     if (S.amin !== '' && (!a.area || a.area < +S.amin * k)) return false;
@@ -159,7 +159,7 @@
   function open() {
     if (!document.getElementById('aqfCss')) { const st = document.createElement('style'); st.id = 'aqfCss'; st.textContent = css; document.head.appendChild(st); }
     // السعر الأقصى المكتوب في خانة البحث الرئيسية يظهر هنا
-    const mp = document.getElementById('maxPriceInput'); if (mp) S.pmax = mp.value.trim();
+    const mp = document.getElementById('maxPriceInput'); if (mp) S.pmax = mp.value.trim(); const np = document.getElementById('minPriceInput'); if (np) S.pmin = np.value.trim();
     ov = document.createElement('div'); ov.className = 'aqf-ov';
     const unitList = S.cat === 'commercial' ? UNITS.commercial : S.cat === 'residential' ? UNITS.residential : UNITS.residential.concat(UNITS.commercial);
     ov.innerHTML = `<div class="aqf-sheet" role="dialog" aria-modal="true" aria-label="الفلاتر">
@@ -196,10 +196,10 @@
         if (k === 'cat') { S.units = []; close(); open(); return; }
         return refresh();
       }
-      if (e.target.closest('[data-clear]')) { S = blank(); const mp2 = document.getElementById('maxPriceInput'); if (mp2) mp2.value = ''; close(); open(); return; }
+      if (e.target.closest('[data-clear]')) { S = blank(); ['maxPriceInput', 'minPriceInput'].forEach((id) => { const el = document.getElementById(id); if (el) el.value = ''; }); close(); open(); return; }
       if (e.target.closest('[data-go]')) { close(); apply(); }
     });
-    ov.querySelectorAll('[data-in]').forEach((i) => i.addEventListener('input', () => { S[i.dataset.in] = i.value.trim(); if (i.dataset.in === 'pmax') { const m = document.getElementById('maxPriceInput'); if (m) m.value = S.pmax; } refresh(); }));
+    ov.querySelectorAll('[data-in]').forEach((i) => i.addEventListener('input', () => { S[i.dataset.in] = i.value.trim(); if (i.dataset.in === 'pmax' || i.dataset.in === 'pmin') { const m = document.getElementById(i.dataset.in === 'pmax' ? 'maxPriceInput' : 'minPriceInput'); if (m) m.value = S[i.dataset.in]; } refresh(); }));
     ov.querySelectorAll('[data-sw]').forEach((i) => i.addEventListener('change', () => { S[i.dataset.sw] = i.checked; refresh(); }));
     refresh();
   }
@@ -216,7 +216,7 @@
     }, 120);
   }
   function apply() {
-    const mp = document.getElementById('maxPriceInput'); if (mp) mp.value = S.pmax;
+    const mp = document.getElementById('maxPriceInput'); if (mp) mp.value = S.pmax; const np = document.getElementById('minPriceInput'); if (np) np.value = S.pmin;
     save(); badge(); tags();
     if (typeof window.executeSearch === 'function') window.executeSearch();
   }
@@ -228,7 +228,7 @@
   function tags() {
     const box = document.getElementById('aqfTags'); if (!box) return;
     const t = [];
-    const mp = document.getElementById('maxPriceInput'); S.pmax = mp ? mp.value.trim() : S.pmax;
+    const mp = document.getElementById('maxPriceInput'); S.pmax = mp ? mp.value.trim() : S.pmax; const np = document.getElementById('minPriceInput'); S.pmin = np ? np.value.trim() : S.pmin;
     if (S.pmin !== '' || S.pmax !== '') t.push(['price', 'السعر ' + (S.pmin !== '' ? 'من ' + Number(S.pmin).toLocaleString('en-US') + ' ' : '') + (S.pmax !== '' ? 'حتى ' + Number(S.pmax).toLocaleString('en-US') : '') + ' درهم']);
     if (S.amin !== '' || S.amax !== '') t.push(['area', 'المساحة ' + (S.amin !== '' ? 'من ' + S.amin + ' ' : '') + (S.amax !== '' ? 'حتى ' + S.amax : '') + (S.aunit === 'sqft' ? ' قدم²' : ' م²')]);
     if (S.cat) t.push(['cat', S.cat === 'commercial' ? 'تجاري' : 'سكني']);
@@ -241,7 +241,7 @@
     box.hidden = !t.length;
   }
   function removeTag(k) {
-    if (k === 'price') { S.pmin = ''; S.pmax = ''; const m = document.getElementById('maxPriceInput'); if (m) m.value = ''; } else if (k === 'area') { S.amin = ''; S.amax = ''; }
+    if (k === 'price') { S.pmin = ''; S.pmax = ''; ['maxPriceInput', 'minPriceInput'].forEach((id) => { const el = document.getElementById(id); if (el) el.value = ''; }); } else if (k === 'area') { S.amin = ''; S.amax = ''; }
     else if (k.includes(':')) { const [a, v] = k.split(':'); S[a] = S[a].filter((x) => x !== v); }
     else if (typeof S[k] === 'boolean') S[k] = false; else S[k] = '';
     apply();

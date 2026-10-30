@@ -203,7 +203,96 @@
     return { score: s, label: s >= 70 ? '🔥 ساخن' : s >= 45 ? 'دافئ' : 'بارد', cls: s >= 70 ? 'hot' : s >= 45 ? 'warm' : 'cold', why };
   }
 
-  window.AQAI = { call, errText, fairness, comparables, similarTo, detailsPage, dHash, toDataUrl, leadScore, median, quant, money, UNIT_AR, attrs };
+  // ---------- 8) ترتيب النتائج حسب الملاءمة ----------
+  const SORTS = { fit: 'الأنسب لك', new: 'الأحدث', price_asc: 'السعر: الأقل أولًا', price_desc: 'السعر: الأعلى أولًا', ppm: 'سعر المتر: الأقل أولًا', area: 'المساحة: الأكبر أولًا' };
+  let sortMode = (() => { try { return sessionStorage.getItem('aq_sort') || 'fit'; } catch (e) { return 'fit'; } })();
+  function fitScores(list, pool) {
+    let prof = {}, visited = [];
+    try { prof = JSON.parse(localStorage.getItem('aq_profile') || '{}') || {}; visited = JSON.parse(localStorage.getItem('anaaqar_visited') || '[]'); } catch (e) {}
+    const seen = visited.slice(-8).map((id) => pool.find((p) => String(p.id) === String(id))).filter(Boolean);
+    const prices = seen.map(price).filter(Boolean), typical = prices.length ? median(prices) : 0;
+    const units = {}; seen.forEach((p) => { const u = attrs(p).unit; units[u] = (units[u] || 0) + 1; });
+    const m = new Map();
+    list.forEach((p, i) => {
+      let s = 0;
+      if (prof.city && p.city === prof.city) s += 3;
+      if (typical && price(p)) s += Math.max(0, 3 - Math.abs(Math.log(price(p) / typical)) * 4);
+      s += (units[attrs(p).unit] || 0) * 0.8;
+      if (visited.includes(String(p.id))) s -= 1.5;
+      if (p.isVerified) s += 1; if ((p.imagesList || []).length > 2) s += 0.5; if (p.hasOffer) s += 0.5;
+      if (String(p.id).startsWith('sb-')) s += 1;
+      const f = fairness(p, pool); if (f && f.level === 'good') s += 1.5; else if (f && f.level === 'high') s -= 0.5;
+      m.set(p, s - i * 0.001);
+    });
+    return m;
+  }
+  function sortList(list) {
+    const pool = typeof getAllProperties === 'function' ? getAllProperties() : list;
+    const a = list.slice();
+    if (sortMode === 'price_asc') return a.sort((x, y) => (price(x) || 1e15) - (price(y) || 1e15));
+    if (sortMode === 'price_desc') return a.sort((x, y) => price(y) - price(x));
+    if (sortMode === 'ppm') return a.sort((x, y) => ((price(x) / area(x)) || 1e15) - ((price(y) / area(y)) || 1e15));
+    if (sortMode === 'area') return a.sort((x, y) => area(y) - area(x));
+    if (sortMode === 'new') return a;
+    const sc = fitScores(a, pool); return a.sort((x, y) => sc.get(y) - sc.get(x));
+  }
+  function setSort(m) { sortMode = SORTS[m] ? m : 'fit'; try { sessionStorage.setItem('aq_sort', sortMode); } catch (e) {} }
+  function mountSort() {
+    const head = document.querySelector('.aq-results-head'); if (!head || document.getElementById('aqSort')) return;
+    const sel = document.createElement('select'); sel.id = 'aqSort'; sel.setAttribute('aria-label', 'ترتيب النتائج');
+    sel.style.cssText = 'border:1.5px solid #e2e8f0;border-radius:10px;padding:7px 10px;font:700 13.5px Tajawal,sans-serif;background:#fff;color:#0f172a;cursor:pointer';
+    sel.innerHTML = Object.entries(SORTS).map(([k, t]) => `<option value="${k}" ${k === sortMode ? 'selected' : ''}>${t}</option>`).join('');
+    sel.onchange = () => { sortMode = sel.value; try { sessionStorage.setItem('aq_sort', sortMode); } catch (e) {} if (typeof window.executeSearch === 'function') window.executeSearch(true); };
+    head.appendChild(sel);
+  }
+
+  // ---------- 9) تحويل محادثة البحث الذكي إلى طلب يصل للوسطاء ----------
+  async function requestFromChat(history, fallbackDeal) {
+    addCss();
+    let draft = { deal: fallbackDeal === 'rent' ? 'rent' : 'sale', city: '', property_type: '', min_bedrooms: null, max_budget: null, notes: (history || []).filter((h) => h.role === 'user').map((h) => h.content).join(' — ').slice(0, 1400) };
+    const ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:rgba(2,8,23,.55);display:flex;align-items:' + (innerWidth > 760 ? 'center' : 'flex-end') + ';justify-content:center;font-family:Tajawal,sans-serif;direction:rtl';
+    ov.innerHTML = `<form class="aqi-card" style="width:min(560px,100%);max-height:92vh;overflow:auto;margin:0;border-radius:${innerWidth > 760 ? '20px' : '20px 20px 0 0'}" novalidate>
+      <h3><i class="fas fa-paper-plane" style="color:#00a896"></i> أرسل طلبك للوسطاء الموثّقين</h3>
+      <p class="aqi-sub" id="rqHint"><i class="fas fa-spinner fa-spin"></i> نلخّص طلبك من المحادثة...</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <label class="aqi-sub">النوع<select name="deal" style="width:100%"><option value="sale">شراء</option><option value="rent">إيجار</option></select></label>
+        <label class="aqi-sub">المدينة أو المنطقة<input name="city" style="width:100%"></label>
+        <label class="aqi-sub">نوع العقار<input name="property_type" style="width:100%"></label>
+        <label class="aqi-sub">أقل عدد غرف<input name="min_bedrooms" type="number" min="0" style="width:100%"></label>
+        <label class="aqi-sub" style="grid-column:1/-1">الميزانية القصوى (درهم)<input name="max_budget" type="number" style="width:100%"></label>
+        <label class="aqi-sub" style="grid-column:1/-1">التفاصيل<textarea name="notes" rows="3" style="width:100%"></textarea></label>
+        <label class="aqi-sub">الاسم<input name="name" autocomplete="name" required style="width:100%"></label>
+        <label class="aqi-sub">الجوال أو واتساب<input name="phone" type="tel" dir="ltr" autocomplete="tel" required style="width:100%"></label>
+      </div>
+      <label class="aqi-sub" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0"><input type="checkbox" name="consent" checked style="width:18px;height:18px;flex:0 0 auto"> أوافق على مشاركة رقمي مع الوسطاء والمطوّرين الموثّقين الذين لديهم عقارات مطابقة فقط.</label>
+      <p class="aqi-sub" id="rqMsg" style="color:#e11d48"></p>
+      <div style="display:flex;gap:8px"><button type="submit" style="flex:1;border:0;border-radius:12px;padding:12px;background:#00a896;color:#fff;font:900 15px Tajawal,sans-serif;cursor:pointer">أرسل طلبي</button><button type="button" data-x style="border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 16px;background:transparent;font:800 14px Tajawal,sans-serif;cursor:pointer;color:inherit">إلغاء</button></div></form>`;
+    ov.querySelectorAll('input:not([type=checkbox]),select,textarea').forEach((el) => { el.style.cssText += ';border:1.5px solid #e2e8f0;border-radius:10px;padding:9px;font:inherit;font-size:15px;margin-top:3px;background:inherit;color:inherit;box-sizing:border-box'; });
+    document.body.appendChild(ov);
+    const f = ov.querySelector('form'), close = () => ov.remove();
+    ov.querySelector('[data-x]').onclick = close; ov.onclick = (e) => { if (e.target === ov) close(); };
+    const fill = (d) => { f.deal.value = d.deal; f.city.value = d.city || ''; f.property_type.value = d.property_type || ''; f.min_bedrooms.value = d.min_bedrooms ?? ''; f.max_budget.value = d.max_budget || ''; f.notes.value = d.notes || ''; };
+    try { const u = JSON.parse(localStorage.getItem('aq_lead_contact') || '{}'); if (u.n) f.elements.name.value = u.n; if (u.p) f.phone.value = u.p; } catch (e) {}
+    fill(draft);
+    try { const r = await call('extract_request', { history }); draft = Object.assign(draft, r); fill(draft); document.getElementById('rqHint').textContent = 'راجع ما فهمناه من محادثتك وعدّل ما تريد، ثم أرسل.'; }
+    catch (e) { const h = document.getElementById('rqHint'); if (h) h.textContent = 'اكتب تفاصيل طلبك وسنرسلها للوسطاء الذين لديهم عقارات مطابقة.'; }
+    f.onsubmit = async (e) => {
+      e.preventDefault();
+      const name = f.elements.name.value.trim(), phone = f.phone.value.trim();
+      if (name.length < 2 || phone.replace(/\D/g, '').length < 7) { document.getElementById('rqMsg').textContent = 'اكتب اسمك ورقم جوال صحيحًا.'; return; }
+      try { localStorage.setItem('aq_lead_contact', JSON.stringify({ n: name, p: phone })); } catch (er) {}
+      const row = { name, phone, deal: f.deal.value, city: f.city.value.trim() || null, property_type: f.property_type.value.trim() || null, min_bedrooms: f.min_bedrooms.value === '' ? null : +f.min_bedrooms.value,
+        max_budget: +f.max_budget.value || null, notes: ('من البحث الذكي: ' + f.notes.value.trim()).slice(0, 1500), contact_consent: f.consent.checked };
+      try { const u = typeof getCurrentAnaAqarUser === 'function' ? await getCurrentAnaAqarUser() : null; if (u && u.id) row.user_id = u.id; } catch (er) {}
+      const { error } = await supabaseClient.from('buyer_requests').insert(row);
+      if (error) { document.getElementById('rqMsg').textContent = (typeof aqIsRateLimited === 'function' && aqIsRateLimited(error)) ? AQ_RATE_LIMIT_MSG : 'تعذّر الإرسال، حاول لاحقًا.'; return; }
+      f.innerHTML = '<div style="text-align:center;padding:18px 0"><i class="fas fa-circle-check" style="font-size:44px;color:#00a896"></i><h3 style="justify-content:center">وصل طلبك</h3><p>أرسلناه للوسطاء والمطوّرين الذين لديهم عقارات مطابقة، وسيتواصلون معك قريبًا.</p><button type="button" style="border:0;border-radius:12px;padding:10px 18px;background:#00a896;color:#fff;font:900 14px Tajawal,sans-serif;cursor:pointer">تم</button></div>';
+      f.querySelector('button').onclick = close;
+    };
+  }
+
+  window.AQAI = { call, errText, fairness, comparables, similarTo, detailsPage, dHash, toDataUrl, leadScore, median, quant, money, UNIT_AR, attrs, sortList, setSort, mountSort, requestFromChat };
   const page = (location.pathname.split('/').pop() || 'index.html');
-  if (page === '' || page === 'index.html') { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', indexPage); else indexPage(); }
+  if (page === '' || page === 'index.html') { const init = () => { indexPage(); mountSort(); }; if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init(); }
 })();

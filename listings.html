@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>العقارات | أنا عقار AnaAqar</title>
+  <meta name="description" content="تصفح العقارات حسب الفئة على أنا عقار: مشاريع جديدة، عقارات جاهزة، عروض، بدون عمولة، فاخرة، على البحر، للبيع والإيجار.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=79">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=79"></script>
+  <script src="js/aq-public.js?v=79"></script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <style>
+    .bar { position:sticky; top:57px; z-index:15; background:var(--bg); padding:10px 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .bar .pr { display:flex; gap:6px; align-items:center; background:var(--card); border:1.5px solid var(--line); border-radius:12px; padding:4px 8px; }
+    .bar .pr input { width:96px; border:0; background:transparent; color:var(--ink); font:inherit; font-size:14px; padding:6px 2px; outline:none; min-width:0; }
+    .bar select { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:9px 10px; font:inherit; font-weight:700; font-size:14px; }
+    @media (max-width:760px) { .bar { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin:0 -16px; padding:10px 16px; } .bar::-webkit-scrollbar { display:none; } .bar > * { flex:0 0 auto; } }
+    .bar .hero-center-badges { display:contents; } .bar .pearl-action-bar { display:contents; }
+    .bar .aqf-btn { min-height:42px; padding:8px 14px; }
+    .cnt { color:var(--muted); font-weight:800; font-size:14px; margin:4px 0 12px; }
+    .card .img { cursor:pointer; } .card .img img { width:100%; height:100%; object-fit:cover; display:block; }
+    .card .badges { position:absolute; top:10px; right:10px; display:flex; gap:6px; flex-wrap:wrap; }
+    .card .badges span { background:rgba(25,32,56,.85); color:#fff; font-size:11.5px; font-weight:900; padding:4px 9px; border-radius:999px; }
+    .card .badges .g { background:#16a34a; } .card .badges .o { background:var(--red); } .card .badges .t { background:var(--teal); }
+    .specs { display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:13px; font-weight:700; }
+    .card h3 a { text-decoration:none; } .cmpb { position:absolute; bottom:10px; left:10px; width:38px; height:38px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#192038; cursor:pointer; }
+    .cmpb.on { background:var(--teal); color:#fff; }
+    .prj { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; }
+    .prj a { flex:0 0 240px; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; text-decoration:none; }
+    .prj a div.i { height:120px; background:#0f172a center/cover; } .prj a div.t { padding:10px 12px; } .prj b { display:block; } .prj small { color:var(--muted); font-weight:700; }
+    .more { display:block; margin:18px auto 0; }
+    .aqf-tags { margin:0 0 10px !important; }
+  </style>
+  <section class="head"><div class="head-in">
+    <h1 id="hT"><i class="fas fa-building"></i> العقارات</h1>
+    <p id="hP">تصفّح العقارات المتاحة على أنا عقار.</p>
+  </div></section>
+  <main>
+    <div class="bar pearl-search-card">
+      <div class="pearl-action-bar"><div class="hero-center-badges"></div></div>
+      <select id="deal" aria-label="بيع أو إيجار"><option value="">بيع وإيجار</option><option value="sale">للبيع</option><option value="rent">للإيجار</option></select>
+      <select id="city" aria-label="المدينة"><option value="">كل المدن</option></select>
+      <span class="pr"><input id="minPriceInput" type="number" inputmode="numeric" placeholder="السعر من" aria-label="السعر من"> – <input id="maxPriceInput" type="number" inputmode="numeric" placeholder="إلى" aria-label="السعر إلى"></span>
+      <select id="sort" aria-label="الترتيب"><option value="fit">الأنسب لك</option><option value="new">الأحدث</option><option value="price_asc">السعر: الأقل أولًا</option><option value="price_desc">السعر: الأعلى أولًا</option><option value="ppm">سعر المتر: الأقل أولًا</option><option value="area">المساحة: الأكبر أولًا</option></select>
+    </div>
+    <div id="prj"></div>
+    <div class="cnt" id="cnt"></div>
+    <div class="grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <button class="btn btn-ghost more" id="more" hidden>عرض المزيد</button>
+    <div class="acts" style="justify-content:center;margin-top:22px"><a class="btn btn-soft" href="request.html"><i class="fas fa-paper-plane"></i> لم تجد ما تريد؟ اطلب عقارك</a><a class="btn btn-ghost" href="map.html"><i class="fas fa-map"></i> على الخريطة</a></div>
+  </main>
+  <script src="js/aq-filters.js?v=79"></script>
+  <script src="js/aq-ai.js?v=79"></script>
+  <script>
+  (function () {
+    const { esc, money } = AQPublic, $ = (id) => document.getElementById(id);
+    const qs = new URLSearchParams(location.search);
+    const CATS = {
+      off_plan: ['fa-rocket', 'مشاريع جديدة على الخارطة', 'إطلاقات المطوّرين ووحدات على الخارطة بخطط سداد.', (p) => p.completionStatus === 'off_plan'],
+      under_construction: ['fa-helmet-safety', 'مشاريع تحت الإنشاء', 'وحدات قيد البناء تُسلَّم خلال الفترة القادمة.', (p) => p.completionStatus === 'under_construction'],
+      ready: ['fa-key', 'عقارات جاهزة', 'عقارات جاهزة للسكن أو التأجير فورًا.', (p) => !p.completionStatus || p.completionStatus === 'ready'],
+      offers: ['fa-tags', 'عقارات عليها عروض', 'خصومات وخطط سداد خاصة من المعلنين.', (p) => p.hasOffer === true],
+      no_commission: ['fa-hand-holding-dollar', 'عقارات بدون عمولة', 'عقارات دون عمولة على المشتري أو المستأجر، أو من المالك مباشرة.', (p) => p.noCommission === true || p.brokerRole === 'مالك مباشر' || /^\s*0+(\.0+)?\s*%?\s*$/.test(String(p.commission ?? 'x'))],
+      sale: ['fa-key', 'عقارات للبيع', 'شقق وفلل وعقارات تجارية للبيع.', (p) => p.dealType !== 'rent'],
+      rent: ['fa-building', 'عقارات للإيجار', 'عقارات للإيجار السنوي والشهري.', (p) => p.dealType === 'rent'],
+      residential: ['fa-house-chimney', 'عقارات سكنية', 'شقق وفلل وتاون هاوس.', (p) => !AQAI.attrs(p).commercial],
+      commercial: ['fa-store', 'عقارات تجارية', 'مكاتب ومحلات ومستودعات وأراضٍ.', (p) => AQAI.attrs(p).commercial],
+      luxury: ['fa-gem', 'عقارات فاخرة', 'عقارات راقية بتشطيبات ومواقع مميزة.', (p) => AQAI.attrs(p).luxury],
+      sea: ['fa-water', 'عقارات على البحر وبإطلالة بحرية', 'على البحر مباشرة، أو بإطلالة بحرية، أو قريبة من الشاطئ.', (p) => !!AQAI.attrs(p).sea],
+      golden: ['fa-passport', 'عقارات بقيمة الإقامة الذهبية', 'عقارات بقيمة تؤهّل للتقدّم للإقامة الذهبية وفق شروط الجهات الرسمية.', (p) => p.isGolden === true],
+      all: ['fa-building', 'كل العقارات', 'كل العقارات المتاحة على أنا عقار.', () => true]
+    };
+    const key = CATS[qs.get('cat')] ? qs.get('cat') : 'all', C = CATS[key];
+    document.title = C[1] + ' | أنا عقار';
+    $('hT').innerHTML = `<i class="fas ${C[0]}"></i> ${esc(C[1])}`; $('hP').textContent = C[2];
+    if (qs.get('deal')) $('deal').value = qs.get('deal'); if (qs.get('max')) $('maxPriceInput').value = qs.get('max');
+    if (['sale', 'rent'].includes(key)) $('deal').closest('select').hidden = true;
+    let pool = [], shown = 24, rows = [];
+    try { $('sort').value = sessionStorage.getItem('aq_sort') || 'fit'; } catch (e) {}
+    const pred = () => {
+      const d = $('deal').value, c = $('city').value, mn = +$('minPriceInput').value || 0, mx = +$('maxPriceInput').value || Infinity;
+      return (p) => C[3](p) && (!d || (d === 'rent' ? p.dealType === 'rent' : p.dealType !== 'rent')) && (!c || p.city === c) && (Number(p.priceAED) || 0) >= mn && (Number(p.priceAED) || 0) <= mx && (!window.AQFilters || AQFilters.match(p));
+    };
+    // ما يحتاجه زر «الفلاتر» المشترك مع الصفحة الرئيسية
+    window.getAllProperties = () => pool;
+    window.aqBuildSearchPredicate = pred;
+    window.executeSearch = () => { shown = 24; draw(); };
+    const card = (p) => {
+      const a = AQAI.attrs(p), f = AQAI.fairness(p, pool), img = p.image || (p.imagesList || [])[0] || '', inCmp = AQPublic.compare.get().includes(String(p.id));
+      const url = 'property-details.html?id=' + encodeURIComponent(p.id);
+      return `<article class="card"><div class="img" onclick="location.href='${url}'"><img src="${esc(img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+        <div class="badges"><span>${p.dealType === 'rent' ? 'للإيجار' : 'للبيع'}</span>${f && f.level === 'good' ? '<span class="g">سعر مناسب</span>' : ''}${p.hasOffer ? '<span class="o">عرض</span>' : ''}${p.isVerified ? '<span class="t">موثّق</span>' : ''}</div>
+        <button class="cmpb ${inCmp ? 'on' : ''}" data-cmp="${esc(p.id)}" aria-label="أضف للمقارنة" title="أضف للمقارنة" onclick="event.stopPropagation()"><i class="fas fa-code-compare"></i></button></div>
+        <div class="in"><div class="price">${money(p.priceAED)}${p.dealType === 'rent' ? ' <small style="font-size:12px;color:var(--muted)">/ سنويًا</small>' : ''}</div>
+        <h3><a href="${url}">${esc(p.title)}</a></h3><div class="meta"><i class="fas fa-location-dot"></i> ${esc(p.city || '')} · ${esc(AQAI.UNIT_AR[a.unit] || p.propertyType || '')}</div>
+        <div class="specs">${p.bedrooms != null ? `<span><i class="fas fa-bed"></i> ${p.bedrooms === 0 ? 'استوديو' : esc(p.bedrooms) + ' غرف'}</span>` : ''}${p.bathrooms ? `<span><i class="fas fa-bath"></i> ${esc(p.bathrooms)}</span>` : ''}${p.area_m2 ? `<span><i class="fas fa-ruler-combined"></i> ${esc(p.area_m2)} م²</span>` : ''}${a.furn === 'furnished' ? '<span>مفروش</span>' : ''}${a.sea ? '<span>🌊 بحر</span>' : ''}</div>
+        ${p.hasOffer && p.offerText ? `<div class="meta" style="color:var(--red)"><i class="fas fa-tag"></i> ${esc(p.offerText)}</div>` : ''}</div></article>`;
+    };
+    function draw() {
+      rows = AQAI.sortList(pool.filter(pred()));
+      $('cnt').textContent = rows.length ? `${rows.length.toLocaleString('en-US')} عقار` : '';
+      $('list').innerHTML = rows.slice(0, shown).map(card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas ${C[0]}"></i><h2>لا توجد عقارات هنا حاليًا</h2><p>نضيف عقارات جديدة باستمرار. اترك طلبك ونبلغك عند توفر ما يناسبك.</p><a class="btn btn-teal" href="request.html">اطلب عقارك</a> <a class="btn btn-ghost" href="listings.html">كل العقارات</a></div>`;
+      $('more').hidden = rows.length <= shown;
+      $('list').querySelectorAll('[data-cmp]').forEach((b) => b.onclick = (e) => { e.stopPropagation(); const on = AQPublic.compare.toggle(b.dataset.cmp); if (on === null) return AQPublic.toast('يمكن مقارنة 4 عقارات كحد أقصى'); b.classList.toggle('on', on); AQPublic.toast(on ? 'أضيف للمقارنة — افتح «المقارنة» من القائمة' : 'أزيل من المقارنة'); });
+    }
+    $('more').onclick = () => { shown += 24; draw(); };
+    ['deal', 'city', 'minPriceInput', 'maxPriceInput'].forEach((id) => $(id).addEventListener('change', () => { shown = 24; draw(); }));
+    $('sort').onchange = () => { AQAI.setSort($('sort').value); shown = 24; draw(); };
+    Promise.all([AQPublic.loadListings(), ['off_plan', 'under_construction'].includes(key) ? AQPublic.loadProjects() : []]).then(([l, prj]) => {
+      pool = l;
+      const cities = {}; pool.filter(C[3]).forEach((p) => { if (p.city) cities[p.city] = (cities[p.city] || 0) + 1; });
+      $('city').insertAdjacentHTML('beforeend', Object.entries(cities).sort((a, b) => b[1] - a[1]).map(([c, n]) => `<option value="${esc(c)}">${esc(c)} (${n})</option>`).join(''));
+      if (qs.get('city')) $('city').value = qs.get('city');
+      if (prj.length) $('prj').innerHTML = `<h2 style="font-size:18px;margin:6px 0 8px">مشاريع المطوّرين <a href="projects.html" style="font-size:14px;color:var(--teal)">كل المشاريع ←</a></h2><div class="prj">${prj.slice(0, 10).map((x) => `<a href="project.html?id=${x.id}"><div class="i" style="background-image:url('${esc((x.images || [])[0] || '')}')"></div><div class="t"><b>${esc(x.name)}</b><small>${esc([x.area, x.city].filter(Boolean).join('، '))}${x.price_from ? ' · يبدأ من ' + money(x.price_from) : ''}</small></div></a>`).join('')}</div>`;
+      else if (['off_plan', 'under_construction'].includes(key)) $('prj').innerHTML = '<div class="row"><div class="ic"><i class="fas fa-city"></i></div><div class="tx"><b>مشاريع المطوّرين على الخارطة</b><span class="hint">صفحة المشاريع فيها خطط السداد وأنواع الوحدات لكل مشروع.</span></div><a class="btn btn-soft sm" href="projects.html">المشاريع</a></div>';
+      draw();
+    });
+  })();
+  </script>
+  <script src="js/aq-engage.js?v=79" defer></script>
+</body>
+</html>

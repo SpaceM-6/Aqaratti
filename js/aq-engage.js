@@ -185,13 +185,34 @@
   }
 
   // ===================== الترحيب أول مرة =====================
-  var EMIRATES = ['دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة', 'أم القيوين', 'الفجيرة', 'العين'];
-  function applyProfile(p) {
+  // الدول المتاحة في الموقع (نفس قائمة الدول في أعلى الصفحة الرئيسية) ومدنها
+  var COUNTRIES = [
+    ['uae', 'الإمارات', 'ae', ['دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة', 'أم القيوين', 'الفجيرة', 'العين']],
+    ['saudi', 'السعودية', 'sa', ['الرياض', 'جدة', 'مكة المكرمة', 'المدينة المنورة', 'الخبر']],
+    ['egypt', 'مصر', 'eg', ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد']],
+    ['turkey', 'تركيا', 'tr', ['إسطنبول', 'أنطاليا', 'بورصة']],
+    ['qatar', 'قطر', 'qa', ['الدوحة', 'اللؤلؤة', 'لوسيل']],
+    ['oman', 'عُمان', 'om', ['مسقط', 'صلالة']],
+    ['uk', 'بريطانيا', 'gb', ['لندن', 'مانشستر']],
+    ['usa', 'أمريكا', 'us', ['نيويورك', 'ميامي']],
+    ['france', 'فرنسا', 'fr', ['باريس', 'كان']],
+    ['spain', 'إسبانيا', 'es', ['مدريد', 'برشلونة']],
+    ['cyprus', 'قبرص', 'cy', ['ليماسول', 'لارنكا']],
+    ['greece', 'اليونان', 'gr', ['أثينا', 'سانتوريني']]
+  ];
+  function countryOf(k) { for (var i = 0; i < COUNTRIES.length; i++) if (COUNTRIES[i][0] === k) return COUNTRIES[i]; return COUNTRIES[0]; }
+  function applyProfile(p, withCountry) {
     if (!isIndex || !p) return;
     var tab = { sale: 'sale', rent: 'rent', invest: 'roi' }[p.intent];
     if (tab && typeof window.switchRoyalTab === 'function') {
       var b = document.querySelector('.royal-tab[data-type="' + tab + '"]');
       if (b) window.switchRoyalTab(b);
+    }
+    // اختيار الدولة أولًا (يبدّل المدن في البحث)، ثم المدينة
+    // (عند الترحيب فقط؛ في الزيارات التالية تُستعاد آخر دولة اختارها الزائر من أعلى الصفحة)
+    if (withCountry && p.country && typeof window.selectCustomCountry === 'function') {
+      var c = countryOf(p.country);
+      try { window.selectCustomCountry(c[0], c[1], 'https://flagcdn.com/w40/' + c[2] + '.png'); } catch (e) {}
     }
     var sel = document.getElementById('citySelector');
     if (sel && p.city) { var opt = Array.prototype.find.call(sel.options, function (o) { return o.value === p.city || o.textContent.trim() === p.city; }); if (opt) sel.value = opt.value; }
@@ -212,21 +233,26 @@
         '<button type="button" data-v="rent"><i class="fas fa-building"></i>أبحث عن إيجار</button>' +
         '<button type="button" data-v="invest"><i class="fas fa-chart-line"></i>أبحث عن استثمار</button>' +
         '<button type="button" data-v="broker"><i class="fas fa-user-tie"></i>أنا وسيط أو مطوّر</button></div>' +
-        '<label class="aqe-field"><span>الإمارة المفضّلة</span><select id="aqeWCity"><option value="">كل الإمارات</option>' +
-        EMIRATES.map(function (e) { return '<option>' + e + '</option>'; }).join('') + '</select></label>' +
+        '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
+        COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
+        '<label class="aqe-field"><span>المدينة المفضّلة</span><select id="aqeWCity"></select></label>' +
         '<button class="aqe-btn" type="button" id="aqeWGo" disabled>ابدأ</button><button class="aqe-link" type="button" id="aqeWSkip">ليس الآن</button></div>';
       document.body.appendChild(ov);
       var go = ov.querySelector('#aqeWGo');
+      var cSel = ov.querySelector('#aqeWCountry'), citySel = ov.querySelector('#aqeWCity');
+      var fillCities = function () { var c = countryOf(cSel.value); citySel.innerHTML = '<option value="">كل مدن ' + c[1] + '</option>' + c[3].map(function (x) { return '<option>' + x + '</option>'; }).join(''); };
+      try { var saved = localStorage.getItem('anaaqar_selected_country'); if (saved) cSel.value = saved; } catch (e) {}
+      fillCities(); cSel.onchange = fillCities;
       ov.querySelectorAll('.aqe-choices button').forEach(function (b) {
         b.onclick = function () { choice = b.dataset.v; ov.querySelectorAll('.aqe-choices button').forEach(function (x) { x.classList.toggle('on', x === b); }); go.disabled = false; };
       });
       ov.querySelector('#aqeWSkip').onclick = function () { ov.remove(); SS.set('aqe_welcome_skip', '1'); };
       go.onclick = function () {
-        var p = { intent: choice, city: ov.querySelector('#aqeWCity').value, at: new Date().toISOString() };
+        var p = { intent: choice, country: cSel.value, city: citySel.value, at: new Date().toISOString() };
         LS.set('aq_profile', p); SS.set('aqe_welcomed_now', '1'); ov.remove();
         if (choice === 'broker') {
           toast('مرحبًا بك! فعّل ملفك المهني وانشر عقاراتك مجانًا لأول 3 أشهر', 'success', { label: 'فعّل ملفي', run: function () { location.href = 'claim-profile.html'; } });
-        } else { applyProfile(p); toast('رتّبنا لك الصفحة حسب اهتمامك ✨'); }
+        } else { applyProfile(p, true); toast('رتّبنا لك الصفحة حسب اهتمامك ✨'); }
       };
     }, 1200);
   }
