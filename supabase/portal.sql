@@ -12,6 +12,31 @@
 -- ============================================================================
 
 -- ---------------------------------------------------------------------------
+-- 0) نوع رقم العميل ورقم العقار كما هو في قاعدتك (رقم أو uuid) — يُكتشف تلقائيًا
+-- ---------------------------------------------------------------------------
+do $$
+declare lt text; pt text;
+begin
+  select format_type(a.atttypid, a.atttypmod) into lt from pg_attribute a
+   where a.attrelid = 'public.leads'::regclass and a.attname = 'id';
+  select format_type(a.atttypid, a.atttypmod) into pt from pg_attribute a
+   where a.attrelid = 'public.properties'::regclass and a.attname = 'id';
+  if not exists (select 1 from pg_type where typname = 'aq_lead_id' and typnamespace = 'public'::regnamespace) then
+    execute format('create domain public.aq_lead_id as %s', lt);
+  end if;
+  if not exists (select 1 from pg_type where typname = 'aq_prop_id' and typnamespace = 'public'::regnamespace) then
+    execute format('create domain public.aq_prop_id as %s', pt);
+  end if;
+end $$;
+grant usage on type public.aq_lead_id to anon, authenticated;
+grant usage on type public.aq_prop_id to anon, authenticated;
+-- نسخ قديمة من الدوال بنوع ثابت (إن وُجدت) تُحذف حتى لا تتعارض
+drop function if exists public.can_access_lead(bigint) cascade;
+drop function if exists public.broker_property_set_state(bigint, text);
+drop function if exists public.broker_update_property(bigint, jsonb);
+drop function if exists public.my_property_stats();
+
+-- ---------------------------------------------------------------------------
 -- 1) الحسابات المهنية
 -- ---------------------------------------------------------------------------
 alter table public.profiles add column if not exists account_type text not null default 'user';
@@ -171,7 +196,7 @@ do $$ begin
   alter table public.leads add constraint leads_stage_chk check (stage in ('new', 'contacted', 'viewing', 'negotiating', 'won', 'lost'));
 exception when duplicate_object then null; end $$;
 
-create or replace function public.can_access_lead(p_lead bigint)
+create or replace function public.can_access_lead(p_lead public.aq_lead_id)
 returns boolean
 language sql
 stable
@@ -184,7 +209,7 @@ as $$
        and (l.broker_id = auth.uid() or l.assigned_to = auth.uid() or public.my_office_member(l.broker_id) or public.is_app_admin())
   );
 $$;
-grant execute on function public.can_access_lead(bigint) to authenticated;
+grant execute on function public.can_access_lead(public.aq_lead_id) to authenticated;
 
 drop policy if exists "Office reads team leads" on public.leads;
 create policy "Office reads team leads" on public.leads for select
@@ -199,7 +224,7 @@ grant delete on public.leads to authenticated;
 
 create table if not exists public.lead_activities (
   id         bigint generated always as identity primary key,
-  lead_id    bigint not null references public.leads(id) on delete cascade,
+  lead_id    public.aq_lead_id not null references public.leads(id) on delete cascade,
   actor_id   uuid default auth.uid(),
   kind       text not null default 'note' check (kind in ('note', 'call', 'whatsapp', 'email', 'meeting', 'stage')),
   body       text check (char_length(coalesce(body, '')) <= 3000),
@@ -239,7 +264,7 @@ create table if not exists public.tasks (
   id          bigint generated always as identity primary key,
   owner_id    uuid not null default auth.uid() references auth.users(id) on delete cascade,
   assignee_id uuid references auth.users(id) on delete set null,
-  lead_id     bigint references public.leads(id) on delete cascade,
+  lead_id     public.aq_lead_id references public.leads(id) on delete cascade,
   title       text not null check (char_length(title) between 2 and 200),
   notes       text check (char_length(coalesce(notes, '')) <= 2000),
   due_at      timestamptz,
@@ -293,7 +318,7 @@ grant execute on function public.track_view(text) to anon, authenticated;
 
 -- إحصاءات عقارات المستخدم (ومكتبه): مشاهدات 30 يومًا وعدد الاستفسارات
 create or replace function public.my_property_stats()
-returns table (property_id bigint, views_30d bigint, views_total bigint, leads bigint)
+returns table (property_id public.aq_prop_id, views_30d bigint, views_total bigint, leads bigint)
 language sql
 stable
 security definer
@@ -309,7 +334,7 @@ $$;
 grant execute on function public.my_property_stats() to authenticated;
 
 -- حالة الإعلان: إيقاف مؤقت / بيع / تأجير / إعادة تفعيل
-create or replace function public.broker_property_set_state(p_id bigint, p_state text)
+create or replace function public.broker_property_set_state(p_id public.aq_prop_id, p_state text)
 returns text
 language plpgsql
 security definer
@@ -329,10 +354,10 @@ begin
   return v_new;
 end;
 $$;
-grant execute on function public.broker_property_set_state(bigint, text) to authenticated;
+grant execute on function public.broker_property_set_state(public.aq_prop_id, text) to authenticated;
 
 -- تعديل بيانات الإعلان: يعود إلى «قيد المراجعة» حتى تعتمده الإدارة من جديد
-create or replace function public.broker_update_property(p_id bigint, p jsonb)
+create or replace function public.broker_update_property(p_id public.aq_prop_id, p jsonb)
 returns boolean
 language plpgsql
 security definer
@@ -360,7 +385,7 @@ begin
   return true;
 end;
 $$;
-grant execute on function public.broker_update_property(bigint, jsonb) to authenticated;
+grant execute on function public.broker_update_property(public.aq_prop_id, jsonb) to authenticated;
 
 -- ---------------------------------------------------------------------------
 -- 5) مشاريع المطورين على الخارطة

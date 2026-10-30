@@ -26,8 +26,9 @@ as $$
 $$;
 
 -- يبحث عن إعلانات أخرى فيها صور شبه مطابقة (فرق 6 بتات أو أقل من 64)
-create or replace function public.find_duplicate_images(p_hashes text[], p_exclude bigint default null)
-returns table (property_id bigint, title text, status text, same_owner boolean, distance int)
+drop function if exists public.find_duplicate_images(text[], bigint);
+create or replace function public.find_duplicate_images(p_hashes text[], p_exclude public.aq_prop_id default null)
+returns table (property_id public.aq_prop_id, title text, status text, same_owner boolean, distance int)
 language sql
 stable
 security definer
@@ -45,5 +46,5 @@ as $$
    order by 5
    limit 10;
 $$;
-revoke all on function public.find_duplicate_images(text[], bigint) from public, anon;
-grant execute on function public.find_duplicate_images(text[], bigint) to authenticated;
+revoke all on function public.find_duplicate_images(text[], public.aq_prop_id) from public, anon;
+grant execute on function public.find_duplicate_images(text[], public.aq_prop_id) to authenticated;

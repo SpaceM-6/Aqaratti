@@ -288,7 +288,7 @@
     let stageFilter = 'all', leadQ = '', leadSort = 'new';
     const scorePill = (l) => { if (!window.AQAI || ['won', 'lost'].includes(l.stage)) return ''; const sc = AQAI.leadScore(l); return `<span class="pill2 sc-${sc.cls}" title="جدية العميل ${sc.score}/100${sc.why && sc.why.length ? ': ' + sc.why.join('، ') : ''}">${sc.label}</span>`; };
     const leadRow = (l) => `<div class="li lead" data-open="${l.id}"><div class="tx"><b>${esc(l.buyer_name)}</b><small>${esc(l.property_title || l.requirements || l.message || '')}</small><small>${fmtD(l.created_at)}${l.source && l.source !== 'website' ? ' · ' + esc(l.source) : ''}${me.account_type === 'office' && l.broker_id !== user.id ? ' · ' + esc(memberName(l.broker_id)) : ''}</small></div><span style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${scorePill(l)}<span class="pill2 st-${l.stage || 'new'}">${STAGES[l.stage || 'new']}</span></span></div>`;
-    function wireLeadOpen(root) { root.querySelectorAll('[data-open]').forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); openLead(+el.dataset.open); })); }
+    function wireLeadOpen(root) { root.querySelectorAll('[data-open]').forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); openLead(el.dataset.open); })); }
     async function renderLeads() {
       const m = $('main');
       try { await loadLeads(); } catch (e) { m.innerHTML = `<div class="empty">${setupErr(e)}</div>`; return; }
@@ -338,7 +338,7 @@
       };
     }
     async function openLead(id) {
-      let l = leads.find((x) => x.id === id);
+      let l = leads.find((x) => String(x.id) === String(id));
       if (!l) { const r = await sb.from('leads').select('*').eq('id', id).maybeSingle(); l = r.data; }
       if (!l) return;
       const tpls = LS.get('aq_wa_tpl', WA_TPL_DEFAULT);
@@ -482,7 +482,7 @@
             ${['paused', 'sold', 'rented'].includes(x.status) ? `<button class="btn btn-teal sm" data-st="active" data-id="${x.id}">إعادة تفعيل</button>` : ''}
             <button class="btn btn-red sm" data-del="${x.id}"><i class="fas fa-trash"></i></button></div></div>`;
         }).join('') || '<p class="mut">لم تضف عقارات بعد.</p>'}</div>`;
-      m.querySelectorAll('[data-st]').forEach((b) => b.onclick = async () => { const { data, error } = await sb.rpc('broker_property_set_state', { p_id: +b.dataset.id, p_state: b.dataset.st }); if (error) return toast(setupErr(error), true); toast('الحالة الآن: ' + (PSTATUS[data] || data)); renderListings(); });
+      m.querySelectorAll('[data-st]').forEach((b) => b.onclick = async () => { const { data, error } = await sb.rpc('broker_property_set_state', { p_id: b.dataset.id, p_state: b.dataset.st }); if (error) return toast(setupErr(error), true); toast('الحالة الآن: ' + (PSTATUS[data] || data)); renderListings(); });
       m.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان نهائيًا؟')) return; const { error } = await sb.from('properties').delete().eq('id', b.dataset.del); if (error) return toast(error.message, true); renderListings(); });
       m.querySelectorAll('[data-ed]').forEach((b) => b.onclick = () => editProperty(list.find((x) => String(x.id) === b.dataset.ed)));
     }

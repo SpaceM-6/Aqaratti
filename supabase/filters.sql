@@ -1,7 +1,7 @@
 -- ============================================================================
 -- فلاتر البحث المتقدمة في «أنا عقار»
 -- يضيف لكل عقار: نوع الوحدة، الفرش، تصنيف فاخر، العلاقة بالبحر، المزايا، والمعالم القريبة.
--- يُشغَّل بعد portal.sql (يعيد تعريف دالة تعديل الإعلان لتشمل الحقول الجديدة). آمن للتشغيل أكثر من مرة.
+-- يُشغَّل بعد portal.sql (لأنه يستعمل نوع رقم العقار الذي يكتشفه portal.sql) (يعيد تعريف دالة تعديل الإعلان لتشمل الحقول الجديدة). آمن للتشغيل أكثر من مرة.
 -- ============================================================================
 
 alter table public.properties add column if not exists unit_type  text;
@@ -23,7 +23,8 @@ alter table public.properties add constraint properties_unit_type_chk
 
 create index if not exists properties_filters_idx on public.properties (status, deal_type, is_luxury, furnishing, sea_access);
 
-create or replace function public.broker_update_property(p_id bigint, p jsonb)
+drop function if exists public.broker_update_property(bigint, jsonb);
+create or replace function public.broker_update_property(p_id public.aq_prop_id, p jsonb)
 returns boolean
 language plpgsql
 security definer
@@ -57,4 +58,4 @@ begin
   return true;
 end;
 $$;
-grant execute on function public.broker_update_property(bigint, jsonb) to authenticated;
+grant execute on function public.broker_update_property(public.aq_prop_id, jsonb) to authenticated;
