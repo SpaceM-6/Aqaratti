@@ -3480,15 +3480,15 @@ function renderPropertiesList(list) {
       );
     }
 
-    function executeSearch() {
+    // شرط البحث كاملًا من خانات البحث والفلاتر (يستعمله زر «الفلاتر» أيضًا ليعرض عدد النتائج قبل التطبيق)
+    function aqBuildSearchPredicate() {
       const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
       const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
       const selectedCity = document.getElementById('citySelector').value;
       const minRoi = parseFloat(document.getElementById('minRoiInput').value) || 7.0;
 
-      const allProps = getAllProperties();
-
-      const filtered = allProps.filter(p => {
+      const landmark = (document.getElementById('landmarkSelector') || {}).value || '';
+      return (p) => {
         let matchesTab = true;
         if (currentTabType === 'sale') matchesTab = (p.dealType === 'sale' || !p.dealType);
         else if (currentTabType === 'rent') matchesTab = (p.dealType === 'rent');
@@ -3503,8 +3503,15 @@ function renderPropertiesList(list) {
         const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
         const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice;
         const matchesCity = !selectedCity || selectedCity === 'all' || (p.city && p.city.includes(selectedCity));
-        return matchesTab && matchesKeyword && matchesPrice && matchesCity;
-      });
+        const matchesFilters = !window.AQFilters || (window.AQFilters.match(p) && window.AQFilters.nearMatch(p, landmark));
+        return matchesTab && matchesKeyword && matchesPrice && matchesCity && matchesFilters;
+      };
+    }
+    window.aqBuildSearchPredicate = aqBuildSearchPredicate;
+    function executeSearch() {
+      const allProps = getAllProperties();
+      window.aqSearchPredicate = aqBuildSearchPredicate();
+      const filtered = allProps.filter(window.aqSearchPredicate);
 
       const RESULTS_CAP = 60;
       renderPropertiesList(filtered.slice(0, RESULTS_CAP));
@@ -3769,6 +3776,7 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
+  <script src="js/aq-filters.js" defer></script>
   <script src="js/aq-engage.js" defer></script>
 </body>
 </html>

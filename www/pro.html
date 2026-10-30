@@ -469,6 +469,9 @@
         <div class="fg"><label>غرف النوم</label><input id="eB" type="number" value="${esc(x.bedrooms ?? '')}"></div><div class="fg"><label>الحمامات</label><input id="eBa" type="number" value="${esc(x.bathrooms ?? '')}"></div>
         <div class="fg"><label>المساحة (م²)</label><input id="eA" type="number" value="${esc(x.area_m2 || '')}"></div><div class="fg"><label>رقم التصريح</label><input id="ePm" dir="ltr" value="${esc(x.permit_number || '')}"></div></div>
         <div class="fg"><label>الوصف</label><textarea id="eD" style="min-height:140px">${esc(x.description || '')}</textarea></div>
+        <div class="gridf"><div class="fg"><label>الفرش</label><select id="eFu">${[['', 'غير محدد'], ['furnished', 'مفروش'], ['unfurnished', 'غير مفروش'], ['partly', 'مفروش جزئيًا']].map(([k, t]) => `<option value="${k}" ${(x.furnishing || '') === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+        <div class="fg"><label>البحر والإطلالة</label><select id="eSea">${[['', 'لا يوجد'], ['beachfront', 'على البحر مباشرة'], ['sea_view', 'إطلالة بحرية'], ['near_sea', 'قريب من البحر']].map(([k, t]) => `<option value="${k}" ${(x.sea_access || '') === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div></div>
+        <label class="chk"><input type="checkbox" id="eLx" ${x.is_luxury ? 'checked' : ''}> عقار فاخر (Luxury)</label>
         <label class="chk"><input type="checkbox" id="eNc" ${x.no_commission ? 'checked' : ''}> بدون عمولة على المشتري أو المستأجر</label>
         <label class="chk"><input type="checkbox" id="eHo" ${x.has_offer ? 'checked' : ''}> عليه عرض خاص</label>
         <div class="fg"><input id="eOt" placeholder="نص العرض" value="${esc(x.offer_text || '')}"></div>
@@ -477,7 +480,7 @@
       q('#ef').onsubmit = async (e) => {
         e.preventDefault();
         const p = { title: q('#eT').value.trim(), price_aed: q('#eP').value, city: q('#eC').value.trim(), bedrooms: q('#eB').value, bathrooms: q('#eBa').value, area_m2: q('#eA').value,
-          permit_number: q('#ePm').value.trim(), description: q('#eD').value, no_commission: q('#eNc').checked, has_offer: q('#eHo').checked, offer_text: q('#eHo').checked ? q('#eOt').value.trim() : '' };
+          permit_number: q('#ePm').value.trim(), description: q('#eD').value, no_commission: q('#eNc').checked, has_offer: q('#eHo').checked, offer_text: q('#eHo').checked ? q('#eOt').value.trim() : '', furnishing: q('#eFu').value, sea_access: q('#eSea').value, is_luxury: q('#eLx').checked };
         const { error } = await sb.rpc('broker_update_property', { p_id: x.id, p });
         if (error) return toast(setupErr(error), true);
         d.close(); toast('حُفظ التعديل وأُرسل للمراجعة'); renderListings();

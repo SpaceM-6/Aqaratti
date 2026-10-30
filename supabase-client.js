@@ -257,6 +257,12 @@ function mapSupabasePropertyToAnaAqar(row) {
     offerText: row.offer_text || null,
     brokerRole: row.broker_role || null,
     lat: row.lat ?? null,
+    unitType: row.unit_type || null,
+    furnishing: row.furnishing || null,
+    isLuxury: row.is_luxury === true,
+    seaAccess: row.sea_access || null,
+    amenities: Array.isArray(row.amenities) ? row.amenities : [],
+    nearby: Array.isArray(row.nearby) ? row.nearby : [],
     lng: row.lng ?? null,
     broker: {
       brokerId: row.broker_id,

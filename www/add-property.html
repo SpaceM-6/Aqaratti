@@ -339,7 +339,12 @@
     .footer-col ul { list-style: none; }
     .footer-col ul li { margin-bottom: 8px; }
     .footer-col ul li a { color: #9ca3af; text-decoration: none; }
-  </style>
+      .form-group label > input[type="checkbox"] { width:20px !important; height:20px; flex:0 0 auto; margin:0; accent-color:#00a896; }
+    .aq-chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .aq-chip { display:inline-flex !important; align-items:center; gap:6px; border:1.5px solid #e2e8f0; border-radius:999px; padding:7px 12px; font-weight:700 !important; cursor:pointer; margin:0 !important; font-size:14px; }
+    .aq-chip:has(input:checked) { border-color:#00a896; background:#e6f7f5; color:#028090; }
+    .aq-chip input { width:auto !important; margin:0; }
+</style>
 </head>
 <body>
 
@@ -469,6 +474,40 @@
         <div class="form-group" id="offerTextGroup" style="display:none;">
           <label>تفاصيل العرض</label>
           <input type="text" id="offerTextInput" maxlength="140" placeholder="مثال: خصم 5% أو خطة سداد 1% شهريًا حتى الاستلام">
+        </div>
+
+        <!-- تفاصيل تساعد المشترين في فلاتر البحث -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label>نوع الوحدة</label>
+            <select id="unitTypeInput">
+              <option value="">اختر...</option>
+              <optgroup label="سكني"><option value="apartment">شقة</option><option value="studio">استوديو</option><option value="villa">فيلا</option><option value="townhouse">تاون هاوس</option><option value="penthouse">بنتهاوس</option><option value="duplex">دوبلكس</option><option value="chalet">شاليه</option><option value="hotel_apt">شقق فندقية</option></optgroup>
+              <optgroup label="تجاري"><option value="office">مكتب</option><option value="shop">محل تجاري</option><option value="warehouse">مستودع</option><option value="showroom">معرض</option><option value="land">أرض</option><option value="building">مبنى كامل</option></optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الفرش</label>
+            <select id="furnishingInput"><option value="">غير محدد</option><option value="furnished">مفروش</option><option value="unfurnished">غير مفروش</option><option value="partly">مفروش جزئيًا</option></select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>البحر والإطلالة</label>
+            <select id="seaAccessInput"><option value="">لا يوجد</option><option value="beachfront">على البحر مباشرة</option><option value="sea_view">إطلالة بحرية (Sea View)</option><option value="near_sea">قريب من البحر</option></select>
+          </div>
+          <div class="form-group">
+            <label>التصنيف</label>
+            <label style="display:flex; gap:8px; align-items:center; font-weight:600; margin-top:6px;"><input type="checkbox" id="isLuxuryInput"> عقار فاخر (Luxury)</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>المزايا</label>
+          <div class="aq-chips"><label class="aq-chip"><input type="checkbox" name="amenity" value="pool"> مسبح</label><label class="aq-chip"><input type="checkbox" name="amenity" value="gym"> نادي رياضي</label><label class="aq-chip"><input type="checkbox" name="amenity" value="parking"> موقف سيارات</label><label class="aq-chip"><input type="checkbox" name="amenity" value="balcony"> شرفة</label><label class="aq-chip"><input type="checkbox" name="amenity" value="maid"> غرفة خادمة</label><label class="aq-chip"><input type="checkbox" name="amenity" value="central_ac"> تكييف مركزي</label><label class="aq-chip"><input type="checkbox" name="amenity" value="security"> حراسة وأمن</label><label class="aq-chip"><input type="checkbox" name="amenity" value="garden"> حديقة خاصة</label><label class="aq-chip"><input type="checkbox" name="amenity" value="pets"> يُسمح بالحيوانات الأليفة</label><label class="aq-chip"><input type="checkbox" name="amenity" value="kids"> ألعاب أطفال</label></div>
+        </div>
+        <div class="form-group">
+          <label>قريب من</label>
+          <div class="aq-chips"><label class="aq-chip"><input type="checkbox" name="nearby" value="beach"> البحر</label><label class="aq-chip"><input type="checkbox" name="nearby" value="metro"> مترو</label><label class="aq-chip"><input type="checkbox" name="nearby" value="mall"> مول</label><label class="aq-chip"><input type="checkbox" name="nearby" value="school"> مدارس</label><label class="aq-chip"><input type="checkbox" name="nearby" value="university"> جامعة</label><label class="aq-chip"><input type="checkbox" name="nearby" value="hospital"> مستشفى</label><label class="aq-chip"><input type="checkbox" name="nearby" value="mosque"> مسجد</label><label class="aq-chip"><input type="checkbox" name="nearby" value="park"> حديقة</label><label class="aq-chip"><input type="checkbox" name="nearby" value="supermarket"> سوبرماركت</label><label class="aq-chip"><input type="checkbox" name="nearby" value="airport"> المطار</label></div>
         </div>
 
         <div class="grid-2">
@@ -838,12 +877,18 @@
         no_commission: document.getElementById('noCommissionInput').checked,
         has_offer: document.getElementById('hasOfferInput').checked,
         offer_text: document.getElementById('hasOfferInput').checked ? (document.getElementById('offerTextInput').value.trim() || null) : null,
+        unit_type: document.getElementById('unitTypeInput').value || null,
+        furnishing: document.getElementById('furnishingInput').value || null,
+        sea_access: document.getElementById('seaAccessInput').value || null,
+        is_luxury: document.getElementById('isLuxuryInput').checked,
+        amenities: [...document.querySelectorAll('input[name="amenity"]:checked')].map(x => x.value),
+        nearby: [...document.querySelectorAll('input[name="nearby"]:checked')].map(x => x.value),
         trial_ends_at: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
       };
 
       // احتياط: إن لم تُضف الأعمدة الجديدة بعد في قاعدة البيانات (supabase/property_listing_fields.sql)،
       // يُحذف العمود غير الموجود ويُعاد الحفظ بدل أن يفشل نشر الإعلان كله (ورقم التصريح يُحفظ داخل الوصف).
-      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at'];
+      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at', 'unit_type', 'furnishing', 'sea_access', 'is_luxury', 'amenities', 'nearby'];
       let rowToSave = { ...propertyRow };
       let { error } = await supabaseClient.from('properties').insert(rowToSave);
       for (let attempt = 0; error && attempt < OPTIONAL_COLUMNS.length; attempt++) {
