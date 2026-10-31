@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=88"></script>
+  <script src="supabase-client.js?v=89"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -2169,7 +2169,7 @@
           var list = [
             ['maintenance','الصيانة المنزلية','fa-screwdriver-wrench','#0369a1'], ['cleaning','النظافة','fa-broom','#0891b2'],
             ['pest','مكافحة الحشرات','fa-bug','#4d7c0f'], ['garden','تنسيق الحدائق','fa-seedling','#15803d'],
-            ['pools','المسابح','fa-water-ladder','#0284c7'], ['lighting','الإضاءة','fa-lightbulb','#ca8a04'],
+            ['pools','صيانة المسابح','fa-water-ladder','#0284c7'], ['lighting','الإضاءة','fa-lightbulb','#ca8a04'],
             ['smart_home','المنازل الذكية','fa-house-signal','#7c3aed'], ['fire_safety','إطفاء الحرائق','fa-fire-extinguisher','#dc2626'], ['cctv','كاميرات المراقبة','fa-video','#1e40af'],
             ['movers','نقل الأثاث','fa-truck-moving','#a16207'], ['domestic','الخدم والسائقون','fa-people-roof','#be185d'],
             ['care','رعاية الأطفال وكبار السن','fa-hand-holding-medical','#e11d48'], ['pets','رعاية الحيوانات الأليفة','fa-paw','#c2410c'],
@@ -3000,12 +3000,11 @@
 
     // مشاركة العقار مباشرة (واتساب أو تطبيقات المشاركة في الجوال)
     function openAffiliateModal(propId) {
-      const allProps = getAllProperties();
-      const p = allProps.find(x => String(x.id) === String(propId));
+      const p = getAllProperties().find(x => String(x.id) === String(propId));
       const url = 'https://anaaqar.com/property-details.html?id=' + encodeURIComponent(propId);
-      const text = p ? `${p.title} — ${formatPriceAED(p.priceAED)}` : 'عقار على أنا عقار';
-      if (navigator.share) { navigator.share({ title: text, text, url }).catch(() => {}); return; }
-      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text + '\n' + url), '_blank', 'noopener,noreferrer');
+      const title = p ? `${p.title} — ${formatPriceAED(p.priceAED)} | أنا عقار` : 'عقار على أنا عقار';
+      if (window.AQAds && AQAds.share) return AQAds.share({ url, title });
+      if (navigator.share) navigator.share({ title, url }).catch(() => {});
     }
 
 
@@ -3812,13 +3811,13 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=88" defer></script>
-  <script src="js/aq-ai.js?v=88" defer></script>
-  <script src="js/aq-engage.js?v=88" defer></script>
-  <script src="js/aq-back.js?v=88" defer></script>
-  <script src="js/aq-stay.js?v=88" defer></script>
-  <script src="js/aq-cars.js?v=88" defer></script>
-  <script src="js/aq-ads.js?v=88" defer></script>
-  <script src="js/aq-home.js?v=88" defer></script>
+  <script src="js/aq-filters.js?v=89" defer></script>
+  <script src="js/aq-ai.js?v=89" defer></script>
+  <script src="js/aq-engage.js?v=89" defer></script>
+  <script src="js/aq-back.js?v=89" defer></script>
+  <script src="js/aq-stay.js?v=89" defer></script>
+  <script src="js/aq-cars.js?v=89" defer></script>
+  <script src="js/aq-ads.js?v=89" defer></script>
+  <script src="js/aq-home.js?v=89" defer></script>
 </body>
 </html>

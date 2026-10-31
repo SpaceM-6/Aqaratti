@@ -12,11 +12,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=88">
+  <link rel="stylesheet" href="css/aq-pages.css?v=89">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=88"></script>
-  <script src="js/aq-cars.js?v=88"></script>
-  <script src="js/aq-ads.js?v=88"></script>
+  <script src="supabase-client.js?v=89"></script>
+  <script src="js/aq-cars.js?v=89"></script>
+  <script src="js/aq-ads.js?v=89"></script>
   <style>
     .cg { position:relative; border-radius:18px; overflow:hidden; aspect-ratio:16/10; max-height:500px; width:100%; background:linear-gradient(135deg,#1e293b,#475569); }
     .cg .ph { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; } .cg .ph::-webkit-scrollbar { display:none; }
@@ -95,6 +95,7 @@
             ${rent || svc ? `<div class="row2"><div class="fg"><label>${svc ? 'الموعد المفضّل' : 'من'}</label><input id="iF" type="date"></div>${svc ? '' : '<div class="fg"><label>إلى</label><input id="iT" type="date"></div>'}</div>` : ''}
             <div class="fg"><textarea id="iM" placeholder="${svc ? 'صف المشكلة أو الخدمة المطلوبة' : parts ? 'موديل مركبتك وسنة الصنع' : 'رسالتك (اختياري)'}" maxlength="1000" style="min-height:80px"></textarea></div>
             <button class="btn btn-teal" type="submit" style="width:100%"><i class="fas fa-paper-plane"></i> إرسال</button><p class="hint" id="iMsg" style="margin:8px 0 0"></p></form>
+          <button class="btn btn-ghost" type="button" onclick="AQAds.share({ url: location.href, title: document.title })"><i class="fas fa-share-nodes"></i> مشاركة</button>
           <a class="hint" href="report.html?type=car&id=${encodeURIComponent(c.id)}" style="display:block;margin-top:10px;text-align:center"><i class="fas fa-flag"></i> الإبلاغ عن الإعلان</a>
         </aside></div>
         <div class="cbar">${tel ? `<a class="btn call" href="tel:${esc(tel)}"><i class="fas fa-phone"></i> اتصال</a>` : ''}${wa ? `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent('مرحبًا، رأيت إعلانك على أنا عقار: ' + C.name(c))}"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}<button class="btn btn-teal" type="button" onclick="document.getElementById('inq').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-paper-plane"></i> ${rent ? 'اطلب' : svc ? 'احجز' : 'استفسر'}</button></div>`;
@@ -113,7 +114,7 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=88" defer></script>
-  <script src="js/aq-back.js?v=88" defer></script>
+  <script src="js/aq-engage.js?v=89" defer></script>
+  <script src="js/aq-back.js?v=89" defer></script>
 </body>
 </html>

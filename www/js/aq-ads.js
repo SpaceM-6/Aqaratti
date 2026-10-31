@@ -108,6 +108,13 @@
       '.aqr-bud{flex:0 0 auto;scroll-snap-align:start;padding:12px 18px;border-radius:14px;border:1.5px solid var(--line,#e2e8f0);background:var(--card,#fff);text-decoration:none;color:inherit;font-weight:900;font-size:15px}',
       '.aqr-bud small{display:block;color:var(--muted,#64748b);font-weight:700;font-size:12px}',
       // شريط التنقل السفلي في الجوال
+      '.aqsh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 6px;margin-bottom:14px}',
+      '.aqsh-grid a{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--ink,#0f172a);font-weight:800;font-size:12.5px;text-align:center}',
+      '.aqsh-grid a span{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:22px}',
+      '.aqsh-link{display:flex;gap:8px;align-items:center;border:1.5px solid var(--line,#e2e8f0);border-radius:12px;padding:4px 4px 4px 4px}',
+      '.aqsh-link input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink,#0f172a);font:inherit;font-size:13px;padding:8px;outline:0}',
+      '.aqsh-link button,.aqsh-more{border:0;border-radius:10px;background:#192038;color:#fff;font:inherit;font-weight:900;padding:10px 14px;cursor:pointer;white-space:nowrap}',
+      '.aqsh-more{width:100%;margin-top:10px;background:var(--bg,#f1f5f9);color:var(--ink,#0f172a)}',
       '.aqbnav{display:none}',
       'body.aq-has-bnav .mobile-bottom-app-bar{display:none!important}',
       '.aqs-body{overflow:auto;overflow-x:hidden;flex:1;min-height:0;margin:0 -18px;padding:0 18px}',
@@ -330,7 +337,52 @@
     };
   }
 
-  window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, openAdd: openAdd, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
+
+  // ---------------- مشاركة الرابط على وسائل التواصل ----------------
+  // opts: {url, title}
+  function share(opts) {
+    css();
+    opts = opts || {};
+    var url = opts.url || location.href, title = opts.title || document.title, msg = title + '\n' + url;
+    var e = encodeURIComponent, U = e(url), T = e(title), M = e(msg);
+    var copy = function (done) {
+      var ok = function () { done && done(); toast('تم نسخ الرابط ✅'); };
+      try { navigator.clipboard.writeText(url).then(ok, function () { fallback(); ok(); }); } catch (x) { fallback(); ok(); }
+      function fallback() { var t = document.createElement('textarea'); t.value = url; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (y) {} t.remove(); }
+    };
+    // إنستغرام وتيك توك لا يقبلان رابطًا جاهزًا للنشر: ننسخ الرابط ثم نفتح التطبيق ليلصقه الزائر
+    var NETS = [
+      ['whatsapp', 'واتساب', 'fa-whatsapp', '#25d366', 'https://api.whatsapp.com/send?text=' + M],
+      ['facebook', 'فيسبوك', 'fa-facebook-f', '#1877f2', 'https://www.facebook.com/sharer/sharer.php?u=' + U],
+      ['x', 'إكس', '<b style="font-size:22px;font-family:Arial,sans-serif">𝕏</b>', '#000000', 'https://twitter.com/intent/tweet?text=' + T + '&url=' + U],
+      ['linkedin', 'لينكد إن', 'fa-linkedin-in', '#0a66c2', 'https://www.linkedin.com/sharing/share-offsite/?url=' + U],
+      ['threads', 'ثريدز', '<b style="font-size:24px;font-family:Arial,sans-serif">@</b>', '#000000', 'https://www.threads.net/intent/post?text=' + M],
+      ['telegram', 'تيليجرام', 'fa-telegram', '#229ed9', 'https://t.me/share/url?url=' + U + '&text=' + T],
+      ['instagram', 'إنستغرام', 'fa-instagram', 'linear-gradient(45deg,#f58529,#dd2a7b,#8134af)', 'https://www.instagram.com/', 1],
+      ['tiktok', 'تيك توك', 'fa-tiktok', '#010101', 'https://www.tiktok.com/', 1]
+    ];
+    var ov = document.createElement('div'); ov.className = 'aqs-ov';
+    ov.innerHTML = '<div class="aqs-sheet"><div class="aqs-hd"><h3>مشاركة</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div>' +
+      '<p style="margin:0 0 12px;color:var(--muted,#64748b);font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(title) + '</p>' +
+      '<div class="aqsh-grid">' + NETS.map(function (n) { return '<a href="' + n[4] + '" target="_blank" rel="noopener" data-net="' + n[0] + '"' + (n[5] ? ' data-paste="1"' : '') + '><span style="background:' + n[3] + '">' + (n[2].charAt(0) === '<' ? n[2] : '<i class="fab ' + n[2] + '"></i>') + '</span>' + n[1] + '</a>'; }).join('') + '</div>' +
+      '<div class="aqsh-link"><input readonly value="' + esc(url) + '" aria-label="الرابط" dir="ltr"><button type="button" data-copy><i class="fas fa-copy"></i> نسخ</button></div>' +
+      (navigator.share ? '<button type="button" class="aqsh-more" data-native><i class="fas fa-share-nodes"></i> تطبيقات أخرى</button>' : '') + '</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function (ev) {
+      if (ev.target === ov || ev.target.closest('[data-x]')) { ov.remove(); return; }
+      if (ev.target.closest('[data-copy]')) { copy(); return; }
+      if (ev.target.closest('[data-native]')) { navigator.share({ title: title, text: title, url: url }).catch(function () {}); return; }
+      var a = ev.target.closest('[data-paste]');
+      if (a) { copy(); toast('نسخنا الرابط، الصقه في منشورك أو قصتك على ' + a.textContent.trim()); }
+    });
+  }
+  function toast(m) {
+    if (window.AQEngage && AQEngage.toast) return AQEngage.toast(m);
+    var d = document.createElement('div'); d.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#192038;color:#fff;padding:11px 18px;border-radius:12px;font-weight:800;z-index:2147483647;font-family:Tajawal,sans-serif;max-width:90vw;text-align:center';
+    d.textContent = m; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2800);
+  }
+
+  window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, openAdd: openAdd, share: share, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
   function boot() {
     document.querySelectorAll('[data-aq-ads]').forEach(function (el) { strip(el); });
     // الشريط السفلي في كل الصفحات العامة، إلا الصفحات التي فيها شريط حجز أو تواصل خاص بها
