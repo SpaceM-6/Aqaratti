@@ -15,7 +15,7 @@
   var HOUSE = [
     { t: 'قيّم عقارك مجانًا', s: 'اعرف القيمة التقديرية لعقارك من أسعار المنطقة', b: 'عقارات', i: 'fa-chart-line', g: ['#ef4444', '#f97316'], u: 'valuation.html' },
     { t: 'إقامات قصيرة وإيجار يومي', s: 'شقق وفلل للحجز بالليلة مع تأكيد فوري', b: 'جديد', i: 'fa-umbrella-beach', g: ['#0ea5e9', '#6366f1'], u: 'stays.html' },
-    { t: 'سيارات للبيع والإيجار', s: 'اشترِ أو استأجر سيارتك من أصحابها والمعارض', b: 'جديد', i: 'fa-car-side', g: ['#1e293b', '#475569'], u: 'cars.html' },
+    { t: 'سيارات ودراجات ويخوت', s: 'بيع، إيجار، قطع غيار، وصيانة في مكان واحد', b: 'جديد', i: 'fa-car-side', g: ['#1e293b', '#475569'], u: 'cars.html' },
     { t: 'جاهز لعرض عقارك؟', s: 'أعلن مجانًا لأول 3 أشهر وصل للمشترين والمستأجرين', b: 'عقارات', i: 'fa-house-circle-check', g: ['#00a896', '#028090'], u: 'add-property.html' },
     { t: 'مشاريع جديدة على الخارطة', s: 'إطلاقات المطوّرين بخطط سداد مرنة', b: 'مشاريع', i: 'fa-rocket', g: ['#7c3aed', '#c026d3'], u: 'listings.html?cat=off_plan' },
     { t: 'احصل على شارة التوثيق', s: 'ظهور أكثر وثقة أعلى لإعلاناتك', b: 'للوسطاء', i: 'fa-certificate', g: ['#2563eb', '#0891b2'], u: 'broker-registration.html' },
@@ -263,7 +263,10 @@
       ov.innerHTML = '<div class="aqs-sheet"><div class="aqs-hd"><h3>ماذا تريد أن تعلن؟</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div>' +
         '<a class="aqs-opt" href="add-property.html"><i class="fas fa-building"></i><span><b>عقار للبيع أو الإيجار</b><small>للوسطاء والمكاتب والمطوّرين</small></span></a>' +
         '<a class="aqs-opt" href="add-property.html?stay=1"><i class="fas fa-umbrella-beach"></i><span><b>إقامة قصيرة / إيجار يومي</b><small>شقة أو فيلا للحجز بالليلة</small></span></a>' +
-        '<a class="aqs-opt" href="add-car.html"><i class="fas fa-car-side"></i><span><b>سيارة للبيع أو الإيجار</b><small>لأصحاب السيارات والمعارض وشركات التأجير</small></span></a></div>';
+        '<a class="aqs-opt" href="add-car.html"><i class="fas fa-car-side"></i><span><b>سيارة للبيع أو الإيجار</b><small>لأصحاب السيارات والمعارض وشركات التأجير</small></span></a>' +
+        '<a class="aqs-opt" href="add-car.html?kind=moto"><i class="fas fa-motorcycle"></i><span><b>دراجة نارية</b><small>بيع أو إيجار</small></span></a>' +
+        '<a class="aqs-opt" href="add-car.html?kind=yacht"><i class="fas fa-ship"></i><span><b>يخت أو قارب</b><small>بيع أو إيجار ورحلات بحرية</small></span></a>' +
+        '<a class="aqs-opt" href="add-car.html?deal=parts"><i class="fas fa-gears"></i><span><b>قطع غيار أو ورشة صيانة</b><small>للمحلات والورش ومراكز الخدمة</small></span></a></div>';
       document.body.appendChild(ov);
       ov.onclick = function (e) { if (e.target === ov || e.target.closest('[data-x]')) ov.remove(); };
     };

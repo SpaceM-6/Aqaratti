@@ -490,3 +490,60 @@ create policy "car images owner write" on storage.objects for insert to authenti
 drop policy if exists "car images owner delete" on storage.objects;
 create policy "car images owner delete" on storage.objects for delete to authenticated
   using (bucket_id = 'car-images' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_app_admin()));
+
+-- ============================================================================
+-- 4) توسيع قسم المركبات: السيارات + الدراجات النارية + اليخوت والقوارب،
+--    ولكل قسم: بيع، إيجار، قطع غيار، صيانة وخدمات
+-- ============================================================================
+alter table public.cars add column if not exists kind             text not null default 'car';
+alter table public.cars add column if not exists part_category    text;
+alter table public.cars add column if not exists service_type     text;
+alter table public.cars add column if not exists fits             text;      -- القطعة تناسب أي موديلات
+alter table public.cars add column if not exists engine_cc        int;
+alter table public.cars add column if not exists engine_hours     int;
+alter table public.cars add column if not exists length_ft        numeric;
+alter table public.cars add column if not exists cabins           int;
+alter table public.cars add column if not exists captain_included boolean not null default false;
+
+alter table public.cars alter column make  drop not null;
+alter table public.cars alter column model drop not null;
+alter table public.cars alter column price drop not null;
+
+alter table public.cars drop constraint if exists cars_kind_chk;
+alter table public.cars add constraint cars_kind_chk check (kind in ('car', 'moto', 'yacht'));
+alter table public.cars drop constraint if exists cars_deal_check;
+alter table public.cars add constraint cars_deal_check check (deal in ('sale', 'rent', 'parts', 'service'));
+alter table public.cars drop constraint if exists cars_rent_period_check;
+alter table public.cars add constraint cars_rent_period_check check (rent_period is null or rent_period in ('hourly', 'daily', 'weekly', 'monthly'));
+alter table public.cars drop constraint if exists cars_price_check;
+alter table public.cars add constraint cars_price_check check (price is null or price > 0);
+alter table public.cars drop constraint if exists cars_price_req_chk;
+alter table public.cars add constraint cars_price_req_chk check (deal = 'service' or price is not null);
+alter table public.cars drop constraint if exists cars_identity_chk;
+alter table public.cars add constraint cars_identity_chk check (deal in ('parts', 'service') or (make is not null and model is not null));
+alter table public.cars drop constraint if exists cars_named_chk;
+alter table public.cars add constraint cars_named_chk check (coalesce(nullif(btrim(title), ''), make) is not null);
+alter table public.cars drop constraint if exists cars_seller_type_check;
+alter table public.cars add constraint cars_seller_type_check check (seller_type is null or seller_type in ('owner', 'dealer', 'rental_company', 'workshop', 'parts_shop'));
+create index if not exists cars_kind_idx on public.cars (status, kind, deal, created_at desc);
+
+create or replace function public.car_inquiry(p_car uuid, p_name text, p_phone text, p_message text, p_from date, p_to date)
+returns boolean language plpgsql security definer set search_path = public
+as $$
+declare c record; ph text;
+begin
+  select * into c from public.cars where id = p_car and status = 'approved';
+  if c.id is null then raise exception 'not_found'; end if;
+  ph := regexp_replace(coalesce(p_phone, ''), '[^0-9+]', '', 'g');
+  if char_length(btrim(coalesce(p_name, ''))) < 2 or char_length(ph) < 7 then raise exception 'bad_contact'; end if;
+  if (select count(*) from public.car_inquiries i where i.phone = ph and i.created_at > now() - interval '1 hour') >= 5 then
+    raise exception 'rate_limited'; end if;
+  insert into public.car_inquiries (car_id, name, phone, message, date_from, date_to)
+  values (p_car, left(btrim(p_name), 100), ph, nullif(left(btrim(coalesce(p_message, '')), 1000), ''), p_from, p_to);
+  perform public.aq_notify_user(c.owner_id,
+    case c.deal when 'rent' then 'طلب إيجار على إعلانك' when 'service' then 'طلب خدمة جديد' else 'استفسار عن إعلانك' end,
+    coalesce(nullif(c.title, ''), concat_ws(' ', c.make, c.model)) || ' — ' || left(btrim(p_name), 60) || ' ' || ph, 'add-car.html#mine');
+  return true;
+end;
+$$;
+grant execute on function public.car_inquiry(uuid, text, text, text, date, date) to anon, authenticated;

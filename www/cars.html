@@ -5,8 +5,8 @@
   <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>سيارات للبيع والإيجار | أنا عقار AnaAqar</title>
-  <meta name="description" content="سيارات جديدة ومستعملة للبيع، وسيارات للإيجار اليومي والأسبوعي والشهري في الإمارات من أصحابها والمعارض وشركات التأجير.">
+  <title>السيارات والدراجات النارية واليخوت | أنا عقار AnaAqar</title>
+  <meta name="description" content="بيع وإيجار السيارات والدراجات النارية واليخوت والقوارب، مع قطع الغيار ومراكز الصيانة في الإمارات.">
   <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
   <link rel="manifest" href="manifest.json">
@@ -14,13 +14,22 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=84">
+  <link rel="stylesheet" href="css/aq-pages.css?v=85">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=84"></script>
-  <script src="js/aq-cars.js?v=84"></script>
-  <script src="js/aq-stay.js?v=84"></script>
-  <script src="js/aq-ads.js?v=84"></script>
+  <script src="supabase-client.js?v=85"></script>
+  <script src="js/aq-cars.js?v=85"></script>
+  <script src="js/aq-stay.js?v=85"></script>
+  <script src="js/aq-ads.js?v=85"></script>
   <style>
+    .kinds { display:flex; gap:8px; margin:14px 0 0; overflow-x:auto; scrollbar-width:none; }
+    .kinds::-webkit-scrollbar { display:none; }
+    .kinds a { flex:0 0 auto; display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:12px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; font-weight:900; text-decoration:none; }
+    .kinds a.on { background:#e11d48; border-color:#e11d48; }
+    .hub { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin:4px 0 14px; }
+    @media (max-width:760px) { .hub { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .hub button { text-align:right; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px; cursor:pointer; font:inherit; color:var(--ink); display:flex; flex-direction:column; gap:4px; }
+    .hub button i { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-size:19px; margin-bottom:4px; }
+    .hub b { font-size:16.5px; } .hub small { color:var(--muted); font-weight:700; font-size:13px; } .hub em { font-style:normal; color:var(--teal-dark); font-weight:900; font-size:13px; }
     .bar { position:sticky; top:57px; z-index:15; background:var(--bg); padding:10px 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     .bar input, .bar select { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:10px 12px; font:inherit; font-weight:700; font-size:14.5px; min-height:44px; }
     .bar .q { flex:1 1 220px; min-width:0; }
@@ -29,10 +38,10 @@
     @media (max-width:760px) { .bar { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin:0 -16px; padding:10px 16px; } .bar::-webkit-scrollbar { display:none; } .bar > * { flex:0 0 auto; } .bar .q { flex:0 0 200px; } }
     .fb { display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:9px 14px; font:inherit; font-weight:800; cursor:pointer; min-height:44px; }
     .fb .bdg { background:#0f172a; color:#fff; border-radius:999px; min-width:20px; height:20px; display:inline-grid; place-items:center; font-size:12px; }
-    .bodies { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:4px 0 6px; }
-    .bodies::-webkit-scrollbar { display:none; }
-    .bodies button { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:84px; border:1.5px solid var(--line); background:var(--card); color:var(--muted); border-radius:14px; padding:10px 8px 8px; font:inherit; font-weight:800; font-size:13px; cursor:pointer; }
-    .bodies button i { font-size:19px; } .bodies button.on { border-color:var(--ink); color:var(--ink); box-shadow:0 0 0 1px var(--ink) inset; }
+    .subs { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:4px 0 6px; }
+    .subs::-webkit-scrollbar { display:none; }
+    .subs button { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:84px; border:1.5px solid var(--line); background:var(--card); color:var(--muted); border-radius:14px; padding:10px 8px 8px; font:inherit; font-weight:800; font-size:13px; cursor:pointer; }
+    .subs button i { font-size:19px; } .subs button.on { border-color:var(--ink); color:var(--ink); box-shadow:0 0 0 1px var(--ink) inset; }
     .fs-sec { padding:14px 0; border-bottom:1px solid var(--line); } .fs-sec h4 { margin:0 0 10px; font-size:17px; font-weight:900; }
     .fs-chips { display:flex; gap:8px; flex-wrap:wrap; }
     .fs-chip { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:8px 13px; font:inherit; font-weight:700; font-size:14.5px; cursor:pointer; }
@@ -47,69 +56,94 @@
     <a class="back" href="index.html">الرئيسية ←</a>
   </div></header>
   <section class="head"><div class="head-in">
-    <h1><i class="fas fa-car-side"></i> سيارات للبيع والإيجار</h1>
-    <p>سيارات جديدة ومستعملة للبيع، وسيارات للإيجار باليوم أو الأسبوع أو الشهر من أصحابها والمعارض وشركات التأجير.</p>
+    <h1 id="hT"><i class="fas fa-car-side"></i> السيارات</h1>
+    <p id="hP"></p>
+    <nav class="kinds" id="kinds" aria-label="الأقسام"></nav>
   </div></section>
   <main>
-    <div class="tabs" id="tabs">
-      <button class="tab" data-d="">كل السيارات</button><button class="tab" data-d="sale"><i class="fas fa-key"></i> شراء</button><button class="tab" data-d="rent"><i class="fas fa-calendar-day"></i> إيجار</button>
-      <a class="tab" href="add-car.html" style="text-decoration:none;margin-inline-start:auto;background:#e11d48;border-color:#e11d48;color:#fff"><i class="fas fa-plus"></i> أضف سيارتك</a>
-    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="hub" id="hub"></div>
     <div class="bar">
-      <input class="q" id="q" type="search" placeholder="ابحث بالماركة أو الموديل" aria-label="بحث">
-      <select id="make" aria-label="الماركة"><option value="">كل الماركات</option></select>
-      <span class="pr"><input id="pmin" type="number" inputmode="numeric" placeholder="السعر من" aria-label="السعر من"> – <input id="pmax" type="number" inputmode="numeric" placeholder="إلى" aria-label="السعر إلى"></span>
+      <input class="q" id="q" type="search" placeholder="ابحث" aria-label="بحث">
+      <select id="make" aria-label="الماركة"></select>
+      <span class="pr" id="prBox"><input id="pmin" type="number" inputmode="numeric" placeholder="السعر من" aria-label="السعر من"> – <input id="pmax" type="number" inputmode="numeric" placeholder="إلى" aria-label="السعر إلى"></span>
       <button class="fb" id="fBtn" type="button"><i class="fas fa-sliders" style="color:#e11d48"></i> الفلاتر <span class="bdg" id="fN" hidden></span></button>
-      <select id="sort" aria-label="الترتيب"><option value="new">الأحدث</option><option value="price_asc">السعر: الأقل أولًا</option><option value="price_desc">السعر: الأعلى أولًا</option><option value="year">سنة الصنع: الأحدث</option><option value="km">المسافة المقطوعة: الأقل</option></select>
+      <select id="sort" aria-label="الترتيب"><option value="new">الأحدث</option><option value="price_asc">السعر: الأقل أولًا</option><option value="price_desc">السعر: الأعلى أولًا</option><option value="year">سنة الصنع: الأحدث</option></select>
     </div>
-    <div class="bodies" id="bodies"></div>
+    <div class="subs" id="subs"></div>
     <div data-aq-ads="cars" data-title="عروض وإعلانات"></div>
     <div class="cnt" id="cnt"></div>
     <div class="grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
-    <div class="acts" style="justify-content:center;margin-top:22px"><a class="btn btn-teal" href="add-car.html"><i class="fas fa-plus"></i> أضف سيارتك للبيع أو الإيجار</a><a class="btn btn-ghost" href="services-directory.html?cat=car_rental"><i class="fas fa-building"></i> دليل شركات تأجير السيارات</a></div>
+    <div class="acts" style="justify-content:center;margin-top:22px" id="foot"></div>
   </main>
   <script>
   (function () {
     const C = AQCars, { esc } = C, $ = (id) => document.getElementById(id), qs = new URLSearchParams(location.search);
     const st = document.createElement('style'); st.textContent = C.CSS; document.head.appendChild(st);
-    const F = { deal: ['sale', 'rent'].includes(qs.get('deal')) ? qs.get('deal') : '', body: qs.get('body') || '', fuel: new Set(), trans: '', specs: new Set(), seller: new Set(), cond: '', period: '', ymin: '', kmax: '', city: '' };
+    const kind = C.KINDS[qs.get('kind')] ? qs.get('kind') : 'car', K = C.KINDS[kind];
+    const F = { deal: ['sale', 'rent', 'parts', 'service'].includes(qs.get('deal')) ? qs.get('deal') : '', sub: qs.get('sub') || '', fuel: new Set(), trans: '', specs: new Set(), seller: new Set(), cond: '', period: '', ymin: '', kmax: '', lmin: '', captain: '', city: '' };
     let pool = [];
-    $('make').insertAdjacentHTML('beforeend', C.MAKES.map(([v, l]) => `<option value="${v}">${l}</option>`).join(''));
+    document.title = K.name + ': بيع وإيجار وقطع غيار وصيانة | أنا عقار';
+    $('hT').innerHTML = `<i class="fas ${K.icon}"></i> ${K.name}`;
+    $('hP').textContent = Object.values(K.deals).map((d) => d[0]).join(' · ') + ' — من الأفراد والمعارض والشركات.';
+    $('kinds').innerHTML = Object.entries(C.KINDS).map(([k, v]) => `<a href="cars.html?kind=${k}" class="${k === kind ? 'on' : ''}"><i class="fas ${v.icon}"></i> ${v.name}</a>`).join('');
+    $('make').innerHTML = `<option value="">كل الماركات</option>` + K.makes.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
     if (qs.get('make')) $('make').value = qs.get('make');
-    $('bodies').innerHTML = `<button data-b="" class="${F.body ? '' : 'on'}"><i class="fas fa-border-all"></i>الكل</button>` + C.BODY.map(([v, l, ic]) => `<button data-b="${v}" class="${F.body === v ? 'on' : ''}"><i class="fas ${ic}"></i>${l}</button>`).join('');
-    $('bodies').onclick = (e) => { const b = e.target.closest('[data-b]'); if (!b) return; F.body = b.dataset.b; $('bodies').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); draw(); };
-    const syncTabs = () => $('tabs').querySelectorAll('[data-d]').forEach((t) => t.classList.toggle('on', t.dataset.d === F.deal));
-    $('tabs').onclick = (e) => { const t = e.target.closest('[data-d]'); if (!t) return; F.deal = t.dataset.d; F.period = ''; syncTabs(); draw(); };
-    syncTabs();
-    function match(c) {
-      const t = (C.name(c) + ' ' + c.make + ' ' + (C.MAKE_AR[c.make] || '') + ' ' + c.model + ' ' + (c.description || '')).toLowerCase(), q = $('q').value.trim().toLowerCase();
-      const mn = +$('pmin').value || 0, mx = +$('pmax').value || Infinity;
-      return (!F.deal || c.deal === F.deal) && (!q || t.includes(q)) && (!$('make').value || c.make === $('make').value) && c.price >= mn && c.price <= mx &&
-        (!F.body || c.body_type === F.body) && (!F.fuel.size || F.fuel.has(c.fuel)) && (!F.trans || c.transmission === F.trans) && (!F.specs.size || F.specs.has(c.regional_specs)) &&
-        (!F.seller.size || F.seller.has(c.seller_type)) && (!F.cond || c.condition === F.cond) && (!F.period || c.rent_period === F.period) &&
-        (!F.ymin || (c.year || 0) >= +F.ymin) && (!F.kmax || (c.mileage_km || 0) <= +F.kmax) && (!F.city || (c.city || '').includes(F.city));
+    $('foot').innerHTML = `<a class="btn btn-teal" href="add-car.html?kind=${kind}"><i class="fas fa-plus"></i> أضف إعلانًا في ${K.name}</a>` + (kind === 'car' ? '<a class="btn btn-ghost" href="services-directory.html?cat=car_rental"><i class="fas fa-building"></i> دليل شركات تأجير السيارات</a>' : '');
+    const COLORS = { sale: ['#e6f7f5', '#028090'], rent: ['#e0f2fe', '#0369a1'], parts: ['#ffedd5', '#c2410c'], service: ['#ede9fe', '#6d28d9'] };
+
+    function subsFor(d) { return d === 'parts' ? K.parts : d === 'service' ? K.services : K.body; }
+    function drawTabs() {
+      $('tabs').innerHTML = `<button class="tab ${F.deal ? '' : 'on'}" data-d="">الكل</button>` + Object.entries(K.deals).map(([k, d]) => `<button class="tab ${F.deal === k ? 'on' : ''}" data-d="${k}"><i class="fas ${d[1]}"></i> ${d[0]}</button>`).join('') +
+        `<a class="tab" href="add-car.html?kind=${kind}${F.deal ? '&deal=' + F.deal : ''}" style="text-decoration:none;margin-inline-start:auto;background:#e11d48;border-color:#e11d48;color:#fff"><i class="fas fa-plus"></i> أضف إعلانًا</a>`;
+      const counts = {}; pool.forEach((c) => { counts[c.deal] = (counts[c.deal] || 0) + 1; });
+      $('hub').hidden = !!F.deal;
+      $('hub').innerHTML = Object.entries(K.deals).map(([k, d]) => `<button type="button" data-d="${k}"><i class="fas ${d[1]}" style="background:${COLORS[k][0]};color:${COLORS[k][1]}"></i><b>${d[0]}</b><small>${d[2]}</small><em>${counts[k] || 0} إعلان</em></button>`).join('');
+      const subs = subsFor(F.deal);
+      $('subs').innerHTML = `<button data-s="" class="${F.sub ? '' : 'on'}"><i class="fas fa-border-all"></i>الكل</button>` + subs.map(([v, l, ic]) => `<button data-s="${v}" class="${F.sub === v ? 'on' : ''}"><i class="fas ${ic}"></i>${l}</button>`).join('');
+      const svc = F.deal === 'service';
+      $('make').hidden = svc; $('prBox').hidden = svc;
+      $('q').placeholder = F.deal === 'parts' ? 'ابحث عن قطعة أو موديل' : svc ? 'ابحث عن ورشة أو خدمة' : 'ابحث بالماركة أو الموديل';
+      $('sort').querySelector('[value=year]').hidden = ['parts', 'service'].includes(F.deal);
     }
-    const nF = () => F.fuel.size + F.specs.size + F.seller.size + [F.trans, F.cond, F.period, F.ymin, F.kmax, F.city].filter(Boolean).length;
+    const setDeal = (d) => { F.deal = d; F.sub = ''; F.period = ''; drawTabs(); draw(); };
+    $('tabs').onclick = (e) => { const t = e.target.closest('[data-d]'); if (t) setDeal(t.dataset.d); };
+    $('hub').onclick = (e) => { const t = e.target.closest('[data-d]'); if (t) { setDeal(t.dataset.d); $('tabs').scrollIntoView({ behavior: 'smooth' }); } };
+    $('subs').onclick = (e) => { const b = e.target.closest('[data-s]'); if (!b) return; F.sub = b.dataset.s; $('subs').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); draw(); };
+
+    function match(c) {
+      const t = [C.name(c), c.make, C.makeAr(c), c.model, c.title, c.fits, c.description, C.subLabel(c)].filter(Boolean).join(' ').toLowerCase(), q = $('q').value.trim().toLowerCase();
+      const mn = +$('pmin').value || 0, mx = +$('pmax').value || Infinity, p = Number(c.price) || 0, sub = F.deal === 'parts' ? c.part_category : F.deal === 'service' ? c.service_type : c.body_type;
+      return (!F.deal || c.deal === F.deal) && (!q || t.includes(q)) && (F.deal === 'service' || !$('make').value || c.make === $('make').value) && (F.deal === 'service' || (p >= mn && p <= mx)) &&
+        (!F.sub || sub === F.sub) && (!F.fuel.size || F.fuel.has(c.fuel)) && (!F.trans || c.transmission === F.trans) && (!F.specs.size || F.specs.has(c.regional_specs)) &&
+        (!F.seller.size || F.seller.has(c.seller_type)) && (!F.cond || c.condition === F.cond) && (!F.period || c.rent_period === F.period) &&
+        (!F.ymin || (c.year || 0) >= +F.ymin) && (!F.kmax || (c.mileage_km || 0) <= +F.kmax) && (!F.lmin || (c.length_ft || 0) >= +F.lmin) && (!F.captain || c.captain_included) && (!F.city || (c.city || '').includes(F.city));
+    }
+    const nF = () => F.fuel.size + F.specs.size + F.seller.size + [F.trans, F.cond, F.period, F.ymin, F.kmax, F.lmin, F.captain, F.city].filter(Boolean).length;
     function draw() {
       const k = $('sort').value, rows = pool.filter(match);
-      rows.sort((a, b) => k === 'price_asc' ? a.price - b.price : k === 'price_desc' ? b.price - a.price : k === 'year' ? (b.year || 0) - (a.year || 0) : k === 'km' ? (a.mileage_km || 0) - (b.mileage_km || 0) : (a.demo ? 1 : 0) - (b.demo ? 1 : 0) || String(b.created_at).localeCompare(String(a.created_at)));
-      $('cnt').textContent = rows.length ? rows.length + ' سيارة' : '';
-      $('list').innerHTML = rows.map(C.card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas fa-car-side"></i><h2>لا توجد سيارات مطابقة</h2><p>غيّر الفلاتر، أو أضف سيارتك ليراها المهتمون.</p><a class="btn btn-teal" href="add-car.html">أضف سيارتك</a></div>`;
+      rows.sort((a, b) => k === 'price_asc' ? (a.price || 0) - (b.price || 0) : k === 'price_desc' ? (b.price || 0) - (a.price || 0) : k === 'year' ? (b.year || 0) - (a.year || 0) : (a.demo ? 1 : 0) - (b.demo ? 1 : 0) || String(b.created_at).localeCompare(String(a.created_at)));
+      $('cnt').textContent = rows.length ? rows.length + ' إعلان' : '';
+      $('list').innerHTML = rows.map(C.card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas ${K.icon}"></i><h2>لا توجد إعلانات هنا بعد</h2><p>غيّر الفلاتر، أو كن أول من يعلن في هذا القسم.</p><a class="btn btn-teal" href="add-car.html?kind=${kind}${F.deal ? '&deal=' + F.deal : ''}">أضف إعلانًا</a></div>`;
       const n = nF(); $('fN').hidden = !n; $('fN').textContent = n;
+      const u = new URLSearchParams(); if (kind !== 'car') u.set('kind', kind); if (F.deal) u.set('deal', F.deal); if (F.sub) u.set('sub', F.sub);
+      try { history.replaceState(history.state, '', location.pathname + (u.toString() ? '?' + u : '')); } catch (e) {}
     }
     ['q', 'make', 'pmin', 'pmax', 'sort'].forEach((id) => $(id).addEventListener(id === 'q' ? 'input' : 'change', draw));
     $('fBtn').onclick = () => {
       const chips = (k, list, multi) => `<div class="fs-chips" data-k="${k}">${list.map(([v, l]) => `<button type="button" class="fs-chip ${(multi ? F[k].has(v) : F[k] === v) ? 'on' : ''}" data-v="${v}">${l}</button>`).join('')}</div>`;
+      const d = F.deal, veh = !['parts', 'service'].includes(d), land = kind !== 'yacht';
+      const sellers = C.SELLER.filter(([v]) => d === 'parts' ? ['owner', 'parts_shop', 'dealer'].includes(v) : d === 'service' ? ['workshop'].includes(v) : !['workshop', 'parts_shop'].includes(v));
       const sh = AQStay.sheet(`<div class="aqs-hd"><h3>الفلاتر</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div><div class="aqs-body">
-        ${F.deal !== 'sale' ? `<div class="fs-sec"><h4>مدة الإيجار</h4>${chips('period', [['daily', 'يومي'], ['weekly', 'أسبوعي'], ['monthly', 'شهري']])}</div>` : ''}
-        <div class="fs-sec"><h4>الحالة</h4>${chips('cond', [['new', 'جديدة'], ['used', 'مستعملة']])}</div>
-        <div class="fs-sec"><h4>نوع الوقود</h4>${chips('fuel', C.FUEL, true)}</div>
-        <div class="fs-sec"><h4>ناقل الحركة</h4>${chips('trans', C.TRANS)}</div>
-        <div class="fs-sec"><h4>المواصفات</h4>${chips('specs', C.SPECS, true)}</div>
-        <div class="fs-sec"><h4>المعلن</h4>${chips('seller', C.SELLER, true)}</div>
-        <div class="fs-sec"><h4>سنة الصنع من</h4><input class="fs-in" id="fy" type="number" inputmode="numeric" placeholder="مثال: 2020" value="${esc(F.ymin)}"></div>
-        <div class="fs-sec"><h4>أقصى مسافة مقطوعة (كم)</h4><input class="fs-in" id="fk" type="number" inputmode="numeric" placeholder="مثال: 80000" value="${esc(F.kmax)}"></div>
-        <div class="fs-sec" style="border:0"><h4>المدينة</h4><input class="fs-in" id="fc" placeholder="مثال: دبي" value="${esc(F.city)}"></div></div>
+        ${d === 'rent' || (!d && veh) ? `<div class="fs-sec"><h4>مدة الإيجار</h4>${chips('period', K.periods.map(([v, l]) => [v, 'بال' + l]))}</div>` : ''}
+        ${d !== 'service' ? `<div class="fs-sec"><h4>الحالة</h4>${chips('cond', [['new', 'جديد'], ['used', 'مستعمل']])}</div>` : ''}
+        ${veh && land ? `<div class="fs-sec"><h4>ناقل الحركة</h4>${chips('trans', C.TRANS)}</div>` : ''}
+        ${veh && kind === 'car' ? `<div class="fs-sec"><h4>نوع الوقود</h4>${chips('fuel', C.FUEL, true)}</div><div class="fs-sec"><h4>المواصفات</h4>${chips('specs', C.SPECS, true)}</div>` : ''}
+        ${veh && kind === 'yacht' ? `<div class="fs-sec"><h4>مع كابتن</h4>${chips('captain', [['1', 'الإيجار يشمل الكابتن']])}</div><div class="fs-sec"><h4>أقل طول (قدم)</h4><input class="fs-in" id="fl" type="number" inputmode="numeric" placeholder="مثال: 40" value="${esc(F.lmin)}"></div>` : ''}
+        <div class="fs-sec"><h4>المعلن</h4>${chips('seller', sellers, true)}</div>
+        ${veh ? `<div class="fs-sec"><h4>سنة الصنع من</h4><input class="fs-in" id="fy" type="number" inputmode="numeric" placeholder="مثال: 2020" value="${esc(F.ymin)}"></div>` : ''}
+        ${veh && land ? `<div class="fs-sec"><h4>أقصى مسافة مقطوعة (كم)</h4><input class="fs-in" id="fk" type="number" inputmode="numeric" placeholder="مثال: 80000" value="${esc(F.kmax)}"></div>` : ''}
+        <div class="fs-sec" style="border:0"><h4>${kind === 'yacht' ? 'المدينة أو المرسى' : 'المدينة'}</h4><input class="fs-in" id="fc" placeholder="مثال: دبي" value="${esc(F.city)}"></div></div>
         <div class="aqs-ft"><button class="clr" type="button" data-r>مسح الكل</button><button class="go" type="button" style="background:#e11d48"></button></div>`);
       const el = sh.el, go = el.querySelector('.go'), upd = () => { go.textContent = `اعرض ${AQStay.resTxt(pool.filter(match).length)}`; };
       el.querySelectorAll('.fs-chips').forEach((box) => box.onclick = (e) => {
@@ -117,16 +151,17 @@
         if (F[k] instanceof Set) { F[k].has(v) ? F[k].delete(v) : F[k].add(v); b.classList.toggle('on'); } else { F[k] = F[k] === v ? '' : v; box.querySelectorAll('.fs-chip').forEach((x) => x.classList.toggle('on', x === b && !!F[k])); }
         upd();
       });
-      [['fy', 'ymin'], ['fk', 'kmax'], ['fc', 'city']].forEach(([i, k]) => el.querySelector('#' + i).oninput = (e) => { F[k] = e.target.value.trim(); upd(); });
-      el.querySelector('[data-r]').onclick = () => { F.fuel.clear(); F.specs.clear(); F.seller.clear(); Object.assign(F, { trans: '', cond: '', period: '', ymin: '', kmax: '', city: '' }); el.querySelectorAll('.fs-chip.on').forEach((x) => x.classList.remove('on')); el.querySelectorAll('input').forEach((i) => i.value = ''); upd(); };
+      [['fy', 'ymin'], ['fk', 'kmax'], ['fl', 'lmin'], ['fc', 'city']].forEach(([i, k]) => { const x = el.querySelector('#' + i); if (x) x.oninput = (e) => { F[k] = e.target.value.trim(); upd(); }; });
+      el.querySelector('[data-r]').onclick = () => { F.fuel.clear(); F.specs.clear(); F.seller.clear(); Object.assign(F, { trans: '', cond: '', period: '', ymin: '', kmax: '', lmin: '', captain: '', city: '' }); el.querySelectorAll('.fs-chip.on').forEach((x) => x.classList.remove('on')); el.querySelectorAll('input').forEach((i) => i.value = ''); upd(); };
       go.onclick = () => { sh.close(); draw(); };
       upd();
     };
-    C.load().then((l) => { pool = l; draw(); });
+    drawTabs();
+    C.load({ kind }).then((l) => { pool = l; drawTabs(); draw(); });
   })();
   </script>
-  <script src="js/aq-engage.js?v=84" defer></script>
-  <script src="js/aq-back.js?v=84" defer></script>
+  <script src="js/aq-engage.js?v=85" defer></script>
+  <script src="js/aq-back.js?v=85" defer></script>
   <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav(''));</script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>أضف سيارتك للبيع أو الإيجار | أنا عقار AnaAqar</title>
+  <title>أضف إعلان مركبة أو قطع غيار أو صيانة | أنا عقار AnaAqar</title>
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
   <link rel="manifest" href="manifest.json">
@@ -13,14 +13,17 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=84">
+  <link rel="stylesheet" href="css/aq-pages.css?v=85">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=84"></script>
-  <script src="js/aq-cars.js?v=84"></script>
+  <script src="supabase-client.js?v=85"></script>
+  <script src="js/aq-cars.js?v=85"></script>
   <style>
     .form { max-width:760px; margin:0 auto; }
-    .seg { display:flex; gap:8px; margin-bottom:12px; } .seg button { flex:1; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:12px; font:inherit; font-weight:900; cursor:pointer; }
-    .seg button.on { border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); }
+    .seg { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:10px; } .seg.d4 { grid-template-columns:repeat(4, minmax(0, 1fr)); }
+    @media (max-width:520px) { .seg.d4 { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .seg button { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:11px 6px; font:inherit; font-weight:900; font-size:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .seg button i { font-size:18px; color:var(--muted); }
+    .seg button.on { border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); } .seg button.on i { color:var(--teal); }
     .row3 { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; } @media (max-width:620px) { .row3 { grid-template-columns:1fr 1fr; } }
     .chk { display:flex; flex-wrap:wrap; gap:8px; } .chk label { display:flex; align-items:center; gap:6px; border:1.5px solid var(--line); border-radius:10px; padding:8px 12px; font-weight:700; cursor:pointer; }
     .thumbs { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; } .thumbs img { width:84px; height:64px; object-fit:cover; border-radius:10px; }
@@ -28,23 +31,24 @@
     .mine .row img { width:84px; height:64px; object-fit:cover; border-radius:10px; flex:0 0 auto; }
     .pill { display:inline-block; font-size:12.5px; font-weight:900; padding:2px 9px; border-radius:999px; background:#fef3c7; color:#92400e; }
     .pill.approved { background:#dcfce7; color:#166534; } .pill.rejected { background:#fee2e2; color:#991b1b; } .pill.sold, .pill.paused { background:#e2e8f0; color:#334155; }
+    [hidden] { display:none !important; }
   </style>
 </head>
 <body>
   <header class="topbar"><div class="topbar-in">
     <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
-    <a class="back" href="cars.html">السيارات ←</a>
+    <a class="back" href="cars.html">المركبات ←</a>
   </div></header>
-  <section class="head"><div class="head-in"><h1><i class="fas fa-car-side"></i> أضف سيارتك للبيع أو الإيجار</h1><p>الإعلان مجاني، ويظهر بعد مراجعة سريعة من فريق أنا عقار.</p></div></section>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-plus"></i> أضف إعلانك</h1><p>سيارات، دراجات نارية، يخوت وقوارب: بيع أو إيجار أو قطع غيار أو صيانة. الإعلان مجاني ويظهر بعد مراجعة سريعة.</p></div></section>
   <main id="root"><div class="skel"></div></main>
   <script>
   (function () {
-    const C = AQCars, { esc, num } = C, $ = (id) => document.getElementById(id), sb = supabaseClient;
+    const C = AQCars, { esc } = C, $ = (id) => document.getElementById(id), sb = supabaseClient, qs = new URLSearchParams(location.search);
     let user = null;
-    const ST = { pending: 'قيد المراجعة', approved: 'منشور', rejected: 'مرفوض', sold: 'مُباع / مؤجَّر', paused: 'متوقف مؤقتًا' };
+    const ST = { pending: 'قيد المراجعة', approved: 'منشور', rejected: 'مرفوض', sold: 'مُباع / منتهٍ', paused: 'متوقف مؤقتًا' };
 
     function authView(mode) {
-      $('root').innerHTML = `<form class="form" id="af"><h2 style="margin-top:0">${mode === 'login' ? 'سجّل الدخول لتضيف سيارتك' : 'أنشئ حسابًا مجانيًا'}</h2>
+      $('root').innerHTML = `<form class="form" id="af"><h2 style="margin-top:0">${mode === 'login' ? 'سجّل الدخول لتضيف إعلانك' : 'أنشئ حسابًا مجانيًا'}</h2>
         ${mode === 'login' ? '' : '<div class="fg"><label>الاسم</label><input id="aName" autocomplete="name"></div>'}
         <div class="fg"><label>البريد الإلكتروني</label><input id="aEmail" type="email" autocomplete="email" dir="ltr"></div>
         <div class="fg"><label>كلمة المرور</label><input id="aPass" type="password" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" dir="ltr"></div>
@@ -64,45 +68,87 @@
     }
 
     function formView() {
-      let deal = new URLSearchParams(location.search).get('deal') === 'rent' ? 'rent' : 'sale', files = [];
+      let kind = C.KINDS[qs.get('kind')] ? qs.get('kind') : 'car', deal = ['sale', 'rent', 'parts', 'service'].includes(qs.get('deal')) ? qs.get('deal') : 'sale', files = [];
       const yr = new Date().getFullYear();
       $('root').innerHTML = `<form class="form" id="cf" novalidate>
-        <div class="seg"><button type="button" data-d="sale">أبيع سيارتي</button><button type="button" data-d="rent">أؤجّر سيارتي</button></div>
-        <h3 class="s">السيارة</h3>
-        <div class="row3"><div class="fg"><label>الماركة *</label><select id="make" required><option value="">اختر</option>${C.MAKES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
-          <div class="fg"><label>الموديل *</label><input id="model" required maxlength="60" placeholder="مثال: كامري"></div>
-          <div class="fg"><label>سنة الصنع *</label><input id="year" type="number" inputmode="numeric" min="1950" max="${yr + 1}" value="${yr - 2}"></div></div>
-        <div class="row3"><div class="fg"><label>نوع الهيكل</label><select id="body"><option value="">—</option>${C.BODY.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
-          <div class="fg"><label>الوقود</label><select id="fuel">${C.FUEL.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
-          <div class="fg"><label>ناقل الحركة</label><select id="trans">${C.TRANS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div></div>
-        <div class="row3"><div class="fg"><label>المسافة المقطوعة (كم)</label><input id="km" type="number" inputmode="numeric" min="0"></div>
-          <div class="fg"><label>المواصفات</label><select id="specs">${C.SPECS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
-          <div class="fg"><label>الحالة</label><select id="cond"><option value="used">مستعملة</option><option value="new">جديدة</option></select></div></div>
-        <div class="row3"><div class="fg"><label>اللون</label><input id="color" maxlength="30"></div><div class="fg"><label>عدد المقاعد</label><input id="seats" type="number" inputmode="numeric" min="1" max="60"></div>
-          <div class="fg"><label>المدينة *</label><input id="city" maxlength="60" placeholder="مثال: دبي"></div></div>
-        <h3 class="s" id="prH">السعر</h3>
+        <h3 class="s" style="margin-top:0">القسم</h3><div class="seg" id="kSeg">${Object.entries(C.KINDS).map(([k, v]) => `<button type="button" data-k="${k}"><i class="fas ${v.icon}"></i>${v.name}</button>`).join('')}</div>
+        <h3 class="s">نوع الإعلان</h3><div class="seg d4" id="dSeg"></div>
+        <div data-show="veh">
+          <h3 class="s" id="vH">المركبة</h3>
+          <div class="row3"><div class="fg"><label id="mkL">الماركة *</label><select id="make"></select></div>
+            <div class="fg"><label>الموديل *</label><input id="model" maxlength="60"></div>
+            <div class="fg"><label>سنة الصنع *</label><input id="year" type="number" inputmode="numeric" min="1950" max="${yr + 1}" value="${yr - 2}"></div></div>
+          <div class="row3"><div class="fg"><label>النوع</label><select id="body"></select></div>
+            <div class="fg" data-show="land"><label>ناقل الحركة</label><select id="trans">${C.TRANS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+            <div class="fg"><label>الوقود</label><select id="fuel">${C.FUEL.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div></div>
+          <div class="row3"><div class="fg" data-show="land"><label>المسافة المقطوعة (كم)</label><input id="km" type="number" inputmode="numeric" min="0"></div>
+            <div class="fg" data-show="moto"><label>سعة المحرك (سي سي)</label><input id="cc" type="number" inputmode="numeric" min="0"></div>
+            <div class="fg" data-show="yacht"><label>الطول (قدم)</label><input id="len" type="number" inputmode="decimal" min="0"></div>
+            <div class="fg" data-show="yacht"><label>ساعات تشغيل المحرك</label><input id="hrs" type="number" inputmode="numeric" min="0"></div>
+            <div class="fg" data-show="yacht"><label>عدد الكبائن</label><input id="cab" type="number" inputmode="numeric" min="0"></div>
+            <div class="fg" data-show="car"><label>المواصفات</label><select id="specs">${C.SPECS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+            <div class="fg"><label id="seatL">عدد المقاعد</label><input id="seats" type="number" inputmode="numeric" min="1" max="500"></div>
+            <div class="fg"><label>اللون</label><input id="color" maxlength="30"></div></div>
+        </div>
+        <div data-show="parts">
+          <h3 class="s">القطعة</h3>
+          <div class="fg"><label>اسم القطعة *</label><input id="ptitle" maxlength="140" placeholder="مثال: صدام أمامي أصلي"></div>
+          <div class="row3"><div class="fg"><label>الفئة *</label><select id="pcat"></select></div><div class="fg"><label>تناسب (الماركة)</label><select id="pmake"></select></div><div class="fg"><label>تناسب الموديلات</label><input id="fits" maxlength="120" placeholder="مثال: كامري 2018–2023"></div></div>
+        </div>
+        <div data-show="service">
+          <h3 class="s">الخدمة</h3>
+          <div class="fg"><label>اسم الورشة / المركز *</label><input id="stitle" maxlength="140" placeholder="مثال: مركز النخبة لصيانة السيارات"></div>
+          <div class="row3"><div class="fg"><label>نوع الخدمة *</label><select id="stype"></select></div></div>
+        </div>
+        <div class="row3" data-show="cond"><div class="fg"><label>الحالة</label><select id="cond"><option value="used">مستعمل</option><option value="new">جديد</option></select></div>
+          <div class="fg"><label id="cityL">المدينة *</label><input id="city" maxlength="60" placeholder="مثال: دبي"></div></div>
+        <div class="row3" data-show="service"><div class="fg"><label>المدينة *</label><input id="city2" maxlength="60" placeholder="مثال: دبي"></div></div>
+        <h3 class="s">السعر</h3>
         <div class="row3"><div class="fg"><label id="prL">السعر (درهم) *</label><input id="price" type="number" inputmode="numeric" min="1"></div>
-          <div class="fg" data-rent><label>مدة الإيجار</label><select id="period"><option value="daily">باليوم</option><option value="weekly">بالأسبوع</option><option value="monthly">بالشهر</option></select></div>
-          <div class="fg" data-rent><label>مبلغ التأمين (درهم)</label><input id="deposit" type="number" inputmode="numeric" min="0"></div></div>
-        <div class="row3" data-rent><div class="fg"><label>حد الكيلومترات للمدة</label><input id="kml" type="number" inputmode="numeric" min="0"></div><div class="fg"><label>أقل عمر للسائق</label><input id="age" type="number" inputmode="numeric" min="18" max="80" value="21"></div>
-          <div class="fg"><label>&nbsp;</label><div class="chk"><label><input type="checkbox" id="ins"> تأمين شامل</label><label><input type="checkbox" id="dlv"> توصيل</label></div></div></div>
-        <h3 class="s">المزايا</h3><div class="chk">${C.FEATURES.map(([v, l]) => `<label><input type="checkbox" name="ft" value="${v}"> ${l}</label>`).join('')}</div>
+          <div class="fg" data-show="rent"><label>مدة الإيجار</label><select id="period"></select></div>
+          <div class="fg" data-show="rent"><label>مبلغ التأمين (درهم)</label><input id="deposit" type="number" inputmode="numeric" min="0"></div></div>
+        <div class="row3" data-show="rent"><div class="fg" data-show="land"><label>حد الكيلومترات للمدة</label><input id="kml" type="number" inputmode="numeric" min="0"></div><div class="fg"><label>أقل عمر</label><input id="age" type="number" inputmode="numeric" min="16" max="80" value="21"></div>
+          <div class="fg"><label>&nbsp;</label><div class="chk"><label data-show="land"><input type="checkbox" id="ins"> تأمين شامل</label><label data-show="yacht"><input type="checkbox" id="cap"> يشمل الكابتن</label><label><input type="checkbox" id="dlv"> توصيل</label></div></div></div>
+        <div data-show="veh"><h3 class="s">المزايا</h3><div class="chk" id="feats"></div></div>
         <h3 class="s">الصور والوصف</h3>
-        <div class="fg"><label>صور السيارة (حتى 10)</label><input id="imgs" type="file" accept="image/*" multiple><div class="thumbs" id="th"></div></div>
-        <div class="fg"><label>الوصف</label><textarea id="desc" maxlength="4000" placeholder="الحالة، الصيانة، الحوادث، الإضافات…"></textarea></div>
+        <div class="fg"><label>الصور (حتى 10)</label><input id="imgs" type="file" accept="image/*" multiple><div class="thumbs" id="th"></div></div>
+        <div class="fg"><label>الوصف</label><textarea id="desc" maxlength="4000"></textarea></div>
         <h3 class="s">بيانات التواصل</h3>
-        <div class="row3"><div class="fg"><label>صفة المعلن</label><select id="seller">${C.SELLER.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+        <div class="row3"><div class="fg"><label>صفة المعلن</label><select id="seller"></select></div>
           <div class="fg"><label>الاسم أو اسم الشركة</label><input id="sname" maxlength="80"></div>
           <div class="fg"><label>الهاتف / واتساب *</label><input id="phone" type="tel" inputmode="tel" maxlength="20" dir="ltr" style="text-align:right" placeholder="9715XXXXXXXX"></div></div>
         <p class="hint" id="cMsg"></p>
         <button class="btn btn-teal" style="width:100%" id="cGo"><i class="fas fa-paper-plane"></i> انشر الإعلان</button></form>
         <div class="form mine" style="margin-top:22px" id="mine"></div>`;
-      const setDeal = (d) => { deal = d; document.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('on', b.dataset.d === d)); document.querySelectorAll('[data-rent]').forEach((x) => x.hidden = d !== 'rent'); $('prL').textContent = d === 'rent' ? 'سعر الإيجار (درهم) *' : 'السعر (درهم) *'; };
-      document.querySelectorAll('.seg button').forEach((b) => b.onclick = () => setDeal(b.dataset.d)); setDeal(deal);
+      const opts = (list, empty) => (empty ? `<option value="">${empty}</option>` : '') + list.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+      function apply() {
+        const K = C.KINDS[kind], veh = ['sale', 'rent'].includes(deal);
+        $('kSeg').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.k === kind));
+        $('dSeg').innerHTML = Object.entries(K.deals).map(([k, d]) => `<button type="button" data-d="${k}" class="${k === deal ? 'on' : ''}"><i class="fas ${d[1]}"></i>${d[0]}</button>`).join('');
+        $('make').innerHTML = opts(K.makes, 'اختر'); $('pmake').innerHTML = opts(K.makes, 'كل الماركات');
+        $('body').innerHTML = opts(K.body, '—'); $('pcat').innerHTML = opts(K.parts, 'اختر'); $('stype').innerHTML = opts(K.services, 'اختر');
+        $('period').innerHTML = K.periods.map(([v, l]) => `<option value="${v}">بال${l}</option>`).join('');
+        $('feats').innerHTML = C.FEAT_BY_KIND[kind].map((f) => `<label><input type="checkbox" name="ft" value="${f}"> ${C.AR.feat[f][1]}</label>`).join('');
+        $('seller').innerHTML = opts(C.SELLER.filter(([v]) => deal === 'parts' ? ['parts_shop', 'owner', 'dealer'].includes(v) : deal === 'service' ? v === 'workshop' : deal === 'rent' ? ['rental_company', 'owner', 'dealer'].includes(v) : ['owner', 'dealer'].includes(v)));
+        const vis = { veh, parts: deal === 'parts', service: deal === 'service', rent: deal === 'rent', cond: deal !== 'service', land: kind !== 'yacht', car: kind === 'car', moto: kind === 'moto', yacht: kind === 'yacht' };
+        document.querySelectorAll('[data-show]').forEach((el) => { el.hidden = !el.dataset.show.split(' ').every((k) => vis[k]); });
+        // مزايا خاصة بنوع المركبة داخل قسم المركبة
+        if (veh) document.querySelectorAll('#cf [data-show="land"],#cf [data-show="car"],#cf [data-show="moto"],#cf [data-show="yacht"]').forEach((el) => { el.hidden = !vis[el.dataset.show]; });
+        $('vH').textContent = K.one; $('mkL').textContent = kind === 'yacht' ? 'الشركة المصنّعة *' : 'الماركة *';
+        $('seatL').textContent = kind === 'yacht' ? 'السعة (عدد الأشخاص)' : 'عدد المقاعد';
+        $('prL').textContent = deal === 'service' ? 'السعر يبدأ من (اختياري)' : deal === 'rent' ? 'سعر الإيجار (درهم) *' : 'السعر (درهم) *';
+        $('desc').placeholder = deal === 'service' ? 'الخدمات التي تقدمها، أوقات العمل، العنوان…' : deal === 'parts' ? 'حالة القطعة، رقمها، الضمان…' : 'الحالة، الصيانة، الحوادث، الإضافات…';
+      }
+      $('kSeg').onclick = (e) => { const b = e.target.closest('[data-k]'); if (b) { kind = b.dataset.k; apply(); } };
+      $('dSeg').onclick = (e) => { const b = e.target.closest('[data-d]'); if (b) { deal = b.dataset.d; apply(); } };
+      apply();
       $('imgs').onchange = () => { files = [...$('imgs').files].slice(0, 10); $('th').innerHTML = files.map((f) => `<img src="${URL.createObjectURL(f)}" alt="">`).join(''); };
       $('cf').onsubmit = async (e) => {
         e.preventDefault(); const m = $('cMsg'), v = (id) => $(id).value.trim(), n = (id) => v(id) === '' ? null : +v(id);
-        if (!v('make') || !v('model') || !n('price') || !v('city') || v('phone').replace(/\D/g, '').length < 7) { m.textContent = 'أكمل الحقول المطلوبة: الماركة، الموديل، السعر، المدينة، والهاتف.'; return; }
+        const veh = ['sale', 'rent'].includes(deal), city = deal === 'service' ? v('city2') : v('city');
+        const miss = !city || v('phone').replace(/\D/g, '').length < 7 || (deal !== 'service' && !n('price')) ||
+          (veh && (!v('make') || !v('model'))) || (deal === 'parts' && (!v('ptitle') || !v('pcat'))) || (deal === 'service' && (!v('stitle') || !v('stype')));
+        if (miss) { m.textContent = 'أكمل الحقول المطلوبة المعلّمة بنجمة (*) ورقم الهاتف.'; return; }
         $('cGo').disabled = true; $('cGo').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ النشر…';
         const urls = [];
         for (let i = 0; i < files.length; i++) {
@@ -110,15 +156,19 @@
           const { error } = await sb.storage.from('car-images').upload(path, f, { contentType: f.type });
           if (!error) urls.push(sb.storage.from('car-images').getPublicUrl(path).data.publicUrl);
         }
-        const row = { owner_id: user.id, deal, rent_period: deal === 'rent' ? v('period') : null, make: v('make'), model: v('model'), year: n('year'), price: n('price'), mileage_km: n('km'),
-          body_type: v('body') || null, fuel: v('fuel'), transmission: v('trans'), color: v('color') || null, seats: n('seats'), regional_specs: v('specs'), condition: v('cond'), city: v('city'),
-          description: v('desc') || null, images: urls, features: [...document.querySelectorAll('[name=ft]:checked')].map((x) => x.value), seller_type: v('seller'), seller_name: v('sname') || null,
-          phone: v('phone'), whatsapp: v('phone'), deposit: deal === 'rent' ? n('deposit') : null, km_limit: deal === 'rent' ? n('kml') : null, min_driver_age: deal === 'rent' ? n('age') : null,
-          insurance_included: deal === 'rent' && $('ins').checked, delivery: deal === 'rent' && $('dlv').checked };
+        const row = { owner_id: user.id, kind, deal, city, price: n('price'), description: v('desc') || null, images: urls, seller_type: v('seller') || null, seller_name: v('sname') || null, phone: v('phone'), whatsapp: v('phone') };
+        if (veh) Object.assign(row, { make: v('make'), model: v('model'), year: n('year'), body_type: v('body') || null, fuel: v('fuel'), condition: v('cond'), color: v('color') || null, seats: n('seats'),
+          features: [...document.querySelectorAll('[name=ft]:checked')].map((x) => x.value),
+          ...(kind !== 'yacht' ? { transmission: v('trans'), mileage_km: n('km') } : { length_ft: n('len'), engine_hours: n('hrs'), cabins: n('cab') }),
+          ...(kind === 'car' ? { regional_specs: v('specs') } : {}), ...(kind === 'moto' ? { engine_cc: n('cc') } : {}) });
+        if (deal === 'rent') Object.assign(row, { rent_period: v('period'), deposit: n('deposit'), min_driver_age: n('age'), delivery: $('dlv').checked,
+          ...(kind !== 'yacht' ? { km_limit: n('kml'), insurance_included: $('ins').checked } : { captain_included: $('cap').checked }) });
+        if (deal === 'parts') Object.assign(row, { title: v('ptitle'), part_category: v('pcat'), make: v('pmake') || null, fits: v('fits') || null, condition: v('cond') });
+        if (deal === 'service') Object.assign(row, { title: v('stitle'), service_type: v('stype') });
         const { error } = await sb.from('cars').insert(row);
         $('cGo').disabled = false; $('cGo').innerHTML = '<i class="fas fa-paper-plane"></i> انشر الإعلان';
-        if (error) { m.textContent = /rate_limited/.test(error.message) ? 'وصلت للحد اليومي (10 إعلانات). حاول غدًا.' : /relation|does not exist/.test(error.message) ? 'قسم السيارات لم يُفعَّل بعد في قاعدة البيانات.' : 'تعذّر النشر: ' + error.message; return; }
-        e.target.reset(); files = []; $('th').innerHTML = ''; setDeal(deal);
+        if (error) { m.textContent = /rate_limited/.test(error.message) ? 'وصلت للحد اليومي (10 إعلانات). حاول غدًا.' : /relation|does not exist|column|check constraint/.test(error.message) ? 'هذا القسم يحتاج تشغيل ملف supabase/stays_cars_ads.sql في قاعدة البيانات.' : 'تعذّر النشر: ' + error.message; return; }
+        e.target.reset(); files = []; $('th').innerHTML = ''; apply();
         m.textContent = '✅ استلمنا إعلانك، وسيظهر بعد المراجعة.'; mine();
       };
       mine();
@@ -130,11 +180,11 @@
       const list = r.data || [];
       if (!list.length) { box.innerHTML = ''; return; }
       const ids = list.map((c) => c.id), inq = (await sb.from('car_inquiries').select('*').in('car_id', ids).order('created_at', { ascending: false }).limit(100)).data || [];
-      box.innerHTML = `<h2 id="mineH">سياراتي (${list.length})</h2>` + list.map((c) => {
-        const q = inq.filter((i) => i.car_id === c.id);
-        return `<div class="row"><img src="${esc(C.img(c))}" alt="" onerror="this.style.visibility='hidden'"><div class="tx"><b>${esc(C.name(c))}</b><div class="hint">${C.price(c)} · <span class="pill ${c.status}">${ST[c.status] || c.status}</span>${c.rejection_reason ? ' · ' + esc(c.rejection_reason) : ''}</div>
-          <div class="acts" style="margin-top:6px">${c.status === 'approved' ? `<a class="btn btn-soft sm" href="car.html?id=${c.id}">عرض</a><button class="btn btn-ghost sm" data-s="sold" data-id="${c.id}">${c.deal === 'rent' ? 'تم التأجير' : 'تم البيع'}</button><button class="btn btn-ghost sm" data-s="paused" data-id="${c.id}">إيقاف مؤقت</button>` : ''}${['sold', 'paused'].includes(c.status) ? `<button class="btn btn-soft sm" data-s="approved" data-id="${c.id}">إعادة التفعيل</button>` : ''}<button class="btn btn-red sm" data-del="${c.id}">حذف</button></div>
-          ${q.length ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:900">الطلبات (${q.length})</summary>${q.map((i) => `<div class="hint" style="padding:6px 0;border-bottom:1px dashed var(--line)"><b style="display:inline">${esc(i.name)}</b> · <a href="tel:${esc(i.phone)}" dir="ltr">${esc(i.phone)}</a>${i.date_from ? ` · ${esc(i.date_from)} → ${esc(i.date_to || '')}` : ''}${i.message ? '<br>' + esc(i.message) : ''}</div>`).join('')}</details>` : ''}</div></div>`;
+      box.innerHTML = `<h2 id="mineH">إعلاناتي (${list.length})</h2>` + list.map((c) => {
+        const q = inq.filter((i) => i.car_id === c.id), done = c.deal === 'rent' ? 'تم التأجير' : c.deal === 'service' ? 'إيقاف' : 'تم البيع';
+        return `<div class="row"><img src="${esc(C.img(c))}" alt="" onerror="this.style.visibility='hidden'"><div class="tx"><b>${esc(C.name(c))}</b><div class="hint">${C.kindOf(c).one} · ${C.dealBadge(c)} · ${C.price(c)} · <span class="pill ${c.status}">${ST[c.status] || c.status}</span>${c.rejection_reason ? ' · ' + esc(c.rejection_reason) : ''}</div>
+          <div class="acts" style="margin-top:6px">${c.status === 'approved' ? `<a class="btn btn-soft sm" href="car.html?id=${c.id}">عرض</a><button class="btn btn-ghost sm" data-s="sold" data-id="${c.id}">${done}</button><button class="btn btn-ghost sm" data-s="paused" data-id="${c.id}">إيقاف مؤقت</button>` : ''}${['sold', 'paused'].includes(c.status) ? `<button class="btn btn-soft sm" data-s="approved" data-id="${c.id}">إعادة التفعيل</button>` : ''}<button class="btn btn-red sm" data-del="${c.id}">حذف</button></div>
+          ${q.length ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:900">الطلبات (${q.length})</summary>${q.map((i) => `<div class="hint" style="padding:6px 0;border-bottom:1px dashed var(--line)"><b style="display:inline">${esc(i.name)}</b> · <a href="tel:${esc(i.phone)}" dir="ltr">${esc(i.phone)}</a>${i.date_from ? ` · ${esc(i.date_from)}${i.date_to ? ' → ' + esc(i.date_to) : ''}` : ''}${i.message ? '<br>' + esc(i.message) : ''}</div>`).join('')}</details>` : ''}</div></div>`;
       }).join('');
       box.querySelectorAll('[data-s]').forEach((b) => b.onclick = async () => { await sb.from('cars').update({ status: b.dataset.s }).eq('id', b.dataset.id); mine(); });
       box.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف هذا الإعلان نهائيًا؟')) return; await sb.from('cars').delete().eq('id', b.dataset.del); mine(); });
@@ -150,7 +200,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=84" defer></script>
-  <script src="js/aq-back.js?v=84" defer></script>
+  <script src="js/aq-engage.js?v=85" defer></script>
+  <script src="js/aq-back.js?v=85" defer></script>
 </body>
 </html>

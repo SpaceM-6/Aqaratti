@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../supabase-client.js?v=84"></script>
+  <script src="../supabase-client.js?v=85"></script>
   <style>
     :root { --teal:#00a896; --teal-d:#028090; --teal-s:#e6f7f5; --navy:#192038; --gold:#d4af37; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; --red:#e11d48; }
     * { box-sizing:border-box; }
@@ -121,7 +121,7 @@
         <a class="tile" href="#s-projects"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-city"></i></span><span class="tx"><b>مراجعة المشاريع</b><small>مشاريع المطوّرين على الخارطة</small></span><span class="tn" id="tnPrj"></span></a>
         <a class="tile" href="#s-buyers"><span class="ic" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-magnifying-glass-location"></i></span><span class="tx"><b>طلبات المشترين</b><small>ما يطلبه الزوار من «اطلب عقارك»</small></span><span class="tn" id="tnBuy"></span></a>
         <a class="tile" href="#s-campaigns"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-envelope-open-text"></i></span><span class="tx"><b>الحملات البريدية</b><small>رسائل للمستخدمين أو المهنيين</small></span></a>
-        <a class="tile" href="#s-cars"><span class="ic" style="background:#e2e8f0;color:#1e293b"><i class="fas fa-car-side"></i></span><span class="tx"><b>مراجعة السيارات</b><small>إعلانات السيارات للبيع والإيجار</small></span><span class="tn" id="tnCars"></span></a>
+        <a class="tile" href="#s-cars"><span class="ic" style="background:#e2e8f0;color:#1e293b"><i class="fas fa-car-side"></i></span><span class="tx"><b>مراجعة المركبات</b><small>سيارات، دراجات، يخوت، قطع غيار، صيانة</small></span><span class="tn" id="tnCars"></span></a>
         <a class="tile" href="#s-bookings"><span class="ic" style="background:#e0f2fe;color:#0369a1"><i class="fas fa-calendar-check"></i></span><span class="tx"><b>الحجوزات</b><small>حجوزات الإيجار اليومي والإقامات القصيرة</small></span><span class="tn" id="tnBk"></span></a>
         <a class="tile" href="#s-ai"><span class="ic" style="background:#ede9fe;color:#6d28d9"><i class="fas fa-wand-magic-sparkles"></i></span><span class="tx"><b>المساعد الذكي</b><small>حالة الخدمة واستهلاكها</small></span></a>
       </div>
@@ -350,7 +350,7 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة السيارات', bookings: 'الحجوزات' };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات' };
     const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings() };
     let current = '';
     function route() {
@@ -675,7 +675,7 @@
       if (error) { box.innerHTML = `<div class="empty">${stayMsg(error)}</div>`; return; }
       if (!data.length) { box.innerHTML = '<div class="empty">لا إعلانات هنا.</div>'; return; }
       box.innerHTML = data.map((c) => `<div class="card"><div style="display:flex;gap:12px;flex-wrap:wrap">${(c.images || [])[0] ? `<img src="${esc(c.images[0])}" alt="" style="width:150px;height:100px;object-fit:cover;border-radius:12px">` : ''}
-        <div style="flex:1;min-width:200px"><b style="font-size:16px">${esc(c.make)} ${esc(c.model)} ${c.year || ''}</b> — ${c.deal === 'rent' ? 'إيجار' : 'بيع'} · ${Number(c.price).toLocaleString('en-US')} درهم${c.deal === 'rent' ? ' / ' + ({ daily: 'يوم', weekly: 'أسبوع', monthly: 'شهر' }[c.rent_period] || '') : ''}
+        <div style="flex:1;min-width:200px"><b style="font-size:16px">${esc(c.title || [c.make, c.model, c.year].filter(Boolean).join(' '))}</b> — ${({ car: 'سيارة', moto: 'دراجة نارية', yacht: 'يخت / قارب' })[c.kind || 'car']} · ${({ sale: 'بيع', rent: 'إيجار', parts: 'قطع غيار', service: 'صيانة' })[c.deal] || ''} · ${c.price ? Number(c.price).toLocaleString('en-US') + ' درهم' : 'بدون سعر'}${c.deal === 'rent' ? ' / ' + ({ hourly: 'ساعة', daily: 'يوم', weekly: 'أسبوع', monthly: 'شهر' }[c.rent_period] || '') : ''}
         <div class="sub" style="margin:2px 0">${esc(c.city || '')} · ${esc(c.seller_name || '')} · <a href="tel:${esc(c.phone)}" dir="ltr">${esc(c.phone || '')}</a> · ${(c.images || []).length} صورة · ${fmt(c.created_at)}</div>
         ${c.description ? `<div class="details">${esc(c.description)}</div>` : ''}
         <div class="fg" style="margin-top:8px"><label>سبب الرفض (يظهر للمعلن)</label><input data-crn="${c.id}" value="${esc(c.rejection_reason || '')}"></div>
@@ -685,7 +685,7 @@
         if (b.dataset.cv === 'rejected' && !note) return alert('اكتب سبب الرفض أولًا.');
         const { error } = await sb.from('cars').update({ status: b.dataset.cv, rejection_reason: b.dataset.cv === 'rejected' ? note : null }).eq('id', b.dataset.id);
         if (error) return alert(stayMsg(error));
-        await sb.from('user_notifications').insert({ user_id: c.owner_id, title: b.dataset.cv === 'approved' ? 'نُشر إعلان سيارتك' : 'إعلان سيارتك يحتاج تعديلًا', body: c.make + ' ' + c.model + (note && b.dataset.cv === 'rejected' ? ' — ' + note : ''), url: 'add-car.html#mine' });
+        await sb.from('user_notifications').insert({ user_id: c.owner_id, title: b.dataset.cv === 'approved' ? 'نُشر إعلانك' : 'إعلانك يحتاج تعديلًا', body: (c.title || [c.make, c.model].filter(Boolean).join(' ')) + (note && b.dataset.cv === 'rejected' ? ' — ' + note : ''), url: 'add-car.html#mine' });
         toast(b.dataset.cv === 'approved' ? 'نُشر الإعلان' : 'رُفض الإعلان'); loadCars(); loadCarCount();
       });
       box.querySelectorAll('[data-cdel2]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان نهائيًا؟')) return; await sb.from('cars').delete().eq('id', b.dataset.cdel2); loadCars(); });
@@ -738,6 +738,6 @@
     boot();
   })();
   </script>
-  <script src="../js/aq-back.js?v=84" defer></script>
+  <script src="../js/aq-back.js?v=85" defer></script>
 </body>
 </html>
