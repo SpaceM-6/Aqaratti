@@ -13,11 +13,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=91">
+  <link rel="stylesheet" href="css/aq-pages.css?v=92">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=91"></script>
-  <script src="js/aq-stay.js?v=91"></script>
-  <script src="js/aq-ads.js?v=91"></script>
+  <script src="supabase-client.js?v=92"></script>
+  <script src="js/aq-stay.js?v=92"></script>
+  <script src="js/aq-ads.js?v=92"></script>
   <style>
     main { padding-bottom:120px; }
     .st-gal { position:relative; border-radius:18px; overflow:hidden; aspect-ratio:16/10; background:#e2e8f0; max-height:520px; width:100%; }
@@ -129,6 +129,13 @@
     const loc = () => [P.area, P.city].filter(Boolean).join('، ');
     const pol = () => S.POLICY[P.cancellationPolicy] || S.POLICY.moderate;
     const rules = () => P.houseRules || 'ممنوع التدخين داخل الوحدة.\nممنوع الحفلات والتجمعات.\nيُشترط تقديم الهوية أو جواز السفر لكل الضيوف عند الوصول.';
+    // التواصل المباشر مع المضيف (اتصال / واتساب)
+    const hostContact = () => {
+      const b = P.broker || {}, tel = String(b.phone || '').replace(/[^\d+]/g, ''), wa = String(b.whatsapp || b.phone || '').replace(/\D/g, '').replace(/^00/, '').replace(/^0(5\d{8})$/, '971$1');
+      if (!tel && !wa) return '';
+      const msg = encodeURIComponent('مرحبًا، أستفسر عن «' + P.title + '» على أنا عقار: ' + location.href);
+      return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">${tel ? `<a class="btn" style="background:#192038;color:#fff" href="tel:${esc(tel)}"><i class="fas fa-phone"></i> اتصال <span dir="ltr" style="font-weight:700">${esc(tel)}</span></a>` : ''}${wa ? `<a class="btn" style="background:#25d366;color:#fff" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${msg}"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}</div>`;
+    };
     const hostName = () => (P.broker && (P.broker.name || P.broker.agency)) || 'مضيف على أنا عقار';
     const ready = () => T.ci && T.co && S.nightsBetween(T.ci, T.co) >= (P.minNights || 1);
 
@@ -159,7 +166,7 @@
         ${acc.length ? `<div class="st-sec"><h2>سهولة الوصول</h2><div class="st-am">${acc.map((k) => `<span><i class="fas ${S.AMEN_AR[k][2]}"></i>${esc(S.AMEN_AR[k][1])}</span>`).join('')}</div></div>` : ''}
         <div class="st-sec"><h2>قواعد السكن</h2><div class="st-rules" id="rl"><p>${esc(rules())}</p><button class="lnk" type="button" onclick="this.parentElement.classList.toggle('open');this.textContent=this.parentElement.classList.contains('open')?'إخفاء':'اقرأ المزيد'">اقرأ المزيد</button></div></div>
         <div class="st-sec"><h2>سياسة الإلغاء: ${pol()[0]}</h2><p>${pol()[1]}</p></div>
-        <div class="st-sec"><h2>المضيف</h2><div class="st-host"><div class="av">${P.broker && P.broker.avatar ? `<img src="${esc(P.broker.avatar)}" alt="" style="width:100%;height:100%;object-fit:cover">` : '<i class="fas fa-house-user"></i>'}</div><div><b>${esc(hostName())}</b>${P.isVerified ? '<br><span class="st-tp"><i class="fas fa-shield-halved"></i> شريك موثّق</span>' : ''}<div class="hint">${P.isVerified ? 'الشركاء الموثّقون مرخّصون لتشغيل بيوت العطلات أو قطاع الضيافة.' : 'مضيف على أنا عقار'}${P.holidayPermit ? ' · رقم تصريح بيت العطلات: ' + esc(P.holidayPermit) : ''}</div></div></div></div>
+        <div class="st-sec"><h2>المضيف</h2><div class="st-host"><div class="av">${P.broker && P.broker.avatar ? `<img src="${esc(P.broker.avatar)}" alt="" style="width:100%;height:100%;object-fit:cover">` : '<i class="fas fa-house-user"></i>'}</div><div><b>${esc(hostName())}</b>${P.isVerified ? '<br><span class="st-tp"><i class="fas fa-shield-halved"></i> شريك موثّق</span>' : ''}<div class="hint">${P.isVerified ? 'الشركاء الموثّقون مرخّصون لتشغيل بيوت العطلات أو قطاع الضيافة.' : 'مضيف على أنا عقار'}${P.holidayPermit ? ' · رقم تصريح بيت العطلات: ' + esc(P.holidayPermit) : ''}</div></div></div>${hostContact()}</div>
         ${P.lat && P.lng ? `<div class="st-sec"><h2>الموقع</h2><a class="btn btn-soft" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${+P.lat},${+P.lng}"><i class="fas fa-map-location-dot"></i> افتح على الخريطة</a></div>` : ''}
         <div id="adsD"></div>
         <div id="sim"></div>
@@ -300,7 +307,7 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=91" defer></script>
-  <script src="js/aq-back.js?v=91" defer></script>
+  <script src="js/aq-engage.js?v=92" defer></script>
+  <script src="js/aq-back.js?v=92" defer></script>
 </body>
 </html>
