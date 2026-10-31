@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أضف سيارتك للبيع أو الإيجار | أنا عقار AnaAqar</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=83">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=83"></script>
+  <script src="js/aq-cars.js?v=83"></script>
+  <style>
+    .form { max-width:760px; margin:0 auto; }
+    .seg { display:flex; gap:8px; margin-bottom:12px; } .seg button { flex:1; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:12px; font:inherit; font-weight:900; cursor:pointer; }
+    .seg button.on { border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); }
+    .row3 { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; } @media (max-width:620px) { .row3 { grid-template-columns:1fr 1fr; } }
+    .chk { display:flex; flex-wrap:wrap; gap:8px; } .chk label { display:flex; align-items:center; gap:6px; border:1.5px solid var(--line); border-radius:10px; padding:8px 12px; font-weight:700; cursor:pointer; }
+    .thumbs { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; } .thumbs img { width:84px; height:64px; object-fit:cover; border-radius:10px; }
+    h3.s { margin:18px 0 8px; font-size:17px; font-weight:900; color:var(--teal-dark); }
+    .mine .row img { width:84px; height:64px; object-fit:cover; border-radius:10px; flex:0 0 auto; }
+    .pill { display:inline-block; font-size:12.5px; font-weight:900; padding:2px 9px; border-radius:999px; background:#fef3c7; color:#92400e; }
+    .pill.approved { background:#dcfce7; color:#166534; } .pill.rejected { background:#fee2e2; color:#991b1b; } .pill.sold, .pill.paused { background:#e2e8f0; color:#334155; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="cars.html">السيارات ←</a>
+  </div></header>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-car-side"></i> أضف سيارتك للبيع أو الإيجار</h1><p>الإعلان مجاني، ويظهر بعد مراجعة سريعة من فريق أنا عقار.</p></div></section>
+  <main id="root"><div class="skel"></div></main>
+  <script>
+  (function () {
+    const C = AQCars, { esc, num } = C, $ = (id) => document.getElementById(id), sb = supabaseClient;
+    let user = null;
+    const ST = { pending: 'قيد المراجعة', approved: 'منشور', rejected: 'مرفوض', sold: 'مُباع / مؤجَّر', paused: 'متوقف مؤقتًا' };
+
+    function authView(mode) {
+      $('root').innerHTML = `<form class="form" id="af"><h2 style="margin-top:0">${mode === 'login' ? 'سجّل الدخول لتضيف سيارتك' : 'أنشئ حسابًا مجانيًا'}</h2>
+        ${mode === 'login' ? '' : '<div class="fg"><label>الاسم</label><input id="aName" autocomplete="name"></div>'}
+        <div class="fg"><label>البريد الإلكتروني</label><input id="aEmail" type="email" autocomplete="email" dir="ltr"></div>
+        <div class="fg"><label>كلمة المرور</label><input id="aPass" type="password" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" dir="ltr"></div>
+        <button class="btn btn-teal" style="width:100%">${mode === 'login' ? 'دخول' : 'إنشاء الحساب'}</button>
+        <p class="hint" id="aMsg" style="margin:10px 0 0"></p>
+        <p style="text-align:center;margin:12px 0 0"><button type="button" class="btn btn-ghost sm" id="sw">${mode === 'login' ? 'ليس لديك حساب؟ أنشئ حسابًا' : 'لديك حساب؟ سجّل الدخول'}</button></p></form>`;
+      $('sw').onclick = () => authView(mode === 'login' ? 'signup' : 'login');
+      $('af').onsubmit = async (e) => {
+        e.preventDefault(); const email = $('aEmail').value.trim(), password = $('aPass').value, m = $('aMsg');
+        if (!email || password.length < 6) return (m.textContent = 'اكتب البريد وكلمة مرور من 6 أحرف على الأقل.');
+        if (mode === 'login') { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) return (m.textContent = 'البريد أو كلمة المرور غير صحيحة.'); return boot(); }
+        const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname, data: { full_name: ($('aName').value || '').trim() } } });
+        if (error) return (m.textContent = /already/.test(error.message) ? 'هذا البريد مسجّل مسبقًا، سجّل الدخول.' : 'تعذّر إنشاء الحساب.');
+        if (data.session) return boot();
+        m.textContent = 'أرسلنا رابط التفعيل إلى بريدك. افتحه ثم ارجع لهذه الصفحة.';
+      };
+    }
+
+    function formView() {
+      let deal = new URLSearchParams(location.search).get('deal') === 'rent' ? 'rent' : 'sale', files = [];
+      const yr = new Date().getFullYear();
+      $('root').innerHTML = `<form class="form" id="cf" novalidate>
+        <div class="seg"><button type="button" data-d="sale">أبيع سيارتي</button><button type="button" data-d="rent">أؤجّر سيارتي</button></div>
+        <h3 class="s">السيارة</h3>
+        <div class="row3"><div class="fg"><label>الماركة *</label><select id="make" required><option value="">اختر</option>${C.MAKES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+          <div class="fg"><label>الموديل *</label><input id="model" required maxlength="60" placeholder="مثال: كامري"></div>
+          <div class="fg"><label>سنة الصنع *</label><input id="year" type="number" inputmode="numeric" min="1950" max="${yr + 1}" value="${yr - 2}"></div></div>
+        <div class="row3"><div class="fg"><label>نوع الهيكل</label><select id="body"><option value="">—</option>${C.BODY.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+          <div class="fg"><label>الوقود</label><select id="fuel">${C.FUEL.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+          <div class="fg"><label>ناقل الحركة</label><select id="trans">${C.TRANS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div></div>
+        <div class="row3"><div class="fg"><label>المسافة المقطوعة (كم)</label><input id="km" type="number" inputmode="numeric" min="0"></div>
+          <div class="fg"><label>المواصفات</label><select id="specs">${C.SPECS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+          <div class="fg"><label>الحالة</label><select id="cond"><option value="used">مستعملة</option><option value="new">جديدة</option></select></div></div>
+        <div class="row3"><div class="fg"><label>اللون</label><input id="color" maxlength="30"></div><div class="fg"><label>عدد المقاعد</label><input id="seats" type="number" inputmode="numeric" min="1" max="60"></div>
+          <div class="fg"><label>المدينة *</label><input id="city" maxlength="60" placeholder="مثال: دبي"></div></div>
+        <h3 class="s" id="prH">السعر</h3>
+        <div class="row3"><div class="fg"><label id="prL">السعر (درهم) *</label><input id="price" type="number" inputmode="numeric" min="1"></div>
+          <div class="fg" data-rent><label>مدة الإيجار</label><select id="period"><option value="daily">باليوم</option><option value="weekly">بالأسبوع</option><option value="monthly">بالشهر</option></select></div>
+          <div class="fg" data-rent><label>مبلغ التأمين (درهم)</label><input id="deposit" type="number" inputmode="numeric" min="0"></div></div>
+        <div class="row3" data-rent><div class="fg"><label>حد الكيلومترات للمدة</label><input id="kml" type="number" inputmode="numeric" min="0"></div><div class="fg"><label>أقل عمر للسائق</label><input id="age" type="number" inputmode="numeric" min="18" max="80" value="21"></div>
+          <div class="fg"><label>&nbsp;</label><div class="chk"><label><input type="checkbox" id="ins"> تأمين شامل</label><label><input type="checkbox" id="dlv"> توصيل</label></div></div></div>
+        <h3 class="s">المزايا</h3><div class="chk">${C.FEATURES.map(([v, l]) => `<label><input type="checkbox" name="ft" value="${v}"> ${l}</label>`).join('')}</div>
+        <h3 class="s">الصور والوصف</h3>
+        <div class="fg"><label>صور السيارة (حتى 10)</label><input id="imgs" type="file" accept="image/*" multiple><div class="thumbs" id="th"></div></div>
+        <div class="fg"><label>الوصف</label><textarea id="desc" maxlength="4000" placeholder="الحالة، الصيانة، الحوادث، الإضافات…"></textarea></div>
+        <h3 class="s">بيانات التواصل</h3>
+        <div class="row3"><div class="fg"><label>صفة المعلن</label><select id="seller">${C.SELLER.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select></div>
+          <div class="fg"><label>الاسم أو اسم الشركة</label><input id="sname" maxlength="80"></div>
+          <div class="fg"><label>الهاتف / واتساب *</label><input id="phone" type="tel" inputmode="tel" maxlength="20" dir="ltr" style="text-align:right" placeholder="9715XXXXXXXX"></div></div>
+        <p class="hint" id="cMsg"></p>
+        <button class="btn btn-teal" style="width:100%" id="cGo"><i class="fas fa-paper-plane"></i> انشر الإعلان</button></form>
+        <div class="form mine" style="margin-top:22px" id="mine"></div>`;
+      const setDeal = (d) => { deal = d; document.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('on', b.dataset.d === d)); document.querySelectorAll('[data-rent]').forEach((x) => x.hidden = d !== 'rent'); $('prL').textContent = d === 'rent' ? 'سعر الإيجار (درهم) *' : 'السعر (درهم) *'; };
+      document.querySelectorAll('.seg button').forEach((b) => b.onclick = () => setDeal(b.dataset.d)); setDeal(deal);
+      $('imgs').onchange = () => { files = [...$('imgs').files].slice(0, 10); $('th').innerHTML = files.map((f) => `<img src="${URL.createObjectURL(f)}" alt="">`).join(''); };
+      $('cf').onsubmit = async (e) => {
+        e.preventDefault(); const m = $('cMsg'), v = (id) => $(id).value.trim(), n = (id) => v(id) === '' ? null : +v(id);
+        if (!v('make') || !v('model') || !n('price') || !v('city') || v('phone').replace(/\D/g, '').length < 7) { m.textContent = 'أكمل الحقول المطلوبة: الماركة، الموديل، السعر، المدينة، والهاتف.'; return; }
+        $('cGo').disabled = true; $('cGo').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ النشر…';
+        const urls = [];
+        for (let i = 0; i < files.length; i++) {
+          const f = files[i], path = `${user.id}/${Date.now()}-${i}-${f.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`;
+          const { error } = await sb.storage.from('car-images').upload(path, f, { contentType: f.type });
+          if (!error) urls.push(sb.storage.from('car-images').getPublicUrl(path).data.publicUrl);
+        }
+        const row = { owner_id: user.id, deal, rent_period: deal === 'rent' ? v('period') : null, make: v('make'), model: v('model'), year: n('year'), price: n('price'), mileage_km: n('km'),
+          body_type: v('body') || null, fuel: v('fuel'), transmission: v('trans'), color: v('color') || null, seats: n('seats'), regional_specs: v('specs'), condition: v('cond'), city: v('city'),
+          description: v('desc') || null, images: urls, features: [...document.querySelectorAll('[name=ft]:checked')].map((x) => x.value), seller_type: v('seller'), seller_name: v('sname') || null,
+          phone: v('phone'), whatsapp: v('phone'), deposit: deal === 'rent' ? n('deposit') : null, km_limit: deal === 'rent' ? n('kml') : null, min_driver_age: deal === 'rent' ? n('age') : null,
+          insurance_included: deal === 'rent' && $('ins').checked, delivery: deal === 'rent' && $('dlv').checked };
+        const { error } = await sb.from('cars').insert(row);
+        $('cGo').disabled = false; $('cGo').innerHTML = '<i class="fas fa-paper-plane"></i> انشر الإعلان';
+        if (error) { m.textContent = /rate_limited/.test(error.message) ? 'وصلت للحد اليومي (10 إعلانات). حاول غدًا.' : /relation|does not exist/.test(error.message) ? 'قسم السيارات لم يُفعَّل بعد في قاعدة البيانات.' : 'تعذّر النشر: ' + error.message; return; }
+        e.target.reset(); files = []; $('th').innerHTML = ''; setDeal(deal);
+        m.textContent = '✅ استلمنا إعلانك، وسيظهر بعد المراجعة.'; mine();
+      };
+      mine();
+    }
+
+    async function mine() {
+      const box = $('mine'); if (!box) return;
+      const r = await sb.from('cars').select('*').eq('owner_id', user.id).order('created_at', { ascending: false });
+      const list = r.data || [];
+      if (!list.length) { box.innerHTML = ''; return; }
+      const ids = list.map((c) => c.id), inq = (await sb.from('car_inquiries').select('*').in('car_id', ids).order('created_at', { ascending: false }).limit(100)).data || [];
+      box.innerHTML = `<h2 id="mineH">سياراتي (${list.length})</h2>` + list.map((c) => {
+        const q = inq.filter((i) => i.car_id === c.id);
+        return `<div class="row"><img src="${esc(C.img(c))}" alt="" onerror="this.style.visibility='hidden'"><div class="tx"><b>${esc(C.name(c))}</b><div class="hint">${C.price(c)} · <span class="pill ${c.status}">${ST[c.status] || c.status}</span>${c.rejection_reason ? ' · ' + esc(c.rejection_reason) : ''}</div>
+          <div class="acts" style="margin-top:6px">${c.status === 'approved' ? `<a class="btn btn-soft sm" href="car.html?id=${c.id}">عرض</a><button class="btn btn-ghost sm" data-s="sold" data-id="${c.id}">${c.deal === 'rent' ? 'تم التأجير' : 'تم البيع'}</button><button class="btn btn-ghost sm" data-s="paused" data-id="${c.id}">إيقاف مؤقت</button>` : ''}${['sold', 'paused'].includes(c.status) ? `<button class="btn btn-soft sm" data-s="approved" data-id="${c.id}">إعادة التفعيل</button>` : ''}<button class="btn btn-red sm" data-del="${c.id}">حذف</button></div>
+          ${q.length ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:900">الطلبات (${q.length})</summary>${q.map((i) => `<div class="hint" style="padding:6px 0;border-bottom:1px dashed var(--line)"><b style="display:inline">${esc(i.name)}</b> · <a href="tel:${esc(i.phone)}" dir="ltr">${esc(i.phone)}</a>${i.date_from ? ` · ${esc(i.date_from)} → ${esc(i.date_to || '')}` : ''}${i.message ? '<br>' + esc(i.message) : ''}</div>`).join('')}</details>` : ''}</div></div>`;
+      }).join('');
+      box.querySelectorAll('[data-s]').forEach((b) => b.onclick = async () => { await sb.from('cars').update({ status: b.dataset.s }).eq('id', b.dataset.id); mine(); });
+      box.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف هذا الإعلان نهائيًا؟')) return; await sb.from('cars').delete().eq('id', b.dataset.del); mine(); });
+      if (/#mine/.test(location.hash)) $('mineH').scrollIntoView();
+    }
+
+    async function boot() {
+      const { data } = await sb.auth.getSession();
+      user = data && data.session && data.session.user;
+      if (!user) return authView('login');
+      formView();
+    }
+    boot();
+  })();
+  </script>
+  <script src="js/aq-engage.js?v=83" defer></script>
+  <script src="js/aq-back.js?v=83" defer></script>
+</body>
+</html>

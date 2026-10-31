@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=82"></script>
+  <script src="supabase-client.js?v=83"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -776,6 +776,7 @@
 
     </div>
 
+    <div data-aq-ads="details" data-title="قد يهمك أيضًا" style="margin:26px 0 10px"></div>
   </div>
 
   <!-- 📱 شريط أزرار اتصل وواتساب مثبت بأسفل الجوال لتسهيل التواصل -->
@@ -1102,6 +1103,9 @@
         } catch (e) {}
       }
 
+      // الإقامات القصيرة لها صفحة حجز خاصة
+      if (property && property.rentPeriod === 'daily') { location.replace('stay.html?id=' + encodeURIComponent(propId)); return; }
+      try { if (property && window.AQAds) AQAds.track({ url: 'property-details.html?id=' + encodeURIComponent(propId), title: property.title, img: (property.imagesList || [])[0] || property.image, price: Number(property.priceAED || 0).toLocaleString('en-US') + ' درهم' + (property.dealType === 'rent' ? (property.rentPeriod === 'monthly' ? ' / شهريًا' : ' / سنويًا') : ''), sub: property.city || '', tag: property.dealType === 'rent' ? 'للإيجار' : 'للبيع' }); } catch (e) {}
       currentPropertyId = propId;
       currentPropertyTitle = (property && property.title) || '';
       currentBrokerId = (property && property.broker && property.broker.brokerId) || null;
@@ -1375,10 +1379,11 @@
       location.href = 'report.html?kind=listing&target=' + encodeURIComponent(t.trim().slice(0, 180)) + '&url=' + encodeURIComponent('property-details.html' + location.search);
     });
   </script>
-  <script src="js/aq-public.js?v=82" defer></script>
-  <script src="js/aq-filters.js?v=82" defer></script>
-  <script src="js/aq-ai.js?v=82" defer></script>
-  <script src="js/aq-engage.js?v=82" defer></script>
-  <script src="js/aq-back.js?v=82" defer></script>
+  <script src="js/aq-ads.js?v=83"></script>
+  <script src="js/aq-public.js?v=83" defer></script>
+  <script src="js/aq-filters.js?v=83" defer></script>
+  <script src="js/aq-ai.js?v=83" defer></script>
+  <script src="js/aq-engage.js?v=83" defer></script>
+  <script src="js/aq-back.js?v=83" defer></script>
 </body>
 </html>

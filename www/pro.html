@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=82">
+  <link rel="stylesheet" href="css/aq-pages.css?v=83">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=82"></script>
+  <script src="supabase-client.js?v=83"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=82"></script>
+  <script src="js/aq-ai.js?v=83"></script>
   <script>
   (function () {
     'use strict';
@@ -209,6 +209,7 @@
       ['leads', 'العملاء', 'fa-address-book'],
       ['tasks', 'المهام', 'fa-list-check'],
       ['listings', 'عقاراتي', 'fa-building'],
+      ['bookings', 'الحجوزات', 'fa-calendar-check'],
       ...(me.account_type === 'developer' ? [['projects', 'مشاريعي', 'fa-city']] : []),
       ['requests', 'طلبات المشترين', 'fa-magnifying-glass-location'],
       ...(me.account_type === 'office' ? [['team', 'فريقي', 'fa-people-group']] : []),
@@ -224,7 +225,7 @@
       route();
       loadTeam();
     }
-    const RENDER = { home: renderHome, leads: renderLeads, tasks: renderTasks, listings: renderListings, projects: renderProjects, requests: renderRequests, team: renderTeam, reports: renderReports, profile: renderProfile };
+    const RENDER = { home: renderHome, leads: renderLeads, tasks: renderTasks, listings: renderListings, bookings: renderBookings, projects: renderProjects, requests: renderRequests, team: renderTeam, reports: renderReports, profile: renderProfile };
     function route() {
       const k = (location.hash || '#home').slice(1).split('/')[0];
       const valid = SECTIONS().some((s) => s[0] === k) ? k : 'home';
@@ -522,6 +523,85 @@
       };
     }
 
+
+    // ===================== الحجوزات (الإيجار اليومي) =====================
+    const BST = { pending: ['بانتظار موافقتك', '#b45309', '#fef3c7'], confirmed: ['مؤكد', '#166534', '#dcfce7'], declined: ['مرفوض', '#991b1b', '#fee2e2'], cancelled: ['ملغى', '#991b1b', '#fee2e2'], completed: ['مكتمل', '#3730a3', '#e0e7ff'] };
+    const POL = { flexible: 'مرنة', moderate: 'معتدلة', strict: 'صارمة', non_refundable: 'غير قابلة للاسترداد' };
+    const stayErr = (e) => /does not exist|schema cache|column/.test((e && e.message) || '') ? 'هذا القسم يحتاج تشغيل ملف supabase/stays_cars_ads.sql أولًا.' : 'تعذّر التحميل: ' + esc(e && e.message);
+    let bkFilter = 'pending';
+    async function renderBookings() {
+      const m = $('main');
+      const [b, p] = await Promise.all([sb.rpc('host_bookings'), sb.from('properties').select('*').eq('broker_id', user.id).eq('rent_period', 'daily').order('created_at', { ascending: false })]);
+      if (b.error) { m.innerHTML = `<h1 class="pg">الحجوزات</h1><div class="empty">${stayErr(b.error)}</div>`; return; }
+      const all = b.data || [], units = p.data || [], t0 = new Date().toISOString().slice(0, 10);
+      const nb = $('nb-bookings'); if (nb) nb.textContent = all.filter((x) => x.status === 'pending').length || '';
+      const groups = { pending: all.filter((x) => x.status === 'pending'), upcoming: all.filter((x) => x.status === 'confirmed' && x.check_out >= t0), past: all.filter((x) => ['completed', 'declined', 'cancelled'].includes(x.status) || (x.status === 'confirmed' && x.check_out < t0)), all };
+      const GL = { pending: 'طلبات جديدة', upcoming: 'القادمة', past: 'السابقة', all: 'الكل' };
+      const rows = groups[bkFilter] || all;
+      m.innerHTML = `<h1 class="pg">الحجوزات</h1><p class="pgsub">طلبات الحجز على وحداتك للإيجار اليومي. أكّد الطلب أو ارفضه، وتواصل مع الضيف بخصوص الدفع والوصول.</p>
+        <div class="acts" style="margin-bottom:12px"><a class="btn btn-teal" href="add-property.html?stay=1"><i class="fas fa-plus"></i> أضف وحدة للإيجار اليومي</a><a class="btn btn-ghost" href="stays.html" target="_blank"><i class="fas fa-umbrella-beach"></i> صفحة الإقامات</a></div>
+        <div class="tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${Object.keys(GL).map((k) => `<button class="tab ${k === bkFilter ? 'on' : ''}" data-g="${k}">${GL[k]} (${groups[k].length})</button>`).join('')}</div>
+        <div class="panel list">${rows.map((x) => { const s = BST[x.status] || [x.status, '#334155', '#f1f5f9'];
+          return `<div class="li" style="align-items:flex-start"><div class="tx"><b>${esc(x.title)}</b>
+            <small><i class="far fa-calendar"></i> ${esc(x.check_in)} → ${esc(x.check_out)} · ${x.nights} ليلة · ${x.adults + x.children} ضيف${x.children ? ` (${x.children} أطفال)` : ''}</small>
+            <small><i class="fas fa-user"></i> ${esc(x.guest_name)} · <a href="tel:${esc(x.guest_phone)}" dir="ltr">${esc(x.guest_phone)}</a> · <a target="_blank" rel="noopener" href="https://wa.me/${wa(x.guest_phone)}?text=${encodeURIComponent('مرحبًا ' + x.guest_name + '، بخصوص حجزك رقم ' + x.ref + ' على أنا عقار: ' + x.title)}"><i class="fab fa-whatsapp"></i> واتساب</a>${x.guest_email ? ` · <a href="mailto:${esc(x.guest_email)}">${esc(x.guest_email)}</a>` : ''}</small>
+            <small>رقم الحجز <b style="display:inline">${esc(x.ref)}</b> · الإجمالي ${money(x.total)} · ${x.payment_status === 'paid' ? '<span style="color:#16a34a;font-weight:900">مدفوع</span>' : 'غير مدفوع'}</small>
+            ${x.special_request ? `<small style="color:var(--ink)"><i class="fas fa-comment"></i> ${esc(x.special_request)}</small>` : ''}</div>
+            <div class="ac" style="flex-direction:column;align-items:flex-end;gap:6px"><span class="pill2" style="color:${s[1]};background:${s[2]}">${s[0]}</span><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+            ${x.status === 'pending' ? `<button class="btn btn-teal sm" data-bs="confirmed" data-id="${x.id}">قبول</button><button class="btn btn-red sm" data-bs="declined" data-id="${x.id}">رفض</button>` : ''}
+            ${x.status === 'confirmed' ? `<button class="btn btn-soft sm" data-paid="${x.payment_status === 'paid' ? '0' : '1'}" data-id="${x.id}">${x.payment_status === 'paid' ? 'إلغاء «مدفوع»' : 'تم الدفع'}</button><button class="btn btn-ghost sm" data-bs="completed" data-id="${x.id}">اكتمل</button><button class="btn btn-red sm" data-bs="cancelled" data-id="${x.id}">إلغاء</button>` : ''}</div></div></div>`; }).join('') || '<p class="mut">لا توجد حجوزات هنا.</p>'}</div>
+        <h2 style="margin:22px 0 8px">وحداتي للإيجار اليومي</h2>
+        <div class="panel list">${units.map((u) => `<div class="li"><a class="th" href="stay.html?id=sb-${u.id}" target="_blank" style="background-image:url('${esc((u.image_urls || [])[0] || '')}')"></a><div class="tx"><b>${esc(u.title)}</b><small>${money(u.nightly_price || u.price_aed)} / الليلة · حتى ${u.max_guests || '—'} ضيوف · أقل مدة ${u.min_nights || 1} · إلغاء ${POL[u.cancellation_policy] || ''}${u.instant_book ? ' · ⚡ حجز فوري' : ''}</small><small><span class="pill2 st-${u.status}">${PSTATUS[u.status] || esc(u.status)}</span></small></div>
+          <div class="ac"><button class="btn btn-soft sm" data-set="${u.id}">إعدادات الحجز</button><button class="btn btn-ghost sm" data-blk="${u.id}">إغلاق تواريخ</button></div></div>`).join('') || '<p class="mut">لا توجد وحدات للإيجار اليومي. عند إضافة عقار اختر «للتأجير» ثم «يومي / إقامة قصيرة».</p>'}</div>`;
+      m.querySelectorAll('[data-g]').forEach((t) => t.onclick = () => { bkFilter = t.dataset.g; renderBookings(); });
+      m.querySelectorAll('[data-bs]').forEach((btn) => btn.onclick = async () => {
+        if (['declined', 'cancelled'].includes(btn.dataset.bs) && !confirm(btn.dataset.bs === 'declined' ? 'رفض طلب الحجز؟ سيتحرر هذا التاريخ.' : 'إلغاء هذا الحجز المؤكد؟')) return;
+        const { error } = await sb.rpc('host_set_booking', { p_id: btn.dataset.id, p_status: btn.dataset.bs, p_paid: null, p_note: null });
+        if (error) return toast(stayErr(error), true); toast('تم'); renderBookings();
+      });
+      m.querySelectorAll('[data-paid]').forEach((btn) => btn.onclick = async () => { const { error } = await sb.rpc('host_set_booking', { p_id: btn.dataset.id, p_status: null, p_paid: btn.dataset.paid === '1', p_note: null }); if (error) return toast(stayErr(error), true); renderBookings(); });
+      m.querySelectorAll('[data-set]').forEach((btn) => btn.onclick = () => staySettings(units.find((u) => String(u.id) === btn.dataset.set)));
+      m.querySelectorAll('[data-blk]').forEach((btn) => btn.onclick = () => stayBlocks(units.find((u) => String(u.id) === btn.dataset.blk)));
+    }
+    function staySettings(u) {
+      const f = (id, label, v, type) => `<div class="fg"><label>${label}</label><input id="${id}" type="${type || 'number'}" value="${esc(v ?? '')}"></div>`;
+      const d = overlay(`<h2>إعدادات الحجز</h2><p class="mut">${esc(u.title)} — التغييرات هنا تُطبَّق فورًا دون مراجعة.</p><form id="sf">
+        <div class="gridf">${f('sN', 'السعر لليلة (درهم)', u.nightly_price || u.price_aed)}${f('sC', 'رسوم التنظيف', u.cleaning_fee)}${f('sT', 'درهم السياحة لكل ليلة', u.tourism_fee)}
+        <div class="fg"><label>ضريبة القيمة المضافة</label><select id="sV"><option value="0">لا تُضاف</option><option value="5" ${+u.vat_pct === 5 ? 'selected' : ''}>5%</option></select></div>
+        ${f('sMin', 'أقل مدة (ليالٍ)', u.min_nights)}${f('sG', 'أقصى عدد ضيوف', u.max_guests)}${f('sB', 'عدد الأسرّة', u.beds)}${f('sW', 'خصم أسبوعي %', u.weekly_discount)}${f('sM', 'خصم شهري %', u.monthly_discount)}
+        ${f('sIn', 'وقت الدخول', u.check_in_time, 'time')}${f('sOut', 'وقت المغادرة', u.check_out_time, 'time')}
+        <div class="fg"><label>سياسة الإلغاء</label><select id="sP">${Object.entries(POL).map(([k, t]) => `<option value="${k}" ${u.cancellation_policy === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div></div>
+        <label class="chk"><input type="checkbox" id="sI" ${u.instant_book ? 'checked' : ''}> حجز فوري (يتأكد الحجز تلقائيًا)</label>
+        <div class="fg"><label>قواعد السكن</label><textarea id="sR" style="min-height:110px">${esc(u.house_rules || '')}</textarea></div>
+        <button class="btn btn-teal" style="width:100%">حفظ</button></form>`);
+      const q = (x) => d.el.querySelector(x).value;
+      d.el.querySelector('#sf').onsubmit = async (e) => {
+        e.preventDefault();
+        const p = { nightly_price: q('#sN'), cleaning_fee: q('#sC'), tourism_fee: q('#sT'), vat_pct: q('#sV'), min_nights: q('#sMin'), max_guests: q('#sG'), beds: q('#sB'), weekly_discount: q('#sW'), monthly_discount: q('#sM'),
+          check_in_time: q('#sIn'), check_out_time: q('#sOut'), cancellation_policy: q('#sP'), instant_book: d.el.querySelector('#sI').checked, house_rules: q('#sR') };
+        const { error } = await sb.rpc('broker_update_stay', { p_id: u.id, p });
+        if (error) return toast(stayErr(error), true);
+        d.close(); toast('حُفظت إعدادات الحجز'); renderBookings();
+      };
+    }
+    async function stayBlocks(u) {
+      const d = overlay(`<h2>إغلاق تواريخ</h2><p class="mut">${esc(u.title)} — أغلق أيامًا محجوزة من خارج الموقع أو للصيانة، فلا يستطيع أحد حجزها.</p>
+        <form id="bf" class="gridf"><div class="fg"><label>من</label><input id="bS" type="date" required></div><div class="fg"><label>حتى (يوم المغادرة)</label><input id="bE" type="date" required></div><div class="fg" style="grid-column:1/-1"><input id="bN" placeholder="ملاحظة (اختياري)"></div><button class="btn btn-teal" style="grid-column:1/-1">إغلاق هذه التواريخ</button></form><div id="bl" class="list" style="margin-top:12px"></div>`);
+      const t0 = new Date().toISOString().slice(0, 10); d.el.querySelector('#bS').min = t0; d.el.querySelector('#bE').min = t0;
+      const load = async () => {
+        const r = await sb.from('stay_blocks').select('*').eq('property_id', u.id).gte('end_date', t0).order('start_date');
+        d.el.querySelector('#bl').innerHTML = (r.data || []).map((x) => `<div class="li"><div class="tx"><b>${esc(x.start_date)} → ${esc(x.end_date)}</b><small>${esc(x.note || '')}</small></div><button class="btn btn-red sm" data-rm="${x.id}">فتح</button></div>`).join('') || '<p class="mut">لا توجد تواريخ مغلقة.</p>';
+        d.el.querySelectorAll('[data-rm]').forEach((b) => b.onclick = async () => { await sb.from('stay_blocks').delete().eq('id', b.dataset.rm); load(); });
+      };
+      d.el.querySelector('#bf').onsubmit = async (e) => {
+        e.preventDefault(); const s = d.el.querySelector('#bS').value, en = d.el.querySelector('#bE').value;
+        if (!s || !en || en <= s) return toast('تاريخ النهاية يجب أن يكون بعد البداية', true);
+        const { error } = await sb.from('stay_blocks').insert({ property_id: u.id, start_date: s, end_date: en, note: d.el.querySelector('#bN').value.trim() || null });
+        if (error) return toast(stayErr(error), true); e.target.reset(); load();
+      };
+      load();
+    }
+
     // ===================== مشاريعي (المطوّر) =====================
     const SALE = { announced: 'معلن قريبًا', on_sale: 'متاح للبيع', sold_out: 'مباع بالكامل' };
     const RV = { pending: 'قيد المراجعة', approved: 'منشور', rejected: 'مرفوض' };
@@ -688,7 +768,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=82" defer></script>
-  <script src="js/aq-back.js?v=82" defer></script>
+  <script src="js/aq-engage.js?v=83" defer></script>
+  <script src="js/aq-back.js?v=83" defer></script>
 </body>
 </html>

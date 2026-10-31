@@ -21,8 +21,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=82"></script>
-  <script src="js/aq-ai.js?v=82" defer></script>
+  <script src="supabase-client.js?v=83"></script>
+  <script src="js/aq-ai.js?v=83" defer></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -458,6 +458,53 @@
           </div>
         </div>
 
+        <!-- 🗓️ مدة الإيجار + الإيجار اليومي والإقامات القصيرة -->
+        <div class="form-group" id="rentPeriodBlock" style="display:none;">
+          <label>مدة الإيجار *</label>
+          <div class="type-btn-group" id="rentPeriodBtns">
+            <div class="type-btn active" data-rp="yearly" onclick="selectRentPeriod('yearly')">سنوي</div>
+            <div class="type-btn" data-rp="monthly" onclick="selectRentPeriod('monthly')">شهري</div>
+            <div class="type-btn" data-rp="daily" onclick="selectRentPeriod('daily')">يومي / إقامة قصيرة</div>
+          </div>
+        </div>
+        <div id="stayBlock" style="display:none; background:#f0fdfa; border:1px solid #99f6e4; border-radius:14px; padding:14px; margin-bottom:14px;">
+          <div class="form-section-title" style="margin-top:0;"><i class="fas fa-umbrella-beach"></i> الإقامة القصيرة ونظام الحجز</div>
+          <p style="font-size:12.5px; color:#0f766e; margin:-4px 0 10px;">تظهر الوحدة في صفحة «الإيجار اليومي» ويحجزها الضيوف بالتواريخ، وتصلك الحجوزات في «بوابة المهنيين ← الحجوزات».</p>
+          <div class="grid-2">
+            <div class="form-group"><label>نوع الوحدة</label><select id="stayCategoryInput"><option value="apartment">شقة</option><option value="studio">استوديو</option><option value="villa">فيلا</option><option value="hotel_apt">شقة فندقية</option><option value="room">غرفة خاصة</option><option value="chalet">شاليه</option></select></div>
+            <div class="form-group"><label>أقصى عدد للضيوف *</label><input type="number" id="maxGuestsInput" min="1" max="50" value="2"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>عدد الأسرّة</label><input type="number" id="stayBedsInput" min="1" max="50" value="1"></div>
+            <div class="form-group"><label>أقل مدة (ليالٍ)</label><input type="number" id="minNightsInput" min="1" max="365" value="1"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>رسوم التنظيف (درهم، مرة واحدة)</label><input type="number" id="cleaningFeeInput" min="0" value="0"></div>
+            <div class="form-group"><label>رسم درهم السياحة لكل ليلة (درهم)</label><input type="number" id="tourismFeeInput" min="0" value="0"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>ضريبة القيمة المضافة</label><select id="vatPctInput"><option value="0">السعر شامل / غير مسجّل في الضريبة</option><option value="5">تُضاف 5%</option></select></div>
+            <div class="form-group"><label>رقم تصريح بيت العطلات (DTCM)</label><input type="text" id="holidayPermitInput" maxlength="40"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>خصم الإقامة الأسبوعية (%)</label><input type="number" id="weeklyDiscountInput" min="0" max="90" value="0"></div>
+            <div class="form-group"><label>خصم الإقامة الشهرية (%)</label><input type="number" id="monthlyDiscountInput" min="0" max="90" value="0"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>وقت الدخول</label><input type="time" id="checkInInput" value="15:00"></div>
+            <div class="form-group"><label>وقت المغادرة</label><input type="time" id="checkOutInput" value="11:00"></div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label>سياسة الإلغاء</label><select id="cancelPolicyInput"><option value="flexible">مرنة: إلغاء مجاني حتى 24 ساعة قبل الوصول</option><option value="moderate" selected>معتدلة: إلغاء مجاني حتى 5 أيام قبل الوصول</option><option value="strict">صارمة: 50% قبل 7 أيام</option><option value="non_refundable">غير قابلة للاسترداد</option></select></div>
+            <div class="form-group"><label>الحجز الفوري</label><label style="display:flex; gap:8px; align-items:center; font-weight:600; margin-top:6px;"><input type="checkbox" id="instantBookInput"> يتأكد الحجز تلقائيًا دون انتظار موافقتي</label></div>
+          </div>
+          <div class="form-group"><label>قواعد السكن</label><textarea id="houseRulesInput" rows="4" maxlength="3000" placeholder="مثال: ممنوع التدخين داخل الوحدة — ممنوع الحفلات — الهدوء بعد 10 مساءً"></textarea></div>
+          <div class="form-group"><label>مرافق الإقامة</label>
+            <div class="aq-chips"><label class="aq-chip"><input type="checkbox" name="amenity" value="wifi"> واي فاي</label><label class="aq-chip"><input type="checkbox" name="amenity" value="kitchen"> مطبخ مجهّز</label><label class="aq-chip"><input type="checkbox" name="amenity" value="washer"> غسالة ملابس</label><label class="aq-chip"><input type="checkbox" name="amenity" value="tv"> تلفاز</label><label class="aq-chip"><input type="checkbox" name="amenity" value="workspace"> مكان للعمل</label><label class="aq-chip"><input type="checkbox" name="amenity" value="bbq"> منطقة شواء</label><label class="aq-chip"><input type="checkbox" name="amenity" value="beach_access"> دخول مباشر للشاطئ</label><label class="aq-chip"><input type="checkbox" name="amenity" value="city_center"> في وسط المدينة</label><label class="aq-chip"><input type="checkbox" name="amenity" value="transport"> قرب المواصلات العامة</label></div></div>
+          <div class="form-group"><label>سهولة الوصول</label>
+            <div class="aq-chips"><label class="aq-chip"><input type="checkbox" name="access" value="step_free"> دخول بلا درج</label><label class="aq-chip"><input type="checkbox" name="access" value="wide_halls"> ممرات واسعة</label><label class="aq-chip"><input type="checkbox" name="access" value="elevator"> مصعد</label><label class="aq-chip"><input type="checkbox" name="access" value="accessible_bath"> حمام مهيأ</label><label class="aq-chip"><input type="checkbox" name="access" value="accessible_parking"> موقف لذوي الإعاقة</label></div></div>
+        </div>
+
         <div class="grid-2">
           <div class="form-group">
             <label>حالة العقار *</label>
@@ -522,7 +569,7 @@
             <input type="text" id="titleInput" required placeholder="مثال: شقة فاخرة بإطلالة بحرية غرفتين وصالة">
           </div>
           <div class="form-group">
-            <label>السعر المطلوب (بالدرهم AED) *</label>
+            <label id="priceLabel">السعر المطلوب (بالدرهم AED) *</label>
             <input type="number" id="priceInput" required placeholder="مثال: 1250000">
           </div>
         </div>
@@ -700,10 +747,21 @@
       "اليونان": ["كل المدن", "أثينا", "سانتوريني"]
     };
 
+    let rentPeriod = 'yearly';
     function selectType(type, el) {
       dealType = type;
-      document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+      el.parentElement.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
       el.classList.add('active');
+      document.getElementById('rentPeriodBlock').style.display = type === 'rent' ? 'block' : 'none';
+      selectRentPeriod(type === 'rent' ? rentPeriod : 'yearly');
+    }
+    function selectRentPeriod(rp) {
+      if (dealType === 'rent') rentPeriod = rp;
+      document.querySelectorAll('#rentPeriodBtns .type-btn').forEach(b => b.classList.toggle('active', b.dataset.rp === rp));
+      const daily = dealType === 'rent' && rp === 'daily';
+      document.getElementById('stayBlock').style.display = daily ? 'block' : 'none';
+      document.getElementById('priceLabel').textContent = dealType !== 'rent' ? 'السعر المطلوب (بالدرهم AED) *' : rp === 'daily' ? 'السعر لليلة الواحدة (درهم) *' : rp === 'monthly' ? 'الإيجار الشهري (درهم) *' : 'الإيجار السنوي (درهم) *';
+      document.getElementById('priceInput').placeholder = daily ? 'مثال: 450' : rp === 'monthly' && dealType === 'rent' ? 'مثال: 6500' : 'مثال: 1250000';
     }
 
     // 📍 يلتقط موقع الجهاز الحالي (إحداثيات GPS) ليُحفظ مع العقار لميزة "عقارات قريبة مني"
@@ -965,12 +1023,32 @@
         amenities: [...document.querySelectorAll('input[name="amenity"]:checked')].map(x => x.value),
         nearby: [...document.querySelectorAll('input[name="nearby"]:checked')].map(x => x.value),
         image_hashes: await aqComputeHashes(),
+        ...(dealType === 'rent' ? { rent_period: rentPeriod } : {}),
+        ...(dealType === 'rent' && rentPeriod === 'daily' ? {
+          stay_category: document.getElementById('stayCategoryInput').value,
+          nightly_price: priceAED,
+          max_guests: parseInt(document.getElementById('maxGuestsInput').value) || 2,
+          beds: parseInt(document.getElementById('stayBedsInput').value) || 1,
+          min_nights: Math.max(1, parseInt(document.getElementById('minNightsInput').value) || 1),
+          cleaning_fee: Math.max(0, parseFloat(document.getElementById('cleaningFeeInput').value) || 0),
+          tourism_fee: Math.max(0, parseFloat(document.getElementById('tourismFeeInput').value) || 0),
+          vat_pct: parseFloat(document.getElementById('vatPctInput').value) || 0,
+          weekly_discount: Math.min(90, Math.max(0, parseFloat(document.getElementById('weeklyDiscountInput').value) || 0)),
+          monthly_discount: Math.min(90, Math.max(0, parseFloat(document.getElementById('monthlyDiscountInput').value) || 0)),
+          instant_book: document.getElementById('instantBookInput').checked,
+          cancellation_policy: document.getElementById('cancelPolicyInput').value,
+          house_rules: document.getElementById('houseRulesInput').value.trim() || null,
+          check_in_time: document.getElementById('checkInInput').value || '15:00',
+          check_out_time: document.getElementById('checkOutInput').value || '11:00',
+          holiday_permit: document.getElementById('holidayPermitInput').value.trim() || null,
+          accessibility: [...document.querySelectorAll('input[name="access"]:checked')].map(x => x.value)
+        } : {}),
         trial_ends_at: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString()
       };
 
       // احتياط: إن لم تُضف الأعمدة الجديدة بعد في قاعدة البيانات (supabase/property_listing_fields.sql)،
       // يُحذف العمود غير الموجود ويُعاد الحفظ بدل أن يفشل نشر الإعلان كله (ورقم التصريح يُحفظ داخل الوصف).
-      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at', 'unit_type', 'furnishing', 'sea_access', 'is_luxury', 'amenities', 'nearby', 'image_hashes'];
+      const OPTIONAL_COLUMNS = ['permit_number', 'completion_status', 'no_commission', 'has_offer', 'offer_text', 'subscription_plan', 'trial_ends_at', 'unit_type', 'furnishing', 'sea_access', 'is_luxury', 'amenities', 'nearby', 'image_hashes', 'rent_period', 'stay_category', 'nightly_price', 'max_guests', 'beds', 'min_nights', 'cleaning_fee', 'tourism_fee', 'vat_pct', 'weekly_discount', 'monthly_discount', 'instant_book', 'cancellation_policy', 'house_rules', 'check_in_time', 'check_out_time', 'holiday_permit', 'accessibility'];
       let rowToSave = { ...propertyRow };
       let { error } = await supabaseClient.from('properties').insert(rowToSave);
       for (let attempt = 0; error && attempt < OPTIONAL_COLUMNS.length; attempt++) {
@@ -998,6 +1076,11 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       updateCities();
+      // رابط «أضف وحدتك للإيجار اليومي» يفتح النموذج على الإيجار اليومي مباشرة
+      if (new URLSearchParams(location.search).get('stay') === '1') {
+        const rb = [...document.querySelectorAll('.type-btn')].find(b => /أؤجر/.test(b.textContent));
+        if (rb) { selectType('rent', rb); selectRentPeriod('daily'); }
+      }
 
       const savedDir = localStorage.getItem('anaaqar_lang_dir');
       if (savedDir) document.documentElement.setAttribute('dir', savedDir);
@@ -1008,6 +1091,6 @@
     });
   </script>
 
-  <script src="js/aq-back.js?v=82" defer></script>
+  <script src="js/aq-back.js?v=83" defer></script>
 </body>
 </html>

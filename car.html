@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل السيارة | أنا عقار AnaAqar</title>
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=83">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=83"></script>
+  <script src="js/aq-cars.js?v=83"></script>
+  <script src="js/aq-ads.js?v=83"></script>
+  <style>
+    .cg { position:relative; border-radius:18px; overflow:hidden; aspect-ratio:16/10; max-height:500px; width:100%; background:linear-gradient(135deg,#1e293b,#475569); }
+    .cg .ph { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; } .cg .ph::-webkit-scrollbar { display:none; }
+    .cg img { flex:0 0 100%; width:100%; height:100%; object-fit:cover; scroll-snap-align:center; }
+    .cg .ico { position:absolute; inset:0; display:grid; place-items:center; font-size:80px; color:rgba(255,255,255,.3); pointer-events:none; }
+    .cg .n { position:absolute; bottom:12px; right:12px; background:rgba(15,23,42,.72); color:#fff; font-weight:800; font-size:13.5px; padding:4px 10px; border-radius:8px; }
+    .cw { display:grid; grid-template-columns:minmax(0, 1fr) 340px; gap:26px; margin-top:18px; align-items:start; }
+    @media (max-width:900px) { .cw { grid-template-columns:minmax(0, 1fr); } }
+    .cp { color:#e11d48; font-size:28px; font-weight:900; }
+    h1.ct { margin:2px 0 6px; font-size:clamp(22px, 3.4vw, 30px); font-weight:900; }
+    .sec { padding:16px 0; border-bottom:1px solid var(--line); } .sec h2 { margin:0 0 10px; font-size:20px; font-weight:900; }
+    .spec { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:0 22px; }
+    .spec div { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line); font-size:15px; }
+    .spec span { color:var(--muted); font-weight:700; } .spec b { font-weight:900; text-align:left; }
+    @media (max-width:520px) { .spec { grid-template-columns:minmax(0, 1fr); } }
+    .ft { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; } .ft span { display:flex; gap:10px; align-items:center; font-weight:700; } .ft i { color:var(--muted); width:20px; text-align:center; }
+    .side { position:sticky; top:76px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; }
+    .side .who { display:flex; gap:12px; align-items:center; margin-bottom:12px; } .side .who i.av { width:52px; height:52px; border-radius:14px; background:var(--teal-soft); color:var(--teal-dark); display:grid; place-items:center; font-size:22px; }
+    .side .btn { width:100%; margin-top:8px; }
+    .wa { background:#25d366; color:#fff; } .call { background:#192038; color:#fff; }
+    .cbar { display:none; }
+    @media (max-width:900px) {
+      .side { position:static; }
+      .cbar { display:flex; gap:8px; position:fixed; left:0; right:0; bottom:0; z-index:40; background:var(--card); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); box-shadow:0 -6px 20px rgba(15,23,42,.08); }
+      .cbar .btn { flex:1; } main { padding-bottom:110px; }
+      .aqe-fbtn { bottom:calc(84px + env(safe-area-inset-bottom,0px)) !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="cars.html">السيارات ←</a>
+  </div></header>
+  <main id="main"><div class="skel" style="height:320px"></div></main>
+  <script>
+  (function () {
+    const C = AQCars, { esc, num } = C, $ = (id) => document.getElementById(id), id = new URLSearchParams(location.search).get('id') || '';
+    const st = document.createElement('style'); st.textContent = C.CSS; document.head.appendChild(st);
+    C.one(id).then((c) => {
+      if (!c) { $('main').innerHTML = '<div class="empty"><i class="fas fa-car-side"></i><h2>هذا الإعلان غير متاح</h2><p>ربما بيعت السيارة أو حُذف الإعلان.</p><a class="btn btn-teal" href="cars.html">تصفّح السيارات</a></div>'; return; }
+      document.title = C.name(c) + ' | أنا عقار';
+      const ims = (c.images || []).filter(Boolean), rent = c.deal === 'rent', tel = String(c.phone || '').replace(/[^\d+]/g, ''), wa = String(c.whatsapp || c.phone || '').replace(/\D/g, '');
+      const row = (k, v) => v || v === 0 ? `<div><span>${k}</span><b>${esc(v)}</b></div>` : '';
+      $('main').innerHTML = `<div class="cg"><div class="ico"><i class="fas fa-car-side"></i></div><div class="ph" id="ph">${ims.map((u, i) => `<img src="${esc(u)}" alt="${esc(C.name(c))} — صورة ${i + 1}" onerror="this.remove()">`).join('')}</div>${ims.length ? `<span class="n"><span id="phI">1</span>/${ims.length}</span>` : ''}</div>
+        <div class="cw"><div>
+          <div class="cp">${C.price(c)}</div><h1 class="ct">${esc(C.name(c))}</h1>
+          <div class="meta"><i class="fas fa-location-dot"></i> ${esc(c.city || '')} · ${esc(C.specLine(c))}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${rent ? '<span class="cb t">للإيجار</span>' : '<span class="cb">للبيع</span>'}${c.condition === 'new' ? '<span class="cb g">جديدة</span>' : ''}${c.demo ? '<span class="cb">عرض توضيحي</span>' : ''}</div>
+          <div class="sec"><h2>المواصفات</h2><div class="spec">${row('الماركة', C.MAKE_AR[c.make] || c.make)}${row('الموديل', c.model)}${row('سنة الصنع', c.year)}${row('المسافة المقطوعة', c.mileage_km != null ? num(c.mileage_km) + ' كم' : '')}${row('نوع الهيكل', C.AR.body[c.body_type])}${row('الوقود', C.AR.fuel[c.fuel])}${row('ناقل الحركة', C.AR.trans[c.transmission])}${row('المواصفات', C.AR.specs[c.regional_specs])}${row('اللون', c.color)}${row('عدد المقاعد', c.seats)}${row('الحالة', c.condition === 'new' ? 'جديدة' : c.condition === 'used' ? 'مستعملة' : '')}${row('المعلن', C.AR.seller[c.seller_type])}</div></div>
+          ${rent ? `<div class="sec"><h2>شروط الإيجار</h2><div class="spec">${row('السعر', C.price(c))}${row('مبلغ التأمين', c.deposit ? num(c.deposit) + ' درهم' : '')}${row('حد الكيلومترات', c.km_limit ? num(c.km_limit) + ' كم / ' + (C.PERIOD[c.rent_period] || 'يوم') : '')}${row('التأمين الشامل', c.insurance_included ? 'مشمول' : 'غير مشمول')}${row('التوصيل', c.delivery ? 'متاح' : 'غير متاح')}${row('أقل عمر للسائق', c.min_driver_age ? c.min_driver_age + ' سنة' : '')}</div></div>` : ''}
+          ${(c.features || []).length ? `<div class="sec"><h2>المزايا</h2><div class="ft">${c.features.filter((f) => C.AR.feat[f]).map((f) => `<span><i class="fas ${C.AR.feat[f][2]}"></i>${C.AR.feat[f][1]}</span>`).join('')}</div></div>` : ''}
+          ${c.description ? `<div class="sec"><h2>الوصف</h2><p style="white-space:pre-line;margin:0;line-height:1.9">${esc(c.description)}</p></div>` : ''}
+          <div id="ads"></div><div id="sim"></div>
+        </div>
+        <aside class="side"><div class="who"><i class="fas ${c.seller_type === 'rental_company' ? 'fa-building' : c.seller_type === 'dealer' ? 'fa-store' : 'fa-user'} av"></i><div><b>${esc(c.seller_name || C.AR.seller[c.seller_type] || 'المعلن')}</b><div class="hint">${esc(C.AR.seller[c.seller_type] || '')}</div></div></div>
+          ${tel ? `<a class="btn call" href="tel:${esc(tel)}"><i class="fas fa-phone"></i> اتصال</a>` : ''}
+          ${wa ? `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent('مرحبًا، رأيت إعلانك على أنا عقار: ' + C.name(c) + ' — ' + location.href)}"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+          <form id="inq" style="margin-top:14px"><b>${rent ? 'اطلب استئجار السيارة' : 'أرسل استفسارك للمعلن'}</b>
+            <div class="fg" style="margin-top:8px"><input id="iN" placeholder="الاسم" required maxlength="100"></div>
+            <div class="fg"><input id="iP" type="tel" inputmode="tel" placeholder="رقم الهاتف" required maxlength="20" dir="ltr" style="text-align:right"></div>
+            ${rent ? '<div class="row2"><div class="fg"><label>من</label><input id="iF" type="date"></div><div class="fg"><label>إلى</label><input id="iT" type="date"></div></div>' : ''}
+            <div class="fg"><textarea id="iM" placeholder="رسالتك (اختياري)" maxlength="1000" style="min-height:80px"></textarea></div>
+            <button class="btn btn-teal" type="submit" style="width:100%"><i class="fas fa-paper-plane"></i> إرسال</button><p class="hint" id="iMsg" style="margin:8px 0 0"></p></form>
+          <a class="hint" href="report.html?type=car&id=${encodeURIComponent(c.id)}" style="display:block;margin-top:10px;text-align:center"><i class="fas fa-flag"></i> الإبلاغ عن الإعلان</a>
+        </aside></div>
+        <div class="cbar">${tel ? `<a class="btn call" href="tel:${esc(tel)}"><i class="fas fa-phone"></i> اتصال</a>` : ''}${wa ? `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent('مرحبًا، رأيت إعلانك على أنا عقار: ' + C.name(c))}"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}<button class="btn btn-teal" type="button" onclick="document.getElementById('inq').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-paper-plane"></i> ${rent ? 'اطلب' : 'استفسر'}</button></div>`;
+      const ph = $('ph'); if (ph && ims.length) ph.addEventListener('scroll', () => { $('phI').textContent = Math.round(Math.abs(ph.scrollLeft) / ph.clientWidth) + 1; }, { passive: true });
+      const t0 = new Date().toISOString().slice(0, 10); if ($('iF')) { $('iF').min = t0; $('iT').min = t0; }
+      $('inq').onsubmit = async (e) => {
+        e.preventDefault(); const m = $('iMsg');
+        if (c.demo) { m.textContent = 'هذا إعلان توضيحي ولا يمكن مراسلته.'; return; }
+        const r = await supabaseClient.rpc('car_inquiry', { p_car: c.id, p_name: $('iN').value.trim(), p_phone: $('iP').value.trim(), p_message: $('iM').value.trim(), p_from: ($('iF') || {}).value || null, p_to: ($('iT') || {}).value || null });
+        m.textContent = r.error ? (/rate_limited/.test(r.error.message) ? 'أرسلت طلبات كثيرة، حاول بعد قليل.' : /bad_contact/.test(r.error.message) ? 'اكتب اسمك ورقم هاتف صحيحًا.' : 'تعذّر الإرسال الآن.') : '✅ وصل طلبك للمعلن وسيتواصل معك.';
+        if (!r.error) e.target.reset();
+      };
+      try { AQAds.track({ url: 'car.html?id=' + encodeURIComponent(c.id), title: C.name(c), img: ims[0] || '', price: C.price(c), sub: c.city || '', tag: rent ? 'سيارة للإيجار' : 'سيارة للبيع' }); } catch (e) {}
+      AQAds.strip($('ads'), 'cars', 'عروض وإعلانات');
+      C.load({ deal: c.deal }).then((l) => AQAds.rail($('sim'), 'سيارات مشابهة', l.filter((x) => x.id !== c.id && (x.body_type === c.body_type || x.make === c.make)).slice(0, 10).map((x) => ({ url: 'car.html?id=' + encodeURIComponent(x.id), img: C.img(x), price: C.price(x), t1: C.name(x), t2: C.specLine(x) }))));
+    });
+  })();
+  </script>
+  <script src="js/aq-engage.js?v=83" defer></script>
+  <script src="js/aq-back.js?v=83" defer></script>
+</body>
+</html>

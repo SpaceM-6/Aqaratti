@@ -13,6 +13,8 @@
     { sel: '.aqe-ov', close: (el) => { const x = el.querySelector('#aqeWSkip, .aqe-link, [data-x], .x'); x ? x.click() : el.remove(); } },
     { sel: '.aqe-chat:not([hidden])', close: () => window.AQEngage && window.AQEngage.closeChat && window.AQEngage.closeChat() },
     { sel: '.royal-modal-overlay', visible: (el) => getComputedStyle(el).display !== 'none', close: (el) => { el.style.display = 'none'; } },
+    { sel: '.aqs-ov', close: (el) => { const x = el.querySelector('[data-x]'); x ? x.click() : el.remove(); if (!document.querySelector('.aqs-ov')) document.documentElement.style.overflow = ''; } },
+    { sel: '.aqs-coach', close: (el) => { const x = el.querySelector('.skip, .nx'); x ? x.click() : el.remove(); } },
     { sel: '.aq-fab-wrap.open, #aqFabWrap.open', close: () => (typeof window.toggleAqFab === 'function' ? window.toggleAqFab(false) : null) }
   ];
   function openOnes() {

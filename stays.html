@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإيجار اليومي والإقامات القصيرة | أنا عقار AnaAqar</title>
+  <meta name="description" content="احجز شققًا وفللًا وشققًا فندقية بالليلة في دبي وأبوظبي وباقي الإمارات: اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل الحجز.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=83">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=83"></script>
+  <script src="js/aq-stay.js?v=83"></script>
+  <script src="js/aq-ads.js?v=83"></script>
+  <style>
+    .sx-top { position:sticky; top:57px; z-index:15; background:var(--bg); padding:12px 0 8px; }
+    .sx-search { display:flex; align-items:center; gap:10px; border:1.5px solid var(--ink); border-radius:12px; padding:0 14px; background:var(--card); }
+    .sx-search i { color:var(--ink); }
+    .sx-search input { flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:inherit; font-size:16px; font-weight:700; padding:13px 0; }
+    .sx-chips { display:flex; gap:8px; margin-top:10px; overflow-x:auto; scrollbar-width:none; }
+    .sx-chips::-webkit-scrollbar { display:none; }
+    .sx-chip { flex:0 0 auto; display:inline-flex; align-items:center; gap:7px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:9px 14px; font:inherit; font-weight:800; font-size:15px; cursor:pointer; min-height:44px; }
+    .sx-chip.on { border-color:var(--ink); }
+    .sx-chip .fi { color:#e11d48; }
+    .sx-chip .bdg { background:#0f172a; color:#fff; border-radius:999px; min-width:22px; height:22px; display:inline-grid; place-items:center; font-size:12.5px; padding:0 6px; }
+    .sx-cats { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:6px 0 4px; padding-bottom:2px; }
+    .sx-cats::-webkit-scrollbar { display:none; }
+    .sx-cat { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:76px; border:1.5px solid var(--line); background:var(--card); color:var(--muted); border-radius:14px; padding:10px 10px 8px; font:inherit; font-weight:800; font-size:13.5px; cursor:pointer; }
+    .sx-cat i { font-size:19px; }
+    .sx-cat.on { border-color:var(--ink); color:var(--ink); box-shadow:0 0 0 1px var(--ink) inset; }
+    .sx-cnt { color:var(--muted); font-weight:800; font-size:14px; margin:6px 0 12px; }
+    .sx-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:22px 18px; }
+    @media (max-width:960px) { .sx-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width:620px) { .sx-grid { grid-template-columns:minmax(0, 1fr); } }
+    .sx-card { min-width:0; border-bottom:6px solid var(--line); padding-bottom:16px; }
+    @media (min-width:621px) { .sx-card { border-bottom:0; } }
+    .sx-gal { position:relative; border-radius:16px; overflow:hidden; aspect-ratio:16/11; background:#e2e8f0; }
+    .sx-ph { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
+    .sx-ph::-webkit-scrollbar { display:none; }
+    .sx-ph img { flex:0 0 100%; width:100%; height:100%; object-fit:cover; scroll-snap-align:center; display:block; cursor:pointer; }
+    .sx-n { position:absolute; bottom:12px; right:12px; background:rgba(15,23,42,.72); color:#fff; font-weight:800; font-size:13.5px; padding:4px 10px; border-radius:8px; display:flex; gap:6px; align-items:center; }
+    .sx-fav { position:absolute; top:10px; left:10px; width:40px; height:40px; border-radius:50%; border:0; background:transparent; color:#fff; font-size:24px; cursor:pointer; filter:drop-shadow(0 2px 4px rgba(0,0,0,.45)); }
+    .sx-fav.on { color:#e11d48; }
+    .sx-tagx { position:absolute; top:12px; right:12px; display:flex; gap:6px; flex-wrap:wrap; }
+    .sx-tagx span { background:#fff; color:#0f172a; font-weight:900; font-size:12px; padding:4px 9px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.15); }
+    .sx-tagx .ins { background:#fef3c7; color:#92400e; }
+    .sx-in h3 { margin:12px 0 4px; font-size:19px; font-weight:900; line-height:1.4; }
+    .sx-in h3 a { text-decoration:none; }
+    .sx-pr { font-size:16px; color:var(--ink); margin-bottom:6px; }
+    .sx-pr b { font-weight:900; }
+    .sx-meta { display:flex; flex-wrap:wrap; gap:6px 16px; color:var(--ink); font-size:15px; font-weight:600; margin-bottom:8px; }
+    .sx-meta i { color:var(--muted); margin-inline-end:4px; }
+    .sx-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+    .sx-tags span { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:4px 9px; font-size:13.5px; font-weight:700; }
+    .sx-tags i { color:var(--muted); margin-inline-end:5px; }
+    .sx-loc { color:var(--ink); font-size:15px; font-weight:600; margin-bottom:12px; }
+    .sx-loc i { color:var(--muted); margin-inline-end:5px; }
+    .sx-book { display:flex; align-items:center; justify-content:center; gap:10px; background:#fff1f2; color:#0f172a; border-radius:12px; padding:13px; font-weight:900; font-size:17px; text-decoration:none; }
+    [data-theme="dark"] .sx-book { background:#3b1420; color:#fff; }
+    .sx-book i { color:#e11d48; }
+    .sx-sort { position:fixed; left:50%; transform:translateX(-50%); bottom:84px; z-index:30; display:flex; align-items:center; gap:8px; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:12px; padding:10px 18px; font:inherit; font-weight:900; font-size:16px; box-shadow:0 8px 24px rgba(15,23,42,.18); cursor:pointer; }
+    @media (min-width:769px) { .sx-sort { bottom:24px; } }
+    .fs-sec { padding:14px 0; border-bottom:1px solid var(--line); }
+    .fs-sec h4 { margin:0 0 10px; font-size:18px; font-weight:900; }
+    .fs-sec p.h { margin:-6px 0 10px; color:var(--muted); font-size:14px; }
+    .fs-chips { display:flex; gap:8px; flex-wrap:wrap; }
+    .fs-chip { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:8px 14px; font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-width:48px; display:inline-flex; align-items:center; gap:6px; }
+    .fs-chip.on { border-color:var(--ink); background:var(--ink); color:var(--card); }
+    .fs-pr { display:flex; align-items:center; gap:10px; }
+    .fs-pr label { flex:1; display:flex; align-items:center; border:1.5px solid var(--line); border-radius:12px; padding:0 12px; }
+    .fs-pr input, .fs-in { flex:1; min-width:0; border:0; background:transparent; color:var(--ink); font:inherit; font-size:16px; padding:12px 0; outline:0; }
+    .fs-pr small { color:var(--muted); font-weight:700; }
+    .fs-in { width:100%; border:1.5px solid var(--line); border-radius:12px; padding:12px; }
+    .fs-tabs { display:flex; border-bottom:1px solid var(--line); margin:0 -18px 4px; }
+    .fs-tabs a, .fs-tabs span { flex:1; text-align:center; padding:12px 6px; font-weight:800; color:var(--muted); text-decoration:none; font-size:15px; }
+    .fs-tabs span { color:var(--ink); border-bottom:3px solid #e11d48; }
+    .mb-row { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+    .mb-row .im { flex:0 0 84px; height:84px; border-radius:12px; background:#e2e8f0 center/cover; }
+    .mb-row b { display:block; font-size:15.5px; }
+    .mb-row .st { display:inline-block; font-size:12.5px; font-weight:900; padding:2px 9px; border-radius:999px; margin-top:4px; }
+    .st-pending { background:#fef3c7; color:#92400e; } .st-confirmed { background:#dcfce7; color:#166534; } .st-declined, .st-cancelled { background:#fee2e2; color:#991b1b; } .st-completed { background:#e0e7ff; color:#3730a3; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <section class="head"><div class="head-in">
+    <h1><i class="fas fa-umbrella-beach"></i> الإيجار اليومي والإقامات القصيرة</h1>
+    <p>شقق وفلل وشقق فندقية للحجز بالليلة. اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل أن تحجز.</p>
+  </div></section>
+  <main>
+    <div class="sx-top">
+      <label class="sx-search"><i class="fas fa-location-dot"></i><input id="q" type="search" placeholder="ابحث بالمنطقة أو المبنى" aria-label="ابحث بالمنطقة أو المبنى" autocomplete="off"></label>
+      <div class="sx-chips">
+        <button class="sx-chip" id="fBtn" type="button"><i class="fas fa-sliders fi"></i> الفلاتر <span class="bdg" id="fN" hidden></span></button>
+        <button class="sx-chip" id="dBtn" type="button"><span id="dTx">التواريخ</span> <i class="fas fa-chevron-down"></i></button>
+        <button class="sx-chip" id="gBtn" type="button"><span id="gTx">الضيوف</span> <i class="fas fa-chevron-down"></i></button>
+        <button class="sx-chip" id="mineBtn" type="button"><i class="fas fa-calendar-check"></i> حجوزاتي</button>
+      </div>
+    </div>
+    <div class="sx-cats" id="cats"></div>
+    <div data-aq-ads="stays" data-title="عروض وإعلانات"></div>
+    <div class="sx-cnt" id="cnt"></div>
+    <div class="sx-grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="acts" style="justify-content:center;margin-top:26px"><a class="btn btn-soft" href="add-property.html?stay=1"><i class="fas fa-plus"></i> أضف وحدتك للإيجار اليومي</a><a class="btn btn-ghost" href="listings.html?cat=monthly"><i class="fas fa-calendar"></i> الإيجار الشهري</a></div>
+  </main>
+  <button class="sx-sort" id="sortBtn" type="button"><i class="fas fa-sort"></i> ترتيب</button>
+
+  <script>
+  (function () {
+    const S = AQStay, { esc, aed } = S, $ = (id) => document.getElementById(id);
+    const qs = new URLSearchParams(location.search);
+    const F = {
+      q: qs.get('q') || '', cat: qs.get('cat') || '', ci: qs.get('in') || '', co: qs.get('out') || '',
+      ad: +qs.get('ad') || 0, ch: +qs.get('ch') || 0, pmin: '', pmax: '', br: '', bd: '', ba: '',
+      opts: new Set(), acc: new Set(), sp: new Set(), amen: '', kw: '', sort: 'fit'
+    };
+    if (F.ci && (F.ci < S.today() || !F.co || F.co <= F.ci)) { F.ci = ''; F.co = ''; }
+    $('q').value = F.q;
+    let pool = [];
+    const favs = new Set(S.LS.get('aq_fav_stays', []));
+
+    $('cats').innerHTML = S.CATS.map((c) => `<button class="sx-cat ${c[0] === F.cat ? 'on' : ''}" data-c="${c[0]}" type="button"><i class="fas ${c[2]}"></i>${c[1]}</button>`).join('');
+    $('cats').onclick = (e) => { const b = e.target.closest('[data-c]'); if (!b) return; F.cat = b.dataset.c; $('cats').querySelectorAll('.sx-cat').forEach((x) => x.classList.toggle('on', x === b)); draw(); };
+
+    function match(p, ignore) {
+      const t = (p.title + ' ' + (p.area || '') + ' ' + (p.city || '') + ' ' + (p.description || '')).toLowerCase();
+      const am = new Set(S.amenities(p)), nt = S.nightly(p), g = F.ad + F.ch;
+      if (F.q && !t.includes(F.q.toLowerCase())) return false;
+      if (F.cat && S.catOf(p) !== F.cat) return false;
+      if (g && (p.maxGuests || 99) < g) return false;
+      if (F.ci && F.co && S.nightsBetween(F.ci, F.co) < (p.minNights || 1)) return false;
+      if (ignore === 'all') return true;
+      if (F.pmin && nt < +F.pmin) return false;
+      if (F.pmax && nt > +F.pmax) return false;
+      if (F.br !== '' && (F.br === '7' ? p.bedrooms < 7 : p.bedrooms !== +F.br)) return false;
+      if (F.bd && (F.bd === '8' ? (p.beds || 0) < 8 : (p.beds || 0) < +F.bd)) return false;
+      if (F.ba && (F.ba === '6' ? (p.bathrooms || 0) < 6 : (p.bathrooms || 0) < +F.ba)) return false;
+      if (F.opts.has('weekly') && !(p.weeklyDiscount > 0)) return false;
+      if (F.opts.has('monthly') && !(p.monthlyDiscount > 0)) return false;
+      if (F.opts.has('instant') && !p.instantBook) return false;
+      for (const a of F.acc) if (!(p.accessibility || []).includes(a)) return false;
+      for (const a of F.sp) if (!am.has(a)) return false;
+      if (F.amen && !S.amenities(p).map((k) => S.AMEN_AR[k][1]).join(' ').includes(F.amen) && !t.includes(F.amen.toLowerCase())) return false;
+      if (F.kw && !(t + ' ' + p.id + ' ' + (p.rawId || '')).toLowerCase().includes(F.kw.toLowerCase())) return false;
+      return true;
+    }
+    const nF = () => [F.pmin || F.pmax, F.br !== '', F.bd, F.ba, F.amen, F.kw].filter(Boolean).length + F.opts.size + F.acc.size + F.sp.size;
+    const SORTS = [['fit', 'الأنسب لك'], ['price_asc', 'السعر: الأقل أولًا'], ['price_desc', 'السعر: الأعلى أولًا'], ['new', 'الأحدث'], ['guests', 'الأكثر ضيوفًا']];
+    function sorted(l) {
+      const k = F.sort, a = l.slice();
+      if (k === 'price_asc') a.sort((x, y) => S.nightly(x) - S.nightly(y));
+      else if (k === 'price_desc') a.sort((x, y) => S.nightly(y) - S.nightly(x));
+      else if (k === 'new') a.sort((x, y) => String(y.createdAt || '').localeCompare(String(x.createdAt || '')));
+      else if (k === 'guests') a.sort((x, y) => (y.maxGuests || 0) - (x.maxGuests || 0));
+      else a.sort((x, y) => (y.demo ? 0 : 1) - (x.demo ? 0 : 1) || (y.isVerified ? 1 : 0) - (x.isVerified ? 1 : 0) || (y.instantBook ? 1 : 0) - (x.instantBook ? 1 : 0));
+      return a;
+    }
+    const link = (p) => 'stay.html?id=' + encodeURIComponent(p.id) + (F.ci && F.co ? `&in=${F.ci}&out=${F.co}` : '') + (F.ad ? '&ad=' + F.ad : '') + (F.ch ? '&ch=' + F.ch : '');
+    function card(p) {
+      const imgs = (p.imagesList && p.imagesList.length ? p.imagesList : [p.image]).filter(Boolean).slice(0, 10), q = F.ci && F.co ? S.quote(p, F.ci, F.co) : null;
+      const am = S.amenities(p).filter((k) => S.SPECIAL.includes(k)).slice(0, 2), url = link(p);
+      return `<article class="sx-card"><div class="sx-gal"><div class="sx-ph">${imgs.map((u, i) => `<img src="${esc(u)}" alt="" loading="${i ? 'lazy' : 'eager'}" onclick="location.href='${url}'" onerror="this.style.visibility='hidden'">`).join('')}</div>
+        <div class="sx-tagx">${p.instantBook ? '<span class="ins">⚡ حجز فوري</span>' : ''}${p.demo ? '<span>عرض توضيحي</span>' : ''}</div>
+        <button class="sx-fav ${favs.has(String(p.id)) ? 'on' : ''}" data-fav="${esc(p.id)}" aria-label="أضف للمفضلة" type="button"><i class="fa${favs.has(String(p.id)) ? 's' : 'r'} fa-heart"></i></button>
+        <span class="sx-n"><i class="far fa-images"></i> <span data-i>1</span>/${imgs.length}</span></div>
+        <div class="sx-in"><h3><a href="${url}">${esc(p.title)}</a></h3>
+        <div class="sx-pr">${q ? `<b>${aed(q.total)}</b> الإجمالي · ${S.nightsTxt(q.nights)}` : `<b>${aed(S.nightly(p))}</b> / الليلة${p.minNights > 1 ? ` · أقل مدة ${S.nightsTxt(p.minNights)}` : ''}`}</div>
+        <div class="sx-meta"><span><i class="fas fa-user-group"></i>${p.maxGuests ? S.guestsTxt(p.maxGuests, 0) : '—'}</span><span><i class="fas fa-bed"></i>${p.beds || p.bedrooms || 1} ${(p.beds || 1) > 2 && (p.beds || 1) < 11 ? 'أسرّة' : 'سرير'}</span><span><i class="far fa-building"></i>${esc(S.CAT_AR[S.catOf(p)] || 'شقة')}</span></div>
+        ${am.length ? `<div class="sx-tags">${am.map((k) => `<span><i class="fas ${S.AMEN_AR[k][2]}"></i>${esc(S.AMEN_AR[k][1])}</span>`).join('')}</div>` : ''}
+        <div class="sx-loc"><i class="fas fa-location-dot"></i>${esc([p.area, p.city].filter(Boolean).join('، '))}</div>
+        <a class="sx-book" href="${url}"><i class="far fa-calendar"></i> احجز الآن</a></div></article>`;
+    }
+    function draw() {
+      const rows = sorted(pool.filter((p) => match(p)));
+      $('cnt').textContent = rows.length ? `${rows.length} إقامة متاحة${F.ci && F.co ? ' · ' + S.fmtRange(F.ci, F.co) : ''}` : '';
+      $('list').innerHTML = rows.map(card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas fa-umbrella-beach"></i><h2>لا توجد إقامات مطابقة</h2><p>جرّب تغيير المنطقة أو التواريخ أو الفلاتر.</p><button class="btn btn-teal" type="button" id="reset">مسح الفلاتر</button></div>`;
+      const r = $('reset'); if (r) r.onclick = () => { Object.assign(F, { q: '', cat: '', pmin: '', pmax: '', br: '', bd: '', ba: '', amen: '', kw: '' }); F.opts.clear(); F.acc.clear(); F.sp.clear(); $('q').value = ''; syncChips(); draw(); };
+      $('list').querySelectorAll('.sx-ph').forEach((ph) => ph.addEventListener('scroll', () => { const i = Math.round(Math.abs(ph.scrollLeft) / ph.clientWidth) + 1; ph.parentElement.querySelector('[data-i]').textContent = i; }, { passive: true }));
+      $('list').querySelectorAll('[data-fav]').forEach((b) => b.onclick = () => {
+        const id = b.dataset.fav; favs.has(id) ? favs.delete(id) : favs.add(id); S.LS.set('aq_fav_stays', [...favs]);
+        b.classList.toggle('on', favs.has(id)); b.innerHTML = `<i class="fa${favs.has(id) ? 's' : 'r'} fa-heart"></i>`;
+      });
+      syncChips();
+      const u = new URLSearchParams(); if (F.q) u.set('q', F.q); if (F.cat) u.set('cat', F.cat); if (F.ci && F.co) { u.set('in', F.ci); u.set('out', F.co); } if (F.ad) u.set('ad', F.ad); if (F.ch) u.set('ch', F.ch);
+      try { history.replaceState(history.state, '', location.pathname + (u.toString() ? '?' + u : '') + location.hash); } catch (e) {}
+    }
+    function syncChips() {
+      $('dTx').textContent = F.ci && F.co ? S.fmtRange(F.ci, F.co) : 'التواريخ'; $('dBtn').classList.toggle('on', !!F.ci);
+      $('gTx').textContent = F.ad + F.ch ? S.guestsTxt(F.ad, F.ch) : 'الضيوف'; $('gBtn').classList.toggle('on', !!(F.ad + F.ch));
+      const n = nF(); $('fN').hidden = !n; $('fN').textContent = n; $('fBtn').classList.toggle('on', !!n);
+    }
+    const countWith = () => pool.filter((p) => match(p)).length;
+    let qt; $('q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => { F.q = $('q').value.trim(); draw(); }, 250); });
+    $('dBtn').onclick = () => S.pickDates({ start: F.ci, end: F.co, allowEmpty: true,
+      cta: (n, s, e) => { const o = [F.ci, F.co]; F.ci = s && e ? s : ''; F.co = s && e ? e : ''; const c = countWith(); F.ci = o[0]; F.co = o[1]; return `اعرض ${AQStay.resTxt(c)}`; },
+      onDone: (s, e) => { F.ci = s; F.co = e; draw(); } });
+    $('gBtn').onclick = () => S.pickGuests({ adults: F.ad, children: F.ch,
+      cta: (a, c) => { const o = [F.ad, F.ch]; F.ad = a; F.ch = c; const n = countWith(); F.ad = o[0]; F.ch = o[1]; return `اعرض ${AQStay.resTxt(n)}`; },
+      onDone: (a, c) => { F.ad = a; F.ch = c; draw(); } });
+    $('sortBtn').onclick = () => {
+      const sh = S.sheet(`<div class="aqs-hd"><h3>ترتيب النتائج</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div><div class="aqs-body">${SORTS.map((s) => `<label class="aqs-g" style="cursor:pointer"><b>${s[1]}</b><input type="radio" name="srt" value="${s[0]}" ${F.sort === s[0] ? 'checked' : ''} style="width:22px;height:22px;accent-color:#192038"></label>`).join('')}</div>`);
+      sh.el.querySelectorAll('[name=srt]').forEach((r) => r.onchange = () => { F.sort = r.value; sh.close(); draw(); });
+    };
+
+    // ---------- الفلاتر ----------
+    $('fBtn').onclick = () => {
+      const chips = (k, list, multi) => `<div class="fs-chips" data-k="${k}">${list.map(([v, l, ic]) => `<button type="button" class="fs-chip ${(multi ? F[k].has(v) : String(F[k]) === String(v)) ? 'on' : ''}" data-v="${v}">${ic ? `<i class="fas ${ic}"></i>` : ''}${l}</button>`).join('')}</div>`;
+      const sh = S.sheet(`<div class="aqs-hd"><button class="aqs-x" data-x aria-label="إغلاق">✕</button><h3>الفلاتر</h3><button class="clr" type="button" style="background:none;border:0;font:inherit;font-weight:800;color:var(--muted);cursor:pointer" data-reset>مسح</button></div>
+        <div class="fs-tabs"><a href="listings.html?cat=rent">إيجار سنوي</a><a href="listings.html?cat=monthly">إيجار شهري</a><span>إيجار يومي</span></div>
+        <div class="aqs-body">
+          <div class="fs-sec"><h4>نطاق السعر</h4><p class="h">لليلة الواحدة</p><div class="fs-pr"><label><input id="fpmin" type="number" inputmode="numeric" placeholder="0" value="${esc(F.pmin)}"><small>درهم</small></label><span>إلى</span><label><input id="fpmax" type="number" inputmode="numeric" placeholder="أي سعر" value="${esc(F.pmax)}"><small>درهم</small></label></div></div>
+          <div class="fs-sec"><h4>غرف النوم</h4>${chips('br', [['0', 'استوديو'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '6'], ['7', '+7']])}</div>
+          <div class="fs-sec"><h4>الأسرّة</h4>${chips('bd', [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '6'], ['7', '7'], ['8', '+8']])}</div>
+          <div class="fs-sec"><h4>الحمامات</h4>${chips('ba', [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '+6']])}</div>
+          <div class="fs-sec"><h4>خيارات الحجز</h4>${chips('opts', [['weekly', 'خصم أسبوعي', 'fa-percent'], ['monthly', 'خصم شهري', 'fa-percent'], ['instant', 'حجز فوري', 'fa-bolt']], true)}</div>
+          <div class="fs-sec"><h4>سهولة الوصول</h4>${chips('acc', S.ACCESS, true)}</div>
+          <div class="fs-sec"><h4>مزايا خاصة</h4>${chips('sp', S.AMEN.filter((a) => S.SPECIAL.includes(a[0])), true)}</div>
+          <div class="fs-sec"><h4>المرافق</h4><input class="fs-in" id="famen" placeholder="مثال: مسبح" value="${esc(F.amen)}"></div>
+          <div class="fs-sec" style="border:0"><h4>كلمة بحث</h4><input class="fs-in" id="fkw" placeholder="مثال: مسبح، أمن، رقم الإعلان" value="${esc(F.kw)}"></div>
+        </div>
+        <div class="aqs-ft"><button class="clr" type="button" data-reset>مسح الكل</button><button class="go" type="button" style="background:#e11d48"></button></div>`);
+      const el = sh.el, go = el.querySelector('.go');
+      const upd = () => { go.textContent = `اعرض ${AQStay.resTxt(countWith())}`; syncChips(); };
+      el.querySelectorAll('.fs-chips').forEach((box) => box.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-v]'); if (!b) return; const k = box.dataset.k, v = b.dataset.v;
+        if (F[k] instanceof Set) { F[k].has(v) ? F[k].delete(v) : F[k].add(v); b.classList.toggle('on'); }
+        else { F[k] = String(F[k]) === v ? '' : v; box.querySelectorAll('.fs-chip').forEach((x) => x.classList.toggle('on', x === b && F[k] !== '')); }
+        upd();
+      }));
+      [['fpmin', 'pmin'], ['fpmax', 'pmax'], ['famen', 'amen'], ['fkw', 'kw']].forEach(([id, k]) => el.querySelector('#' + id).addEventListener('input', (e) => { F[k] = e.target.value.trim(); upd(); }));
+      el.querySelectorAll('[data-reset]').forEach((b) => b.onclick = () => { Object.assign(F, { pmin: '', pmax: '', br: '', bd: '', ba: '', amen: '', kw: '' }); F.opts.clear(); F.acc.clear(); F.sp.clear(); el.querySelectorAll('.fs-chip.on').forEach((x) => x.classList.remove('on')); el.querySelectorAll('input').forEach((i) => i.value = ''); upd(); });
+      go.onclick = () => { sh.close(); draw(); };
+      upd();
+    };
+
+    // ---------- حجوزاتي ----------
+    async function openMine() {
+      const sh = S.sheet(`<div class="aqs-hd"><h3>حجوزاتي</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div><div class="aqs-body" id="mbList"><p class="aqs-sub">جارٍ التحميل…</p></div>`);
+      const ids = S.LS.get('aq_bookings', []), box = sh.el.querySelector('#mbList');
+      let rows = [];
+      try { if (typeof supabaseClient !== 'undefined') { const r = await supabaseClient.rpc('booking_lookup', { p_ids: ids }); rows = r.data || []; } } catch (e) {}
+      const ST = { pending: 'بانتظار تأكيد المضيف', confirmed: 'مؤكد', declined: 'لم يُقبل', cancelled: 'ملغى', completed: 'مكتمل' };
+      box.innerHTML = rows.length ? rows.map((b) => `<div class="mb-row"><div class="im" style="background-image:url('${esc(b.image || '')}')"></div><div style="flex:1;min-width:0"><b>${esc(b.title)}</b>
+        <div class="hint">${S.fmtRange(b.check_in, b.check_out)} · ${S.nightsTxt(b.nights)} · ${S.guestsTxt(b.adults, b.children)}</div>
+        <div class="hint">رقم الحجز <b style="display:inline">${esc(b.ref)}</b> · ${aed(b.total)}</div>
+        <span class="st st-${b.status}">${ST[b.status] || b.status}</span>
+        ${['pending', 'confirmed'].includes(b.status) && b.check_in > S.today() ? `<button class="btn btn-red sm" style="margin-top:8px" data-cancel="${b.id}">إلغاء الحجز</button>` : ''}</div></div>`).join('')
+        : '<div class="empty" style="border:0"><i class="fas fa-calendar-check"></i><h2>لا توجد حجوزات بعد</h2><p>الحجوزات التي ترسلها من هذا الجهاز أو من حسابك تظهر هنا.</p></div>';
+      box.querySelectorAll('[data-cancel]').forEach((b) => b.onclick = async () => {
+        const row = rows.find((x) => x.id === b.dataset.cancel), pol = S.POLICY[row.cancellation_policy] || S.POLICY.moderate;
+        if (!confirm('إلغاء هذا الحجز؟\nسياسة الإلغاء: ' + pol[1])) return;
+        const r = await supabaseClient.rpc('guest_cancel_booking', { p_id: b.dataset.cancel });
+        if (r.error) return alert('تعذّر الإلغاء، تواصل مع المضيف.');
+        sh.close(); openMine();
+      });
+    }
+    $('mineBtn').onclick = openMine;
+
+    S.load().then((l) => {
+      pool = l; draw();
+      if (/#mine/.test(location.hash)) openMine();
+      else setTimeout(() => S.coach('stays', [
+        { el: $('dBtn'), title: 'اختر تواريخك', text: 'حدد تاريخ الوصول والمغادرة لتعرف الإتاحة والسعر الكامل.' },
+        { el: $('gBtn'), title: 'أضف الضيوف', text: 'حدد عدد البالغين والأطفال لتظهر الوحدات المناسبة لكم.' },
+        { el: document.querySelector('.sx-book'), title: 'جاهز للحجز؟', text: 'افتح تفاصيل الوحدة وأكمل حجزك بأمان على أنا عقار.' }
+      ]), 700);
+    });
+  })();
+  </script>
+  <script src="js/aq-engage.js?v=83" defer></script>
+  <script src="js/aq-back.js?v=83" defer></script>
+  <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav('stays'));</script>
+</body>
+</html>

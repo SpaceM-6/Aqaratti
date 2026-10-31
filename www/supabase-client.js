@@ -264,6 +264,26 @@ function mapSupabasePropertyToAnaAqar(row) {
     amenities: Array.isArray(row.amenities) ? row.amenities : [],
     nearby: Array.isArray(row.nearby) ? row.nearby : [],
     lng: row.lng ?? null,
+    rawId: row.id,
+    rentPeriod: row.rent_period || null,
+    stayCategory: row.stay_category || null,
+    nightlyPrice: row.nightly_price ?? null,
+    cleaningFee: Number(row.cleaning_fee) || 0,
+    tourismFee: Number(row.tourism_fee) || 0,
+    vatPct: Number(row.vat_pct) || 0,
+    minNights: row.min_nights || 1,
+    maxGuests: row.max_guests ?? null,
+    beds: row.beds ?? null,
+    weeklyDiscount: Number(row.weekly_discount) || 0,
+    monthlyDiscount: Number(row.monthly_discount) || 0,
+    instantBook: row.instant_book === true,
+    cancellationPolicy: row.cancellation_policy || 'moderate',
+    houseRules: row.house_rules || '',
+    checkInTime: row.check_in_time || '15:00',
+    checkOutTime: row.check_out_time || '11:00',
+    accessibility: Array.isArray(row.accessibility) ? row.accessibility : [],
+    holidayPermit: row.holiday_permit || null,
+    createdAt: row.created_at || null,
     broker: {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',
@@ -283,6 +303,21 @@ async function fetchApprovedSupabaseProperties() {
       .from('properties')
       .select('*, profiles(full_name, agency, phone, whatsapp, avatar_url)')
       .eq('status', 'approved');
+    if (error || !data) return [];
+    // الإقامات القصيرة (السعر بالليلة) لها صفحتها stays.html ولا تختلط بأسعار البيع والإيجار السنوي
+    return data.map(mapSupabasePropertyToAnaAqar).filter((p) => p.rentPeriod !== 'daily');
+  } catch (e) {
+    return [];
+  }
+}
+
+// 🏖️ الإقامات القصيرة والإيجار اليومي المعتمدة
+async function fetchApprovedStays() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('properties')
+      .select('*, profiles(full_name, agency, phone, whatsapp, avatar_url)')
+      .eq('status', 'approved').eq('rent_period', 'daily').limit(500);
     if (error || !data) return [];
     return data.map(mapSupabasePropertyToAnaAqar);
   } catch (e) {

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../supabase-client.js?v=82"></script>
+  <script src="../supabase-client.js?v=83"></script>
   <style>
     :root { --teal:#00a896; --teal-d:#028090; --teal-s:#e6f7f5; --navy:#192038; --gold:#d4af37; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; --red:#e11d48; }
     * { box-sizing:border-box; }
@@ -121,11 +121,14 @@
         <a class="tile" href="#s-projects"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-city"></i></span><span class="tx"><b>مراجعة المشاريع</b><small>مشاريع المطوّرين على الخارطة</small></span><span class="tn" id="tnPrj"></span></a>
         <a class="tile" href="#s-buyers"><span class="ic" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-magnifying-glass-location"></i></span><span class="tx"><b>طلبات المشترين</b><small>ما يطلبه الزوار من «اطلب عقارك»</small></span><span class="tn" id="tnBuy"></span></a>
         <a class="tile" href="#s-campaigns"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-envelope-open-text"></i></span><span class="tx"><b>الحملات البريدية</b><small>رسائل للمستخدمين أو المهنيين</small></span></a>
+        <a class="tile" href="#s-cars"><span class="ic" style="background:#e2e8f0;color:#1e293b"><i class="fas fa-car-side"></i></span><span class="tx"><b>مراجعة السيارات</b><small>إعلانات السيارات للبيع والإيجار</small></span><span class="tn" id="tnCars"></span></a>
+        <a class="tile" href="#s-bookings"><span class="ic" style="background:#e0f2fe;color:#0369a1"><i class="fas fa-calendar-check"></i></span><span class="tx"><b>الحجوزات</b><small>حجوزات الإيجار اليومي والإقامات القصيرة</small></span><span class="tn" id="tnBk"></span></a>
         <a class="tile" href="#s-ai"><span class="ic" style="background:#ede9fe;color:#6d28d9"><i class="fas fa-wand-magic-sparkles"></i></span><span class="tx"><b>المساعد الذكي</b><small>حالة الخدمة واستهلاكها</small></span></a>
       </div>
 
       <div class="group">محتوى الموقع</div>
       <div class="tiles">
+        <a class="tile" href="#s-ads"><span class="ic" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-rectangle-ad"></i></span><span class="tx"><b>شريط الإعلانات</b><small>الإعلانات العشرة في صفحات الموقع</small></span></a>
         <a class="tile" href="#s-news"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-bullhorn"></i></span><span class="tx"><b>شريط الجديد</b><small>الأخبار المتحركة أعلى الموقع</small></span></a>
         <a class="tile" href="#s-offers"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-tags"></i></span><span class="tx"><b>العروض</b><small>صفحة العروض وشاراتها على العقارات</small></span></a>
         <a class="tile" href="#s-tips"><span class="ic" style="background:#dcfce7;color:#166534"><i class="fas fa-bell"></i></span><span class="tx"><b>التنبيهات اليومية</b><small>تنبيه يظهر للزوار مرة كل يوم</small></span></a>
@@ -270,6 +273,38 @@
       <div id="cmpList"></div>
     </section>
 
+    <!-- ===== شريط الإعلانات ===== -->
+    <section data-sec="ads">
+      <div class="card"><h2 id="adFormTitle">إعلان جديد</h2>
+        <p class="sub">يظهر شريط من 10 بطاقات في الرئيسية وصفحات العقارات والإقامات والسيارات والتفاصيل والخدمات. إعلاناتك تظهر أولًا، ويكمل الموقع الباقي بإعلانات أنا عقار الداخلية. نمط «بانر» يظهر في الرئيسية مكان بانر التوثيق، ونمط «شعار» يظهر في «شركاء مميزون».</p>
+        <form id="adForm"><input type="hidden" id="adId">
+          <div class="fg"><label>العنوان *</label><input id="adTitle" maxlength="80" required></div>
+          <div class="fg"><label>سطر وصفي</label><input id="adSub" maxlength="140"></div>
+          <div class="fg"><label>الرابط عند الضغط</label><input id="adLink" dir="ltr" placeholder="https://… أو stays.html"></div>
+          <div class="fg"><label>الصورة</label><input id="adImg" dir="ltr" placeholder="رابط صورة، أو ارفع صورة"><input id="adFile" type="file" accept="image/*" style="margin-top:6px"></div>
+          <div class="fg"><label>شارة صغيرة على الصورة</label><input id="adBadge" maxlength="24" placeholder="مثال: عقارات، عرض، جديد"></div>
+          <div class="fg"><label>مكان الظهور</label><select id="adPlace"><option value="all">كل الصفحات</option><option value="home">الرئيسية</option><option value="listings">صفحات العقارات</option><option value="stays">الإقامات القصيرة</option><option value="cars">السيارات</option><option value="details">صفحات التفاصيل</option><option value="services">الخدمات والأدلة</option></select></div>
+          <div class="fg"><label>النمط</label><select id="adStyle"><option value="card">بطاقة في الشريط</option><option value="banner">بانر عريض (الرئيسية)</option><option value="logo">شعار شريك</option></select></div>
+          <div class="fg"><label>الترتيب (الأصغر أولًا)</label><input id="adSort" type="number" value="100"></div>
+          <div class="fg"><label>المعلن</label><input id="adAdv" maxlength="80"></div>
+          <div class="fg"><label>من تاريخ</label><input id="adFrom" type="date"></div><div class="fg"><label>إلى تاريخ</label><input id="adTo" type="date"></div>
+          <button class="btn teal" type="submit"><i class="fas fa-floppy-disk"></i> حفظ</button> <button class="btn ghost" type="button" id="adReset">جديد</button>
+          <p class="sub" id="adMsg" style="margin:8px 0 0"></p></form></div>
+      <div id="adList"></div>
+    </section>
+
+    <!-- ===== مراجعة السيارات ===== -->
+    <section data-sec="cars">
+      <div class="pills" id="carFilter"><button class="pill on" data-f="pending">بانتظار المراجعة</button><button class="pill" data-f="approved">المنشورة</button><button class="pill" data-f="rejected">المرفوضة</button><button class="pill" data-f="sold">المباعة/المتوقفة</button></div>
+      <div id="carList"></div>
+    </section>
+
+    <!-- ===== الحجوزات ===== -->
+    <section data-sec="bookings">
+      <div class="pills" id="bkFilter"><button class="pill on" data-f="pending">بانتظار المضيف</button><button class="pill" data-f="confirmed">المؤكدة</button><button class="pill" data-f="other">الملغاة والمكتملة</button></div>
+      <div id="bkList"></div>
+    </section>
+
     <!-- ===== المساعد الذكي ===== -->
     <section data-sec="ai">
       <div class="card" id="aiBox"></div>
@@ -297,7 +332,7 @@
         return;
       }
       $('root').innerHTML = ''; $('root').appendChild($('tplApp').content.cloneNode(true));
-      wire(); route(); loadStats();
+      wire(); route(); loadStats(); loadCarCount();
       setInterval(() => { if (!document.hidden) loadStats(); }, 30000);
     }
     function loginForm() {
@@ -315,8 +350,8 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي' };
-    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi() };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة السيارات', bookings: 'الحجوزات' };
+    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings() };
     let current = '';
     function route() {
       const m = /^#s-(\w+)/.exec(location.hash); const k = m && TITLES[m[1]] ? m[1] : '';
@@ -349,6 +384,8 @@
       const pills = (id, fn) => document.querySelectorAll('#' + id + ' .pill').forEach((b) => b.onclick = () => { document.querySelectorAll('#' + id + ' .pill').forEach((x) => x.classList.toggle('on', x === b)); fn(b.dataset.f); });
       pills('accFilter', (f) => { accFilter = f; loadAccounts(); }); pills('prjFilter', (f) => { prjFilter = f; loadProjects(); }); pills('buyFilter', (f) => { buyFilter = f; loadBuyers(); });
       $('cmpForm').onsubmit = createCampaign;
+      pills('carFilter', (f) => { carFilter = f; loadCars(); }); pills('bkFilter', (f) => { bkFilter = f; loadBookings(); });
+      $('adForm').onsubmit = saveAd; $('adReset').onclick = () => fillAd(null);
       wireCrud('news'); wireCrud('offers'); wireCrud('tips');
       $('bcForm').onsubmit = async (e) => {
         e.preventDefault();
@@ -591,6 +628,87 @@
       loadCampaigns();
     }
 
+
+    // ===== شريط الإعلانات =====
+    const stayMsg = (e) => /does not exist|schema cache|relation/.test((e && e.message) || '') ? 'هذا القسم يحتاج تشغيل ملف supabase/stays_cars_ads.sql أولًا.' : 'تعذّر التحميل: ' + esc(e && e.message);
+    let ads = [];
+    const PLACE = { all: 'كل الصفحات', home: 'الرئيسية', listings: 'العقارات', stays: 'الإقامات', cars: 'السيارات', details: 'التفاصيل', services: 'الخدمات' };
+    function fillAd(a) {
+      $('adFormTitle').textContent = a ? 'تعديل الإعلان' : 'إعلان جديد';
+      $('adId').value = a ? a.id : ''; $('adTitle').value = a ? a.title : ''; $('adSub').value = a ? a.subtitle || '' : ''; $('adLink').value = a ? a.link_url || '' : '';
+      $('adImg').value = a ? a.image_url || '' : ''; $('adBadge').value = a ? a.badge || '' : ''; $('adPlace').value = a ? a.placement : 'all'; $('adStyle').value = a ? a.style : 'card';
+      $('adSort').value = a ? a.sort : 100; $('adAdv').value = a ? a.advertiser || '' : ''; $('adFrom').value = a ? a.starts_at || '' : ''; $('adTo').value = a ? a.ends_at || '' : ''; $('adFile').value = '';
+      if (a) $('adForm').scrollIntoView({ behavior: 'smooth' });
+    }
+    async function saveAd(e) {
+      e.preventDefault(); const m = $('adMsg'); m.textContent = 'جاري الحفظ...';
+      let img = $('adImg').value.trim();
+      const f = $('adFile').files[0];
+      if (f) { const path = Date.now() + '-' + f.name.replace(/[^a-zA-Z0-9.\-_]/g, '_'); const up = await sb.storage.from('ad-images').upload(path, f, { contentType: f.type }); if (up.error) { m.textContent = stayMsg(up.error); return; } img = sb.storage.from('ad-images').getPublicUrl(path).data.publicUrl; }
+      const row = { title: $('adTitle').value.trim(), subtitle: $('adSub').value.trim() || null, link_url: $('adLink').value.trim() || null, image_url: img || null, badge: $('adBadge').value.trim() || null,
+        placement: $('adPlace').value, style: $('adStyle').value, sort: +$('adSort').value || 100, advertiser: $('adAdv').value.trim() || null, starts_at: $('adFrom').value || null, ends_at: $('adTo').value || null };
+      const id = $('adId').value;
+      const { error } = id ? await sb.from('ads').update(row).eq('id', id) : await sb.from('ads').insert(row);
+      if (error) { m.textContent = stayMsg(error); return; }
+      m.textContent = '✅ حُفظ — يظهر للزوار خلال دقائق'; try { sessionStorage.removeItem('aq_ads'); } catch (er) {}
+      fillAd(null); loadAds();
+    }
+    async function loadAds() {
+      const { data, error } = await sb.from('ads').select('*').order('sort').order('id', { ascending: false });
+      const box = $('adList');
+      if (error) { box.innerHTML = `<div class="empty">${stayMsg(error)}</div>`; return; }
+      ads = data || [];
+      box.innerHTML = `<h2 style="margin-top:14px">الإعلانات (${ads.length})</h2>` + (ads.map((a) => `<div class="item"><div class="tx" style="display:flex;gap:12px;align-items:center">${a.image_url ? `<img src="${esc(a.image_url)}" alt="" style="width:96px;height:64px;object-fit:cover;border-radius:10px;flex:0 0 auto">` : ''}<div><b>${esc(a.title)}</b>
+        <small>${esc(a.subtitle || '')}</small><small>${PLACE[a.placement] || esc(a.placement)} · ${a.style === 'card' ? 'بطاقة' : a.style === 'banner' ? 'بانر' : 'شعار'} · ترتيب ${a.sort} · ${a.clicks} نقرة${a.ends_at ? ' · حتى ' + esc(a.ends_at) : ''}${a.advertiser ? ' · ' + esc(a.advertiser) : ''} · ${a.active ? '<b style="color:#16a34a;display:inline">ظاهر</b>' : 'مخفي'}</small></div></div>
+        <div class="acts"><button class="btn sm soft" data-aed="${a.id}">تعديل</button><button class="btn sm ghost" data-atg="${a.id}">${a.active ? 'إخفاء' : 'إظهار'}</button><button class="btn sm red" data-adel="${a.id}">حذف</button></div></div>`).join('') || '<div class="empty">لا توجد إعلانات مدفوعة بعد؛ يعرض الموقع إعلانات أنا عقار الداخلية العشرة.</div>');
+      box.querySelectorAll('[data-aed]').forEach((b) => b.onclick = () => fillAd(ads.find((a) => String(a.id) === b.dataset.aed)));
+      box.querySelectorAll('[data-atg]').forEach((b) => b.onclick = async () => { const a = ads.find((x) => String(x.id) === b.dataset.atg); await sb.from('ads').update({ active: !a.active }).eq('id', a.id); loadAds(); });
+      box.querySelectorAll('[data-adel]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان؟')) return; await sb.from('ads').delete().eq('id', b.dataset.adel); loadAds(); });
+    }
+
+    // ===== مراجعة السيارات =====
+    let carFilter = 'pending';
+    async function loadCars() {
+      let q = sb.from('cars').select('*').order('created_at', { ascending: false }).limit(200);
+      q = carFilter === 'sold' ? q.in('status', ['sold', 'paused']) : q.eq('status', carFilter);
+      const { data, error } = await q, box = $('carList');
+      if (error) { box.innerHTML = `<div class="empty">${stayMsg(error)}</div>`; return; }
+      if (!data.length) { box.innerHTML = '<div class="empty">لا إعلانات هنا.</div>'; return; }
+      box.innerHTML = data.map((c) => `<div class="card"><div style="display:flex;gap:12px;flex-wrap:wrap">${(c.images || [])[0] ? `<img src="${esc(c.images[0])}" alt="" style="width:150px;height:100px;object-fit:cover;border-radius:12px">` : ''}
+        <div style="flex:1;min-width:200px"><b style="font-size:16px">${esc(c.make)} ${esc(c.model)} ${c.year || ''}</b> — ${c.deal === 'rent' ? 'إيجار' : 'بيع'} · ${Number(c.price).toLocaleString('en-US')} درهم${c.deal === 'rent' ? ' / ' + ({ daily: 'يوم', weekly: 'أسبوع', monthly: 'شهر' }[c.rent_period] || '') : ''}
+        <div class="sub" style="margin:2px 0">${esc(c.city || '')} · ${esc(c.seller_name || '')} · <a href="tel:${esc(c.phone)}" dir="ltr">${esc(c.phone || '')}</a> · ${(c.images || []).length} صورة · ${fmt(c.created_at)}</div>
+        ${c.description ? `<div class="details">${esc(c.description)}</div>` : ''}
+        <div class="fg" style="margin-top:8px"><label>سبب الرفض (يظهر للمعلن)</label><input data-crn="${c.id}" value="${esc(c.rejection_reason || '')}"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${c.status !== 'approved' ? `<button class="btn sm teal" data-cv="approved" data-id="${c.id}">اعتماد ونشر</button>` : `<a class="btn sm soft" href="../car.html?id=${c.id}" target="_blank">عرض</a>`}${c.status !== 'rejected' ? `<button class="btn sm ghost" data-cv="rejected" data-id="${c.id}">رفض</button>` : ''}<button class="btn sm red" data-cdel2="${c.id}">حذف</button></div></div></div></div>`).join('');
+      box.querySelectorAll('[data-cv]').forEach((b) => b.onclick = async () => {
+        const note = (box.querySelector(`[data-crn="${b.dataset.id}"]`) || {}).value || null, c = data.find((x) => x.id === b.dataset.id);
+        if (b.dataset.cv === 'rejected' && !note) return alert('اكتب سبب الرفض أولًا.');
+        const { error } = await sb.from('cars').update({ status: b.dataset.cv, rejection_reason: b.dataset.cv === 'rejected' ? note : null }).eq('id', b.dataset.id);
+        if (error) return alert(stayMsg(error));
+        await sb.from('user_notifications').insert({ user_id: c.owner_id, title: b.dataset.cv === 'approved' ? 'نُشر إعلان سيارتك' : 'إعلان سيارتك يحتاج تعديلًا', body: c.make + ' ' + c.model + (note && b.dataset.cv === 'rejected' ? ' — ' + note : ''), url: 'add-car.html#mine' });
+        toast(b.dataset.cv === 'approved' ? 'نُشر الإعلان' : 'رُفض الإعلان'); loadCars(); loadCarCount();
+      });
+      box.querySelectorAll('[data-cdel2]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان نهائيًا؟')) return; await sb.from('cars').delete().eq('id', b.dataset.cdel2); loadCars(); });
+    }
+    async function loadCarCount() {
+      const [c, b] = await Promise.all([sb.from('cars').select('id', { count: 'exact', head: true }).eq('status', 'pending'), sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'pending')]);
+      const tn = (id, n) => { const el = $(id); if (el) { el.textContent = n || ''; el.closest('.tile').classList.toggle('hot', !!n); } };
+      tn('tnCars', c.count); tn('tnBk', b.count);
+    }
+
+    // ===== الحجوزات =====
+    let bkFilter = 'pending';
+    async function loadBookings() {
+      const { data, error } = await sb.rpc('host_bookings'), box = $('bkList');
+      if (error) { box.innerHTML = `<div class="empty">${stayMsg(error)}</div>`; return; }
+      const rows = (data || []).filter((x) => bkFilter === 'other' ? !['pending', 'confirmed'].includes(x.status) : x.status === bkFilter);
+      const ST = { pending: 'بانتظار المضيف', confirmed: 'مؤكد', declined: 'مرفوض', cancelled: 'ملغى', completed: 'مكتمل' };
+      box.innerHTML = rows.map((x) => `<div class="item"><div class="tx"><b>${esc(x.title)}</b><small>${esc(x.check_in)} → ${esc(x.check_out)} · ${x.nights} ليلة · ${x.adults + x.children} ضيف · ${Number(x.total).toLocaleString('en-US')} درهم · ${ST[x.status] || x.status} · ${x.payment_status === 'paid' ? 'مدفوع' : 'غير مدفوع'}</small>
+        <small>${esc(x.guest_name)} · <a href="tel:${esc(x.guest_phone)}" dir="ltr">${esc(x.guest_phone)}</a> · <a href="https://wa.me/${waNum(x.guest_phone)}" target="_blank" rel="noopener">واتساب</a> · رقم الحجز ${esc(x.ref)} · ${fmt(x.created_at)}</small>${x.special_request ? `<small>${esc(x.special_request)}</small>` : ''}</div>
+        <div class="acts">${x.status === 'pending' ? `<button class="btn sm teal" data-hs="confirmed" data-id="${x.id}">تأكيد</button><button class="btn sm ghost" data-hs="declined" data-id="${x.id}">رفض</button>` : ''}${x.status === 'confirmed' ? `<button class="btn sm ghost" data-hs="cancelled" data-id="${x.id}">إلغاء</button>` : ''}</div></div>`).join('') || '<div class="empty">لا حجوزات هنا.</div>';
+      box.querySelectorAll('[data-hs]').forEach((b) => b.onclick = async () => { const { error: er } = await sb.rpc('host_set_booking', { p_id: b.dataset.id, p_status: b.dataset.hs, p_paid: null, p_note: null }); if (er) return alert(stayMsg(er)); loadBookings(); loadCarCount(); });
+    }
+
     // ===== المساعد الذكي =====
     async function loadAi() {
       const box = $('aiBox');
@@ -620,6 +738,6 @@
     boot();
   })();
   </script>
-  <script src="../js/aq-back.js?v=82" defer></script>
+  <script src="../js/aq-back.js?v=83" defer></script>
 </body>
 </html>
