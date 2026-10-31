@@ -33,7 +33,7 @@
   }
 
   function staysCars() {
-    if (window.AQStay) AQStay.load().then((l) => A.rail($('aqhStays'), 'شورت تيرم: إيجار يومي وشهري', l.slice(0, 12).map((p) => ({ url: 'stay.html?id=' + encodeURIComponent(p.id), img: p.image || (p.imagesList || [])[0], price: money(AQStay.nightly(p)) + ' / الليلة', t1: p.title, t2: [AQStay.guestsTxt(p.maxGuests || 2, 0), p.area || p.city].filter(Boolean).join(' · '), tag: p.instantBook ? '⚡ حجز فوري' : '' })), { more: 'stays.html' }));
+    if (window.AQStay) AQStay.load().then((l) => A.rail($('aqhStays'), 'الإقامات القصيرة: إيجار يومي وشهري', l.slice(0, 12).map((p) => ({ url: 'stay.html?id=' + encodeURIComponent(p.id), img: p.image || (p.imagesList || [])[0], price: money(AQStay.nightly(p)) + ' / الليلة', t1: p.title, t2: [AQStay.guestsTxt(p.maxGuests || 2, 0), p.area || p.city].filter(Boolean).join(' · '), tag: p.instantBook ? '⚡ حجز فوري' : '' })), { more: 'stays.html' }));
     if (window.AQCars) AQCars.load().then((l) => A.rail($('aqhCars'), 'موتورات: سيارات ودراجات ويخوت', l.filter((c) => ['sale', 'rent'].includes(c.deal)).slice(0, 12).map((c) => ({ url: 'car.html?id=' + encodeURIComponent(c.id), img: AQCars.img(c), price: AQCars.price(c), t1: AQCars.name(c), t2: AQCars.specLine(c), tag: c.deal === 'rent' ? 'للإيجار' : 'للبيع' })), { more: 'cars.html' }));
   }
 

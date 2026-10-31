@@ -13,9 +13,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=86">
+  <link rel="stylesheet" href="css/aq-pages.css?v=87">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=86"></script>
+  <script src="supabase-client.js?v=87"></script>
   <style>
     .vb { display:flex; align-items:center; gap:16px; padding:18px; border-radius:18px; background:linear-gradient(135deg,#eff6ff,#e6f7f5); border:1px solid #dbeafe; margin:0 0 18px; }
     [data-theme="dark"] .vb { background:linear-gradient(135deg,#13254a,#0f2e33); border-color:#24365e; }
@@ -65,9 +65,9 @@
           <div class="${hasLic ? 'done' : ''}"><span><b>أضف رقم الترخيص</b><br><small class="hint">${hasLic ? 'رقمك: ' + esc(me.license_no) : `رقم BRN للوسيط أو ORN للمكتب أو الرخصة التجارية للمطوّر — من <a href="pro.html#profile">«ملفي»</a>`}</small></span></div>
           <div><span><b>مراجعة فريق أنا عقار</b><br><small class="hint">نتحقق من الرقم في سجل دائرة الأراضي والأملاك، ثم تظهر علامة «موثّق».</small></span></div></div>`}
         <h2 class="t">أضف إعلانك</h2>
-        <div class="tiles">${tile('add-property.html', 'fa-building', 'عقار للبيع أو الإيجار', 'سكني أو تجاري')}${tile('add-property.html?stay=1', 'fa-umbrella-beach', 'وحدة شورت تيرم', 'حجز يومي وشهري')}${t === 'developer' || admin ? tile('pro.html#projects', 'fa-city', 'مشروع على الخارطة', 'خطة السداد وأنواع الوحدات') : ''}${tile('add-car.html', 'fa-car-side', 'إعلان موتورات', 'سيارات ودراجات ويخوت')}</div>
+        <div class="tiles">${tile('add-property.html', 'fa-building', 'عقار للبيع أو الإيجار', 'سكني أو تجاري')}${tile('add-property.html?stay=1', 'fa-umbrella-beach', 'وحدة إقامة قصيرة', 'حجز يومي وشهري')}${t === 'developer' || admin ? tile('pro.html#projects', 'fa-city', 'مشروع على الخارطة', 'خطة السداد وأنواع الوحدات') : ''}${tile('add-car.html', 'fa-car-side', 'إعلان موتورات', 'سيارات ودراجات ويخوت')}</div>
         <h2 class="t">إدارة أعمالك</h2>
-        <div class="tiles">${tile('pro.html#home', 'fa-gauge', 'لوحتي', 'ملخص نشاطك')}${tile('pro.html#leads', 'fa-address-book', 'العملاء', 'استفسارات المشترين ومراحلها')}${tile('pro.html#listings', 'fa-building', 'عقاراتي', 'تعديل وإيقاف وبيع')}${tile('pro.html#bookings', 'fa-calendar-check', 'الحجوزات', 'حجوزات وحداتك الشورت تيرم')}${tile('pro.html#requests', 'fa-magnifying-glass-location', 'طلبات المشترين', 'من يبحث عن عقار مثل عقارك')}${t === 'office' ? tile('pro.html#team', 'fa-people-group', 'فريقي', 'دعوة الوسطاء وأداؤهم') : ''}${tile('pro.html#reports', 'fa-chart-pie', 'التقارير', 'المشاهدات والصفقات')}${tile('pro.html#profile', 'fa-id-card', 'ملفي', 'البيانات ورقم الترخيص')}</div>
+        <div class="tiles">${tile('pro.html#home', 'fa-gauge', 'لوحتي', 'ملخص نشاطك')}${tile('pro.html#leads', 'fa-address-book', 'العملاء', 'استفسارات المشترين ومراحلها')}${tile('pro.html#listings', 'fa-building', 'عقاراتي', 'تعديل وإيقاف وبيع')}${tile('pro.html#bookings', 'fa-calendar-check', 'الحجوزات', 'حجوزات وحداتك للإقامات القصيرة')}${tile('pro.html#requests', 'fa-magnifying-glass-location', 'طلبات المشترين', 'من يبحث عن عقار مثل عقارك')}${t === 'office' ? tile('pro.html#team', 'fa-people-group', 'فريقي', 'دعوة الوسطاء وأداؤهم') : ''}${tile('pro.html#reports', 'fa-chart-pie', 'التقارير', 'المشاهدات والصفقات')}${tile('pro.html#profile', 'fa-id-card', 'ملفي', 'البيانات ورقم الترخيص')}</div>
         <h2 class="t">ظهورك في الأدلة</h2>
         <div class="tiles">${tile('claim-profile.html', 'fa-user-check', 'فعّل ملفك في دليل الوسطاء', 'إن كان اسمك مسجّلًا لدى دائرة الأراضي')}${tile('broker-registration.html', 'fa-building-user', 'سجّل مكتبك في الدليل', 'للمكاتب والشركات')}${tile('brokers-directory.html', 'fa-address-card', 'دليل الوسطاء', 'كيف يراك العملاء')}</div>
         ${admin ? `<h2 class="t">الإدارة</h2><div class="tiles">${tile('admin/index.html', 'fa-shield-halved', 'لوحة التحكم', 'المراجعة والتوثيق')}${tile('admin/index.html#s-accounts', 'fa-id-card', 'توثيق الحسابات', 'الحسابات المهنية بانتظار التوثيق')}</div>` : ''}`;
@@ -84,7 +84,7 @@
     })();
   })();
   </script>
-  <script src="js/aq-engage.js?v=86" defer></script>
-  <script src="js/aq-back.js?v=86" defer></script>
+  <script src="js/aq-engage.js?v=87" defer></script>
+  <script src="js/aq-back.js?v=87" defer></script>
 </body>
 </html>

@@ -233,7 +233,7 @@
         '<h3 id="aqeWT">' + (prof ? 'أهلًا بعودتك إلى أنا عقار 👋' : 'أهلًا بك في أنا عقار 👋') + '</h3><p class="sub">' + (prof ? 'ماذا تريد أن نعرض لك هذه المرة؟' : 'أخبرنا بما تبحث عنه لنعرض لك الأنسب أولًا') + '</p>' +
         '<div class="aqe-choices">' + opt('all', 'fa-border-all', 'الكل: شراء وإيجار') + opt('sale', 'fa-key', 'أبحث عن شراء') + opt('rent', 'fa-building', 'أبحث عن إيجار') +
         opt('invest', 'fa-chart-line', 'أبحث عن استثمار') + '</div>' +
-        '<div class="aqe-choices">' + opt('stays', 'fa-umbrella-beach', 'شورت تيرم: يومي وشهري') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
+        '<div class="aqe-choices">' + opt('stays', 'fa-umbrella-beach', 'الإقامات القصيرة: يومي وشهري') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
         '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('broker', 'fa-user-tie', 'أنا وسيط أو مطوّر') + '</div>' +
         '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
         COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +

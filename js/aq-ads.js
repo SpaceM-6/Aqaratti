@@ -14,9 +14,9 @@
   // إعلانات أنا عقار الداخلية، مجمّعة حسب موضوع الصفحة: كل شريط يعرض ما له علاقة بصفحته
   var A = {
     valuation: { t: 'كم يساوي عقارك؟', s: 'تقدير سعر عقارك من أسعار المنطقة الفعلية', b: 'عقارات', i: 'fa-chart-line', g: ['#ef4444', '#f97316'], u: 'valuation.html' },
-    stays: { t: 'شورت تيرم: يومي وشهري', s: 'شقق وفلل باليوم أو بالشهر مع السعر الكامل', b: 'جديد', i: 'fa-umbrella-beach', g: ['#0ea5e9', '#6366f1'], u: 'stays.html' },
+    stays: { t: 'الإقامات القصيرة: يومي وشهري', s: 'شقق وفلل باليوم أو بالشهر مع السعر الكامل', b: 'جديد', i: 'fa-umbrella-beach', g: ['#0ea5e9', '#6366f1'], u: 'stays.html' },
     staysMonthly: { t: 'سكن شهري مفروش', s: 'إقامة شهرية قصيرة بدون عقد سنوي', b: 'جديد', i: 'fa-calendar-days', g: ['#7c3aed', '#6366f1'], u: 'stays.html?period=monthly' },
-    hostUnit: { t: 'أجّر وحدتك شورت تيرم', s: 'استقبل حجوزات يومية وشهرية وتابعها من بوابتك', b: 'للمضيفين', i: 'fa-key', g: ['#0d9488', '#0891b2'], u: 'add-property.html?stay=1' },
+    hostUnit: { t: 'أجّر وحدتك إقامات قصيرة', s: 'استقبل حجوزات يومية وشهرية وتابعها من بوابتك', b: 'للمضيفين', i: 'fa-key', g: ['#0d9488', '#0891b2'], u: 'add-property.html?stay=1' },
     motors: { t: 'موتورات', s: 'سيارات ودراجات نارية ويخوت: بيع وإيجار وصيانة', b: 'جديد', i: 'fa-car-side', g: ['#1e293b', '#475569'], u: 'cars.html' },
     carRent: { t: 'استأجر سيارة', s: 'باليوم أو الأسبوع أو الشهر، مع التوصيل', b: 'موتورات', i: 'fa-key', g: ['#0369a1', '#0ea5e9'], u: 'cars.html?kind=car&deal=rent' },
     carSell: { t: 'بِع سيارتك', s: 'أعلن عن سيارتك وتواصل مع المشترين مباشرة', b: 'موتورات', i: 'fa-tag', g: ['#e11d48', '#f97316'], u: 'add-car.html?kind=car' },
@@ -292,6 +292,12 @@
       if (a && a.dataset.act === 'login') { e.preventDefault(); ov.remove(); if (typeof window.openLoginModal === 'function') window.openLoginModal(); else location.href = 'pro.html'; }
     };
   }
+  function openAdd() {
+      sheetOpts('ماذا تريد أن تعلن؟', [
+        ['add-property.html', 'fa-building', 'عقار للبيع أو الإيجار', 'للوسطاء والمكاتب والمطوّرين'], ['sell-or-rent.html', 'fa-house-user', 'أنا مالك وأريد بيع عقاري أو تأجيره', 'نوصلك بوسيط مرخّص'], ['add-property.html?stay=1', 'fa-umbrella-beach', 'وحدة إقامة قصيرة', 'إيجار يومي أو شهري'],
+        ['add-car.html?kind=car', 'fa-car-side', 'سيارة', 'بيع أو إيجار'], ['add-car.html?kind=moto', 'fa-motorcycle', 'دراجة نارية', 'بيع أو إيجار'],
+        ['add-car.html?kind=yacht', 'fa-ship', 'يخت أو قارب', 'بيع أو إيجار ورحلات'], ['add-car.html?deal=parts', 'fa-gears', 'قطع غيار أو ورشة صيانة', 'للمحلات والورش ومراكز الخدمة']]);
+    }
   function bottomNav(active) {
     css();
     if (document.querySelector('.aqbnav')) return;
@@ -307,20 +313,16 @@
     document.body.appendChild(n); document.body.classList.add('aq-has-bnav');
     n.querySelector('[data-sec]').onclick = function () {
       sheetOpts('الأقسام', [
-        ['index.html#search', 'fa-building', 'العقارات', 'شراء وإيجار سنوي'], ['stays.html', 'fa-umbrella-beach', 'شورت تيرم', 'إيجار يومي وشهري'],
+        ['index.html#search', 'fa-building', 'العقارات', 'شراء وإيجار سنوي'], ['stays.html', 'fa-umbrella-beach', 'الإقامات القصيرة', 'إيجار يومي وشهري'],
         ['cars.html', 'fa-car-side', 'موتورات', 'سيارات، دراجات نارية، يخوت'], ['projects.html', 'fa-city', 'مشاريع على الخارطة', 'خطط سداد المطوّرين'],
         ['services-directory.html', 'fa-screwdriver-wrench', 'خدمات بيتك', 'صيانة، نقل، تنظيف، ديكور'], ['brokers-directory.html', 'fa-user-tie', 'الوسطاء والمكاتب', 'دليل الوسطاء المرخّصين'],
         ['map.html', 'fa-map-location-dot', 'الخريطة', 'العقارات حولك'], ['valuation.html', 'fa-chart-line', 'كم يساوي عقاري؟', 'تقدير السعر'], ['request.html', 'fa-paper-plane', 'اطلب عقارك', 'نرسل طلبك للوسطاء']]);
     };
-    n.querySelector('[data-add]').onclick = function () {
-      sheetOpts('ماذا تريد أن تعلن؟', [
-        ['add-property.html', 'fa-building', 'عقار للبيع أو الإيجار', 'للوسطاء والمكاتب والمطوّرين'], ['add-property.html?stay=1', 'fa-umbrella-beach', 'وحدة شورت تيرم', 'إيجار يومي أو شهري'],
-        ['add-car.html?kind=car', 'fa-car-side', 'سيارة', 'بيع أو إيجار'], ['add-car.html?kind=moto', 'fa-motorcycle', 'دراجة نارية', 'بيع أو إيجار'],
-        ['add-car.html?kind=yacht', 'fa-ship', 'يخت أو قارب', 'بيع أو إيجار ورحلات'], ['add-car.html?deal=parts', 'fa-gears', 'قطع غيار أو ورشة صيانة', 'للمحلات والورش ومراكز الخدمة']]);
-    };
+    n.querySelector('[data-add]').onclick = openAdd;
+
     n.querySelector('[data-me]').onclick = function () {
       var c = sb(), go = function (u) {
-        sheetOpts('حسابي', [['stays.html#mine', 'fa-calendar-check', 'حجوزاتي', 'حجوزات الشورت تيرم'], ['my.html', 'fa-bookmark', 'قوائمي', 'المفضلة والبحوث المحفوظة والإشعارات'], ['compare.html', 'fa-code-compare', 'المقارنة', 'العقارات التي اخترتها للمقارنة'], ['add-car.html#mine', 'fa-car', 'إعلانات موتورات', 'إعلاناتي وطلباتها'], ['pro.html', 'fa-briefcase', 'بوابة المهنيين', 'للوسطاء والمكاتب والمطوّرين']]
+        sheetOpts('حسابي', [['stays.html#mine', 'fa-calendar-check', 'حجوزاتي', 'حجوزات الإقامات القصيرة'], ['my.html', 'fa-bookmark', 'قوائمي', 'المفضلة والبحوث المحفوظة والإشعارات'], ['compare.html', 'fa-code-compare', 'المقارنة', 'العقارات التي اخترتها للمقارنة'], ['add-car.html#mine', 'fa-car', 'إعلانات موتورات', 'إعلاناتي وطلباتها'], ['pro.html', 'fa-briefcase', 'بوابة المهنيين', 'للوسطاء والمكاتب والمطوّرين']]
           .concat(u ? [] : [['#', 'fa-right-to-bracket', 'تسجيل الدخول أو إنشاء حساب', '', 'login']]));
       };
       if (!c) return go(null);
@@ -328,7 +330,7 @@
     };
   }
 
-  window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
+  window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, openAdd: openAdd, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
   function boot() {
     document.querySelectorAll('[data-aq-ads]').forEach(function (el) { strip(el); });
     // الشريط السفلي في كل الصفحات العامة، إلا الصفحات التي فيها شريط حجز أو تواصل خاص بها

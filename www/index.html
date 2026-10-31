@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=86"></script>
+  <script src="supabase-client.js?v=87"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -1687,6 +1687,7 @@
     .aq-verticals { display:flex; gap:8px; justify-content:center; margin:0 auto 14px; flex-wrap:wrap; }
     .aq-verticals a { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:12px; background:rgba(255,255,255,.12); color:#fff; font-weight:900; font-size:15px; text-decoration:none; border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(6px); }
     .aq-verticals a.on { background:#e11d48; border-color:#e11d48; }
+    .aq-v-ic { display:inline-flex; gap:4px; align-items:center; } .aq-v-ic i { font-size:14px; }
     .aq-home-wrap { max-width:1250px; margin:0 auto; padding:0 16px; }
     .aq-home-wrap:empty { display:none; }
     @media (max-width:900px) { .aq-grid > :last-child:nth-child(odd) { grid-column:1/-1; } }
@@ -1924,7 +1925,7 @@
       <div class="controls-wrapper-center">
         
         <div class="mobile-row-fav-add">
-          <a href="sell-or-rent.html" class="btn-add-nav"><i class="fas fa-plus-circle"></i> أضف عقارك +</a>
+          <a href="sell-or-rent.html" class="btn-add-nav" onclick="if(window.AQAds&&AQAds.openAdd){event.preventDefault();AQAds.openAdd();}"><i class="fas fa-plus-circle"></i> أضف إعلانك</a>
           <button class="btn-fav-nav" onclick="openFavoritesModal()"><i class="fas fa-heart"></i> المفضلة <span class="fav-count-badge" id="favBadge">0</span></button>
           <button class="btn-fav-nav" onclick="toggleAnaaqarDarkMode()" title="الوضع الليلي" aria-label="تبديل الوضع الليلي"><i class="fas fa-moon" id="darkModeIcon"></i></button>
         </div>
@@ -2045,7 +2046,7 @@
 
   <section class="anaaqar-light-hero" id="heroSection">
     <div class="hero-light-container">
-      <nav class="aq-verticals" aria-label="أقسام أنا عقار"><a class="on" href="index.html"><i class="fas fa-building"></i> العقارات</a><a href="stays.html"><i class="fas fa-umbrella-beach"></i> شورت تيرم</a><a href="cars.html"><i class="fas fa-car-side"></i> موتورات</a></nav>
+      <nav class="aq-verticals" aria-label="أقسام أنا عقار"><a class="on" href="index.html"><i class="fas fa-building"></i> العقارات</a><a href="stays.html"><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة</a><a href="cars.html" class="aq-v-motors"><span class="aq-v-ic"><i class="fas fa-car-side"></i><i class="fas fa-motorcycle"></i><i class="fas fa-ship"></i></span> موتورات</a></nav>
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
 
       <div class="pearl-search-card">
@@ -2056,12 +2057,11 @@
             <button class="royal-tab" data-type="all" onclick="switchRoyalTab(this)"><i class="fas fa-border-all"></i> الكل</button>
             <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
             <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
-            <a class="royal-tab" href="stays.html" style="text-decoration:none"><i class="fas fa-umbrella-beach"></i> شورت تيرم</a>
+            <a class="royal-tab" href="stays.html" style="text-decoration:none"><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة</a>
             <button class="royal-tab" data-type="residential" onclick="switchRoyalTab(this)"><i class="fas fa-house-chimney"></i> سكني</button>
             <button class="royal-tab" data-type="commercial" onclick="switchRoyalTab(this)"><i class="fas fa-store"></i> تجاري</button>
             <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> عقارات الإقامة الذهبية</button>
             <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
-            <a class="royal-tab" href="cars.html" style="text-decoration:none"><i class="fas fa-car-side"></i> موتورات</a>
           </div>
           <div class="scroll-arrow left" onclick="scrollRoyalTabs(-1)"><i class="fas fa-chevron-left"></i></div>
         </div>
@@ -2141,7 +2141,7 @@
         <a class="aq-tile" href="listings.html?cat=ready"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></a>
         <a class="aq-tile" href="listings.html?cat=offers"><span class="aq-ico" style="--c:#e11d48"><i class="fas fa-tags"></i></span><b>العروض</b><small>خصومات وخطط سداد خاصة</small></a>
         <a class="aq-tile" href="services-directory.html?cat=immigration"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></a>
-        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0284c7"><i class="fas fa-umbrella-beach"></i></span><b>شورت تيرم: يومي وشهري</b><small>إيجار قصير المدة بالليلة أو بالشهر</small></a>
+        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0284c7"><i class="fas fa-umbrella-beach"></i></span><b>الإقامات القصيرة: يومي وشهري</b><small>إيجار قصير المدة بالليلة أو بالشهر</small></a>
         <a class="aq-tile" href="stays.html?period=monthly"><span class="aq-ico" style="--c:#7c3aed"><i class="fas fa-calendar-days"></i></span><b>إيجار شهري مفروش</b><small>سكن بالشهر بدون عقد سنوي</small></a>
         <a class="aq-tile" href="cars.html"><span class="aq-ico" style="--c:#1e293b"><i class="fas fa-car-side"></i></span><b>موتورات</b><small>سيارات، دراجات نارية، يخوت</small></a>
         <a class="aq-tile" href="listings.html?cat=no_commission"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>دون عمولة على المشتري</small></a>
@@ -2156,7 +2156,7 @@
         <a class="aq-tile" href="services-directory.html?cat=property_mgmt"><span class="aq-ico" style="--c:#db2777"><i class="fas fa-building-circle-check"></i></span><b>إدارة العقارات</b><small>إدارة الأملاك والتأجير والمتابعة</small></a>
         <a class="aq-tile" href="services-directory.html?cat=engineering"><span class="aq-ico" style="--c:#65a30d"><i class="fas fa-compass-drafting"></i></span><b>استشارات هندسية</b><small>تصميم وإشراف وفحص عقار</small></a>
         <a class="aq-tile" href="services-directory.html?cat=contracting"><span class="aq-ico" style="--c:#92400e"><i class="fas fa-trowel-bricks"></i></span><b>المقاولات</b><small>بناء وتشطيب وترميم</small></a>
-        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-calendar-check"></i></span><b>شورت تيرم</b><small>حجز يومي وشهري بتأكيد المضيف</small></a>
+        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-calendar-check"></i></span><b>الإقامات القصيرة</b><small>حجز يومي وشهري بتأكيد المضيف</small></a>
         <a class="aq-tile" href="cars.html"><span class="aq-ico" style="--c:#334155"><i class="fas fa-car-side"></i></span><b>موتورات</b><small>سيارات، دراجات، يخوت: بيع، إيجار، قطع، صيانة</small></a>
         <a class="aq-tile" href="services-directory.html?cat=interior"><span class="aq-ico" style="--c:#ea580c"><i class="fas fa-couch"></i></span><b>تصميم الديكور</b><small>تصميم داخلي وتأثيث</small></a>
       </div>
@@ -2287,40 +2287,6 @@
     </div>
   </div>
 
-  <div class="royal-modal-overlay" id="affiliateInputModal">
-    <div class="royal-modal-card">
-      <div class="royal-modal-header">
-        <i class="fas fa-coins"></i>
-        <div class="royal-modal-title">توليد رابط التسويق بالعمولة</div>
-      </div>
-      <div class="royal-modal-body">
-        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:15px;">أدخل رقم هاتفك أو اسمك التجاري لربط الاستفسارات واحتساب عمولتك:</p>
-        <input type="text" id="affiliateRefInput" style="width:100%; padding:12px; border:2px solid #cbd5e1; border-radius:8px; font-weight:bold; text-align:center; font-size:15px; margin-bottom:15px;" placeholder="رقم الهاتف أو الاسم">
-        <div style="display:flex; gap:10px;">
-          <button style="flex:1; background:var(--primary-turquoise); color:white; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="confirmGenerateLink()"><i class="fas fa-magic"></i> إنشاء الرابط الآن</button>
-          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateInputModal')">إلغاء</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="royal-modal-overlay" id="affiliateSuccessModal">
-    <div class="royal-modal-card">
-      <div class="royal-modal-header" style="background: linear-gradient(135deg, #064e3b, #047857);">
-        <i class="fas fa-check-circle" style="color: #6ee7b7;"></i>
-        <div class="royal-modal-title">تم إنشاء رابطك بنجاح!</div>
-      </div>
-      <div class="royal-modal-body">
-        <p style="font-size:13px; color:#475569; font-weight:bold; margin-bottom:12px;">شارك هذا الرابط في مجموعات الواتساب واكسب عمولتك:</p>
-        <div class="royal-link-box" id="generatedLinkText">...</div>
-        <div style="display:flex; gap:10px;">
-          <button style="flex:1; background:linear-gradient(135deg, #d4af37, #b89528); color:#192038; border:none; padding:12px; border-radius:8px; font-weight:900; cursor:pointer;" onclick="copyGeneratedLink()"><i class="fas fa-copy"></i> نسخ الرابط ومشاركته</button>
-          <button style="background:#f1f5f9; color:#64748b; border:none; padding:12px 18px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('affiliateSuccessModal')">إلغاء</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="royal-modal-overlay" id="serviceModal">
     <div class="royal-modal-card">
       <div class="royal-modal-header"><i class="fas fa-info-circle"></i><div class="royal-modal-title" id="serviceModalTitle">مركز الخدمات</div></div>
@@ -2406,7 +2372,7 @@
       <div class="aq-dr-label">تصفّح</div>
       <a href="index.html"><i class="fas fa-house"></i> الرئيسية</a>
       <a href="javascript:void(0)" onclick="aqDrawerGo('resultsSectionTitle')"><i class="fas fa-building"></i> العقارات المتاحة</a>
-      <a href="stays.html"><i class="fas fa-umbrella-beach"></i> شورت تيرم: إيجار يومي وشهري</a>
+      <a href="stays.html"><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة: إيجار يومي وشهري</a>
       <a href="stays.html#mine"><i class="fas fa-calendar-check"></i> حجوزاتي</a>
       <a href="cars.html"><i class="fas fa-car-side"></i> موتورات: سيارات، دراجات نارية، يخوت</a>
       <a href="brokers-directory.html"><i class="fas fa-building-user"></i> دليل الوسطاء والمكاتب</a>
@@ -2422,7 +2388,7 @@
 
       <div class="aq-dr-label">أضف إعلانك</div>
       <a href="sell-or-rent.html" class="aq-dr-hl"><i class="fas fa-circle-plus"></i> اعرض عقارك للبيع أو الإيجار</a>
-      <a href="add-property.html?stay=1"><i class="fas fa-umbrella-beach"></i> أضف وحدة شورت تيرم</a>
+      <a href="add-property.html?stay=1"><i class="fas fa-umbrella-beach"></i> أضف وحدة إقامة قصيرة</a>
       <a href="add-car.html"><i class="fas fa-car"></i> أضف إعلان موتورات</a>
       <a href="pro.html" data-nonpro-only><i class="fas fa-user-tie"></i> أنت وسيط أو مكتب أو مطوّر؟ انضم</a>
 
@@ -3031,48 +2997,16 @@
       document.getElementById('compareModal').style.display = 'flex';
     }
 
+    // مشاركة العقار مباشرة (واتساب أو تطبيقات المشاركة في الجوال)
     function openAffiliateModal(propId) {
-      activePropertyForAffiliate = propId;
-      document.getElementById('affiliateRefInput').value = '';
-      document.getElementById('affiliateInputModal').style.display = 'flex';
-    }
-
-    function confirmGenerateLink() {
-      const ref = document.getElementById('affiliateRefInput').value.trim() || 'مباشر';
       const allProps = getAllProperties();
-      const property = allProps.find(p => p.id === activePropertyForAffiliate) || allProps[0];
-      const broker = property.broker || { name: "الوسيط المعتمد", agency: "شركة عقارية معتمدة" };
-      const propertyUrl = `https://anaaqar.com/property-details.html?id=${property.id}&ref=${ref}`;
-
-      const shareText = 
-`🏡 *فرصة عقارية ممتازة عبر منصة أنا عقار* 🏡
-
-📌 *العقار:* ${property.title}
-💰 *السعر:* ${formatPriceAED(property.priceAED)}
-📐 *المساحة:* ${property.area_m2} م² | 🛏️ ${property.bedrooms} غرف
-
-👤 *بيانات الوسيط المعلن الأصلي:*
-• الاسم: ${broker.name}
-• الشركة: ${broker.agency || "شركة عقارية معتمدة"}
-
-🤝 *بيانات المسوق المشارك للرابط (صاحب العمولة):*
-• كود المرجع (Ref): ${ref}
-• رقم التواصل مع المسوق: ${ref}
-• نسبة العمولة المستحقة: ${property.commission || "1.5%"}
-
-🔗 *رابط المعاينة والتفاصيل الكاملة:*
-${propertyUrl}`;
-
-      closeRoyalModal('affiliateInputModal');
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
+      const p = allProps.find(x => String(x.id) === String(propId));
+      const url = 'https://anaaqar.com/property-details.html?id=' + encodeURIComponent(propId);
+      const text = p ? `${p.title} — ${formatPriceAED(p.priceAED)}` : 'عقار على أنا عقار';
+      if (navigator.share) { navigator.share({ title: text, text, url }).catch(() => {}); return; }
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text + '\n' + url), '_blank', 'noopener,noreferrer');
     }
 
-    function copyGeneratedLink() {
-      const linkText = document.getElementById('generatedLinkText').innerText;
-      navigator.clipboard.writeText(linkText);
-      alert('🎉 تم نسخ رابط العمولة الخاص بك بنجاح!');
-      closeRoyalModal('affiliateSuccessModal');
-    }
 
     function openBrokerCallModal(brokerName, phoneNum) {
       activeCallPhone = phoneNum || "";
@@ -3877,13 +3811,13 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=86" defer></script>
-  <script src="js/aq-ai.js?v=86" defer></script>
-  <script src="js/aq-engage.js?v=86" defer></script>
-  <script src="js/aq-back.js?v=86" defer></script>
-  <script src="js/aq-stay.js?v=86" defer></script>
-  <script src="js/aq-cars.js?v=86" defer></script>
-  <script src="js/aq-ads.js?v=86" defer></script>
-  <script src="js/aq-home.js?v=86" defer></script>
+  <script src="js/aq-filters.js?v=87" defer></script>
+  <script src="js/aq-ai.js?v=87" defer></script>
+  <script src="js/aq-engage.js?v=87" defer></script>
+  <script src="js/aq-back.js?v=87" defer></script>
+  <script src="js/aq-stay.js?v=87" defer></script>
+  <script src="js/aq-cars.js?v=87" defer></script>
+  <script src="js/aq-ads.js?v=87" defer></script>
+  <script src="js/aq-home.js?v=87" defer></script>
 </body>
 </html>

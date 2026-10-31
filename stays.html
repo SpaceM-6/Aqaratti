@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>شورت تيرم: إيجار يومي وشهري | أنا عقار AnaAqar</title>
+  <title>الإقامات القصيرة: إيجار يومي وشهري | أنا عقار AnaAqar</title>
   <meta name="description" content="احجز شققًا وفللًا وشققًا فندقية بالليلة في دبي وأبوظبي وباقي الإمارات: اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل الحجز.">
   <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
@@ -14,11 +14,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=86">
+  <link rel="stylesheet" href="css/aq-pages.css?v=87">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=86"></script>
-  <script src="js/aq-stay.js?v=86"></script>
-  <script src="js/aq-ads.js?v=86"></script>
+  <script src="supabase-client.js?v=87"></script>
+  <script src="js/aq-stay.js?v=87"></script>
+  <script src="js/aq-ads.js?v=87"></script>
   <style>
     .sx-top { position:sticky; top:57px; z-index:15; background:var(--bg); padding:12px 0 8px; }
     .sx-search { display:flex; align-items:center; gap:10px; border:1.5px solid var(--ink); border-radius:12px; padding:0 14px; background:var(--card); }
@@ -97,7 +97,7 @@
     <a class="back" href="index.html">الرئيسية ←</a>
   </div></header>
   <section class="head"><div class="head-in">
-    <h1><i class="fas fa-umbrella-beach"></i> شورت تيرم: إيجار يومي وشهري</h1>
+    <h1><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة: إيجار يومي وشهري</h1>
     <p>شقق وفلل وشقق فندقية مفروشة بالليلة أو بالشهر. اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل أن تحجز.</p>
   </div></section>
   <main>
@@ -115,7 +115,7 @@
     <div data-aq-ads="stays" data-title="عروض وإعلانات"></div>
     <div class="sx-cnt" id="cnt"></div>
     <div class="sx-grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
-    <div class="acts" style="justify-content:center;margin-top:26px"><a class="btn btn-soft" href="add-property.html?stay=1"><i class="fas fa-plus"></i> أضف وحدتك للشورت تيرم</a><a class="btn btn-ghost" href="listings.html?cat=rent"><i class="fas fa-building"></i> الإيجار السنوي</a></div>
+    <div class="acts" style="justify-content:center;margin-top:26px"><a class="btn btn-soft" href="add-property.html?stay=1"><i class="fas fa-plus"></i> أضف وحدتك للإقامات القصيرة</a><a class="btn btn-ghost" href="listings.html?cat=rent"><i class="fas fa-building"></i> الإيجار السنوي</a></div>
   </main>
   <button class="sx-sort" id="sortBtn" type="button"><i class="fas fa-sort"></i> ترتيب</button>
 
@@ -235,7 +235,7 @@
     $('fBtn').onclick = () => {
       const chips = (k, list, multi) => `<div class="fs-chips" data-k="${k}">${list.map(([v, l, ic]) => `<button type="button" class="fs-chip ${(multi ? F[k].has(v) : String(F[k]) === String(v)) ? 'on' : ''}" data-v="${v}">${ic ? `<i class="fas ${ic}"></i>` : ''}${l}</button>`).join('')}</div>`;
       const sh = S.sheet(`<div class="aqs-hd"><button class="aqs-x" data-x aria-label="إغلاق">✕</button><h3>الفلاتر</h3><button class="clr" type="button" style="background:none;border:0;font:inherit;font-weight:800;color:var(--muted);cursor:pointer" data-reset>مسح</button></div>
-        <div class="fs-tabs"><a href="listings.html?cat=rent">إيجار سنوي</a><span>شورت تيرم: ${F.per === 'monthly' ? 'شهري' : 'يومي'}</span></div>
+        <div class="fs-tabs"><a href="listings.html?cat=rent">إيجار سنوي</a><span>الإقامات القصيرة: ${F.per === 'monthly' ? 'شهري' : 'يومي'}</span></div>
         <div class="aqs-body">
           <div class="fs-sec"><h4>نطاق السعر</h4><p class="h">${F.per === 'monthly' ? 'للشهر' : 'لليلة الواحدة'}</p><div class="fs-pr"><label><input id="fpmin" type="number" inputmode="numeric" placeholder="0" value="${esc(F.pmin)}"><small>درهم</small></label><span>إلى</span><label><input id="fpmax" type="number" inputmode="numeric" placeholder="أي سعر" value="${esc(F.pmax)}"><small>درهم</small></label></div></div>
           <div class="fs-sec"><h4>غرف النوم</h4>${chips('br', [['0', 'استوديو'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '6'], ['7', '+7']])}</div>
@@ -298,8 +298,8 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=86" defer></script>
-  <script src="js/aq-back.js?v=86" defer></script>
+  <script src="js/aq-engage.js?v=87" defer></script>
+  <script src="js/aq-back.js?v=87" defer></script>
   <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav('stays'));</script>
 </body>
 </html>
