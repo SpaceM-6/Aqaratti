@@ -111,6 +111,9 @@
       '.aqsh-btn{position:absolute;top:10px;left:10px;z-index:3;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.95);color:#192038;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}',
       '.aqsh-fab{position:fixed;right:14px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:950;display:flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:12px 18px;background:#192038;color:#fff;font:900 14px Tajawal,sans-serif;box-shadow:0 8px 22px rgba(15,23,42,.28);cursor:pointer}',
       '@media(max-width:768px){body.aq-has-bnav .aqsh-fab{bottom:calc(78px + env(safe-area-inset-bottom,0px))}}',
+      '.aqg-btns{position:absolute;top:12px;left:12px;z-index:4;display:flex;gap:8px}',
+      '.aqg-b{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.95);color:#192038;font-size:18px;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.2)}',
+      '.aqg-b.on{color:#e11d48}',
       '.aqsh-btn.inl{position:static;box-shadow:none;border:1.5px solid var(--line,#e2e8f0);background:var(--card,#fff);color:var(--ink,#0f172a)}',
       '.aqsh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 6px;margin-bottom:14px}',
       '.aqsh-grid a{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--ink,#0f172a);font-weight:800;font-size:12.5px;text-align:center}',
@@ -386,7 +389,33 @@
     d.textContent = m; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2800);
   }
 
-  window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, openAdd: openAdd, share: share, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
+  // ---------------- المفضلة لكل أنواع الإعلانات (إقامات، موتورات، مشاريع) ----------------
+  var fav = {
+    all: function () { return LS.get('aq_fav_items', []); },
+    has: function (k) { return fav.all().some(function (x) { return x.k === k; }); },
+    // item: {k, url, title, img, price, tag}
+    toggle: function (item) {
+      var l = fav.all(), i = -1;
+      l.forEach(function (x, j) { if (x.k === item.k) i = j; });
+      if (i > -1) l.splice(i, 1); else l.unshift(Object.assign({ at: Date.now() }, item));
+      LS.set('aq_fav_items', l.slice(0, 200));
+      toast(i > -1 ? 'أُزيل من المفضلة' : 'أُضيف إلى المفضلة ❤ — تجده في «قوائمي»');
+      return i === -1;
+    },
+    remove: function (k) { LS.set('aq_fav_items', fav.all().filter(function (x) { return x.k !== k; })); }
+  };
+  // زرّا المشاركة والمفضلة فوق صورة الإعلان
+  function galleryBtns(item) {
+    var on = fav.has(item.k);
+    return '<div class="aqg-btns"><button type="button" class="aqg-b ' + (on ? 'on' : '') + '" data-aqfav aria-label="أضف للمفضلة" title="المفضلة"><i class="fa' + (on ? 's' : 'r') + ' fa-heart"></i></button>' +
+      '<button type="button" class="aqg-b" data-share-url="' + esc(item.url) + '" data-share-title="' + esc(item.title) + '" aria-label="مشاركة" title="مشاركة"><i class="fas fa-share-nodes"></i></button></div>';
+  }
+  function wireGallery(root, item) {
+    var b = root.querySelector('[data-aqfav]'); if (!b) return;
+    b.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var on = fav.toggle(item); b.classList.toggle('on', on); b.innerHTML = '<i class="fa' + (on ? 's' : 'r') + ' fa-heart"></i>'; };
+  }
+
+  window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, openAdd: openAdd, share: share, fav: fav, galleryBtns: galleryBtns, wireGallery: wireGallery, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
   // أي زر عليه data-share-url يفتح نافذة المشاركة (بطاقات الإعلانات في كل الصفحات)
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-share-url]');
@@ -402,7 +431,7 @@
     // الشريط السفلي في كل الصفحات العامة، إلا الصفحات التي فيها شريط حجز أو تواصل خاص بها
     var pg = (location.pathname.split('/').pop() || 'index.html');
     // صفحات الإعلان المفرد (مشروع، ملف وسيط أو مطوّر): زر مشاركة عائم
-    if (/^(project|broker-profile|individual-broker-profile|developer-profile|broker-directory-profile)\.html/.test(pg) && !document.querySelector('.aqsh-fab')) {
+    if (/^(broker-profile|individual-broker-profile|developer-profile|broker-directory-profile)\.html/.test(pg) && !document.querySelector('.aqsh-fab')) {
       var f = document.createElement('button'); f.type = 'button'; f.className = 'aqsh-fab'; f.setAttribute('aria-label', 'مشاركة');
       f.innerHTML = '<i class="fas fa-share-nodes"></i> مشاركة'; f.onclick = function () { share({ url: location.href, title: document.title }); };
       document.body.appendChild(f);

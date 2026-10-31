@@ -14,10 +14,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=90">
+  <link rel="stylesheet" href="css/aq-pages.css?v=91">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=90"></script>
-  <script src="js/aq-public.js?v=90"></script>
+  <script src="supabase-client.js?v=91"></script>
+  <script src="js/aq-ads.js?v=91"></script>
+  <script src="js/aq-public.js?v=91"></script>
 </head>
 <body>
   <header class="topbar"><div class="topbar-in">
@@ -71,9 +72,10 @@
       const phone = (dv.whatsapp || dv.phone || '').replace(/\D/g, '');
       const inCmp = AQPublic.compare.get().includes('project-' + p.id);
       const priceOpts = units.filter((u) => u.price).map((u) => `<option value="${u.price}">${esc(u.type)} — ${money(u.price)}</option>`).join('');
+      const favItem = { k: 'project:' + p.id, url: 'project.html?id=' + p.id, title: p.name, img: imgs[0] || '', price: p.price_from ? 'يبدأ من ' + money(p.price_from) : '', tag: 'مشروع' };
       root.innerHTML = `
         <div class="print-only" style="text-align:center;margin-bottom:10px"><b style="color:#00a896;font-size:22px">أنا عقار</b> · anaaqar.com</div>
-        <div class="hero-img" id="hero" style="background-image:url('${esc(imgs[0] || '')}')"></div>
+        <div class="hero-img" id="hero" style="position:relative;background-image:url('${esc(imgs[0] || '')}')">${window.AQAds ? AQAds.galleryBtns(favItem) : ''}</div>
         ${imgs.length > 1 ? `<div class="thumbs">${imgs.map((u, i) => `<img src="${esc(u)}" alt="" data-i="${i}" class="${i ? '' : 'on'}" loading="lazy">`).join('')}</div>` : '<div style="height:14px"></div>'}
         <div class="lay"><div>
           <div class="box"><h1 style="margin:0 0 4px;font-size:clamp(22px,4vw,30px);font-weight:900">${esc(p.name)}</h1>
@@ -99,6 +101,7 @@
             ${p.lat && p.lng ? `<a class="btn btn-ghost sm" href="map.html?lat=${p.lat}&lng=${p.lng}&z=14"><i class="fas fa-map"></i> الخريطة</a>` : ''}</div></div>
           <div class="print-only box">للاستفسار: anaaqar.com/project.html?id=${p.id}</div>
         </div></aside></div>`;
+      if (window.AQAds) AQAds.wireGallery(root, favItem);
       root.querySelectorAll('.thumbs img').forEach((im) => im.onclick = () => { document.getElementById('hero').style.backgroundImage = `url('${im.src}')`; root.querySelectorAll('.thumbs img').forEach((x) => x.classList.toggle('on', x === im)); });
       const calc = () => { const sel = document.getElementById('pp'); if (!sel) return; const price = +sel.value; root.querySelectorAll('[data-pct]').forEach((td) => { td.textContent = money(Math.round(price * td.dataset.pct / 100)); }); };
       const pp = document.getElementById('pp'); if (pp) { pp.onchange = calc; calc(); }
@@ -115,8 +118,7 @@
     load();
   })();
   </script>
-  <script src="js/aq-engage.js?v=90" defer></script>
-  <script src="js/aq-ads.js?v=90" defer></script>
-  <script src="js/aq-back.js?v=90" defer></script>
+  <script src="js/aq-engage.js?v=91" defer></script>
+  <script src="js/aq-back.js?v=91" defer></script>
 </body>
 </html>

@@ -13,11 +13,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=90">
+  <link rel="stylesheet" href="css/aq-pages.css?v=91">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=90"></script>
-  <script src="js/aq-stay.js?v=90"></script>
-  <script src="js/aq-ads.js?v=90"></script>
+  <script src="supabase-client.js?v=91"></script>
+  <script src="js/aq-stay.js?v=91"></script>
+  <script src="js/aq-ads.js?v=91"></script>
   <style>
     main { padding-bottom:120px; }
     .st-gal { position:relative; border-radius:18px; overflow:hidden; aspect-ratio:16/10; background:#e2e8f0; max-height:520px; width:100%; }
@@ -250,7 +250,7 @@
         sh.el.querySelector('[data-w=g]').onclick = () => { sh.close(); pickGuests(); };
       });
       const ph = $('ph'); if (ph) ph.addEventListener('scroll', () => { $('phI').textContent = Math.round(Math.abs(ph.scrollLeft) / ph.clientWidth) + 1; }, { passive: true });
-      const fv = $('favB'); if (fv) fv.onclick = () => { const l = new Set(S.LS.get('aq_fav_stays', [])), k = String(P.id); l.has(k) ? l.delete(k) : l.add(k); S.LS.set('aq_fav_stays', [...l]); fv.classList.toggle('on', l.has(k)); fv.innerHTML = `<i class="fa${l.has(k) ? 's' : 'r'} fa-heart"></i>`; };
+      const fv = $('favB'); if (fv) fv.onclick = () => { if (window.AQAds) AQAds.fav.toggle({ k: 'stay:' + P.id, url: 'stay.html?id=' + encodeURIComponent(P.id), title: P.title, img: imgs()[0] || '', price: aed(S.nightly(P)) + ' / الليلة', tag: 'إقامة قصيرة' }); const l = new Set(S.LS.get('aq_fav_stays', [])), k = String(P.id); l.has(k) ? l.delete(k) : l.add(k); S.LS.set('aq_fav_stays', [...l]); fv.classList.toggle('on', l.has(k)); fv.innerHTML = `<i class="fa${l.has(k) ? 's' : 'r'} fa-heart"></i>`; };
       const sb2 = $('shB'); if (sb2) sb2.onclick = () => AQAds.share({ url: location.origin + location.pathname + '?id=' + encodeURIComponent(P.id), title: P.title + ' | أنا عقار' });
       const sn = $('sumNext'); if (sn) sn.onclick = () => go('form', true);
       const dt = $('detT'); if (dt) dt.onclick = () => { const d = $('frmDet'); d.hidden = !d.hidden; dt.innerHTML = d.hidden ? '<i class="fas fa-up-right-and-down-left-from-center"></i> إظهار التفاصيل' : '<i class="fas fa-down-left-and-up-right-to-center"></i> إخفاء التفاصيل'; if (!d.hidden) d.scrollIntoView({ behavior: 'smooth' }); };
@@ -300,7 +300,7 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=90" defer></script>
-  <script src="js/aq-back.js?v=90" defer></script>
+  <script src="js/aq-engage.js?v=91" defer></script>
+  <script src="js/aq-back.js?v=91" defer></script>
 </body>
 </html>
