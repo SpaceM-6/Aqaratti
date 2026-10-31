@@ -14,11 +14,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=89">
+  <link rel="stylesheet" href="css/aq-pages.css?v=90">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=89"></script>
-  <script src="js/aq-stay.js?v=89"></script>
-  <script src="js/aq-ads.js?v=89"></script>
+  <script src="supabase-client.js?v=90"></script>
+  <script src="js/aq-stay.js?v=90"></script>
+  <script src="js/aq-ads.js?v=90"></script>
   <style>
     .sx-top { position:sticky; top:57px; z-index:15; background:var(--bg); padding:12px 0 8px; }
     .sx-search { display:flex; align-items:center; gap:10px; border:1.5px solid var(--ink); border-radius:12px; padding:0 14px; background:var(--card); }
@@ -190,7 +190,7 @@
       const am = S.amenities(p).filter((k) => S.SPECIAL.includes(k)).slice(0, 2), url = link(p);
       return `<article class="sx-card"><div class="sx-gal"><div class="sx-ph">${imgs.map((u, i) => `<img src="${esc(u)}" alt="" loading="${i ? 'lazy' : 'eager'}" onclick="location.href='${url}'" onerror="this.style.visibility='hidden'">`).join('')}</div>
         <div class="sx-tagx">${p.instantBook ? '<span class="ins">⚡ حجز فوري</span>' : ''}</div>
-        <button class="sx-fav ${favs.has(String(p.id)) ? 'on' : ''}" data-fav="${esc(p.id)}" aria-label="أضف للمفضلة" type="button"><i class="fa${favs.has(String(p.id)) ? 's' : 'r'} fa-heart"></i></button>
+        <button type="button" class="aqsh-btn" style="top:12px;left:56px" data-share-url="${url}" data-share-title="${esc(p.title)}" aria-label="مشاركة"><i class="fas fa-share-nodes"></i></button><button class="sx-fav ${favs.has(String(p.id)) ? 'on' : ''}" data-fav="${esc(p.id)}" aria-label="أضف للمفضلة" type="button"><i class="fa${favs.has(String(p.id)) ? 's' : 'r'} fa-heart"></i></button>
         <span class="sx-n"><i class="far fa-images"></i> <span data-i>1</span>/${imgs.length}</span></div>
         <div class="sx-in"><h3><a href="${url}">${esc(p.title)}</a></h3>
         <div class="sx-pr">${p.longTerm ? `<b>${aed(monthly(p))}</b> / الشهر · عقد شهري` : q ? `<b>${aed(q.total)}</b> الإجمالي · ${S.nightsTxt(q.nights)}` : `<b>${aed(priceOf(p))}</b> / ${unit()}${F.per === 'daily' && p.minNights > 1 ? ` · أقل مدة ${S.nightsTxt(p.minNights)}` : ''}${F.per === 'monthly' && p.monthlyDiscount > 0 ? ` · خصم شهري ${p.monthlyDiscount}%` : ''}`}</div>
@@ -298,8 +298,8 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=89" defer></script>
-  <script src="js/aq-back.js?v=89" defer></script>
+  <script src="js/aq-engage.js?v=90" defer></script>
+  <script src="js/aq-back.js?v=90" defer></script>
   <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav('stays'));</script>
 </body>
 </html>

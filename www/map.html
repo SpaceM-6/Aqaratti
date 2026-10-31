@@ -14,11 +14,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=89">
+  <link rel="stylesheet" href="css/aq-pages.css?v=90">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=89"></script>
-  <script src="js/aq-public.js?v=89"></script>
+  <script src="supabase-client.js?v=90"></script>
+  <script src="js/aq-public.js?v=90"></script>
 </head>
 <body data-no-ticker>
   <header class="topbar"><div class="topbar-in">
@@ -61,7 +61,7 @@
     function draw() {
       layer.clearLayers();
       const shown = points.filter((p) => mode === 'all' || (mode === 'projects' ? p.kind === 'project' : p.kind === 'property' && p.deal === mode));
-      shown.forEach((p) => L.marker([p.lat, p.lng], { icon: icon(p) }).bindPopup(`<div class="pp">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}<b>${esc(p.title)}</b><span class="pr">${p.kind === 'project' ? 'يبدأ من ' : ''}${money(p.price)}</span>${p.approx ? '<small>الموقع تقريبي حسب المنطقة</small>' : ''}<a href="${p.url}">عرض التفاصيل ←</a></div>`).addTo(layer));
+      shown.forEach((p) => L.marker([p.lat, p.lng], { icon: icon(p) }).bindPopup(`<div class="pp">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}<b>${esc(p.title)}</b><span class="pr">${p.kind === 'project' ? 'يبدأ من ' : ''}${money(p.price)}</span>${p.approx ? '<small>الموقع تقريبي حسب المنطقة</small>' : ''}<a href="${p.url}">عرض التفاصيل ←</a><button type="button" data-share-url="${p.url}" data-share-title="${esc(p.title)}" style="margin-top:6px;border:1.5px solid #e2e8f0;background:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-weight:800;cursor:pointer"><i class="fas fa-share-nodes"></i> مشاركة</button></div>`).addTo(layer));
       document.getElementById('cnt').textContent = shown.length + (mode === 'projects' ? ' مشروع' : ' عقار') + ' على الخريطة';
       document.querySelectorAll('.mbar [data-l]').forEach((b) => b.classList.toggle('on', b.dataset.l === mode));
     }
@@ -82,7 +82,8 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=89" defer></script>
-  <script src="js/aq-back.js?v=89" defer></script>
+  <script src="js/aq-engage.js?v=90" defer></script>
+  <script src="js/aq-ads.js?v=90" defer></script>
+  <script src="js/aq-back.js?v=90" defer></script>
 </body>
 </html>

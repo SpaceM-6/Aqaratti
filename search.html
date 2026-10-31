@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script src="currency.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="supabase-client.js?v=89"></script>
+    <script src="supabase-client.js?v=90"></script>
 
     <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
     <script type="text/javascript">
@@ -222,7 +222,7 @@
                 // قمنا بتغليف الكارت برابط ينتقل لصفحة تفاصيل العقار ويمرر الـ ID الخاص به
                 grid.innerHTML += `
                     <a href="javascript:void(0)" onclick="goToSearchPropertyDetails('${item.id}')" style="text-decoration: none; color: inherit;">
-                        <div class="property-card" style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #d8dce0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;">
+                        <div class="property-card" style="background:#fff; border-radius:12px; overflow:hidden; border:1px solid #d8dce0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer; position:relative;"><button type="button" class="aqsh-btn" data-share-url="property-details.html?id=${encodeURIComponent(item.id)}" data-share-title="${String(item.title || '').replace(/"/g, '&quot;')}" aria-label="مشاركة"><i class="fas fa-share-nodes"></i></button>
                             <img src="${img}" alt="${item.title}" loading="lazy" style="width:100%; height:180px; object-fit:cover;">
                             <div style="padding:15px;">
                                 <h3 style="color:#28b16d; font-size:18px; margin-bottom:5px;">${formatPriceAED(item.priceAED || item.price || 0)}</h3>
@@ -300,3 +300,4 @@
             if (savedDir) document.documentElement.setAttribute('dir', savedDir);
         });
     </script>
+    <script src="js/aq-ads.js?v=90" defer></script>

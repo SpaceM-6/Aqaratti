@@ -108,6 +108,10 @@
       '.aqr-bud{flex:0 0 auto;scroll-snap-align:start;padding:12px 18px;border-radius:14px;border:1.5px solid var(--line,#e2e8f0);background:var(--card,#fff);text-decoration:none;color:inherit;font-weight:900;font-size:15px}',
       '.aqr-bud small{display:block;color:var(--muted,#64748b);font-weight:700;font-size:12px}',
       // شريط التنقل السفلي في الجوال
+      '.aqsh-btn{position:absolute;top:10px;left:10px;z-index:3;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.95);color:#192038;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}',
+      '.aqsh-fab{position:fixed;right:14px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:950;display:flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:12px 18px;background:#192038;color:#fff;font:900 14px Tajawal,sans-serif;box-shadow:0 8px 22px rgba(15,23,42,.28);cursor:pointer}',
+      '@media(max-width:768px){body.aq-has-bnav .aqsh-fab{bottom:calc(78px + env(safe-area-inset-bottom,0px))}}',
+      '.aqsh-btn.inl{position:static;box-shadow:none;border:1.5px solid var(--line,#e2e8f0);background:var(--card,#fff);color:var(--ink,#0f172a)}',
       '.aqsh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 6px;margin-bottom:14px}',
       '.aqsh-grid a{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--ink,#0f172a);font-weight:800;font-size:12.5px;text-align:center}',
       '.aqsh-grid a span{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:22px}',
@@ -383,11 +387,27 @@
   }
 
   window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, openAdd: openAdd, share: share, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
+  // أي زر عليه data-share-url يفتح نافذة المشاركة (بطاقات الإعلانات في كل الصفحات)
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-share-url]');
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var u = b.getAttribute('data-share-url');
+    try { u = new URL(u, 'https://anaaqar.com/').href; } catch (x) {}
+    share({ url: u, title: b.getAttribute('data-share-title') || document.title });
+  }, true);
+  css();
   function boot() {
     document.querySelectorAll('[data-aq-ads]').forEach(function (el) { strip(el); });
     // الشريط السفلي في كل الصفحات العامة، إلا الصفحات التي فيها شريط حجز أو تواصل خاص بها
     var pg = (location.pathname.split('/').pop() || 'index.html');
-    if (!/^(pro|dashboard|add-property|add-car|stay|car|property-details|admin)/.test(pg) && location.pathname.indexOf('/admin/') < 0) bottomNav('');
+    // صفحات الإعلان المفرد (مشروع، ملف وسيط أو مطوّر): زر مشاركة عائم
+    if (/^(project|broker-profile|individual-broker-profile|developer-profile|broker-directory-profile)\.html/.test(pg) && !document.querySelector('.aqsh-fab')) {
+      var f = document.createElement('button'); f.type = 'button'; f.className = 'aqsh-fab'; f.setAttribute('aria-label', 'مشاركة');
+      f.innerHTML = '<i class="fas fa-share-nodes"></i> مشاركة'; f.onclick = function () { share({ url: location.href, title: document.title }); };
+      document.body.appendChild(f);
+    }
+    if (!/^(pro|dashboard|add-property|add-car|stay|car|property-details|admin|map)/.test(pg) && location.pathname.indexOf('/admin/') < 0) bottomNav('');
     document.querySelectorAll('[data-aq-logos]').forEach(function (el) { logos(el, el.getAttribute('data-title')); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
