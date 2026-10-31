@@ -59,6 +59,7 @@
       '.aqe-sheet h3{margin:0 0 4px;font-size:21px;font-weight:900;color:#192038}.aqe-sheet .sub{margin:0 0 14px;color:#64748b;font-size:14px;font-weight:600}',
       '.aqe-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}',
       '.aqe-choices button{border:1.5px solid #e2e8f0;background:#fff;border-radius:14px;padding:14px 8px;font:inherit;font-weight:800;font-size:14.5px;color:#0f172a;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}',
+      '.aqe-sheet .aqe-choices{margin-bottom:8px}.aqe-sheet .aqe-choices button{padding:11px 8px}',
       '.aqe-choices button i{font-size:20px;color:#00a896}.aqe-choices button.on{border-color:#00a896;background:#e6f7f5}',
       '.aqe-field{display:block;margin-bottom:10px}.aqe-field span{display:block;font-size:13px;font-weight:800;color:#64748b;margin-bottom:4px}',
       '.aqe-field input,.aqe-field select,.aqe-field textarea{width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;background:#fff;color:#0f172a;outline:none}',
@@ -203,7 +204,7 @@
   function countryOf(k) { for (var i = 0; i < COUNTRIES.length; i++) if (COUNTRIES[i][0] === k) return COUNTRIES[i]; return COUNTRIES[0]; }
   function applyProfile(p, withCountry) {
     if (!isIndex || !p) return;
-    var tab = { sale: 'sale', rent: 'rent', invest: 'roi' }[p.intent];
+    var tab = { all: 'all', sale: 'sale', rent: 'rent', invest: 'roi' }[p.intent];
     if (tab && typeof window.switchRoyalTab === 'function') {
       var b = document.querySelector('.royal-tab[data-type="' + tab + '"]');
       if (b) window.switchRoyalTab(b);
@@ -217,42 +218,50 @@
     var sel = document.getElementById('citySelector');
     if (sel && p.city) { var opt = Array.prototype.find.call(sel.options, function (o) { return o.value === p.city || o.textContent.trim() === p.city; }); if (opt) sel.value = opt.value; }
   }
+  // الترحيب يظهر في كل دخول جديد للموقع أو التطبيق (مرة في كل جلسة)، مع اختيارات الزائر السابقة جاهزة ليغيّرها
   function welcome() {
     if (!isIndex) return;
     var prof = LS.get('aq_profile', null);
-    if (prof) { setTimeout(function () { applyProfile(prof); }, 900); return; }
-    if (SS.get('aqe_welcome_skip')) return;
+    if (SS.get('aqe_welcome_done')) { if (prof) setTimeout(function () { applyProfile(prof); }, 900); return; }
+    if (prof) setTimeout(function () { applyProfile(prof); }, 900);
     setTimeout(function () {
       if (document.querySelector('.aqe-ov')) return;
-      var choice = '';
+      var choice = (prof && prof.intent) || '';
       var ov = document.createElement('div'); ov.className = 'aqe-ov';
+      var opt = function (v, ic, t) { return '<button type="button" data-v="' + v + '" class="' + (choice === v ? 'on' : '') + '"><i class="fas ' + ic + '"></i>' + t + '</button>'; };
       ov.innerHTML = '<div class="aqe-sheet" role="dialog" aria-modal="true" aria-labelledby="aqeWT">' +
-        '<h3 id="aqeWT">أهلًا بك في أنا عقار 👋</h3><p class="sub">أخبرنا بما تبحث عنه لنعرض لك الأنسب أولًا</p>' +
-        '<div class="aqe-choices">' +
-        '<button type="button" data-v="sale"><i class="fas fa-key"></i>أبحث عن شراء</button>' +
-        '<button type="button" data-v="rent"><i class="fas fa-building"></i>أبحث عن إيجار</button>' +
-        '<button type="button" data-v="invest"><i class="fas fa-chart-line"></i>أبحث عن استثمار</button>' +
-        '<button type="button" data-v="broker"><i class="fas fa-user-tie"></i>أنا وسيط أو مطوّر</button></div>' +
+        '<h3 id="aqeWT">' + (prof ? 'أهلًا بعودتك إلى أنا عقار 👋' : 'أهلًا بك في أنا عقار 👋') + '</h3><p class="sub">' + (prof ? 'ماذا تريد أن نعرض لك هذه المرة؟' : 'أخبرنا بما تبحث عنه لنعرض لك الأنسب أولًا') + '</p>' +
+        '<div class="aqe-choices">' + opt('all', 'fa-border-all', 'الكل: شراء وإيجار') + opt('sale', 'fa-key', 'أبحث عن شراء') + opt('rent', 'fa-building', 'أبحث عن إيجار') +
+        opt('invest', 'fa-chart-line', 'أبحث عن استثمار') + '</div>' +
+        '<div class="aqe-choices">' + opt('stays', 'fa-umbrella-beach', 'إيجار يومي وإقامات') + opt('cars', 'fa-car-side', 'سيارات') + '</div>' +
+        '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('broker', 'fa-user-tie', 'أنا وسيط أو مطوّر') + '</div>' +
         '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
         COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
         '<label class="aqe-field"><span>المدينة المفضّلة</span><select id="aqeWCity"></select></label>' +
-        '<button class="aqe-btn" type="button" id="aqeWGo" disabled>ابدأ</button><button class="aqe-link" type="button" id="aqeWSkip">ليس الآن</button></div>';
+        '<button class="aqe-btn" type="button" id="aqeWGo"' + (choice ? '' : ' disabled') + '>' + (prof ? 'اعرض' : 'ابدأ') + '</button><button class="aqe-link" type="button" id="aqeWSkip">' + (prof ? 'تخطَّ' : 'ليس الآن') + '</button></div>';
       document.body.appendChild(ov);
       var go = ov.querySelector('#aqeWGo');
       var cSel = ov.querySelector('#aqeWCountry'), citySel = ov.querySelector('#aqeWCity');
       var fillCities = function () { var c = countryOf(cSel.value); citySel.innerHTML = '<option value="">كل مدن ' + c[1] + '</option>' + c[3].map(function (x) { return '<option>' + x + '</option>'; }).join(''); };
-      try { var saved = localStorage.getItem('anaaqar_selected_country'); if (saved) cSel.value = saved; } catch (e) {}
+      try { var saved = (prof && prof.country) || localStorage.getItem('anaaqar_selected_country'); if (saved) cSel.value = saved; } catch (e) {}
       fillCities(); cSel.onchange = fillCities;
+      if (prof && prof.city) citySel.value = prof.city;
       ov.querySelectorAll('.aqe-choices button').forEach(function (b) {
         b.onclick = function () { choice = b.dataset.v; ov.querySelectorAll('.aqe-choices button').forEach(function (x) { x.classList.toggle('on', x === b); }); go.disabled = false; };
       });
-      ov.querySelector('#aqeWSkip').onclick = function () { ov.remove(); SS.set('aqe_welcome_skip', '1'); };
+      ov.querySelector('#aqeWSkip').onclick = function () { ov.remove(); SS.set('aqe_welcome_done', '1'); };
       go.onclick = function () {
         var p = { intent: choice, country: cSel.value, city: citySel.value, at: new Date().toISOString() };
-        LS.set('aq_profile', p); SS.set('aqe_welcomed_now', '1'); ov.remove();
+        LS.set('aq_profile', p); SS.set('aqe_welcome_done', '1'); SS.set('aqe_welcomed_now', '1'); ov.remove();
         if (choice === 'broker') {
           toast('مرحبًا بك! فعّل ملفك المهني وانشر عقاراتك مجانًا لأول 3 أشهر', 'success', { label: 'فعّل ملفي', run: function () { location.href = 'claim-profile.html'; } });
-        } else { applyProfile(p, true); toast('رتّبنا لك الصفحة حسب اهتمامك ✨'); }
+        } else if (choice === 'stays' || choice === 'cars') {
+          location.href = choice === 'stays' ? 'stays.html' : 'cars.html';
+        } else {
+          applyProfile(p, true);
+          if (typeof window.executeSearch === 'function') { try { window.executeSearch(true); } catch (e) {} }
+          toast('رتّبنا لك الصفحة حسب اختيارك ✨');
+        }
       };
     }, 1200);
   }
