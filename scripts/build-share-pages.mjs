@@ -29,7 +29,7 @@ async function rest(table, query) {
 }
 const readJSON = (f) => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8')); } catch (e) { return []; } };
 
-function page({ key, title, desc, img, target }) {
+function page({ key, title, desc, text, img, target }) {
   const url = `${SITE}/s/${key}.html`, to = `${SITE}/${target}`;
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="UTF-8">
@@ -53,8 +53,9 @@ function page({ key, title, desc, img, target }) {
 <meta name="twitter:image" content="${esc(img)}">
 <script>location.replace(${JSON.stringify(to)});</script>
 <noscript><meta http-equiv="refresh" content="0; url=${esc(to)}"></noscript>
+<script type="application/json" id="aq-ad">${JSON.stringify({ text: text || '' }).replace(/</g, '\\u003c')}</script>
 <style>body{font-family:Tajawal,Tahoma,sans-serif;text-align:center;padding:40px 16px;color:#0f172a}img{max-width:100%;border-radius:14px}</style>
-</head><body><a href="${esc(to)}"><img src="${esc(img)}" alt=""><h1>${esc(title)}</h1><p>${esc(desc)}</p><p>افتح الإعلان على أنا عقار ←</p></a></body></html>
+</head><body><a href="${esc(to)}"><img src="${esc(img)}" alt=""><h1>${esc(title)}</h1><p style="white-space:pre-line;text-align:start;display:inline-block">${esc((text || desc).replace(/\*/g, ''))}</p><p>افتح الإعلان على أنا عقار ←</p></a></body></html>
 `;
 }
 
@@ -62,38 +63,106 @@ const pages = [];
 const add = (p) => { if (p && p.key && p.title) pages.push(p); };
 const CITY = (c) => c || 'الإمارات';
 
+// ===== صياغة تفاصيل الإعلان (تظهر في المعاينة وفي نص الرسالة) =====
+const UNIT = { apartment: 'شقة', studio: 'استوديو', villa: 'فيلا', townhouse: 'تاون هاوس', penthouse: 'بنتهاوس', duplex: 'دوبلكس', chalet: 'شاليه', hotel_apt: 'شقة فندقية', room: 'غرفة', office: 'مكتب', shop: 'محل تجاري', warehouse: 'مستودع', showroom: 'معرض تجاري', land: 'أرض', building: 'بناية كاملة' };
+const FURN = { furnished: 'مفروش', unfurnished: 'غير مفروش', partly: 'مفروش جزئيًا' };
+const DONE = { ready: 'جاهز للسكن', under_construction: 'تحت الإنشاء', off_plan: 'على الخارطة' };
+const rooms = (n) => n === 0 ? 'استوديو' : n == null || n === '' ? '' : +n === 1 ? 'غرفة نوم واحدة' : +n === 2 ? 'غرفتا نوم' : +n <= 10 ? `${n} غرف نوم` : `${n} غرفة نوم`;
+const sqm = (m) => m ? `${num(m)} م² (${num(Math.round(m * 10.7639))} قدم²)` : '';
+const line = (ic, label, v) => v ? `${ic} ${label}: ${v}` : '';
+// نص الإعلان المصغّر: أول سطر عريض في واتساب (*...*)، ثم التفاصيل سطرًا سطرًا
+const adText = (head, name, lines) => [`*${head}*`, name && name !== head ? name : '', ...lines].filter(Boolean).join('\n') + '\n\nالتفاصيل وكل الصور على «أنا عقار» 👇';
+const facts = (l) => l.filter(Boolean).join(' · ');
+
+function propertyAd(o) {
+  const type = UNIT[o.unit] || (o.type || '').replace(/\s*\/\s*استوديو$/, '') || (o.beds === 0 ? 'استوديو' : 'عقار');
+  const deal = o.daily ? 'للإيجار اليومي' : o.deal === 'rent' ? 'للإيجار' : 'للبيع';
+  const head = `${type} ${deal}`;
+  const price = o.daily ? `${num(o.nightly)} درهم / الليلة${o.monthly ? ` (شهريًا ${num(o.monthly)} درهم)` : ''}` : o.price ? `${num(o.price)} درهم${o.deal === 'rent' ? (o.period === 'monthly' ? ' / شهريًا' : ' / سنويًا') : ''}` : 'السعر عند التواصل';
+  const loc = [o.area, CITY(o.city)].filter(Boolean).join('، ');
+  const text = adText(head, o.name, [
+    line('💰', 'السعر', price),
+    line('🏠', 'نوع العقار', type),
+    type === 'استوديو' ? '' : line('🛏', 'الغرف', rooms(o.beds)),
+    line('🛁', 'الحمامات', o.baths),
+    o.guests ? line('👥', 'يتسع حتى', o.guests + ' ضيوف') : '',
+    line('📐', 'المساحة', sqm(o.m2)),
+    line('🛋', 'التأثيث', FURN[o.furnishing]),
+    line('🏗', 'الحالة', DONE[o.completion]),
+    o.minNights > 1 ? line('🌙', 'أقل مدة', o.minNights + ' ليالٍ') : '',
+    line('📍', 'الموقع', loc),
+    o.permit ? line('✅', 'رقم التصريح', o.permit) : ''
+  ].filter(Boolean));
+  return {
+    title: `${head} — ${price}`,
+    desc: facts([rooms(o.beds), o.baths ? o.baths + ' حمام' : '', o.m2 ? num(o.m2) + ' م²' : '', o.guests ? 'حتى ' + o.guests + ' ضيوف' : '', loc]) + (o.name ? ' | ' + o.name : ''),
+    text
+  };
+}
+
 // ===== العقارات والإقامات القصيرة =====
 const props = await rest('properties', 'select=*&status=eq.approved&limit=5000');
 for (const p of props) {
   const id = 'sb-' + p.id, daily = p.rent_period === 'daily';
-  const price = daily ? `${num(p.nightly_price || p.price_aed)} درهم / الليلة` : `${num(p.price_aed)} درهم${p.deal_type === 'rent' ? (p.rent_period === 'monthly' ? ' / شهريًا' : ' / سنويًا') : ''}`;
-  const facts = [p.bedrooms === 0 ? 'استوديو' : p.bedrooms ? `${p.bedrooms} غرف` : '', p.bathrooms ? `${p.bathrooms} حمام` : '', p.area_m2 ? `${p.area_m2} م²` : '', CITY(p.city)].filter(Boolean).join(' · ');
-  add({ key: 'p-' + id, title: `${p.title} — ${price}`, desc: `${facts} | ${daily ? 'إقامة قصيرة' : p.deal_type === 'rent' ? 'للإيجار' : 'للبيع'} على أنا عقار`, img: ogImg((p.image_urls || [])[0]), target: (daily ? 'stay.html?id=' : 'property-details.html?id=') + encodeURIComponent(id) });
+  const nightly = p.nightly_price || p.price_aed;
+  const ad = propertyAd({ name: p.title, unit: p.unit_type || p.stay_category, type: p.property_type, deal: p.deal_type, daily, period: p.rent_period, price: p.price_aed, nightly, monthly: daily && p.monthly_discount ? Math.round(nightly * 30 * (1 - p.monthly_discount / 100)) : 0, beds: p.bedrooms, baths: p.bathrooms, m2: p.area_m2, guests: daily ? p.max_guests : 0, minNights: daily ? p.min_nights : 0, furnishing: p.furnishing, completion: p.completion_status, city: p.city, permit: p.permit_number });
+  add({ key: 'p-' + id, ...ad, img: ogImg((p.image_urls || [])[0]), target: (daily ? 'stay.html?id=' : 'property-details.html?id=') + encodeURIComponent(id) });
 }
 for (const p of readJSON('properties.json')) {
-  const price = `${num(p.priceAED)} درهم${p.dealType === 'rent' ? ' / سنويًا' : ''}`;
-  const facts = [p.bedrooms === 0 ? 'استوديو' : p.bedrooms ? `${p.bedrooms} غرف` : '', p.bathrooms ? `${p.bathrooms} حمام` : '', p.area_m2 ? `${p.area_m2} م²` : '', CITY(p.city)].filter(Boolean).join(' · ');
-  add({ key: 'p-' + p.id, title: `${p.title} — ${price}`, desc: `${facts} | ${p.dealType === 'rent' ? 'للإيجار' : 'للبيع'} على أنا عقار`, img: ogImg(p.image || (p.imagesList || [])[0]), target: 'property-details.html?id=' + encodeURIComponent(p.id) });
+  const ad = propertyAd({ name: p.title, unit: p.unitType, type: p.propertyType, deal: p.dealType, period: p.rentPeriod, price: p.priceAED, beds: p.bedrooms, baths: p.bathrooms, m2: p.area_m2, furnishing: p.furnishing, completion: p.completionStatus, city: p.city, permit: p.permitNumber });
+  add({ key: 'p-' + p.id, ...ad, img: ogImg(p.image || (p.imagesList || [])[0]), target: 'property-details.html?id=' + encodeURIComponent(p.id) });
 }
 for (const p of readJSON('stays.json')) {
-  add({ key: 'p-' + p.id, title: `${p.title} — ${num(p.nightlyPrice || p.priceAED)} درهم / الليلة`, desc: `${[p.area, CITY(p.city)].filter(Boolean).join('، ')} · حتى ${p.maxGuests || 2} ضيوف | إقامة قصيرة على أنا عقار`, img: ogImg(p.image || (p.imagesList || [])[0]), target: 'stay.html?id=' + encodeURIComponent(p.id) });
+  const nightly = p.nightlyPrice || p.priceAED;
+  const ad = propertyAd({ name: p.title, unit: p.stayCategory, deal: 'rent', daily: true, nightly, monthly: p.monthlyDiscount ? Math.round(nightly * 30 * (1 - p.monthlyDiscount / 100)) : 0, beds: p.bedrooms, baths: p.bathrooms, guests: p.maxGuests, minNights: p.minNights, area: p.area, city: p.city, permit: p.holidayPermit });
+  add({ key: 'p-' + p.id, ...ad, img: ogImg(p.image || (p.imagesList || [])[0]), target: 'stay.html?id=' + encodeURIComponent(p.id) });
 }
 
-// ===== موتورات =====
-const PER = { hourly: 'ساعة', daily: 'يوم', weekly: 'أسبوع', monthly: 'شهر' };
-const KIND = { car: 'سيارة', moto: 'دراجة نارية', yacht: 'يخت' };
-const DEAL = { sale: 'للبيع', rent: 'للإيجار', parts: 'قطع غيار', service: 'صيانة' };
+// ===== موتورات (نستخدم نفس دوال صفحة الموتورات حتى تتطابق التسميات) =====
+const vm = await import('node:vm');
+const W = {}, ctx = { window: W, console, navigator: {}, location: { search: '' }, document: { head: { appendChild() {} }, createElement: () => ({}), querySelector: () => null } };
+vm.createContext(ctx); vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/aq-cars.js'), 'utf8'), ctx);
+const C = W.AQCars;
 const carPage = (c) => {
-  const name = c.title || [c.make, c.model, c.year].filter(Boolean).join(' ');
-  const price = c.deal === 'service' ? (c.price ? `يبدأ من ${num(c.price)} درهم` : '') : `${num(c.price)} درهم${c.deal === 'rent' ? ' / ' + (PER[c.rent_period] || 'يوم') : ''}`;
-  add({ key: 'c-' + c.id, title: price ? `${name} — ${price}` : name, desc: `${KIND[c.kind || 'car'] || ''} ${DEAL[c.deal] || ''} · ${[c.year, c.mileage_km != null ? num(c.mileage_km) + ' كم' : '', CITY(c.city)].filter(Boolean).join(' · ')} | موتورات على أنا عقار`, img: ogImg((c.images || [])[0]), target: 'car.html?id=' + encodeURIComponent(c.id) });
+  const k = C.kindOf(c), name = C.name(c), price = C.price(c), sub = C.subLabel(c);
+  const PL = { 'سيارة': 'سيارات', 'دراجة نارية': 'دراجات نارية', 'يخت': 'يخوت وقوارب' }, IC = { 'سيارة': '🚘', 'دراجة نارية': '🏍', 'يخت': '⛵' }[k.one] || '🚘';
+  const head = c.deal === 'parts' ? `قطعة غيار ${PL[k.one] || ''}` : c.deal === 'service' ? `خدمة صيانة ${PL[k.one] || ''}` : `${k.one} ${C.dealBadge(c)}`;
+  const hours = k.unit === 'ساعة تشغيل';
+  const text = adText(head, name, [
+    line('💰', 'السعر', price),
+    line(c.deal === 'service' ? '🔧' : IC, c.deal === 'parts' ? 'الفئة' : c.deal === 'service' ? 'الخدمة' : 'الفئة', sub),
+    line('📅', 'سنة الصنع', c.year),
+    !hours && c.mileage_km != null && c.deal !== 'rent' ? line('🛣', 'الممشى', num(c.mileage_km) + ' كم') : '',
+    hours && c.engine_hours ? line('⏱', 'ساعات التشغيل', num(c.engine_hours)) : '',
+    c.length_ft ? line('📏', 'الطول', c.length_ft + ' قدم') : '',
+    c.cabins ? line('🛏', 'الكبائن', c.cabins) : '',
+    c.seats ? line('💺', 'المقاعد', c.seats) : '',
+    line('⚙️', 'ناقل الحركة', C.AR.trans[c.transmission]),
+    line('⛽', 'الوقود', C.AR.fuel[c.fuel]),
+    line('🌍', 'المواصفات', C.AR.specs[c.regional_specs]),
+    c.condition ? line('✨', 'الحالة', c.deal === 'parts' ? (c.condition === 'new' ? 'جديدة' : 'مستعملة') : (c.condition === 'new' ? 'جديد' : 'مستعمل')) : '',
+    c.fits ? line('🔩', 'تناسب', c.fits) : '',
+    line('📍', 'الموقع', CITY(c.city))
+  ].filter(Boolean));
+  add({ key: 'c-' + c.id, title: `${name} — ${price}`, desc: facts([head, c.year, !hours && c.mileage_km != null && c.deal !== 'rent' ? num(c.mileage_km) + ' كم' : '', C.AR.trans[c.transmission], CITY(c.city)]), text, img: ogImg((c.images || [])[0]), target: 'car.html?id=' + encodeURIComponent(c.id) });
 };
 (await rest('cars', 'select=*&status=eq.approved&limit=5000')).forEach(carPage);
 readJSON('cars.json').forEach(carPage);
 
 // ===== المشاريع =====
-for (const p of await rest('projects', 'select=id,name,city,area,price_from,images,handover&review_status=eq.approved&limit=2000')) {
-  add({ key: 'pr-' + p.id, title: `${p.name}${p.price_from ? ' — يبدأ من ' + num(p.price_from) + ' درهم' : ''}`, desc: `${[p.area, CITY(p.city)].filter(Boolean).join('، ')}${p.handover ? ' · التسليم ' + p.handover : ''} | مشروع على الخارطة على أنا عقار`, img: ogImg((p.images || [])[0]), target: 'project.html?id=' + p.id });
+const SALE = { announced: 'أُعلن قريبًا', on_sale: 'متاح للبيع', sold_out: 'تم البيع بالكامل' };
+for (const p of await rest('projects', 'select=*&review_status=eq.approved&limit=2000')) {
+  const units = Array.isArray(p.unit_types) ? p.unit_types : [], loc = [p.area, CITY(p.city)].filter(Boolean).join('، ');
+  const price = p.price_from ? 'يبدأ من ' + num(p.price_from) + ' درهم' : 'السعر عند التواصل';
+  const text = adText('مشروع على الخارطة', p.name, [
+    line('💰', 'الأسعار', price),
+    line('🏠', 'الوحدات', units.map((u) => u && (u.name || u.type)).filter(Boolean).slice(0, 5).join('، ')),
+    line('🗓', 'التسليم', p.handover),
+    line('📊', 'الحالة', SALE[p.sale_status]),
+    Array.isArray(p.payment_plan) && p.payment_plan.length ? line('💳', 'خطة السداد', p.payment_plan.map((x) => x && (x.pct != null ? x.pct + '% ' : '') + (x.label || x.name || '')).filter((x) => x && x.trim()).slice(0, 4).join(' · ')) : '',
+    line('📍', 'الموقع', loc)
+  ].filter(Boolean));
+  add({ key: 'pr-' + p.id, title: `${p.name} — ${price}`, desc: facts(['مشروع على الخارطة', p.handover ? 'التسليم ' + p.handover : '', loc]), text, img: ogImg((p.images || [])[0]), target: 'project.html?id=' + p.id });
 }
 
 // لا نحذف الصفحات القديمة إن تعذّر الاتصال بقاعدة البيانات، حتى لا تختفي معاينات الإعلانات الحقيقية

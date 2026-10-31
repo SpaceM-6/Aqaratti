@@ -351,10 +351,16 @@
   // ---------------- مشاركة الرابط على وسائل التواصل ----------------
   // لكل إعلان صفحة مشاركة صغيرة في /s/ (تُبنى تلقائيًا عبر GitHub Actions) فيها صورة الإعلان وعنوانه وسعره،
   // فيظهر الرابط في واتساب وفيسبوك وإكس ببطاقة فيها صورة الإعلان بدل شعار الموقع.
-  var shareIdx = null;
-  function shareIndex() {
-    if (!shareIdx) shareIdx = fetch('/s/index.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : []; }).then(function (l) { var o = {}; (l || []).forEach(function (k) { o[k] = 1; }); return o; }).catch(function () { return {}; });
-    return shareIdx;
+  // يجلب صفحة المشاركة الجاهزة: إن وُجدت نأخذ رابطها ونص الإعلان المصغّر (السعر والمساحة والغرف والنوع…)
+  var shareCache = {};
+  function sharePage(key) {
+    if (!shareCache[key]) shareCache[key] = fetch('/s/' + key + '.html', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : null; }).then(function (h) {
+      if (!h || h.indexOf('aq-ad') < 0) return null;
+      var m = h.match(/id="aq-ad">([\s\S]*?)<\/script>/), t = '';
+      try { t = m ? JSON.parse(m[1]).text : ''; } catch (e) {}
+      return { url: 'https://anaaqar.com/s/' + key + '.html', text: t || '' };
+    }).catch(function () { return null; });
+    return shareCache[key];
   }
   function shareKey(url) {
     try {
@@ -382,7 +388,8 @@
   function share(opts) {
     css();
     opts = opts || {};
-    var url = opts.url || location.href, title = opts.title || document.title;
+    var url = opts.url || location.href, title = opts.title || document.title, adText = '';
+    var msg = function (max) { var t = (adText || title) + '\n' + url; return max && t.length > max ? title.slice(0, max - url.length - 2) + '\n' + url : t; };
     var imgs = (opts.images && opts.images.length ? opts.images : (window.AQShareImgs && shareKey(url) && shareKey(url) === shareKey(location.href) ? window.AQShareImgs : [])) || [];
     imgs = imgs.filter(function (x) { return x && !/icon-app|logo/.test(x); });
     var e = encodeURIComponent;
@@ -393,14 +400,14 @@
     };
     // إنستغرام وتيك توك لا يقبلان رابطًا جاهزًا للنشر: ننسخ الرابط ثم نفتح التطبيق ليلصقه الزائر
     function nets() {
-      var U = e(url), T = e(title), M = e(title + '\n' + url);
+      var U = e(url), T = e(title), M = e(msg()), M5 = e(msg(500));
       return [
         ['whatsapp', 'واتساب', 'fa-whatsapp', '#25d366', 'https://api.whatsapp.com/send?text=' + M],
         ['facebook', 'فيسبوك', 'fa-facebook-f', '#1877f2', 'https://www.facebook.com/sharer/sharer.php?u=' + U],
         ['x', 'إكس', '<b style="font-size:22px;font-family:Arial,sans-serif">𝕏</b>', '#000000', 'https://twitter.com/intent/tweet?text=' + T + '&url=' + U],
         ['linkedin', 'لينكد إن', 'fa-linkedin-in', '#0a66c2', 'https://www.linkedin.com/sharing/share-offsite/?url=' + U],
-        ['threads', 'ثريدز', '<b style="font-size:24px;font-family:Arial,sans-serif">@</b>', '#000000', 'https://www.threads.net/intent/post?text=' + M],
-        ['telegram', 'تيليجرام', 'fa-telegram', '#229ed9', 'https://t.me/share/url?url=' + U + '&text=' + T],
+        ['threads', 'ثريدز', '<b style="font-size:24px;font-family:Arial,sans-serif">@</b>', '#000000', 'https://www.threads.net/intent/post?text=' + M5],
+        ['telegram', 'تيليجرام', 'fa-telegram', '#229ed9', 'https://t.me/share/url?url=' + U + '&text=' + e(adText || title)],
         ['instagram', 'إنستغرام', 'fa-instagram', 'linear-gradient(45deg,#f58529,#dd2a7b,#8134af)', 'https://www.instagram.com/', 1],
         ['tiktok', 'تيك توك', 'fa-tiktok', '#010101', 'https://www.tiktok.com/', 1]
       ].map(function (n) { return '<a href="' + n[4] + '" target="_blank" rel="noopener" data-net="' + n[0] + '"' + (n[5] ? ' data-paste="1"' : '') + '><span style="background:' + n[3] + '">' + (n[2].charAt(0) === '<' ? n[2] : '<i class="fab ' + n[2] + '"></i>') + '</span>' + n[1] + '</a>'; }).join('');
@@ -416,25 +423,25 @@
     document.body.appendChild(ov);
     // رابط صفحة المشاركة (بصورة الإعلان) إن كانت جاهزة، وإلا يبقى رابط الإعلان نفسه
     var key = shareKey(url);
-    if (key) shareIndex().then(function (idx) {
-      if (!idx[key] || !ov.isConnected) return;
-      url = 'https://anaaqar.com/s/' + key + '.html';
+    var ready = key ? sharePage(key).then(function (sp) {
+      if (!sp || !ov.isConnected) return;
+      url = sp.url; adText = sp.text;
       ov.querySelector('.aqsh-grid').innerHTML = nets();
       ov.querySelector('.aqsh-link input').value = url;
-    });
+    }) : Promise.resolve();
     var files = null;
     if (album) files = albumFiles(imgs);
     ov.addEventListener('click', function (ev) {
       if (ev.target === ov || ev.target.closest('[data-x]')) { ov.remove(); return; }
       if (ev.target.closest('[data-copy]')) { copy(); return; }
-      if (ev.target.closest('[data-native]')) { navigator.share({ title: title, text: title, url: url }).catch(function () {}); return; }
+      if (ev.target.closest('[data-native]')) { navigator.share({ title: title, text: adText || title, url: url }).catch(function () {}); return; }
       var ab = ev.target.closest('[data-album]');
       if (ab) {
         if (ab.classList.contains('busy')) return;
         ab.classList.add('busy'); var sm = ab.querySelector('small'), old = sm.textContent; sm.textContent = 'جارٍ تجهيز الصور…';
-        files.then(function (fl) {
+        Promise.all([files, ready]).then(function (r) { var fl = r[0];
           if (!fl.length) { ab.classList.remove('busy'); sm.textContent = old; toast('تعذّر تحميل الصور، شارك الرابط بدلًا منها'); return; }
-          var data = { files: fl, text: title + '\n' + url };
+          var data = { files: fl, text: msg() };
           if (navigator.canShare && !navigator.canShare(data)) data = { files: fl };
           return navigator.share(data).then(function () { ab.classList.remove('busy'); sm.textContent = old; }, function (err) {
             ab.classList.remove('busy');
