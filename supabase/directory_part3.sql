@@ -12,14 +12,14 @@
 
 alter table public.service_providers drop constraint if exists service_providers_category_check;
 alter table public.service_providers add constraint service_providers_category_check
-  check (category in ('legal', 'residency', 'engineering', 'contracting', 'interior', 'property_services', 'property_mgmt', 'maintenance', 'cleaning', 'pest', 'garden', 'pools', 'lighting', 'smart_home', 'security', 'movers', 'domestic', 'care', 'pets', 'car_rental', 'immigration', 'recruitment'));
+  check (category in ('legal', 'residency', 'engineering', 'contracting', 'interior', 'property_services', 'property_mgmt', 'maintenance', 'cleaning', 'pest', 'garden', 'pools', 'lighting', 'smart_home', 'security', 'fire_safety', 'cctv', 'movers', 'domestic', 'care', 'pets', 'car_rental', 'immigration', 'recruitment'));
 
 drop policy if exists "Anyone can submit a service request" on public.service_requests;
 create policy "Anyone can submit a service request"
   on public.service_requests for insert
   to anon, authenticated
   with check (
-    service in ('general', 'brokerage', 'residency', 'legal', 'property_services', 'engineering', 'contracting', 'interior', 'citizenship', 'property_mgmt', 'maintenance', 'cleaning', 'pest', 'garden', 'pools', 'lighting', 'smart_home', 'security', 'movers', 'domestic', 'care', 'pets', 'car_rental', 'immigration', 'recruitment')
+    service in ('general', 'brokerage', 'residency', 'legal', 'property_services', 'engineering', 'contracting', 'interior', 'citizenship', 'property_mgmt', 'maintenance', 'cleaning', 'pest', 'garden', 'pools', 'lighting', 'smart_home', 'security', 'fire_safety', 'cctv', 'movers', 'domestic', 'care', 'pets', 'car_rental', 'immigration', 'recruitment')
     and char_length(name) between 2 and 100
     and char_length(phone) between 6 and 30
     and char_length(coalesce(email, '')) <= 150

@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=87"></script>
+  <script src="supabase-client.js?v=88"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -1703,6 +1703,7 @@
     .aq-mini:hover { border-color:var(--primary-turquoise); transform:translateY(-2px); }
     .aq-mini b { font-size:12px; font-weight:800; line-height:1.35; }
     @media (max-width: 900px) { .aq-mini-grid { grid-template-columns:repeat(4, minmax(0, 1fr)); } }
+    @media (min-width: 381px) { .aq-mini-grid > :last-child:nth-child(4n+1) { grid-column:1/-1; } }
     @media (max-width: 380px) { .aq-mini-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); } .aq-mini b { font-size:11px; } }
     @media (max-width: 900px) { .aq-grid, .aq-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 380px) { .aq-tile { padding: 12px; } .aq-tile b { font-size: 14px; } }
@@ -2167,11 +2168,11 @@
         (function () {
           var list = [
             ['maintenance','الصيانة المنزلية','fa-screwdriver-wrench','#0369a1'], ['cleaning','النظافة','fa-broom','#0891b2'],
-            ['pest','مكافحة الحشرات','fa-bug','#4d7c0f'], ['garden','الحدائق','fa-seedling','#15803d'],
+            ['pest','مكافحة الحشرات','fa-bug','#4d7c0f'], ['garden','تنسيق الحدائق','fa-seedling','#15803d'],
             ['pools','المسابح','fa-water-ladder','#0284c7'], ['lighting','الإضاءة','fa-lightbulb','#ca8a04'],
-            ['smart_home','المنازل الذكية','fa-house-signal','#7c3aed'], ['security','الأمن والسلامة','fa-shield-halved','#b91c1c'],
+            ['smart_home','المنازل الذكية','fa-house-signal','#7c3aed'], ['fire_safety','إطفاء الحرائق','fa-fire-extinguisher','#dc2626'], ['cctv','كاميرات المراقبة','fa-video','#1e40af'],
             ['movers','نقل الأثاث','fa-truck-moving','#a16207'], ['domestic','الخدم والسائقون','fa-people-roof','#be185d'],
-            ['care','رعاية الأطفال وكبار السن','fa-hand-holding-medical','#e11d48'], ['pets','الحيوانات الأليفة','fa-paw','#c2410c'],
+            ['care','رعاية الأطفال وكبار السن','fa-hand-holding-medical','#e11d48'], ['pets','رعاية الحيوانات الأليفة','fa-paw','#c2410c'],
             ['car_rental','تأجير السيارات','fa-car','#1d4ed8'], ['immigration','الهجرة والجنسية','fa-passport','#b45309'],
             ['recruitment','التوظيف','fa-user-tie','#334155'], ['property_mgmt','إدارة العقارات','fa-building-user','#db2777']
           ];
@@ -3811,13 +3812,13 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=87" defer></script>
-  <script src="js/aq-ai.js?v=87" defer></script>
-  <script src="js/aq-engage.js?v=87" defer></script>
-  <script src="js/aq-back.js?v=87" defer></script>
-  <script src="js/aq-stay.js?v=87" defer></script>
-  <script src="js/aq-cars.js?v=87" defer></script>
-  <script src="js/aq-ads.js?v=87" defer></script>
-  <script src="js/aq-home.js?v=87" defer></script>
+  <script src="js/aq-filters.js?v=88" defer></script>
+  <script src="js/aq-ai.js?v=88" defer></script>
+  <script src="js/aq-engage.js?v=88" defer></script>
+  <script src="js/aq-back.js?v=88" defer></script>
+  <script src="js/aq-stay.js?v=88" defer></script>
+  <script src="js/aq-cars.js?v=88" defer></script>
+  <script src="js/aq-ads.js?v=88" defer></script>
+  <script src="js/aq-home.js?v=88" defer></script>
 </body>
 </html>
