@@ -69,7 +69,7 @@
 
         <div class="active-badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-circle-check"></i> مسجل في DLD</div>
         ${!isActive ? `<div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل</div>
-        <a class="claim-link" href="claim-profile.html?dld=${encodeURIComponent(b.dld_broker_number)}" onclick="event.stopPropagation()"><i class="fas fa-user-check"></i> هل هذا ملفك؟ فعّله الآن مجانًا</a>` : ''}
+        <a class="claim-link" href="claim-profile.html?dld=${encodeURIComponent(b.dld_broker_number)}" onclick="event.stopPropagation()"><i class="fas fa-user-check"></i> هل هذا ملفك؟ فعّله الآن</a>` : ''}
 
         <div class="broker-license">رقم الوسيط: <strong>${b.dld_broker_number}</strong></div>
         ${showContact && b.email ? `<div class="broker-contact-line"><i class="fas fa-envelope"></i> <a href="mailto:${b.email}" onclick="event.stopPropagation()">${b.email}</a></div>` : ''}

@@ -16,7 +16,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "dealer",
-  "seller_name": "معرض توضيحي",
+  "seller_name": "معرض سيارات",
   "features": [
    "sunroof",
    "leather",
@@ -31,7 +31,7 @@
   "images": [
    "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -65,7 +65,7 @@
   "images": [
    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -88,7 +88,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "dealer",
-  "seller_name": "معرض توضيحي",
+  "seller_name": "معرض سيارات",
   "features": [
    "leather",
    "camera",
@@ -101,7 +101,7 @@
   "images": [
    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -124,7 +124,7 @@
   "condition": "used",
   "city": "الشارقة",
   "seller_type": "dealer",
-  "seller_name": "معرض توضيحي",
+  "seller_name": "معرض سيارات",
   "features": [
    "leather",
    "camera",
@@ -135,7 +135,7 @@
   "images": [
    "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -158,7 +158,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "rental_company",
-  "seller_name": "شركة تأجير توضيحية",
+  "seller_name": "شركة تأجير",
   "deposit": 1500,
   "km_limit": 250,
   "insurance_included": true,
@@ -174,7 +174,7 @@
   "images": [
    "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -197,7 +197,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "rental_company",
-  "seller_name": "شركة تأجير توضيحية",
+  "seller_name": "شركة تأجير",
   "deposit": 1000,
   "km_limit": 250,
   "insurance_included": true,
@@ -212,7 +212,7 @@
   "images": [
    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -235,7 +235,7 @@
   "condition": "new",
   "city": "أبوظبي",
   "seller_type": "rental_company",
-  "seller_name": "شركة تأجير توضيحية",
+  "seller_name": "شركة تأجير",
   "deposit": 1000,
   "km_limit": 4000,
   "insurance_included": true,
@@ -250,7 +250,7 @@
   "images": [
    "https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -273,7 +273,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "rental_company",
-  "seller_name": "شركة تأجير توضيحية",
+  "seller_name": "شركة تأجير",
   "deposit": 3000,
   "km_limit": 1500,
   "insurance_included": true,
@@ -289,7 +289,7 @@
   "images": [
    "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1000"
   ],
-  "description": "إعلان توضيحي يوضّح شكل إعلانات السيارات على أنا عقار. أضف سيارتك الحقيقية من «أضف سيارتك».",
+  "description": "سيارة بحالة ممتازة، صيانة دورية منتظمة، جاهزة للتسليم.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T10:00:00Z",
@@ -311,7 +311,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "dealer",
-  "seller_name": "معرض توضيحي",
+  "seller_name": "معرض سيارات",
   "features": [
    "abs",
    "luggage",
@@ -322,7 +322,7 @@
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-m2",
@@ -349,7 +349,7 @@
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-m3",
@@ -366,7 +366,7 @@
   "condition": "used",
   "city": "دبي",
   "seller_type": "rental_company",
-  "seller_name": "شركة تأجير توضيحية",
+  "seller_name": "شركة تأجير",
   "deposit": 2000,
   "min_driver_age": 18,
   "delivery": true,
@@ -375,7 +375,7 @@
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-y1",
@@ -394,7 +394,7 @@
   "condition": "used",
   "city": "دبي مارينا",
   "seller_type": "dealer",
-  "seller_name": "وكيل توضيحي",
+  "seller_name": "وكيل معتمد",
   "features": [
    "flybridge",
    "kitchen",
@@ -407,7 +407,7 @@
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-y2",
@@ -437,7 +437,7 @@
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-y3",
@@ -455,7 +455,7 @@
   "fuel": "diesel",
   "city": "دبي مارينا",
   "seller_type": "rental_company",
-  "seller_name": "رحلات بحرية توضيحية",
+  "seller_name": "رحلات بحرية",
   "captain_included": true,
   "deposit": 0,
   "features": [
@@ -470,7 +470,7 @@
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-y4",
@@ -486,14 +486,14 @@
   "fuel": "petrol",
   "city": "جميرا",
   "seller_type": "rental_company",
-  "seller_name": "رحلات بحرية توضيحية",
+  "seller_name": "رحلات بحرية",
   "min_driver_age": 18,
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-p1",
@@ -507,13 +507,13 @@
   "condition": "used",
   "city": "الشارقة",
   "seller_type": "parts_shop",
-  "seller_name": "محل قطع توضيحي",
+  "seller_name": "محل قطع غيار",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-p2",
@@ -526,13 +526,13 @@
   "condition": "new",
   "city": "دبي",
   "seller_type": "parts_shop",
-  "seller_name": "محل قطع توضيحي",
+  "seller_name": "محل قطع غيار",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-p3",
@@ -544,13 +544,13 @@
   "condition": "new",
   "city": "دبي",
   "seller_type": "parts_shop",
-  "seller_name": "متجر توضيحي",
+  "seller_name": "متجر معدات",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-p4",
@@ -563,13 +563,13 @@
   "condition": "used",
   "city": "أبوظبي",
   "seller_type": "dealer",
-  "seller_name": "وكيل توضيحي",
+  "seller_name": "وكيل معتمد",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-s1",
@@ -580,8 +580,8 @@
   "price": 150,
   "city": "دبي",
   "seller_type": "workshop",
-  "seller_name": "ورشة توضيحية",
-  "description": "فحص كمبيوتر، ميكانيكا عامة، كهرباء، وصيانة دورية لكل الموديلات. (إعلان توضيحي)",
+  "seller_name": "ورشة صيانة",
+  "description": "فحص كمبيوتر، ميكانيكا عامة، كهرباء، وصيانة دورية لكل الموديلات.",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
@@ -596,13 +596,13 @@
   "service_type": "body_paint",
   "city": "الشارقة",
   "seller_type": "workshop",
-  "seller_name": "ورشة توضيحية",
+  "seller_name": "ورشة صيانة",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-s3",
@@ -613,13 +613,13 @@
   "price": 200,
   "city": "دبي",
   "seller_type": "workshop",
-  "seller_name": "ورشة توضيحية",
+  "seller_name": "ورشة صيانة",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  },
  {
   "id": "demo-s4",
@@ -630,12 +630,12 @@
   "price": 500,
   "city": "دبي مارينا",
   "seller_type": "workshop",
-  "seller_name": "خدمات بحرية توضيحية",
+  "seller_name": "خدمات بحرية",
   "country": "الإمارات العربية المتحدة",
   "status": "approved",
   "created_at": "2026-10-30T09:00:00Z",
   "images": [],
   "features": [],
-  "description": "إعلان توضيحي يوضّح شكل الإعلانات في هذا القسم على أنا عقار."
+  "description": "حالة ممتازة وجاهز للتسليم. تواصل معنا للمعاينة."
  }
 ]

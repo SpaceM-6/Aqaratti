@@ -13,10 +13,10 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=85">
+  <link rel="stylesheet" href="css/aq-pages.css?v=86">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
-  <script src="js/aq-cars.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
+  <script src="js/aq-cars.js?v=86"></script>
   <style>
     .form { max-width:760px; margin:0 auto; }
     .seg { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:10px; } .seg.d4 { grid-template-columns:repeat(4, minmax(0, 1fr)); }
@@ -37,9 +37,9 @@
 <body>
   <header class="topbar"><div class="topbar-in">
     <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
-    <a class="back" href="cars.html">المركبات ←</a>
+    <a class="back" href="cars.html">موتورات ←</a>
   </div></header>
-  <section class="head"><div class="head-in"><h1><i class="fas fa-plus"></i> أضف إعلانك</h1><p>سيارات، دراجات نارية، يخوت وقوارب: بيع أو إيجار أو قطع غيار أو صيانة. الإعلان مجاني ويظهر بعد مراجعة سريعة.</p></div></section>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-plus"></i> أضف إعلانك</h1><p>سيارات، دراجات نارية، يخوت وقوارب: بيع أو إيجار أو قطع غيار أو صيانة. يظهر الإعلان بعد مراجعة سريعة.</p></div></section>
   <main id="root"><div class="skel"></div></main>
   <script>
   (function () {
@@ -48,7 +48,7 @@
     const ST = { pending: 'قيد المراجعة', approved: 'منشور', rejected: 'مرفوض', sold: 'مُباع / منتهٍ', paused: 'متوقف مؤقتًا' };
 
     function authView(mode) {
-      $('root').innerHTML = `<form class="form" id="af"><h2 style="margin-top:0">${mode === 'login' ? 'سجّل الدخول لتضيف إعلانك' : 'أنشئ حسابًا مجانيًا'}</h2>
+      $('root').innerHTML = `<form class="form" id="af"><h2 style="margin-top:0">${mode === 'login' ? 'سجّل الدخول لتضيف إعلانك' : 'أنشئ حسابًا'}</h2>
         ${mode === 'login' ? '' : '<div class="fg"><label>الاسم</label><input id="aName" autocomplete="name"></div>'}
         <div class="fg"><label>البريد الإلكتروني</label><input id="aEmail" type="email" autocomplete="email" dir="ltr"></div>
         <div class="fg"><label>كلمة المرور</label><input id="aPass" type="password" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" dir="ltr"></div>
@@ -200,7 +200,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
 </body>
 </html>

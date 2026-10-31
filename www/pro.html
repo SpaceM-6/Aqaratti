@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=85">
+  <link rel="stylesheet" href="css/aq-pages.css?v=86">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=85"></script>
+  <script src="js/aq-ai.js?v=86"></script>
   <script>
   (function () {
     'use strict';
@@ -268,7 +268,7 @@
       const fresh = ls.filter((l) => (l.stage || 'new') === 'new');
       const next = fresh[fresh.length - 1];
       m.innerHTML = `<h1 class="pg">أهلًا ${esc((me.full_name || '').split(' ')[0] || '')} 👋</h1><p class="pgsub">${new Date().toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-        ${me.verified ? '' : `<div class="banner warn"><i class="fas fa-shield-halved" style="font-size:20px"></i><div>حسابك قيد التوثيق. يراجع فريق أنا عقار رقم ترخيصك${me.license_no ? ` (${esc(me.license_no)})` : ''}، وبعدها تظهر علامة «موثّق» وتظهر لك بيانات تواصل المشترين في «طلبات المشترين». ${me.license_no ? '' : '<a href="#profile" style="color:inherit;font-weight:900">أضف رقم الترخيص من «ملفي»</a>'}</div></div>`}
+        ${me.verified ? '' : `<a href="pros.html" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;background:linear-gradient(135deg,#eff6ff,#e6f7f5);border:1px solid #dbeafe;text-decoration:none;color:#0f172a;margin-bottom:12px"><span style="flex:0 0 auto;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#2563eb;color:#fff;font-size:24px"><i class="fas fa-certificate"></i></span><span><b style="display:block;font-size:17px">هل حصلت على شارة التوثيق؟</b><small style="color:#64748b;font-weight:600">ظهور أكثر لإعلاناتك، وثقة أعلى عند العملاء</small></span><i class="fas fa-arrow-left" style="margin-inline-start:auto;color:#2563eb"></i></a><div class="banner warn"><i class="fas fa-shield-halved" style="font-size:20px"></i><div>حسابك قيد التوثيق. يراجع فريق أنا عقار رقم ترخيصك${me.license_no ? ` (${esc(me.license_no)})` : ''}، وبعدها تظهر علامة «موثّق» وتظهر لك بيانات تواصل المشترين في «طلبات المشترين». ${me.license_no ? '' : '<a href="#profile" style="color:inherit;font-weight:900">أضف رقم الترخيص من «ملفي»</a>'}</div></div>`}
         ${next ? `<div class="banner hot"><i class="fas fa-bolt" style="font-size:20px;color:#d4af37"></i><div style="flex:1"><b>الخطوة الأهم الآن:</b> تواصل مع ${esc(next.buyer_name)} — عميل جديد منذ ${fmtD(next.created_at)} لم يُتواصل معه بعد.
           <div class="quick">${next.buyer_phone ? `<a class="btn btn-teal sm" href="tel:${esc(next.buyer_phone)}"><i class="fas fa-phone"></i> اتصال</a><a class="btn btn-soft sm" target="_blank" rel="noopener" href="https://wa.me/${wa(next.buyer_phone)}"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}<button class="btn btn-ghost sm" style="color:#fff;border-color:rgba(255,255,255,.4)" data-open="${next.id}">فتح العميل</button></div></div></div>` : ''}
         <div class="kpis">
@@ -768,7 +768,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>السيارات والدراجات النارية واليخوت | أنا عقار AnaAqar</title>
+  <title>موتورات: سيارات ودراجات نارية ويخوت | أنا عقار AnaAqar</title>
   <meta name="description" content="بيع وإيجار السيارات والدراجات النارية واليخوت والقوارب، مع قطع الغيار ومراكز الصيانة في الإمارات.">
   <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
@@ -14,12 +14,12 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=85">
+  <link rel="stylesheet" href="css/aq-pages.css?v=86">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
-  <script src="js/aq-cars.js?v=85"></script>
-  <script src="js/aq-stay.js?v=85"></script>
-  <script src="js/aq-ads.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
+  <script src="js/aq-cars.js?v=86"></script>
+  <script src="js/aq-stay.js?v=86"></script>
+  <script src="js/aq-ads.js?v=86"></script>
   <style>
     .kinds { display:flex; gap:8px; margin:14px 0 0; overflow-x:auto; scrollbar-width:none; }
     .kinds::-webkit-scrollbar { display:none; }
@@ -29,6 +29,8 @@
     @media (max-width:760px) { .hub { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
     .hub button { text-align:right; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px; cursor:pointer; font:inherit; color:var(--ink); display:flex; flex-direction:column; gap:4px; }
     .hub button i { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; font-size:19px; margin-bottom:4px; }
+    .hub.br button { border-width:2px; } .hub.br .lk { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; } .hub.br .lk span { font-size:12px; font-weight:800; background:var(--bg); border-radius:8px; padding:3px 8px; color:var(--ink); }
+    @media (min-width:761px) { .hub.br { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
     .hub b { font-size:16.5px; } .hub small { color:var(--muted); font-weight:700; font-size:13px; } .hub em { font-style:normal; color:var(--teal-dark); font-weight:900; font-size:13px; }
     .bar { position:sticky; top:57px; z-index:15; background:var(--bg); padding:10px 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     .bar input, .bar select { border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:10px 12px; font:inherit; font-weight:700; font-size:14.5px; min-height:44px; }
@@ -56,12 +58,13 @@
     <a class="back" href="index.html">الرئيسية ←</a>
   </div></header>
   <section class="head"><div class="head-in">
-    <h1 id="hT"><i class="fas fa-car-side"></i> السيارات</h1>
+    <h1 id="hT"><i class="fas fa-car-side"></i> موتورات</h1>
     <p id="hP"></p>
     <nav class="kinds" id="kinds" aria-label="الأقسام"></nav>
   </div></section>
   <main>
     <div class="tabs" id="tabs"></div>
+    <div class="hub br" id="branches" hidden></div>
     <div class="hub" id="hub"></div>
     <div class="bar">
       <input class="q" id="q" type="search" placeholder="ابحث" aria-label="بحث">
@@ -80,26 +83,35 @@
   (function () {
     const C = AQCars, { esc } = C, $ = (id) => document.getElementById(id), qs = new URLSearchParams(location.search);
     const st = document.createElement('style'); st.textContent = C.CSS; document.head.appendChild(st);
-    const kind = C.KINDS[qs.get('kind')] ? qs.get('kind') : 'car', K = C.KINDS[kind];
+    // «موتورات» قسم واحد بثلاثة فروع: السيارات، الدراجات النارية، اليخوت والقوارب (بدون فرع = الكل)
+    const kind = C.KINDS[qs.get('kind')] ? qs.get('kind') : '', ALL = !kind;
+    const K = ALL ? { name: 'موتورات', icon: 'fa-car-side', makes: [...new Map([].concat(C.KINDS.car.makes, C.KINDS.moto.makes, C.KINDS.yacht.makes).map((m) => [m[0], m])).values()],
+      deals: { sale: ['شراء', 'fa-key', 'سيارات ودراجات ويخوت للبيع'], rent: ['إيجار', 'fa-calendar-day', 'سيارات ودراجات ورحلات يخوت'], parts: ['قطع غيار', 'fa-gears', 'لكل أنواع المركبات'], service: ['صيانة', 'fa-screwdriver-wrench', 'ورش ومراكز خدمة'] },
+      body: [], parts: [], services: [], periods: [['hourly', 'ساعة'], ['daily', 'يوم'], ['weekly', 'أسبوع'], ['monthly', 'شهر']] } : C.KINDS[kind];
     const F = { deal: ['sale', 'rent', 'parts', 'service'].includes(qs.get('deal')) ? qs.get('deal') : '', sub: qs.get('sub') || '', fuel: new Set(), trans: '', specs: new Set(), seller: new Set(), cond: '', period: '', ymin: '', kmax: '', lmin: '', captain: '', city: '' };
     let pool = [];
-    document.title = K.name + ': بيع وإيجار وقطع غيار وصيانة | أنا عقار';
-    $('hT').innerHTML = `<i class="fas ${K.icon}"></i> ${K.name}`;
-    $('hP').textContent = Object.values(K.deals).map((d) => d[0]).join(' · ') + ' — من الأفراد والمعارض والشركات.';
-    $('kinds').innerHTML = Object.entries(C.KINDS).map(([k, v]) => `<a href="cars.html?kind=${k}" class="${k === kind ? 'on' : ''}"><i class="fas ${v.icon}"></i> ${v.name}</a>`).join('');
+    document.title = (ALL ? 'موتورات' : 'موتورات › ' + K.name) + ': بيع وإيجار وقطع غيار وصيانة | أنا عقار';
+    $('hT').innerHTML = `<i class="fas ${K.icon}"></i> ${ALL ? 'موتورات' : 'موتورات › ' + K.name}`;
+    $('hP').textContent = ALL ? 'السيارات والدراجات النارية واليخوت والقوارب: بيع، إيجار، قطع غيار، وصيانة.' : Object.values(K.deals).map((d) => d[0]).join(' · ') + ' — من الأفراد والمعارض والشركات.';
+    $('kinds').innerHTML = `<a href="cars.html" class="${ALL ? 'on' : ''}"><i class="fas fa-border-all"></i> الكل</a>` + Object.entries(C.KINDS).map(([k, v]) => `<a href="cars.html?kind=${k}" class="${k === kind ? 'on' : ''}"><i class="fas ${v.icon}"></i> ${v.name}</a>`).join('');
+    if (ALL) {
+      $('branches').hidden = false;
+      $('branches').innerHTML = Object.entries(C.KINDS).map(([k, v]) => `<button type="button" data-k="${k}"><i class="fas ${v.icon}" style="background:#0f172a;color:#fff"></i><b>${v.name}</b><span class="lk">${Object.entries(v.deals).map(([d, x]) => `<span data-kd="${d}">${x[0]}</span>`).join('')}</span></button>`).join('');
+      $('branches').onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b) return; const d = e.target.closest('[data-kd]'); location.href = 'cars.html?kind=' + b.dataset.k + (d ? '&deal=' + d.dataset.kd : ''); };
+    }
     $('make').innerHTML = `<option value="">كل الماركات</option>` + K.makes.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
     if (qs.get('make')) $('make').value = qs.get('make');
-    $('foot').innerHTML = `<a class="btn btn-teal" href="add-car.html?kind=${kind}"><i class="fas fa-plus"></i> أضف إعلانًا في ${K.name}</a>` + (kind === 'car' ? '<a class="btn btn-ghost" href="services-directory.html?cat=car_rental"><i class="fas fa-building"></i> دليل شركات تأجير السيارات</a>' : '');
+    $('foot').innerHTML = `<a class="btn btn-teal" href="add-car.html${kind ? '?kind=' + kind : ''}"><i class="fas fa-plus"></i> أضف إعلانًا في ${K.name}</a>` + (kind === 'car' ? '<a class="btn btn-ghost" href="services-directory.html?cat=car_rental"><i class="fas fa-building"></i> دليل شركات تأجير السيارات</a>' : '');
     const COLORS = { sale: ['#e6f7f5', '#028090'], rent: ['#e0f2fe', '#0369a1'], parts: ['#ffedd5', '#c2410c'], service: ['#ede9fe', '#6d28d9'] };
 
     function subsFor(d) { return d === 'parts' ? K.parts : d === 'service' ? K.services : K.body; }
     function drawTabs() {
       $('tabs').innerHTML = `<button class="tab ${F.deal ? '' : 'on'}" data-d="">الكل</button>` + Object.entries(K.deals).map(([k, d]) => `<button class="tab ${F.deal === k ? 'on' : ''}" data-d="${k}"><i class="fas ${d[1]}"></i> ${d[0]}</button>`).join('') +
-        `<a class="tab" href="add-car.html?kind=${kind}${F.deal ? '&deal=' + F.deal : ''}" style="text-decoration:none;margin-inline-start:auto;background:#e11d48;border-color:#e11d48;color:#fff"><i class="fas fa-plus"></i> أضف إعلانًا</a>`;
+        `<a class="tab" href="add-car.html?kind=${kind || 'car'}${F.deal ? '&deal=' + F.deal : ''}" style="text-decoration:none;margin-inline-start:auto;background:#e11d48;border-color:#e11d48;color:#fff"><i class="fas fa-plus"></i> أضف إعلانًا</a>`;
       const counts = {}; pool.forEach((c) => { counts[c.deal] = (counts[c.deal] || 0) + 1; });
-      $('hub').hidden = !!F.deal;
+      $('hub').hidden = !!F.deal || ALL;
       $('hub').innerHTML = Object.entries(K.deals).map(([k, d]) => `<button type="button" data-d="${k}"><i class="fas ${d[1]}" style="background:${COLORS[k][0]};color:${COLORS[k][1]}"></i><b>${d[0]}</b><small>${d[2]}</small><em>${counts[k] || 0} إعلان</em></button>`).join('');
-      const subs = subsFor(F.deal);
+      const subs = subsFor(F.deal); $('subs').hidden = ALL;
       $('subs').innerHTML = `<button data-s="" class="${F.sub ? '' : 'on'}"><i class="fas fa-border-all"></i>الكل</button>` + subs.map(([v, l, ic]) => `<button data-s="${v}" class="${F.sub === v ? 'on' : ''}"><i class="fas ${ic}"></i>${l}</button>`).join('');
       const svc = F.deal === 'service';
       $('make').hidden = svc; $('prBox').hidden = svc;
@@ -124,15 +136,15 @@
       const k = $('sort').value, rows = pool.filter(match);
       rows.sort((a, b) => k === 'price_asc' ? (a.price || 0) - (b.price || 0) : k === 'price_desc' ? (b.price || 0) - (a.price || 0) : k === 'year' ? (b.year || 0) - (a.year || 0) : (a.demo ? 1 : 0) - (b.demo ? 1 : 0) || String(b.created_at).localeCompare(String(a.created_at)));
       $('cnt').textContent = rows.length ? rows.length + ' إعلان' : '';
-      $('list').innerHTML = rows.map(C.card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas ${K.icon}"></i><h2>لا توجد إعلانات هنا بعد</h2><p>غيّر الفلاتر، أو كن أول من يعلن في هذا القسم.</p><a class="btn btn-teal" href="add-car.html?kind=${kind}${F.deal ? '&deal=' + F.deal : ''}">أضف إعلانًا</a></div>`;
+      $('list').innerHTML = rows.map(C.card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas ${K.icon}"></i><h2>لا توجد إعلانات هنا بعد</h2><p>غيّر الفلاتر، أو كن أول من يعلن في هذا القسم.</p><a class="btn btn-teal" href="add-car.html?kind=${kind || 'car'}${F.deal ? '&deal=' + F.deal : ''}">أضف إعلانًا</a></div>`;
       const n = nF(); $('fN').hidden = !n; $('fN').textContent = n;
-      const u = new URLSearchParams(); if (kind !== 'car') u.set('kind', kind); if (F.deal) u.set('deal', F.deal); if (F.sub) u.set('sub', F.sub);
+      const u = new URLSearchParams(); if (kind) u.set('kind', kind); if (F.deal) u.set('deal', F.deal); if (F.sub) u.set('sub', F.sub);
       try { history.replaceState(history.state, '', location.pathname + (u.toString() ? '?' + u : '')); } catch (e) {}
     }
     ['q', 'make', 'pmin', 'pmax', 'sort'].forEach((id) => $(id).addEventListener(id === 'q' ? 'input' : 'change', draw));
     $('fBtn').onclick = () => {
       const chips = (k, list, multi) => `<div class="fs-chips" data-k="${k}">${list.map(([v, l]) => `<button type="button" class="fs-chip ${(multi ? F[k].has(v) : F[k] === v) ? 'on' : ''}" data-v="${v}">${l}</button>`).join('')}</div>`;
-      const d = F.deal, veh = !['parts', 'service'].includes(d), land = kind !== 'yacht';
+      const d = F.deal, veh = !['parts', 'service'].includes(d), land = kind !== 'yacht' && !ALL;
       const sellers = C.SELLER.filter(([v]) => d === 'parts' ? ['owner', 'parts_shop', 'dealer'].includes(v) : d === 'service' ? ['workshop'].includes(v) : !['workshop', 'parts_shop'].includes(v));
       const sh = AQStay.sheet(`<div class="aqs-hd"><h3>الفلاتر</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div><div class="aqs-body">
         ${d === 'rent' || (!d && veh) ? `<div class="fs-sec"><h4>مدة الإيجار</h4>${chips('period', K.periods.map(([v, l]) => [v, 'بال' + l]))}</div>` : ''}
@@ -157,11 +169,11 @@
       upd();
     };
     drawTabs();
-    C.load({ kind }).then((l) => { pool = l; drawTabs(); draw(); });
+    C.load(kind ? { kind } : {}).then((l) => { pool = l; drawTabs(); draw(); });
   })();
   </script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
   <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav(''));</script>
 </body>
 </html>

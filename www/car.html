@@ -12,11 +12,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=85">
+  <link rel="stylesheet" href="css/aq-pages.css?v=86">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
-  <script src="js/aq-cars.js?v=85"></script>
-  <script src="js/aq-ads.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
+  <script src="js/aq-cars.js?v=86"></script>
+  <script src="js/aq-ads.js?v=86"></script>
   <style>
     .cg { position:relative; border-radius:18px; overflow:hidden; aspect-ratio:16/10; max-height:500px; width:100%; background:linear-gradient(135deg,#1e293b,#475569); }
     .cg .ph { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; } .cg .ph::-webkit-scrollbar { display:none; }
@@ -50,7 +50,7 @@
 <body>
   <header class="topbar"><div class="topbar-in">
     <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
-    <a class="back" href="cars.html" id="backL">المركبات ←</a>
+    <a class="back" href="cars.html" id="backL">موتورات ←</a>
   </div></header>
   <main id="main"><div class="skel" style="height:320px"></div></main>
   <script>
@@ -58,11 +58,11 @@
     const C = AQCars, { esc, num } = C, $ = (id) => document.getElementById(id), id = new URLSearchParams(location.search).get('id') || '';
     const st = document.createElement('style'); st.textContent = C.CSS; document.head.appendChild(st);
     C.one(id).then((c) => {
-      if (!c) { $('main').innerHTML = '<div class="empty"><i class="fas fa-car-side"></i><h2>هذا الإعلان غير متاح</h2><p>ربما بيع أو حُذف الإعلان.</p><a class="btn btn-teal" href="cars.html">تصفّح المركبات</a></div>'; return; }
+      if (!c) { $('main').innerHTML = '<div class="empty"><i class="fas fa-car-side"></i><h2>هذا الإعلان غير متاح</h2><p>ربما بيع أو حُذف الإعلان.</p><a class="btn btn-teal" href="cars.html">تصفّح موتورات</a></div>'; return; }
       const kind = c.kind || 'car', K = C.kindOf(c), d = c.deal, veh = ['sale', 'rent'].includes(d), rent = d === 'rent', svc = d === 'service', parts = d === 'parts';
       document.title = C.name(c) + ' | أنا عقار';
       const list = `cars.html?kind=${kind}`;
-      $('backL').href = list; $('backL').textContent = K.name + ' ←';
+      $('backL').href = list; $('backL').textContent = 'موتورات ←';
       const ims = (c.images || []).filter(Boolean), tel = String(c.phone || '').replace(/[^\d+]/g, ''), wa = String(c.whatsapp || c.phone || '').replace(/\D/g, '');
       const row = (k, v) => v || v === 0 ? `<div><span>${k}</span><b>${esc(v)}</b></div>` : '';
       const icon = parts ? 'fa-gears' : svc ? 'fa-screwdriver-wrench' : K.icon;
@@ -74,12 +74,12 @@
       else spec = row('الخدمة', C.subLabel(c)) + row('السعر', C.price(c)) + row('المدينة', c.city) + row('المعلن', C.AR.seller[c.seller_type]);
       const rentTerms = rent ? `<div class="sec"><h2>${kind === 'yacht' ? 'شروط الإيجار والرحلة' : 'شروط الإيجار'}</h2><div class="spec">${row('السعر', C.price(c))}${row('مبلغ التأمين', c.deposit ? num(c.deposit) + ' درهم' : '')}${kind === 'yacht' ? row('الكابتن', c.captain_included ? 'مشمول' : 'غير مشمول') : row('حد الكيلومترات', c.km_limit ? num(c.km_limit) + ' كم / ' + (C.PERIOD[c.rent_period] || 'يوم') : '') + row('التأمين الشامل', c.insurance_included ? 'مشمول' : 'غير مشمول')}${row('التوصيل', c.delivery ? 'متاح' : '')}${row(kind === 'yacht' ? 'أقل عمر' : 'أقل عمر للسائق', c.min_driver_age ? c.min_driver_age + ' سنة' : '')}</div></div>` : '';
       const ask = rent ? (kind === 'yacht' ? 'احجز رحلة' : 'اطلب الإيجار') : svc ? 'اطلب الخدمة' : 'أرسل استفسارك';
-      $('main').innerHTML = `<div class="crumb"><a href="${list}">${K.name}</a><span>›</span><a href="${list}&deal=${d}">${(K.deals[d] || [''])[0]}</a>${C.subLabel(c) ? `<span>›</span><a href="${list}&deal=${d}&sub=${esc(parts ? c.part_category : svc ? c.service_type : c.body_type)}">${esc(C.subLabel(c))}</a>` : ''}</div>
+      $('main').innerHTML = `<div class="crumb"><a href="cars.html">موتورات</a><span>›</span><a href="${list}">${K.name}</a><span>›</span><a href="${list}&deal=${d}">${(K.deals[d] || [''])[0]}</a>${C.subLabel(c) ? `<span>›</span><a href="${list}&deal=${d}&sub=${esc(parts ? c.part_category : svc ? c.service_type : c.body_type)}">${esc(C.subLabel(c))}</a>` : ''}</div>
         <div class="cg"><div class="ico"><i class="fas ${icon}"></i></div><div class="ph" id="ph">${ims.map((u, i) => `<img src="${esc(u)}" alt="${esc(C.name(c))} — صورة ${i + 1}" onerror="this.remove()">`).join('')}</div>${ims.length ? `<span class="n"><span id="phI">1</span>/${ims.length}</span>` : ''}</div>
         <div class="cw"><div>
           <div class="cp">${C.price(c)}</div><h1 class="ct">${esc(C.name(c))}</h1>
           <div class="meta"><i class="fas fa-location-dot"></i> ${esc(c.city || '')}${C.specLine(c) ? ' · ' + esc(C.specLine(c)) : ''}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="cb ${rent ? 't' : svc ? 's' : parts ? 'p' : ''}">${C.dealBadge(c)}</span>${c.condition === 'new' && veh ? '<span class="cb g">جديد</span>' : ''}${c.demo ? '<span class="cb">عرض توضيحي</span>' : ''}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="cb ${rent ? 't' : svc ? 's' : parts ? 'p' : ''}">${C.dealBadge(c)}</span>${c.condition === 'new' && veh ? '<span class="cb g">جديد</span>' : ''}</div>
           <div class="sec"><h2>${svc ? 'تفاصيل الخدمة' : parts ? 'تفاصيل القطعة' : 'المواصفات'}</h2><div class="spec">${spec}</div></div>
           ${rentTerms}
           ${(c.features || []).length ? `<div class="sec"><h2>المزايا</h2><div class="ft">${c.features.filter((f) => C.AR.feat[f]).map((f) => `<span><i class="fas ${C.AR.feat[f][2]}"></i>${C.AR.feat[f][1]}</span>`).join('')}</div></div>` : ''}
@@ -102,7 +102,7 @@
       const t0 = new Date().toISOString().slice(0, 10); ['iF', 'iT'].forEach((x) => { if ($(x)) $(x).min = t0; });
       $('inq').onsubmit = async (e) => {
         e.preventDefault(); const m = $('iMsg');
-        if (c.demo) { m.textContent = 'هذا إعلان توضيحي ولا يمكن مراسلته.'; return; }
+        if (c.demo) { m.textContent = 'هذا الإعلان لا يستقبل طلبات حاليًا.'; return; }
         const r = await supabaseClient.rpc('car_inquiry', { p_car: c.id, p_name: $('iN').value.trim(), p_phone: $('iP').value.trim(), p_message: $('iM').value.trim(), p_from: ($('iF') || {}).value || null, p_to: ($('iT') || {}).value || null });
         m.textContent = r.error ? (/rate_limited/.test(r.error.message) ? 'أرسلت طلبات كثيرة، حاول بعد قليل.' : /bad_contact/.test(r.error.message) ? 'اكتب اسمك ورقم هاتف صحيحًا.' : 'تعذّر الإرسال الآن.') : '✅ وصل طلبك للمعلن وسيتواصل معك.';
         if (!r.error) e.target.reset();
@@ -113,7 +113,7 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
 </body>
 </html>

@@ -14,10 +14,10 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=85">
+  <link rel="stylesheet" href="css/aq-pages.css?v=86">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
-  <script src="js/aq-public.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
+  <script src="js/aq-public.js?v=86"></script>
 </head>
 <body>
   <header class="topbar"><div class="topbar-in">
@@ -55,7 +55,7 @@
     function draw() {
       const q = document.getElementById('q').value.trim().toLowerCase(), c = document.getElementById('city').value, s = document.getElementById('st').value, mx = +document.getElementById('max').value || 0;
       const rows = all.filter((p) => (!q || [p.name, p.area, p.city, p.description].join(' ').toLowerCase().includes(q)) && (!c || p.city === c) && (!s || p.sale_status === s) && (!mx || (p.price_from && p.price_from <= mx)));
-      if (!all.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-city"></i><h2>المشاريع قادمة قريبًا</h2><p>نضيف مشاريع المطوّرين المعتمدين تباعًا. أنت مطوّر عقاري؟ أضف مشروعك مجانًا من بوابة المهنيين.</p><a class="btn btn-teal" href="pro.html">بوابة المطوّرين</a> <a class="btn btn-ghost" href="request.html">أخبرنا بما تبحث عنه</a></div>`; return; }
+      if (!all.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-city"></i><h2>المشاريع قادمة قريبًا</h2><p>نضيف مشاريع المطوّرين المعتمدين تباعًا. أنت مطوّر عقاري؟ أضف مشروعك من بوابة المهنيين.</p><a class="btn btn-teal" href="pro.html">بوابة المطوّرين</a> <a class="btn btn-ghost" href="request.html">أخبرنا بما تبحث عنه</a></div>`; return; }
       box.innerHTML = rows.map((p) => {
         const plan = Array.isArray(p.payment_plan) ? p.payment_plan : [];
         return `<a class="card" href="project.html?id=${p.id}" style="text-decoration:none"><div class="img" style="background-image:url('${esc((p.images || [])[0] || '')}')"><span class="st">${ST[p.sale_status] || ''}</span></div>
@@ -74,8 +74,8 @@
   })();
   </script>
   <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="projects" data-title="إعلانات"></div></div>
-  <script src="js/aq-ads.js?v=85" defer></script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
+  <script src="js/aq-ads.js?v=86" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
 </body>
 </html>

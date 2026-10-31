@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الإيجار اليومي والإقامات القصيرة | أنا عقار AnaAqar</title>
+  <title>شورت تيرم: إيجار يومي وشهري | أنا عقار AnaAqar</title>
   <meta name="description" content="احجز شققًا وفللًا وشققًا فندقية بالليلة في دبي وأبوظبي وباقي الإمارات: اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل الحجز.">
   <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
@@ -14,11 +14,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=85">
+  <link rel="stylesheet" href="css/aq-pages.css?v=86">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
-  <script src="js/aq-stay.js?v=85"></script>
-  <script src="js/aq-ads.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
+  <script src="js/aq-stay.js?v=86"></script>
+  <script src="js/aq-ads.js?v=86"></script>
   <style>
     .sx-top { position:sticky; top:57px; z-index:15; background:var(--bg); padding:12px 0 8px; }
     .sx-search { display:flex; align-items:center; gap:10px; border:1.5px solid var(--ink); border-radius:12px; padding:0 14px; background:var(--card); }
@@ -30,6 +30,9 @@
     .sx-chip.on { border-color:var(--ink); }
     .sx-chip .fi { color:#e11d48; }
     .sx-chip .bdg { background:#0f172a; color:#fff; border-radius:999px; min-width:22px; height:22px; display:inline-grid; place-items:center; font-size:12.5px; padding:0 6px; }
+    .sx-per { display:grid; grid-template-columns:1fr 1fr; gap:4px; background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:4px; margin:8px 0 4px; }
+    .sx-per button { border:0; background:none; border-radius:10px; padding:10px; font:inherit; font-weight:900; font-size:16px; color:var(--muted); cursor:pointer; }
+    .sx-per button.on { background:#192038; color:#fff; }
     .sx-cats { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:6px 0 4px; padding-bottom:2px; }
     .sx-cats::-webkit-scrollbar { display:none; }
     .sx-cat { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:76px; border:1.5px solid var(--line); background:var(--card); color:var(--muted); border-radius:14px; padding:10px 10px 8px; font:inherit; font-weight:800; font-size:13.5px; cursor:pointer; }
@@ -94,8 +97,8 @@
     <a class="back" href="index.html">الرئيسية ←</a>
   </div></header>
   <section class="head"><div class="head-in">
-    <h1><i class="fas fa-umbrella-beach"></i> الإيجار اليومي والإقامات القصيرة</h1>
-    <p>شقق وفلل وشقق فندقية للحجز بالليلة. اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل أن تحجز.</p>
+    <h1><i class="fas fa-umbrella-beach"></i> شورت تيرم: إيجار يومي وشهري</h1>
+    <p>شقق وفلل وشقق فندقية مفروشة بالليلة أو بالشهر. اختر التواريخ وعدد الضيوف وشاهد السعر الكامل قبل أن تحجز.</p>
   </div></section>
   <main>
     <div class="sx-top">
@@ -107,11 +110,12 @@
         <button class="sx-chip" id="mineBtn" type="button"><i class="fas fa-calendar-check"></i> حجوزاتي</button>
       </div>
     </div>
+    <div class="sx-per" id="per" role="tablist"><button type="button" data-p="daily"><i class="fas fa-moon"></i> يومي</button><button type="button" data-p="monthly"><i class="fas fa-calendar-days"></i> شهري</button></div>
     <div class="sx-cats" id="cats"></div>
     <div data-aq-ads="stays" data-title="عروض وإعلانات"></div>
     <div class="sx-cnt" id="cnt"></div>
     <div class="sx-grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
-    <div class="acts" style="justify-content:center;margin-top:26px"><a class="btn btn-soft" href="add-property.html?stay=1"><i class="fas fa-plus"></i> أضف وحدتك للإيجار اليومي</a><a class="btn btn-ghost" href="listings.html?cat=monthly"><i class="fas fa-calendar"></i> الإيجار الشهري</a></div>
+    <div class="acts" style="justify-content:center;margin-top:26px"><a class="btn btn-soft" href="add-property.html?stay=1"><i class="fas fa-plus"></i> أضف وحدتك للشورت تيرم</a><a class="btn btn-ghost" href="listings.html?cat=rent"><i class="fas fa-building"></i> الإيجار السنوي</a></div>
   </main>
   <button class="sx-sort" id="sortBtn" type="button"><i class="fas fa-sort"></i> ترتيب</button>
 
@@ -122,19 +126,29 @@
     const F = {
       q: qs.get('q') || '', cat: qs.get('cat') || '', ci: qs.get('in') || '', co: qs.get('out') || '',
       ad: +qs.get('ad') || 0, ch: +qs.get('ch') || 0, pmin: '', pmax: '', br: '', bd: '', ba: '',
-      opts: new Set(), acc: new Set(), sp: new Set(), amen: '', kw: '', sort: 'fit'
+      opts: new Set(), acc: new Set(), sp: new Set(), amen: '', kw: '', sort: 'fit', per: qs.get('period') === 'monthly' ? 'monthly' : 'daily'
     };
+    // السعر حسب الوضع: باليوم، أو بالشهر (30 ليلة بعد خصم الإقامة الشهرية)، أو الإيجار الشهري المباشر لوحدات العقود الشهرية
+    const monthly = (p) => p.longTerm ? Number(p.priceAED) || 0 : Math.round(S.nightly(p) * 30 * (1 - (Number(p.monthlyDiscount) || 0) / 100));
+    const priceOf = (p) => F.per === 'monthly' ? monthly(p) : S.nightly(p);
+    const unit = () => F.per === 'monthly' ? 'الشهر' : 'الليلة';
+    let longPool = [];
     if (F.ci && (F.ci < S.today() || !F.co || F.co <= F.ci)) { F.ci = ''; F.co = ''; }
     $('q').value = F.q;
     let pool = [];
     const favs = new Set(S.LS.get('aq_fav_stays', []));
 
+    const syncPer = () => $('per').querySelectorAll('[data-p]').forEach((b) => b.classList.toggle('on', b.dataset.p === F.per));
+    $('per').onclick = (e) => { const b = e.target.closest('[data-p]'); if (!b || b.dataset.p === F.per) return; F.per = b.dataset.p; F.pmin = ''; F.pmax = ''; syncPer(); pool = F.per === 'monthly' ? stayPool.concat(longPool) : stayPool; draw(); };
+    syncPer();
+    let stayPool = [];
     $('cats').innerHTML = S.CATS.map((c) => `<button class="sx-cat ${c[0] === F.cat ? 'on' : ''}" data-c="${c[0]}" type="button"><i class="fas ${c[2]}"></i>${c[1]}</button>`).join('');
     $('cats').onclick = (e) => { const b = e.target.closest('[data-c]'); if (!b) return; F.cat = b.dataset.c; $('cats').querySelectorAll('.sx-cat').forEach((x) => x.classList.toggle('on', x === b)); draw(); };
 
     function match(p, ignore) {
       const t = (p.title + ' ' + (p.area || '') + ' ' + (p.city || '') + ' ' + (p.description || '')).toLowerCase();
-      const am = new Set(S.amenities(p)), nt = S.nightly(p), g = F.ad + F.ch;
+      const am = new Set(S.amenities(p)), nt = priceOf(p), g = F.ad + F.ch;
+      if (p.longTerm && F.per !== 'monthly') return false;
       if (F.q && !t.includes(F.q.toLowerCase())) return false;
       if (F.cat && S.catOf(p) !== F.cat) return false;
       if (g && (p.maxGuests || 99) < g) return false;
@@ -158,27 +172,32 @@
     const SORTS = [['fit', 'الأنسب لك'], ['price_asc', 'السعر: الأقل أولًا'], ['price_desc', 'السعر: الأعلى أولًا'], ['new', 'الأحدث'], ['guests', 'الأكثر ضيوفًا']];
     function sorted(l) {
       const k = F.sort, a = l.slice();
-      if (k === 'price_asc') a.sort((x, y) => S.nightly(x) - S.nightly(y));
-      else if (k === 'price_desc') a.sort((x, y) => S.nightly(y) - S.nightly(x));
+      if (k === 'price_asc') a.sort((x, y) => priceOf(x) - priceOf(y));
+      else if (k === 'price_desc') a.sort((x, y) => priceOf(y) - priceOf(x));
       else if (k === 'new') a.sort((x, y) => String(y.createdAt || '').localeCompare(String(x.createdAt || '')));
       else if (k === 'guests') a.sort((x, y) => (y.maxGuests || 0) - (x.maxGuests || 0));
       else a.sort((x, y) => (y.demo ? 0 : 1) - (x.demo ? 0 : 1) || (y.isVerified ? 1 : 0) - (x.isVerified ? 1 : 0) || (y.instantBook ? 1 : 0) - (x.instantBook ? 1 : 0));
       return a;
     }
-    const link = (p) => 'stay.html?id=' + encodeURIComponent(p.id) + (F.ci && F.co ? `&in=${F.ci}&out=${F.co}` : '') + (F.ad ? '&ad=' + F.ad : '') + (F.ch ? '&ch=' + F.ch : '');
+    const link = (p) => {
+      if (p.longTerm) return 'property-details.html?id=' + encodeURIComponent(p.id);
+      let ci = F.ci, co = F.co;
+      if (!(ci && co) && F.per === 'monthly') { ci = S.addDays(S.today(), 1); co = S.addDays(ci, 30); }
+      return 'stay.html?id=' + encodeURIComponent(p.id) + (ci && co ? `&in=${ci}&out=${co}` : '') + (F.ad ? '&ad=' + F.ad : '') + (F.ch ? '&ch=' + F.ch : '');
+    };
     function card(p) {
-      const imgs = (p.imagesList && p.imagesList.length ? p.imagesList : [p.image]).filter(Boolean).slice(0, 10), q = F.ci && F.co ? S.quote(p, F.ci, F.co) : null;
+      const imgs = (p.imagesList && p.imagesList.length ? p.imagesList : [p.image]).filter(Boolean).slice(0, 10), q = F.ci && F.co && !p.longTerm ? S.quote(p, F.ci, F.co) : null;
       const am = S.amenities(p).filter((k) => S.SPECIAL.includes(k)).slice(0, 2), url = link(p);
       return `<article class="sx-card"><div class="sx-gal"><div class="sx-ph">${imgs.map((u, i) => `<img src="${esc(u)}" alt="" loading="${i ? 'lazy' : 'eager'}" onclick="location.href='${url}'" onerror="this.style.visibility='hidden'">`).join('')}</div>
-        <div class="sx-tagx">${p.instantBook ? '<span class="ins">⚡ حجز فوري</span>' : ''}${p.demo ? '<span>عرض توضيحي</span>' : ''}</div>
+        <div class="sx-tagx">${p.instantBook ? '<span class="ins">⚡ حجز فوري</span>' : ''}</div>
         <button class="sx-fav ${favs.has(String(p.id)) ? 'on' : ''}" data-fav="${esc(p.id)}" aria-label="أضف للمفضلة" type="button"><i class="fa${favs.has(String(p.id)) ? 's' : 'r'} fa-heart"></i></button>
         <span class="sx-n"><i class="far fa-images"></i> <span data-i>1</span>/${imgs.length}</span></div>
         <div class="sx-in"><h3><a href="${url}">${esc(p.title)}</a></h3>
-        <div class="sx-pr">${q ? `<b>${aed(q.total)}</b> الإجمالي · ${S.nightsTxt(q.nights)}` : `<b>${aed(S.nightly(p))}</b> / الليلة${p.minNights > 1 ? ` · أقل مدة ${S.nightsTxt(p.minNights)}` : ''}`}</div>
+        <div class="sx-pr">${p.longTerm ? `<b>${aed(monthly(p))}</b> / الشهر · عقد شهري` : q ? `<b>${aed(q.total)}</b> الإجمالي · ${S.nightsTxt(q.nights)}` : `<b>${aed(priceOf(p))}</b> / ${unit()}${F.per === 'daily' && p.minNights > 1 ? ` · أقل مدة ${S.nightsTxt(p.minNights)}` : ''}${F.per === 'monthly' && p.monthlyDiscount > 0 ? ` · خصم شهري ${p.monthlyDiscount}%` : ''}`}</div>
         <div class="sx-meta"><span><i class="fas fa-user-group"></i>${p.maxGuests ? S.guestsTxt(p.maxGuests, 0) : '—'}</span><span><i class="fas fa-bed"></i>${p.beds || p.bedrooms || 1} ${(p.beds || 1) > 2 && (p.beds || 1) < 11 ? 'أسرّة' : 'سرير'}</span><span><i class="far fa-building"></i>${esc(S.CAT_AR[S.catOf(p)] || 'شقة')}</span></div>
         ${am.length ? `<div class="sx-tags">${am.map((k) => `<span><i class="fas ${S.AMEN_AR[k][2]}"></i>${esc(S.AMEN_AR[k][1])}</span>`).join('')}</div>` : ''}
         <div class="sx-loc"><i class="fas fa-location-dot"></i>${esc([p.area, p.city].filter(Boolean).join('، '))}</div>
-        <a class="sx-book" href="${url}"><i class="far fa-calendar"></i> احجز الآن</a></div></article>`;
+        <a class="sx-book" href="${url}"><i class="far ${p.longTerm ? 'fa-file-lines' : 'fa-calendar'}"></i> ${p.longTerm ? 'عرض التفاصيل' : 'احجز الآن'}</a></div></article>`;
     }
     function draw() {
       const rows = sorted(pool.filter((p) => match(p)));
@@ -191,7 +210,7 @@
         b.classList.toggle('on', favs.has(id)); b.innerHTML = `<i class="fa${favs.has(id) ? 's' : 'r'} fa-heart"></i>`;
       });
       syncChips();
-      const u = new URLSearchParams(); if (F.q) u.set('q', F.q); if (F.cat) u.set('cat', F.cat); if (F.ci && F.co) { u.set('in', F.ci); u.set('out', F.co); } if (F.ad) u.set('ad', F.ad); if (F.ch) u.set('ch', F.ch);
+      const u = new URLSearchParams(); if (F.q) u.set('q', F.q); if (F.cat) u.set('cat', F.cat); if (F.ci && F.co) { u.set('in', F.ci); u.set('out', F.co); } if (F.ad) u.set('ad', F.ad); if (F.ch) u.set('ch', F.ch); if (F.per === 'monthly') u.set('period', 'monthly');
       try { history.replaceState(history.state, '', location.pathname + (u.toString() ? '?' + u : '') + location.hash); } catch (e) {}
     }
     function syncChips() {
@@ -216,9 +235,9 @@
     $('fBtn').onclick = () => {
       const chips = (k, list, multi) => `<div class="fs-chips" data-k="${k}">${list.map(([v, l, ic]) => `<button type="button" class="fs-chip ${(multi ? F[k].has(v) : String(F[k]) === String(v)) ? 'on' : ''}" data-v="${v}">${ic ? `<i class="fas ${ic}"></i>` : ''}${l}</button>`).join('')}</div>`;
       const sh = S.sheet(`<div class="aqs-hd"><button class="aqs-x" data-x aria-label="إغلاق">✕</button><h3>الفلاتر</h3><button class="clr" type="button" style="background:none;border:0;font:inherit;font-weight:800;color:var(--muted);cursor:pointer" data-reset>مسح</button></div>
-        <div class="fs-tabs"><a href="listings.html?cat=rent">إيجار سنوي</a><a href="listings.html?cat=monthly">إيجار شهري</a><span>إيجار يومي</span></div>
+        <div class="fs-tabs"><a href="listings.html?cat=rent">إيجار سنوي</a><span>شورت تيرم: ${F.per === 'monthly' ? 'شهري' : 'يومي'}</span></div>
         <div class="aqs-body">
-          <div class="fs-sec"><h4>نطاق السعر</h4><p class="h">لليلة الواحدة</p><div class="fs-pr"><label><input id="fpmin" type="number" inputmode="numeric" placeholder="0" value="${esc(F.pmin)}"><small>درهم</small></label><span>إلى</span><label><input id="fpmax" type="number" inputmode="numeric" placeholder="أي سعر" value="${esc(F.pmax)}"><small>درهم</small></label></div></div>
+          <div class="fs-sec"><h4>نطاق السعر</h4><p class="h">${F.per === 'monthly' ? 'للشهر' : 'لليلة الواحدة'}</p><div class="fs-pr"><label><input id="fpmin" type="number" inputmode="numeric" placeholder="0" value="${esc(F.pmin)}"><small>درهم</small></label><span>إلى</span><label><input id="fpmax" type="number" inputmode="numeric" placeholder="أي سعر" value="${esc(F.pmax)}"><small>درهم</small></label></div></div>
           <div class="fs-sec"><h4>غرف النوم</h4>${chips('br', [['0', 'استوديو'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '6'], ['7', '+7']])}</div>
           <div class="fs-sec"><h4>الأسرّة</h4>${chips('bd', [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '6'], ['7', '7'], ['8', '+8']])}</div>
           <div class="fs-sec"><h4>الحمامات</h4>${chips('ba', [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '+6']])}</div>
@@ -266,8 +285,10 @@
     }
     $('mineBtn').onclick = openMine;
 
-    S.load().then((l) => {
-      pool = l; draw();
+    Promise.all([S.load(), (typeof fetchApprovedSupabaseProperties === 'function' ? fetchApprovedSupabaseProperties() : Promise.resolve([])).catch(() => [])]).then(([l, all]) => {
+      stayPool = l;
+      longPool = (all || []).filter((p) => p.dealType === 'rent' && p.rentPeriod === 'monthly').map((p) => Object.assign({ longTerm: true }, p));
+      pool = F.per === 'monthly' ? stayPool.concat(longPool) : stayPool; draw();
       if (/#mine/.test(location.hash)) openMine();
       else setTimeout(() => S.coach('stays', [
         { el: $('dBtn'), title: 'اختر تواريخك', text: 'حدد تاريخ الوصول والمغادرة لتعرف الإتاحة والسعر الكامل.' },
@@ -277,8 +298,8 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
   <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav('stays'));</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* الإيجار اليومي والإقامات القصيرة في «أنا عقار»: التحميل، حساب السعر، التقويم، الضيوف، الإرشادات */
+/* شورت تيرم (الإيجار اليومي والشهري) في «أنا عقار»: التحميل، حساب السعر، التقويم، الضيوف، الإرشادات */
 (function () {
   'use strict';
   if (window.AQStay) return;
@@ -78,7 +78,7 @@
     return row(`${aed(q.nightly)} × ${nightsTxt(q.nights)}`, aed(q.base)) +
       (q.discount ? row(q.nights >= 28 ? `خصم الإقامة الشهرية (${p.monthlyDiscount}%)` : `خصم الإقامة الأسبوعية (${p.weeklyDiscount}%)`, '− ' + aed(q.discount), 'g') : '') +
       (q.cleaning ? row('رسوم التنظيف', aed(q.cleaning)) : '') +
-      row('رسوم الخدمة', '<b style="color:#16a34a">مجانًا على أنا عقار</b>') +
+      row('رسوم الخدمة', '<b style="color:#16a34a">لا توجد</b>') +
       (q.tourism ? row('رسم درهم السياحة', aed(q.tourism)) : '') +
       (q.vat ? row(`ضريبة القيمة المضافة ${p.vatPct}%`, aed(q.vat)) : '') +
       row('الإجمالي', aed(q.total), 'tot');

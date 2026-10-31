@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=85"></script>
+  <script src="supabase-client.js?v=86"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -1745,6 +1745,9 @@
     .aq-drawer-overlay.open { opacity: 1; pointer-events: auto; }
     .aq-drawer { position: fixed; top: 0; bottom: 0; left: 0; width: max(50vw, 280px); max-width: 420px; background: #fff; z-index: 2147483001; transform: translateX(-102%); transition: transform .28s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; box-shadow: 8px 0 30px rgba(2,8,23,.25); border-radius: 0 18px 18px 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
     .aq-drawer.open { transform: none; }
+    /* القائمة المغلقة لا تُحسب ضمن عرض الصفحة (كانت تسبب اهتزاز الصفحة يمينًا ويسارًا في الجوال) */
+    .aq-drawer:not(.open) { visibility: hidden; transition: transform .28s cubic-bezier(.2,.8,.2,1), visibility 0s linear .28s; }
+    .aq-drawer.aq-dragging { visibility: visible !important; }
     .aq-dr-head { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 10px; border-bottom: 1px solid #eef2f7; }
     .aq-dr-head img { height: 30px; width: auto; }
     .aq-dr-x { width: 40px; height: 40px; border-radius: 12px; border: 0; background: #f1f5f9; color: #0f172a; font-size: 18px; cursor: pointer; }
@@ -2042,7 +2045,7 @@
 
   <section class="anaaqar-light-hero" id="heroSection">
     <div class="hero-light-container">
-      <nav class="aq-verticals" aria-label="أقسام أنا عقار"><a class="on" href="index.html"><i class="fas fa-building"></i> العقارات</a><a href="stays.html"><i class="fas fa-umbrella-beach"></i> إيجار يومي</a><a href="cars.html"><i class="fas fa-car-side"></i> السيارات</a><a href="cars.html?kind=moto"><i class="fas fa-motorcycle"></i> دراجات نارية</a><a href="cars.html?kind=yacht"><i class="fas fa-ship"></i> يخوت</a></nav>
+      <nav class="aq-verticals" aria-label="أقسام أنا عقار"><a class="on" href="index.html"><i class="fas fa-building"></i> العقارات</a><a href="stays.html"><i class="fas fa-umbrella-beach"></i> شورت تيرم</a><a href="cars.html"><i class="fas fa-car-side"></i> موتورات</a></nav>
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
 
       <div class="pearl-search-card">
@@ -2053,12 +2056,12 @@
             <button class="royal-tab" data-type="all" onclick="switchRoyalTab(this)"><i class="fas fa-border-all"></i> الكل</button>
             <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
             <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
-            <a class="royal-tab" href="stays.html" style="text-decoration:none"><i class="fas fa-umbrella-beach"></i> إيجار يومي</a>
+            <a class="royal-tab" href="stays.html" style="text-decoration:none"><i class="fas fa-umbrella-beach"></i> شورت تيرم</a>
             <button class="royal-tab" data-type="residential" onclick="switchRoyalTab(this)"><i class="fas fa-house-chimney"></i> سكني</button>
             <button class="royal-tab" data-type="commercial" onclick="switchRoyalTab(this)"><i class="fas fa-store"></i> تجاري</button>
             <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> عقارات الإقامة الذهبية</button>
             <button class="royal-tab" data-type="roi" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-chart-line"></i> فرص الاستثمار (ROI)</button>
-            <a class="royal-tab" href="cars.html" style="text-decoration:none"><i class="fas fa-car-side"></i> سيارات</a>
+            <a class="royal-tab" href="cars.html" style="text-decoration:none"><i class="fas fa-car-side"></i> موتورات</a>
           </div>
           <div class="scroll-arrow left" onclick="scrollRoyalTabs(-1)"><i class="fas fa-chevron-left"></i></div>
         </div>
@@ -2124,7 +2127,6 @@
   <!-- 📢 شريط الإعلانات + شارة التوثيق -->
   <div class="aq-home-wrap">
     <div data-aq-ads="home" data-title="الجديد على أنا عقار"></div>
-    <div id="aqhVerify"></div>
     <div id="aqhRecent" hidden></div>
     <div id="aqhSearches" hidden></div>
   </div>
@@ -2139,9 +2141,9 @@
         <a class="aq-tile" href="listings.html?cat=ready"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></a>
         <a class="aq-tile" href="listings.html?cat=offers"><span class="aq-ico" style="--c:#e11d48"><i class="fas fa-tags"></i></span><b>العروض</b><small>خصومات وخطط سداد خاصة</small></a>
         <a class="aq-tile" href="services-directory.html?cat=immigration"><span class="aq-ico" style="--c:#b45309"><i class="fas fa-flag"></i></span><b>الجنسية عبر الاستثمار</b><small>استشارة حول الدول وشروطها</small></a>
-        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0284c7"><i class="fas fa-umbrella-beach"></i></span><b>إيجار يومي وإقامات قصيرة</b><small>احجز بالليلة مع السعر الكامل</small></a>
-        <a class="aq-tile" href="listings.html?cat=monthly"><span class="aq-ico" style="--c:#7c3aed"><i class="fas fa-calendar-days"></i></span><b>إيجار شهري</b><small>سكن مفروش بعقود قصيرة</small></a>
-        <a class="aq-tile" href="cars.html"><span class="aq-ico" style="--c:#1e293b"><i class="fas fa-car-side"></i></span><b>سيارات للبيع والإيجار</b><small>من أصحابها والمعارض وشركات التأجير</small></a>
+        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0284c7"><i class="fas fa-umbrella-beach"></i></span><b>شورت تيرم: يومي وشهري</b><small>إيجار قصير المدة بالليلة أو بالشهر</small></a>
+        <a class="aq-tile" href="stays.html?period=monthly"><span class="aq-ico" style="--c:#7c3aed"><i class="fas fa-calendar-days"></i></span><b>إيجار شهري مفروش</b><small>سكن بالشهر بدون عقد سنوي</small></a>
+        <a class="aq-tile" href="cars.html"><span class="aq-ico" style="--c:#1e293b"><i class="fas fa-car-side"></i></span><b>موتورات</b><small>سيارات، دراجات نارية، يخوت</small></a>
         <a class="aq-tile" href="listings.html?cat=no_commission"><span class="aq-ico" style="--c:#0d9488"><i class="fas fa-hand-holding-dollar"></i></span><b>عقار بدون عمولة</b><small>دون عمولة على المشتري</small></a>
       </div>
 
@@ -2154,11 +2156,8 @@
         <a class="aq-tile" href="services-directory.html?cat=property_mgmt"><span class="aq-ico" style="--c:#db2777"><i class="fas fa-building-circle-check"></i></span><b>إدارة العقارات</b><small>إدارة الأملاك والتأجير والمتابعة</small></a>
         <a class="aq-tile" href="services-directory.html?cat=engineering"><span class="aq-ico" style="--c:#65a30d"><i class="fas fa-compass-drafting"></i></span><b>استشارات هندسية</b><small>تصميم وإشراف وفحص عقار</small></a>
         <a class="aq-tile" href="services-directory.html?cat=contracting"><span class="aq-ico" style="--c:#92400e"><i class="fas fa-trowel-bricks"></i></span><b>المقاولات</b><small>بناء وتشطيب وترميم</small></a>
-        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-calendar-check"></i></span><b>الحجز اليومي</b><small>إقامات قصيرة بتأكيد من المضيف</small></a>
-        <a class="aq-tile" href="cars.html"><span class="aq-ico" style="--c:#334155"><i class="fas fa-car"></i></span><b>السيارات</b><small>شراء، إيجار، قطع غيار، صيانة</small></a>
-        <a class="aq-tile" href="cars.html?kind=moto"><span class="aq-ico" style="--c:#b91c1c"><i class="fas fa-motorcycle"></i></span><b>الدراجات النارية</b><small>شراء، إيجار، قطع، صيانة</small></a>
-        <a class="aq-tile" href="cars.html?kind=yacht"><span class="aq-ico" style="--c:#0369a1"><i class="fas fa-ship"></i></span><b>اليخوت والقوارب</b><small>شراء، رحلات وإيجار، خدمات بحرية</small></a>
-        <a class="aq-tile" href="cars.html?deal=service"><span class="aq-ico" style="--c:#6d28d9"><i class="fas fa-screwdriver-wrench"></i></span><b>صيانة وقطع غيار</b><small>ورش ومراكز خدمة ومحلات قطع</small></a>
+        <a class="aq-tile" href="stays.html"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-calendar-check"></i></span><b>شورت تيرم</b><small>حجز يومي وشهري بتأكيد المضيف</small></a>
+        <a class="aq-tile" href="cars.html"><span class="aq-ico" style="--c:#334155"><i class="fas fa-car-side"></i></span><b>موتورات</b><small>سيارات، دراجات، يخوت: بيع، إيجار، قطع، صيانة</small></a>
         <a class="aq-tile" href="services-directory.html?cat=interior"><span class="aq-ico" style="--c:#ea580c"><i class="fas fa-couch"></i></span><b>تصميم الديكور</b><small>تصميم داخلي وتأثيث</small></a>
       </div>
       <h2 class="aq-block-title" style="margin-top:34px;"><i class="fas fa-house-chimney-user"></i> خدمات بيتك
@@ -2212,8 +2211,8 @@
         <div class="ad-banner-card" style="background: linear-gradient(135deg, #00a896, #028090); color: white;">
           <div class="ad-banner-body" style="color:white;">
             <i class="fas fa-bullhorn" style="font-size: 28px; margin-bottom: 8px;"></i>
-            <div class="ad-title" style="color:white;">أعلن عن عقارك مجانًا</div>
-            <div class="ad-subtitle" style="color:#e0f2f1;">النشر مجاني لأول 3 أشهر للوسطاء والمكاتب والمطورين.</div>
+            <div class="ad-title" style="color:white;">أعلن عن عقارك</div>
+            <div class="ad-subtitle" style="color:#e0f2f1;">وصّل عقارك للمشترين والمستأجرين — للوسطاء والمكاتب والمطوّرين.</div>
             <a href="sell-or-rent.html" class="btn-ad-action" style="background:#fff; color:#028090;">أضف عقارك ❯</a>
           </div>
         </div>
@@ -2221,7 +2220,7 @@
           <div class="ad-banner-body" style="color:white;">
             <i class="fas fa-user-check" style="font-size: 28px; color: var(--accent-gold); margin-bottom: 8px;"></i>
             <div class="ad-title" style="color:white;">أنت وسيط مسجّل لدى دائرة الأراضي؟</div>
-            <div class="ad-subtitle" style="color:#cbd5e1;">فعّل ملفك المهني مجانًا خلال دقيقتين.</div>
+            <div class="ad-subtitle" style="color:#cbd5e1;">فعّل ملفك المهني خلال دقيقتين.</div>
             <a href="claim-profile.html" class="btn-ad-action" style="background: var(--accent-gold); color: var(--dubizzle-navy);">فعّل ملفي ❯</a>
           </div>
         </div>
@@ -2388,7 +2387,7 @@
       </a>
       <a class="aq-fm-item" href="claim-profile.html">
         <span class="aq-fm-ic" style="background:#dcfce7;color:#166534"><i class="fas fa-user-check"></i></span>
-        <span class="aq-fm-tx"><b>أنا وسيط</b><small>فعّل ملفك وانشر عقاراتك مجانًا</small></span><i class="fas fa-chevron-left aq-fm-go"></i>
+        <span class="aq-fm-tx"><b>أنا وسيط</b><small>فعّل ملفك وانشر عقاراتك</small></span><i class="fas fa-chevron-left aq-fm-go"></i>
       </a>
       <a class="aq-fm-mail" href="mailto:info@anaaqar.com"><i class="fas fa-envelope"></i> info@anaaqar.com</a>
     </div>
@@ -2407,11 +2406,9 @@
       <div class="aq-dr-label">تصفّح</div>
       <a href="index.html"><i class="fas fa-house"></i> الرئيسية</a>
       <a href="javascript:void(0)" onclick="aqDrawerGo('resultsSectionTitle')"><i class="fas fa-building"></i> العقارات المتاحة</a>
-      <a href="stays.html"><i class="fas fa-umbrella-beach"></i> الإيجار اليومي والإقامات القصيرة</a>
+      <a href="stays.html"><i class="fas fa-umbrella-beach"></i> شورت تيرم: إيجار يومي وشهري</a>
       <a href="stays.html#mine"><i class="fas fa-calendar-check"></i> حجوزاتي</a>
-      <a href="cars.html"><i class="fas fa-car-side"></i> السيارات: بيع، إيجار، قطع غيار، صيانة</a>
-      <a href="cars.html?kind=moto"><i class="fas fa-motorcycle"></i> الدراجات النارية</a>
-      <a href="cars.html?kind=yacht"><i class="fas fa-ship"></i> اليخوت والقوارب</a>
+      <a href="cars.html"><i class="fas fa-car-side"></i> موتورات: سيارات، دراجات نارية، يخوت</a>
       <a href="brokers-directory.html"><i class="fas fa-building-user"></i> دليل الوسطاء والمكاتب</a>
       <a href="services-directory.html"><i class="fas fa-screwdriver-wrench"></i> دليل الخدمات</a>
       <a href="offers.html"><i class="fas fa-tags"></i> العروض</a>
@@ -2423,13 +2420,17 @@
       <a href="compare.html"><i class="fas fa-code-compare"></i> المقارنة</a>
       <a href="my.html"><i class="fas fa-bookmark"></i> قوائمي: المفضلة والبحوث والإشعارات <span data-aqe-notif-count style="color:#e11d48;font-weight:900"></span></a>
 
-      <div class="aq-dr-label">للوسطاء والمطورين</div>
-      <a href="sell-or-rent.html" class="aq-dr-hl"><i class="fas fa-circle-plus"></i> أضف عقارك</a>
-      <a href="add-property.html?stay=1"><i class="fas fa-umbrella-beach"></i> أضف وحدة للإيجار اليومي</a>
-      <a href="add-car.html"><i class="fas fa-car"></i> أضف سيارة أو دراجة أو يخت أو قطعة غيار أو ورشة</a>
-      <a href="pro.html"><i class="fas fa-briefcase"></i> بوابة الوسطاء والمكاتب والمطوّرين</a>
-      <a href="pro.html#bookings"><i class="fas fa-calendar-days"></i> حجوزات وحداتي</a>
-      <a href="claim-profile.html"><i class="fas fa-user-check"></i> فعّل ملفك كوسيط</a>
+      <div class="aq-dr-label">أضف إعلانك</div>
+      <a href="sell-or-rent.html" class="aq-dr-hl"><i class="fas fa-circle-plus"></i> اعرض عقارك للبيع أو الإيجار</a>
+      <a href="add-property.html?stay=1"><i class="fas fa-umbrella-beach"></i> أضف وحدة شورت تيرم</a>
+      <a href="add-car.html"><i class="fas fa-car"></i> أضف إعلان موتورات</a>
+      <a href="pro.html" data-nonpro-only><i class="fas fa-user-tie"></i> أنت وسيط أو مكتب أو مطوّر؟ انضم</a>
+
+      <div class="aq-dr-label" data-pro-only hidden>للوسطاء والمكاتب والمطوّرين</div>
+      <a href="pros.html" data-pro-only hidden><i class="fas fa-certificate"></i> مركز المهنيين والتوثيق</a>
+      <a href="pro.html" data-pro-only hidden><i class="fas fa-briefcase"></i> بوابة المهنيين</a>
+      <a href="pro.html#bookings" data-pro-only hidden><i class="fas fa-calendar-days"></i> حجوزات وحداتي</a>
+      <a href="claim-profile.html" data-pro-only hidden><i class="fas fa-user-check"></i> فعّل ملفك في الدليل</a>
       <a href="admin/index.html" data-admin-only hidden><i class="fas fa-gauge"></i> لوحة التحكم</a>
 
       <div class="aq-dr-label">المساعدة</div>
@@ -2589,7 +2590,7 @@
           "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600"
         ],
         commission: "1.5%",
-        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "عرض توضيحي — أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
+        broker: { brokerId: "b1", name: "إبراهيم عبد العاطي إبراهيم", agency: "أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" }
       },
       {
         id: "102",
@@ -2611,7 +2612,7 @@
           "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=600"
         ],
         commission: "2.0%",
-        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "عرض توضيحي — أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
+        broker: { brokerId: "b2", name: "سارة الفلاسي", agency: "أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" }
       },
       {
         id: "103",
@@ -2632,7 +2633,7 @@
           "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600"
         ],
         commission: "5%",
-        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "عرض توضيحي — أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
+        broker: { brokerId: "b3", name: "مازن الخالدي", agency: "أنا عقار", phone: null, email: null, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200" }
       }
     ];
 
@@ -3352,7 +3353,7 @@ function renderPropertiesList(list) {
         container.innerHTML += `
           <div style="background: linear-gradient(135deg, #0f172a, #192038); color: white; padding: 18px; border-radius: 12px; border: 2px solid var(--accent-gold); text-align: center; margin: 10px 0;">
             <h3 style="font-size: 16px; color: var(--accent-gold); font-weight: 900;"><i class="fas fa-bullhorn"></i> لديك عقار للبيع أو الإيجار؟</h3>
-            <p style="font-size: 12px; color: #e2e8f0; margin: 6px 0;">أضف إعلانك على أنا عقار مجانًا لأول 3 أشهر.</p>
+            <p style="font-size: 12px; color: #e2e8f0; margin: 6px 0;">أضف إعلانك على أنا عقار ووصّله لآلاف الزوار.</p>
             <a href="add-property.html" style="display:inline-block; background: var(--accent-gold); color: #192038; font-weight: 900; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 12px; text-decoration:none;">أضف عقارك الآن ❯</a>
           </div>
         `;
@@ -3746,14 +3747,14 @@ function renderPropertiesList(list) {
         if (!dx && Math.abs(y - sy) > Math.abs(x - sx) + 4) { mode = ''; return; } // تمرير عمودي، لا سحب
         dx = x - sx;
         const off = mode === 'open' ? Math.min(0, -w + Math.max(0, dx)) : Math.min(0, dx);
-        d().style.transition = 'none'; d().style.transform = `translateX(${off}px)`;
+        d().classList.add('aq-dragging'); d().style.transition = 'none'; d().style.transform = `translateX(${off}px)`;
         o().classList.add('open'); o().style.transition = 'none'; o().style.opacity = String(1 + off / w);
       }, { passive: true });
       document.addEventListener('touchend', () => {
         if (!mode) return;
         const v = dx / Math.max(1, Date.now() - t0); // سرعة السحب
         const openIt = mode === 'open' ? (dx > w * 0.35 || v > 0.5) : !(dx < -w * 0.3 || v < -0.5);
-        d().style.transition = ''; d().style.transform = ''; o().style.transition = ''; o().style.opacity = '';
+        d().classList.remove('aq-dragging'); d().style.transition = ''; d().style.transform = ''; o().style.transition = ''; o().style.opacity = '';
         if (Math.abs(dx) > 6 || mode === 'close') aqDrawer(openIt); else if (mode === 'open') o().classList.remove('open');
         mode = '';
       });
@@ -3876,13 +3877,13 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=85" defer></script>
-  <script src="js/aq-ai.js?v=85" defer></script>
-  <script src="js/aq-engage.js?v=85" defer></script>
-  <script src="js/aq-back.js?v=85" defer></script>
-  <script src="js/aq-stay.js?v=85" defer></script>
-  <script src="js/aq-cars.js?v=85" defer></script>
-  <script src="js/aq-ads.js?v=85" defer></script>
-  <script src="js/aq-home.js?v=85" defer></script>
+  <script src="js/aq-filters.js?v=86" defer></script>
+  <script src="js/aq-ai.js?v=86" defer></script>
+  <script src="js/aq-engage.js?v=86" defer></script>
+  <script src="js/aq-back.js?v=86" defer></script>
+  <script src="js/aq-stay.js?v=86" defer></script>
+  <script src="js/aq-cars.js?v=86" defer></script>
+  <script src="js/aq-ads.js?v=86" defer></script>
+  <script src="js/aq-home.js?v=86" defer></script>
 </body>
 </html>

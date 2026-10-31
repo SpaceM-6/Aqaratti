@@ -233,7 +233,7 @@
         '<h3 id="aqeWT">' + (prof ? 'أهلًا بعودتك إلى أنا عقار 👋' : 'أهلًا بك في أنا عقار 👋') + '</h3><p class="sub">' + (prof ? 'ماذا تريد أن نعرض لك هذه المرة؟' : 'أخبرنا بما تبحث عنه لنعرض لك الأنسب أولًا') + '</p>' +
         '<div class="aqe-choices">' + opt('all', 'fa-border-all', 'الكل: شراء وإيجار') + opt('sale', 'fa-key', 'أبحث عن شراء') + opt('rent', 'fa-building', 'أبحث عن إيجار') +
         opt('invest', 'fa-chart-line', 'أبحث عن استثمار') + '</div>' +
-        '<div class="aqe-choices">' + opt('stays', 'fa-umbrella-beach', 'إيجار يومي وإقامات') + opt('cars', 'fa-car-side', 'سيارات') + '</div>' +
+        '<div class="aqe-choices">' + opt('stays', 'fa-umbrella-beach', 'شورت تيرم: يومي وشهري') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
         '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('broker', 'fa-user-tie', 'أنا وسيط أو مطوّر') + '</div>' +
         '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
         COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
@@ -254,7 +254,7 @@
         var p = { intent: choice, country: cSel.value, city: citySel.value, at: new Date().toISOString() };
         LS.set('aq_profile', p); SS.set('aqe_welcome_done', '1'); SS.set('aqe_welcomed_now', '1'); ov.remove();
         if (choice === 'broker') {
-          toast('مرحبًا بك! فعّل ملفك المهني وانشر عقاراتك مجانًا لأول 3 أشهر', 'success', { label: 'فعّل ملفي', run: function () { location.href = 'claim-profile.html'; } });
+          toast('مرحبًا بك! فعّل ملفك المهني وانشر عقاراتك', 'success', { label: 'فعّل ملفي', run: function () { location.href = 'claim-profile.html'; } });
         } else if (choice === 'stays' || choice === 'cars') {
           location.href = choice === 'stays' ? 'stays.html' : 'cars.html';
         } else {
@@ -443,12 +443,18 @@
 
   // روابط الإدارة (مثل «لوحة التحكم») مخفية للجميع، وتظهر لحساب الإدارة فقط
   function showAdminLinks(u) {
-    var links = document.querySelectorAll('[data-admin-only]'), c = sb();
-    links.forEach(function (el) { el.hidden = true; });
-    if (!u || !c || !links.length) return;
-    c.rpc('is_app_admin').then(function (r) {
-      if (!r.error && r.data === true) links.forEach(function (el) { el.hidden = false; });
-    }, function () {});
+    var links = document.querySelectorAll('[data-admin-only]'), pro = document.querySelectorAll('[data-pro-only]'), non = document.querySelectorAll('[data-nonpro-only]'), c = sb();
+    links.forEach(function (el) { el.hidden = true; }); pro.forEach(function (el) { el.hidden = true; }); non.forEach(function (el) { el.hidden = false; });
+    if (!u || !c) return;
+    // روابط المهنيين تظهر للوسطاء والمكاتب والمطوّرين والإدارة فقط
+    Promise.all([
+      c.rpc('is_app_admin').then(function (r) { return !r.error && r.data === true; }, function () { return false; }),
+      c.from('profiles').select('account_type').eq('id', u.id).maybeSingle().then(function (r) { return (r.data && r.data.account_type) || ''; }, function () { return ''; })
+    ]).then(function (x) {
+      var admin = x[0], isPro = admin || ['broker', 'office', 'developer'].indexOf(x[1]) > -1;
+      if (admin) links.forEach(function (el) { el.hidden = false; });
+      pro.forEach(function (el) { el.hidden = !isPro; }); non.forEach(function (el) { el.hidden = isPro; });
+    });
   }
 
   // ===================== حفظ البحث =====================

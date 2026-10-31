@@ -11,20 +11,55 @@
   };
   var sb = function () { return (typeof supabaseClient !== 'undefined') ? supabaseClient : null; };
 
-  // إعلانات أنا عقار الداخلية (تملأ الشريط حتى 10)
-  var HOUSE = [
-    { t: 'قيّم عقارك مجانًا', s: 'اعرف القيمة التقديرية لعقارك من أسعار المنطقة', b: 'عقارات', i: 'fa-chart-line', g: ['#ef4444', '#f97316'], u: 'valuation.html' },
-    { t: 'إقامات قصيرة وإيجار يومي', s: 'شقق وفلل للحجز بالليلة مع تأكيد فوري', b: 'جديد', i: 'fa-umbrella-beach', g: ['#0ea5e9', '#6366f1'], u: 'stays.html' },
-    { t: 'سيارات ودراجات ويخوت', s: 'بيع، إيجار، قطع غيار، وصيانة في مكان واحد', b: 'جديد', i: 'fa-car-side', g: ['#1e293b', '#475569'], u: 'cars.html' },
-    { t: 'جاهز لعرض عقارك؟', s: 'أعلن مجانًا لأول 3 أشهر وصل للمشترين والمستأجرين', b: 'عقارات', i: 'fa-house-circle-check', g: ['#00a896', '#028090'], u: 'add-property.html' },
-    { t: 'مشاريع جديدة على الخارطة', s: 'إطلاقات المطوّرين بخطط سداد مرنة', b: 'مشاريع', i: 'fa-rocket', g: ['#7c3aed', '#c026d3'], u: 'listings.html?cat=off_plan' },
-    { t: 'احصل على شارة التوثيق', s: 'ظهور أكثر وثقة أعلى لإعلاناتك', b: 'للوسطاء', i: 'fa-certificate', g: ['#2563eb', '#0891b2'], u: 'broker-registration.html' },
-    { t: 'عقارات الإقامة الذهبية', s: 'عقارات بقيمة تؤهّل للإقامة الذهبية', b: 'استثمار', i: 'fa-passport', g: ['#b45309', '#d4af37'], u: 'listings.html?cat=golden' },
-    { t: 'اطلب عقارك والوسطاء يتواصلون', s: 'اكتب ما تريد ونرسله للوسطاء المناسبين', b: 'خدمة', i: 'fa-paper-plane', g: ['#0d9488', '#22c55e'], u: 'request.html' },
-    { t: 'خدمات بيتك في مكان واحد', s: 'صيانة، تنظيف، نقل أثاث، ديكور وغيرها', b: 'خدمات', i: 'fa-screwdriver-wrench', g: ['#db2777', '#f43f5e'], u: 'services-directory.html' },
-    { t: 'أعلن معنا هنا', s: 'اعرض شركتك أو مشروعك أمام آلاف الزوار', b: 'إعلان', i: 'fa-bullhorn', g: ['#192038', '#0b5e63'], u: 'mailto:info@anaaqar.com?subject=' + encodeURIComponent('إعلان على أنا عقار') }
-  ];
-  var ORDER = { home: 0, listings: 3, stays: 1, cars: 2, details: 5, services: 8, projects: 4, brokers: 5, home2: 6, home3: 9 };
+  // إعلانات أنا عقار الداخلية، مجمّعة حسب موضوع الصفحة: كل شريط يعرض ما له علاقة بصفحته
+  var A = {
+    valuation: { t: 'كم يساوي عقارك؟', s: 'تقدير سعر عقارك من أسعار المنطقة الفعلية', b: 'عقارات', i: 'fa-chart-line', g: ['#ef4444', '#f97316'], u: 'valuation.html' },
+    stays: { t: 'شورت تيرم: يومي وشهري', s: 'شقق وفلل باليوم أو بالشهر مع السعر الكامل', b: 'جديد', i: 'fa-umbrella-beach', g: ['#0ea5e9', '#6366f1'], u: 'stays.html' },
+    staysMonthly: { t: 'سكن شهري مفروش', s: 'إقامة شهرية قصيرة بدون عقد سنوي', b: 'جديد', i: 'fa-calendar-days', g: ['#7c3aed', '#6366f1'], u: 'stays.html?period=monthly' },
+    hostUnit: { t: 'أجّر وحدتك شورت تيرم', s: 'استقبل حجوزات يومية وشهرية وتابعها من بوابتك', b: 'للمضيفين', i: 'fa-key', g: ['#0d9488', '#0891b2'], u: 'add-property.html?stay=1' },
+    motors: { t: 'موتورات', s: 'سيارات ودراجات نارية ويخوت: بيع وإيجار وصيانة', b: 'جديد', i: 'fa-car-side', g: ['#1e293b', '#475569'], u: 'cars.html' },
+    carRent: { t: 'استأجر سيارة', s: 'باليوم أو الأسبوع أو الشهر، مع التوصيل', b: 'موتورات', i: 'fa-key', g: ['#0369a1', '#0ea5e9'], u: 'cars.html?kind=car&deal=rent' },
+    carSell: { t: 'بِع سيارتك', s: 'أعلن عن سيارتك وتواصل مع المشترين مباشرة', b: 'موتورات', i: 'fa-tag', g: ['#e11d48', '#f97316'], u: 'add-car.html?kind=car' },
+    parts: { t: 'قطع غيار', s: 'جديدة ومستعملة وأصلية من المحلات والأفراد', b: 'موتورات', i: 'fa-gears', g: ['#c2410c', '#f59e0b'], u: 'cars.html?deal=parts' },
+    service: { t: 'صيانة وورش', s: 'ميكانيكا، كهرباء، سمكرة، فحص قبل الشراء', b: 'موتورات', i: 'fa-screwdriver-wrench', g: ['#6d28d9', '#a855f7'], u: 'cars.html?deal=service' },
+    inspection: { t: 'افحص قبل أن تشتري', s: 'ورش فحص السيارات المستعملة قبل الشراء', b: 'موتورات', i: 'fa-magnifying-glass', g: ['#334155', '#64748b'], u: 'cars.html?kind=car&deal=service&sub=inspection' },
+    moto: { t: 'الدراجات النارية', s: 'رياضية وكروزر ودبابات للبيع والإيجار', b: 'موتورات', i: 'fa-motorcycle', g: ['#b91c1c', '#ef4444'], u: 'cars.html?kind=moto' },
+    yachts: { t: 'رحلات اليخوت', s: 'استأجر يختًا بالساعة مع كابتن وطاقم', b: 'موتورات', i: 'fa-ship', g: ['#0369a1', '#22d3ee'], u: 'cars.html?kind=yacht&deal=rent' },
+    yachtSale: { t: 'يخوت وقوارب للبيع', s: 'يخوت بمحرك وشراعية وقوارب صيد', b: 'موتورات', i: 'fa-anchor', g: ['#0c4a6e', '#0284c7'], u: 'cars.html?kind=yacht&deal=sale' },
+    listProp: { t: 'جاهز لعرض عقارك؟', s: 'أعلن عن عقارك ووصِّله للمشترين والمستأجرين', b: 'عقارات', i: 'fa-house-circle-check', g: ['#00a896', '#028090'], u: 'add-property.html' },
+    offPlan: { t: 'مشاريع جديدة على الخارطة', s: 'إطلاقات المطوّرين بخطط سداد مرنة', b: 'مشاريع', i: 'fa-rocket', g: ['#7c3aed', '#c026d3'], u: 'listings.html?cat=off_plan' },
+    golden: { t: 'عقارات الإقامة الذهبية', s: 'عقارات بقيمة تؤهّل للإقامة الذهبية', b: 'استثمار', i: 'fa-passport', g: ['#b45309', '#d4af37'], u: 'listings.html?cat=golden' },
+    calc: { t: 'حاسبة التمويل العقاري', s: 'احسب القسط الشهري والدفعة الأولى', b: 'تمويل', i: 'fa-calculator', g: ['#15803d', '#22c55e'], u: 'calculator.html' },
+    request: { t: 'اطلب عقارك والوسطاء يتواصلون', s: 'اكتب ما تريد ونرسله للوسطاء المناسبين', b: 'خدمة', i: 'fa-paper-plane', g: ['#0d9488', '#22c55e'], u: 'request.html' },
+    noComm: { t: 'عقارات بدون عمولة', s: 'من المالك مباشرة أو بدون عمولة على المشتري', b: 'عقارات', i: 'fa-hand-holding-dollar', g: ['#0f766e', '#14b8a6'], u: 'listings.html?cat=no_commission' },
+    offers: { t: 'عروض وخصومات', s: 'عقارات عليها عروض وخطط سداد خاصة', b: 'عروض', i: 'fa-tags', g: ['#be123c', '#fb7185'], u: 'listings.html?cat=offers' },
+    map: { t: 'العقارات على الخريطة', s: 'ابحث في الحي الذي تريده مباشرة', b: 'عقارات', i: 'fa-map-location-dot', g: ['#1d4ed8', '#60a5fa'], u: 'map.html' },
+    compare: { t: 'قارن بين العقارات', s: 'السعر والمساحة وسعر المتر جنبًا إلى جنب', b: 'أدوات', i: 'fa-code-compare', g: ['#475569', '#94a3b8'], u: 'compare.html' },
+    brokers: { t: 'دليل الوسطاء والمكاتب', s: 'وسطاء مرخّصون في مدينتك', b: 'وسطاء', i: 'fa-user-tie', g: ['#00a896', '#0b5e63'], u: 'brokers-directory.html' },
+    brokerage: { t: 'وسيط يبيع أو يؤجر عقارك', s: 'نرشّح لك وسيطًا مرخّصًا مناسبًا', b: 'خدمة', i: 'fa-handshake', g: ['#2563eb', '#0891b2'], u: 'sell-or-rent.html' },
+    services: { t: 'خدمات بيتك في مكان واحد', s: 'صيانة، تنظيف، نقل أثاث، ديكور وغيرها', b: 'خدمات', i: 'fa-screwdriver-wrench', g: ['#db2777', '#f43f5e'], u: 'services-directory.html' },
+    movers: { t: 'نقل الأثاث', s: 'شركات نقل موثوقة لبيتك الجديد', b: 'خدمات', i: 'fa-truck-moving', g: ['#a16207', '#f59e0b'], u: 'services-directory.html?cat=movers' },
+    cleaning: { t: 'شركات التنظيف', s: 'تنظيف شامل قبل السكن أو بعد المغادرة', b: 'خدمات', i: 'fa-broom', g: ['#0891b2', '#22d3ee'], u: 'services-directory.html?cat=cleaning' },
+    interior: { t: 'تصميم الديكور والتأثيث', s: 'صمّم بيتك الجديد مع مصممين محترفين', b: 'خدمات', i: 'fa-couch', g: ['#ea580c', '#fb923c'], u: 'services-directory.html?cat=interior' },
+    maint: { t: 'الصيانة المنزلية', s: 'سباكة، كهرباء، تكييف، دهانات', b: 'خدمات', i: 'fa-wrench', g: ['#0369a1', '#38bdf8'], u: 'services-directory.html?cat=maintenance' },
+    legal: { t: 'استشارات قانونية عقارية', s: 'عقود ونزاعات وتوثيق', b: 'خدمات', i: 'fa-scale-balanced', g: ['#475569', '#64748b'], u: 'services-directory.html?cat=legal' },
+    residency: { t: 'الإقامة وتأسيس الشركات', s: 'إجراءات الإقامة والرخص التجارية', b: 'خدمات', i: 'fa-id-card', g: ['#9333ea', '#c084fc'], u: 'services-directory.html?cat=residency' },
+    projects: { t: 'مشاريع المطوّرين', s: 'خطط السداد وأنواع الوحدات لكل مشروع', b: 'مشاريع', i: 'fa-city', g: ['#a16207', '#d4af37'], u: 'projects.html' },
+    advertise: { t: 'أعلن معنا هنا', s: 'اعرض شركتك أو مشروعك أمام آلاف الزوار', b: 'إعلان', i: 'fa-bullhorn', g: ['#192038', '#0b5e63'], u: 'mailto:info@anaaqar.com?subject=' + encodeURIComponent('إعلان على أنا عقار') }
+  };
+  var POOLS = {
+    home: ['stays', 'motors', 'valuation', 'offPlan', 'listProp', 'golden', 'request', 'services', 'yachts', 'advertise'],
+    home2: ['offers', 'noComm', 'staysMonthly', 'carRent', 'calc', 'projects', 'map', 'brokerage', 'moto', 'advertise'],
+    home3: ['movers', 'interior', 'cleaning', 'parts', 'service', 'compare', 'brokers', 'residency', 'hostUnit', 'advertise'],
+    listings: ['valuation', 'calc', 'offPlan', 'golden', 'noComm', 'offers', 'request', 'map', 'compare', 'brokerage'],
+    details: ['calc', 'valuation', 'compare', 'movers', 'interior', 'cleaning', 'legal', 'request', 'map', 'brokers'],
+    stays: ['staysMonthly', 'hostUnit', 'carRent', 'yachts', 'cleaning', 'movers', 'moto', 'services', 'maint', 'advertise'],
+    cars: ['carRent', 'carSell', 'parts', 'service', 'inspection', 'moto', 'yachts', 'yachtSale', 'stays', 'advertise'],
+    services: ['maint', 'cleaning', 'movers', 'interior', 'legal', 'residency', 'service', 'hostUnit', 'brokers', 'advertise'],
+    projects: ['offPlan', 'golden', 'calc', 'valuation', 'offers', 'request', 'interior', 'legal', 'residency', 'compare'],
+    brokers: ['brokerage', 'request', 'valuation', 'listProp', 'offPlan', 'calc', 'legal', 'map', 'services', 'advertise']
+  };
+  var HOUSE = Object.keys(A).map(function (k) { return A[k]; });
 
   function css() {
     if (document.getElementById('aqads-css')) return;
@@ -45,6 +80,7 @@
       '.aqad-im:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.12);right:-20px;top:-30px}',
       '.aqad-im.img:before,.aqad-im.img:after{display:none}',
       '.aqad-b{position:absolute;top:10px;right:10px;z-index:1;background:#fff;color:#0f172a;font-size:11.5px;font-weight:900;letter-spacing:.3px;padding:4px 10px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.12)}',
+      '.aqad-b.new{background:#e11d48;color:#fff}',
       '.aqad-sp{position:absolute;bottom:8px;left:10px;z-index:1;color:#fff;font-size:10.5px;font-weight:800;opacity:.85;background:rgba(0,0,0,.25);padding:1px 7px;border-radius:6px}',
       '.aqad-c b{display:block;margin-top:8px;font-size:16px;font-weight:900;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
       '.aqad-c small{display:block;color:var(--muted,#64748b);font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
@@ -73,6 +109,8 @@
       '.aqr-bud small{display:block;color:var(--muted,#64748b);font-weight:700;font-size:12px}',
       // شريط التنقل السفلي في الجوال
       '.aqbnav{display:none}',
+      'body.aq-has-bnav .mobile-bottom-app-bar{display:none!important}',
+      '.aqs-body{overflow:auto;overflow-x:hidden;flex:1;min-height:0;margin:0 -18px;padding:0 18px}',
       '@media(max-width:768px){.aqbnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:900;background:var(--card,#fff);border-top:1px solid var(--line,#e2e8f0);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));font-family:Tajawal,Tahoma,sans-serif;direction:rtl;box-shadow:0 -4px 16px rgba(15,23,42,.06)}',
       '.aqbnav a,.aqbnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted,#64748b);font:inherit;font-size:11.5px;font-weight:800;text-decoration:none;cursor:pointer;padding:2px 0;min-width:0}',
       '.aqbnav i{font-size:19px}.aqbnav .on{color:var(--teal,#00a896)}',
@@ -117,21 +155,20 @@
     });
   }
   function houseFor(placement, n) {
-    var off = ORDER[placement] || 0, out = [];
-    for (var i = 0; i < HOUSE.length && out.length < n; i++) out.push(HOUSE[(i + off) % HOUSE.length]);
-    // لا نعلن عن الصفحة التي يقف عليها الزائر
-    var page = (location.pathname.split('/').pop() || 'index.html');
-    return out.filter(function (h) { return h.u.split('?')[0] !== page; });
+    var keys = POOLS[placement] || POOLS[String(placement).replace(/\d+$/, '')] || POOLS.home;
+    var page = (location.pathname.split('/').pop() || 'index.html'), here = page + location.search;
+    // لا نعلن عن الصفحة التي يقف عليها الزائر نفسها
+    return keys.map(function (k) { return A[k]; }).filter(function (h) { return h && h.u !== here && h.u !== page; }).slice(0, n);
   }
 
   function cardHTML(a) {
     if (a._house) {
       return '<a class="aqad-c" href="' + esc(a.u) + '"><div class="aqad-im" style="background:linear-gradient(135deg,' + a.g[0] + ',' + a.g[1] + ')">' +
-        '<span class="aqad-b">' + esc(a.b) + '</span><i class="fas ' + a.i + ' big"></i></div><b>' + esc(a.t) + '</b><small>' + esc(a.s) + '</small></a>';
+        '<span class="aqad-b' + (a.b === 'جديد' ? ' new' : '') + '">' + esc(a.b) + '</span><i class="fas ' + a.i + ' big"></i></div><b>' + esc(a.t) + '</b><small>' + esc(a.s) + '</small></a>';
     }
     var img = a.image_url ? ' img" style="background-image:url(\'' + esc(a.image_url) + '\')' : '" style="background:linear-gradient(135deg,#00a896,#192038)';
     return '<a class="aqad-c" href="' + esc(a.link_url || '#') + '" data-ad="' + a.id + '"' + (/^https?:/.test(a.link_url || '') ? ' target="_blank" rel="noopener sponsored"' : '') + '>' +
-      '<div class="aqad-im' + img + '">' + (a.badge ? '<span class="aqad-b">' + esc(a.badge) + '</span>' : '') + (a.image_url ? '' : '<i class="fas fa-bullhorn big"></i>') +
+      '<div class="aqad-im' + img + '">' + (a.badge ? '<span class="aqad-b' + (a.badge === 'جديد' ? ' new' : '') + '">' + esc(a.badge) + '</span>' : '') + (a.image_url ? '' : '<i class="fas fa-bullhorn big"></i>') +
       '<span class="aqad-sp">إعلان</span></div><b>' + esc(a.title) + '</b><small>' + esc(a.subtitle || '') + '</small></a>';
   }
 
@@ -243,38 +280,60 @@
     wire(el);
   }
 
-  // ---------------- شريط التنقل السفلي (الجوال) ----------------
+  // ---------------- شريط التنقل السفلي (الجوال): أهم ما يحتاجه الزائر ----------------
+  function sheetOpts(title, items) {
+    var ov = document.createElement('div'); ov.className = 'aqs-ov';
+    ov.innerHTML = '<div class="aqs-sheet"><div class="aqs-hd"><h3>' + esc(title) + '</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div><div class="aqs-body" style="overflow:auto">' +
+      items.map(function (x) { return '<a class="aqs-opt" href="' + x[0] + '"' + (x[4] ? ' data-act="' + x[4] + '"' : '') + '><i class="fas ' + x[1] + '"></i><span><b>' + esc(x[2]) + '</b><small>' + esc(x[3] || '') + '</small></span></a>'; }).join('') + '</div></div>';
+    document.body.appendChild(ov);
+    ov.onclick = function (e) {
+      if (e.target === ov || e.target.closest('[data-x]')) { ov.remove(); return; }
+      var a = e.target.closest('[data-act]');
+      if (a && a.dataset.act === 'login') { e.preventDefault(); ov.remove(); if (typeof window.openLoginModal === 'function') window.openLoginModal(); else location.href = 'pro.html'; }
+    };
+  }
   function bottomNav(active) {
     css();
-    if (document.querySelector('.aqbnav, .mobile-bottom-app-bar')) return;
+    if (document.querySelector('.aqbnav')) return;
+    var page = (location.pathname.split('/').pop() || 'index.html');
+    if (!active) active = { 'index.html': 'home', '': 'home', 'my.html': 'fav' }[page] || '';
     var n = document.createElement('nav'); n.className = 'aqbnav'; n.setAttribute('aria-label', 'التنقل السريع');
     var it = function (k, href, ic, label) { return '<a href="' + href + '" class="' + (k === active ? 'on' : '') + '"><i class="fas ' + ic + '"></i>' + label + '</a>'; };
-    n.innerHTML = it('home', 'index.html', 'fa-house', 'الرئيسية') + it('fav', 'my.html', 'fa-heart', 'المفضلة') +
-      '<button type="button" class="add" data-add><i class="fas fa-plus"></i>أضف إعلانًا</button>' +
-      it('stays', 'stays.html#mine', 'fa-calendar-check', 'حجوزاتي') +
-      '<button type="button" data-menu><i class="fas fa-bars"></i>القائمة</button>';
+    n.innerHTML = it('home', 'index.html', 'fa-house', 'الرئيسية') +
+      '<button type="button" data-sec class="' + (active === 'sec' ? 'on' : '') + '"><i class="fas fa-grip"></i>الأقسام</button>' +
+      '<button type="button" class="add" data-add><i class="fas fa-plus"></i>أضف إعلانك</button>' +
+      it('fav', 'my.html', 'fa-heart', 'المفضلة') +
+      '<button type="button" data-me><i class="fas fa-user"></i>حسابي</button>';
     document.body.appendChild(n); document.body.classList.add('aq-has-bnav');
-    n.querySelector('[data-menu]').onclick = function () {
-      if (typeof window.aqDrawer === 'function') window.aqDrawer(true);
-      else { var b = document.querySelector('.hamburger-menu-btn'); if (b) b.click(); else location.href = 'index.html'; }
+    n.querySelector('[data-sec]').onclick = function () {
+      sheetOpts('الأقسام', [
+        ['index.html#search', 'fa-building', 'العقارات', 'شراء وإيجار سنوي'], ['stays.html', 'fa-umbrella-beach', 'شورت تيرم', 'إيجار يومي وشهري'],
+        ['cars.html', 'fa-car-side', 'موتورات', 'سيارات، دراجات نارية، يخوت'], ['projects.html', 'fa-city', 'مشاريع على الخارطة', 'خطط سداد المطوّرين'],
+        ['services-directory.html', 'fa-screwdriver-wrench', 'خدمات بيتك', 'صيانة، نقل، تنظيف، ديكور'], ['brokers-directory.html', 'fa-user-tie', 'الوسطاء والمكاتب', 'دليل الوسطاء المرخّصين'],
+        ['map.html', 'fa-map-location-dot', 'الخريطة', 'العقارات حولك'], ['valuation.html', 'fa-chart-line', 'كم يساوي عقاري؟', 'تقدير السعر'], ['request.html', 'fa-paper-plane', 'اطلب عقارك', 'نرسل طلبك للوسطاء']]);
     };
     n.querySelector('[data-add]').onclick = function () {
-      var ov = document.createElement('div'); ov.className = 'aqs-ov';
-      ov.innerHTML = '<div class="aqs-sheet"><div class="aqs-hd"><h3>ماذا تريد أن تعلن؟</h3><button class="aqs-x" data-x aria-label="إغلاق">✕</button></div>' +
-        '<a class="aqs-opt" href="add-property.html"><i class="fas fa-building"></i><span><b>عقار للبيع أو الإيجار</b><small>للوسطاء والمكاتب والمطوّرين</small></span></a>' +
-        '<a class="aqs-opt" href="add-property.html?stay=1"><i class="fas fa-umbrella-beach"></i><span><b>إقامة قصيرة / إيجار يومي</b><small>شقة أو فيلا للحجز بالليلة</small></span></a>' +
-        '<a class="aqs-opt" href="add-car.html"><i class="fas fa-car-side"></i><span><b>سيارة للبيع أو الإيجار</b><small>لأصحاب السيارات والمعارض وشركات التأجير</small></span></a>' +
-        '<a class="aqs-opt" href="add-car.html?kind=moto"><i class="fas fa-motorcycle"></i><span><b>دراجة نارية</b><small>بيع أو إيجار</small></span></a>' +
-        '<a class="aqs-opt" href="add-car.html?kind=yacht"><i class="fas fa-ship"></i><span><b>يخت أو قارب</b><small>بيع أو إيجار ورحلات بحرية</small></span></a>' +
-        '<a class="aqs-opt" href="add-car.html?deal=parts"><i class="fas fa-gears"></i><span><b>قطع غيار أو ورشة صيانة</b><small>للمحلات والورش ومراكز الخدمة</small></span></a></div>';
-      document.body.appendChild(ov);
-      ov.onclick = function (e) { if (e.target === ov || e.target.closest('[data-x]')) ov.remove(); };
+      sheetOpts('ماذا تريد أن تعلن؟', [
+        ['add-property.html', 'fa-building', 'عقار للبيع أو الإيجار', 'للوسطاء والمكاتب والمطوّرين'], ['add-property.html?stay=1', 'fa-umbrella-beach', 'وحدة شورت تيرم', 'إيجار يومي أو شهري'],
+        ['add-car.html?kind=car', 'fa-car-side', 'سيارة', 'بيع أو إيجار'], ['add-car.html?kind=moto', 'fa-motorcycle', 'دراجة نارية', 'بيع أو إيجار'],
+        ['add-car.html?kind=yacht', 'fa-ship', 'يخت أو قارب', 'بيع أو إيجار ورحلات'], ['add-car.html?deal=parts', 'fa-gears', 'قطع غيار أو ورشة صيانة', 'للمحلات والورش ومراكز الخدمة']]);
+    };
+    n.querySelector('[data-me]').onclick = function () {
+      var c = sb(), go = function (u) {
+        sheetOpts('حسابي', [['stays.html#mine', 'fa-calendar-check', 'حجوزاتي', 'حجوزات الشورت تيرم'], ['my.html', 'fa-bookmark', 'قوائمي', 'المفضلة والبحوث المحفوظة والإشعارات'], ['compare.html', 'fa-code-compare', 'المقارنة', 'العقارات التي اخترتها للمقارنة'], ['add-car.html#mine', 'fa-car', 'إعلانات موتورات', 'إعلاناتي وطلباتها'], ['pro.html', 'fa-briefcase', 'بوابة المهنيين', 'للوسطاء والمكاتب والمطوّرين']]
+          .concat(u ? [] : [['#', 'fa-right-to-bracket', 'تسجيل الدخول أو إنشاء حساب', '', 'login']]));
+      };
+      if (!c) return go(null);
+      c.auth.getSession().then(function (r) { go(r.data && r.data.session); }, function () { go(null); });
     };
   }
 
   window.AQAds = { strip: strip, logos: logos, banner: banner, rail: rail, track: track, recent: recent, trackSearch: trackSearch, bottomNav: bottomNav, fetchAds: fetchAds, HOUSE: HOUSE, esc: esc };
   function boot() {
     document.querySelectorAll('[data-aq-ads]').forEach(function (el) { strip(el); });
+    // الشريط السفلي في كل الصفحات العامة، إلا الصفحات التي فيها شريط حجز أو تواصل خاص بها
+    var pg = (location.pathname.split('/').pop() || 'index.html');
+    if (!/^(pro|dashboard|add-property|add-car|stay|car|property-details|admin)/.test(pg) && location.pathname.indexOf('/admin/') < 0) bottomNav('');
     document.querySelectorAll('[data-aq-logos]').forEach(function (el) { logos(el, el.getAttribute('data-title')); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();

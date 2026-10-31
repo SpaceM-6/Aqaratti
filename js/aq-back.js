@@ -3,6 +3,12 @@
 (function () {
   'use strict';
   if (window.__aqBack) return; window.__aqBack = true;
+  // منع اهتزاز الصفحة يمينًا ويسارًا في الجوال: لا شيء يتجاوز عرض الشاشة
+  try {
+    const st = document.createElement('style');
+    st.textContent = 'html,body{overflow-x:hidden;max-width:100%}@supports (overflow:clip){html,body{overflow-x:clip}}html,body{overscroll-behavior-x:none}';
+    (document.head || document.documentElement).appendChild(st);
+  } catch (e) {}
 
   // كل نوع نافذة: كيف نعرف أنها مفتوحة، وكيف نغلقها
   const KINDS = [
