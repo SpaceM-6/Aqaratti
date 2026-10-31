@@ -2,7 +2,7 @@
    تخزين مؤقت ذكي لواجهة التطبيق (App Shell) ودعم العمل دون اتصال بالإنترنت.
 */
 
-const CACHE_VERSION = 'v92';
+const CACHE_VERSION = 'v93';
 const CACHE_NAME = `anaaqar-cache-${CACHE_VERSION}`;
 
 // 📄 ملفات يجب أن تكون دائماً حديثة (صفحات HTML وملفات JS الأساسية المسؤولة عن منطق الموقع):
@@ -69,7 +69,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   // بيانات العقارات الحيّة (API / properties.json): الشبكة أولاً مع نسخة احتياطية من الكاش عند انقطاع الاتصال
-  if (url.pathname.endsWith('properties.json') || url.pathname.startsWith('/api/')) {
+  if (url.pathname.endsWith('properties.json') || url.pathname.startsWith('/api/') || url.pathname.startsWith('/s/')) {
     event.respondWith(networkFirst(request));
     return;
   }

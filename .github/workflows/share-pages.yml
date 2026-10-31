@@ -1,0 +1,50 @@
+# يبني صفحات المشاركة /s/ (معاينة الإعلان بصورته في واتساب وفيسبوك وإكس)
+# كل 20 دقيقة، وعند كل تحديث للموقع، ويمكن تشغيله يدويًا من تبويب Actions.
+name: share-pages
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  push:
+    branches: [main]
+    paths: ['properties.json', 'stays.json', 'cars.json', 'scripts/build-share-pages.mjs']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: share-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build share pages
+        run: node scripts/build-share-pages.mjs
+      - name: Commit if changed
+        id: commit
+        run: |
+          git add -A s
+          if git diff --cached --quiet; then
+            echo "changed=no" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "anaaqar-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "تحديث صفحات مشاركة الإعلانات"
+            git pull --rebase origin main
+            git push
+            echo "changed=yes" >> "$GITHUB_OUTPUT"
+          fi
+      # الدفع بواسطة GITHUB_TOKEN لا يعيد نشر GitHub Pages تلقائيًا، فنطلب النشر صراحةً
+      - name: Request Pages build
+        if: steps.commit.outputs.changed == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
