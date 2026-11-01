@@ -172,6 +172,8 @@ for (const p of pages) fs.writeFileSync(path.join(OUT, p.key.replace(/[^\w.-]/g,
 let keys = pages.map((p) => p.key);
 if (restFailed) { try { keys = [...new Set(JSON.parse(fs.readFileSync(path.join(OUT, 'index.json'), 'utf8')).concat(keys))]; } catch (e) {} }
 fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(keys));
+// ملخص للتشخيص: كم إعلانًا حقيقيًا جاء من قاعدة البيانات، وهل نجح الاتصال
+fs.writeFileSync(path.join(OUT, 'status.json'), JSON.stringify({ db_ok: !restFailed, real_properties: pages.filter((p) => p.key.startsWith('p-sb-')).length, real_cars: pages.filter((p) => /^c-(?!demo)/.test(p.key)).length, projects: pages.filter((p) => p.key.startsWith('pr-')).length }));
 console.log('share pages:', pages.length);
 
 // ===== خريطة الموقع (sitemap.xml) لمحركات البحث: الصفحات الثابتة + كل إعلان حقيقي + صفحات المناطق =====
