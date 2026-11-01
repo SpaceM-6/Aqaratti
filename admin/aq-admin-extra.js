@@ -66,8 +66,19 @@
     size: ['procedure_area', 'transaction_size_sq_m', 'property_size_sq_m', 'size_sq_m', 'actual_area_sq_m', 'actual_area', 'property_size_sq_m', 'size_sqm', 'area_sqm', 'area_m2'],
     ppm2: ['meter_sale_price', 'price_per_sqm', 'meter_price'],
     rent: ['annual_amount', 'annual_rent_amount', 'contract_amount', 'rent_value', 'annual_rent'],
-    rppm2: ['meter_rent_price']
+    rppm2: ['meter_rent_price'],
+    reg: ['reg_type_en', 'registration_type_en', 'registration_type', 'reg_type'],
+    proc: ['procedure_en', 'procedure_name_en', 'transaction_sub_type']
   };
+  // جاهز أم على الخارطة (من «نوع التسجيل»، أو من اسم الإجراء: Pre-registration = على الخارطة)
+  function segOf(r, map) {
+    var g = String(map.reg ? r[map.reg] || '' : '');
+    if (/off/i.test(g)) return 'offplan';
+    if (/exist|ready|جاهز|قائم/i.test(g)) return 'ready';
+    var p = String(map.proc ? r[map.proc] || '' : '');
+    if (map.proc && p) return /pre.?reg|off.?plan|على الخارطة/i.test(p) ? 'offplan' : 'ready';
+    return null;
+  }
   var norm = function (h) { return String(h || '').toLowerCase().replace(/^\ufeff/, '').trim().replace(/[^a-z0-9\u0600-\u06ff]+/g, '_').replace(/^_+|_+$/g, ''); };
   function pick(headers) {
     var m = {}, H = headers.map(norm);
@@ -103,13 +114,13 @@
     // Supabase يعيد 1000 صف كحد أقصى في الطلب الواحد، فنجلب على دفعات
     var s = { data: [], error: null };
     for (var off = 0; off < 50000; off += 1000) {
-      var part = await sb().from('area_market_stats').select('kind,month,area_en,deals').order('month', { ascending: false }).order('area_en').range(off, off + 999);
+      var part = await sb().from('area_market_stats').select('*').order('month', { ascending: false }).order('area_en').range(off, off + 999);
       if (part.error) { s.error = part.error; break; }
       s.data = s.data.concat(part.data || []); if ((part.data || []).length < 1000) break;
     }
     var box = el.querySelector('#mkSaved');
     if (s.error) { box.innerHTML = setupMsg(s.error); return; }
-    var rows = s.data || [];
+    var rows = (s.data || []).filter(function (r) { return (r.segment || 'all') === 'all'; });
     if (!rows.length) { box.innerHTML = 'لا توجد بيانات سوق محفوظة بعد.'; return; }
     var by = {}; rows.forEach(function (r) { var k = r.kind + '|' + r.month; by[k] = by[k] || { kind: r.kind, month: r.month, areas: 0, deals: 0 }; by[k].areas++; by[k].deals += r.deals; });
     box.innerHTML = '<b>المحفوظ:</b><div style="overflow:auto"><table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px"><tr><th style="text-align:start">الشهر</th><th>النوع</th><th>المناطق</th><th>الصفقات</th></tr>' +
@@ -138,9 +149,13 @@
           var ppm = kind === 'sale' ? (toNum(r[map.ppm2]) || (price && size ? price / size : null)) : (toNum(r[map.rppm2]) || (price && size ? price / size : null));
           if (!price) { skipped++; return; }
           var u = map.usage ? usageOf(r[map.usage]) : 'all';
-          var k = area + '|' + mo + '|' + u;
-          var a = agg[k] || (agg[k] = { area_en: area, area_ar: map.area_ar ? String(r[map.area_ar] || '').trim() || null : null, month: mo, usage: u, prices: [], ppm: [], total: 0 });
-          a.prices.push(price); if (ppm && ppm < 1e6) a.ppm.push(ppm); a.total += price; used++;
+          var segs = ['all'], sg = kind === 'sale' ? segOf(r, map) : null; if (sg) segs.push(sg);
+          segs.forEach(function (seg) {
+            var k = area + '|' + mo + '|' + u + '|' + seg;
+            var a = agg[k] || (agg[k] = { area_en: area, area_ar: map.area_ar ? String(r[map.area_ar] || '').trim() || null : null, month: mo, usage: u, segment: seg, prices: [], ppm: [], total: 0 });
+            a.prices.push(price); if (ppm && ppm < 1e6) a.ppm.push(ppm); a.total += price;
+          });
+          used++;
         });
         out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> قُرئ ' + num(n) + ' سطرًا…</p>';
       },
@@ -149,15 +164,16 @@
           out.innerHTML = '<p class="sub" style="color:#b91c1c">لم أتعرف على أعمدة الملف (التاريخ، المنطقة، القيمة). الأعمدة الموجودة: ' + esc(Object.values(map || {}).join('، ') || '—') + '</p>'; return;
         }
         var rows = Object.values(agg).map(function (a) {
-          return { area_en: a.area_en, area_ar: a.area_ar, month: a.month, kind: kind, usage: a.usage, deals: a.prices.length, median_ppm2: a.ppm.length ? Math.round(median(a.ppm)) : null, median_price: Math.round(median(a.prices)), total_value: Math.round(a.total), source: 'DLD', updated_at: new Date().toISOString() };
+          return { area_en: a.area_en, area_ar: a.area_ar, month: a.month, kind: kind, usage: a.usage, segment: a.segment, deals: a.prices.length, median_ppm2: a.ppm.length ? Math.round(median(a.ppm)) : null, median_price: Math.round(median(a.prices)), total_value: Math.round(a.total), source: 'DLD', updated_at: new Date().toISOString() };
         });
         pending = rows;
         var months = rows.map(function (r) { return r.month; }).sort();
-        var top = {}; rows.forEach(function (r) { top[r.area_en] = (top[r.area_en] || 0) + r.deals; });
+        var top = {}, segN = { ready: 0, offplan: 0 }; rows.forEach(function (r) { if (r.segment === 'all') top[r.area_en] = (top[r.area_en] || 0) + r.deals; else segN[r.segment] += r.deals; });
         var topL = Object.entries(top).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10);
         out.innerHTML = '<div class="card" style="background:#f8fafc"><b>المعاينة — ' + (kind === 'sale' ? 'صفقات بيع' : 'عقود إيجار') + '</b>' +
           '<p class="sub" style="margin:6px 0">قُرئ ' + num(n) + ' سطرًا، استُخدم ' + num(used) + '، وتُرك ' + num(skipped) + ' (رهن أو هبة أو بيانات ناقصة). الفترة: ' + esc((months[0] || '').slice(0, 7)) + ' إلى ' + esc((months[months.length - 1] || '').slice(0, 7)) + '. عدد المناطق: ' + num(Object.keys(top).length) + '.</p>' +
           '<p class="sub" style="margin:0 0 6px">الأعمدة المستخدمة: ' + esc(Object.entries(map).map(function (e) { return e[0] + '=' + e[1]; }).join(' · ')) + '</p>' +
+          (segN.ready + segN.offplan ? '<p class="sub" style="margin:0 0 6px">منها: جاهز ' + num(segN.ready) + ' · على الخارطة ' + num(segN.offplan) + '</p>' : '') +
           '<b>أكثر المناطق صفقات:</b> ' + topL.map(function (t) { return esc(t[0]) + ' (' + num(t[1]) + ')'; }).join('، ') +
           '<div style="margin-top:10px"><button class="btn teal" id="mkSave"><i class="fas fa-floppy-disk"></i> حفظ ' + num(rows.length) + ' ملخصًا</button></div></div>';
         out.querySelector('#mkSave').onclick = function () { save(el, out); };
@@ -171,7 +187,7 @@
     var btn = out.querySelector('#mkSave'); btn.disabled = true;
     for (var i = 0; i < pending.length; i += 500) {
       btn.textContent = 'جاري الحفظ… ' + Math.min(100, Math.round(100 * i / pending.length)) + '%';
-      var r = await sb().from('area_market_stats').upsert(pending.slice(i, i + 500), { onConflict: 'area_en,month,kind,usage' });
+      var r = await sb().from('area_market_stats').upsert(pending.slice(i, i + 500), { onConflict: 'area_en,month,kind,usage,segment' });
       if (r.error) { btn.disabled = false; btn.textContent = 'إعادة المحاولة'; alert(setupMsg(r.error)); return; }
     }
     pending = null;

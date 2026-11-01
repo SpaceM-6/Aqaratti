@@ -15,12 +15,12 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=99">
+  <link rel="stylesheet" href="css/aq-pages.css?v=100">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=99"></script>
-  <script src="js/aq-public.js?v=99"></script>
-  <script src="js/aq-trust.js?v=99"></script>
-  <script src="js/aq-areas.js?v=99"></script>
+  <script src="supabase-client.js?v=100"></script>
+  <script src="js/aq-public.js?v=100"></script>
+  <script src="js/aq-trust.js?v=100"></script>
+  <script src="js/aq-areas.js?v=100"></script>
   <style>
     .kpis { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin:0 0 16px; }
     @media (max-width:760px) { .kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
@@ -72,26 +72,33 @@
       const c = document.querySelector('link[rel="canonical"]'); if (c) c.href = 'https://anaaqar.com/areas.html' + (q ? '?a=' + encodeURIComponent(q) : '');
     }
 
-    // ---------- رسم بياني صغير: وسيط سعر المتر (خط) وعدد الصفقات (أعمدة) شهريًا ----------
-    function chart(rows) {
-      if (rows.length < 2) return '';
-      const W = 640, H = 260, P = { l: 64, r: 40, t: 28, b: 44 };
-      const xs = (i) => P.l + (W - P.l - P.r) * (rows.length === 1 ? 0.5 : i / (rows.length - 1));
-      const ppm = rows.map((r) => r.ppm).filter((v) => v != null), mx = Math.max(...ppm), mn = Math.min(...ppm);
+    // ---------- رسم بياني: وسيط سعر المتر (خط لكل فئة) وعدد الصفقات (أعمدة) شهريًا ----------
+    // base: أشهر الصفقات كلها (للأعمدة) · lines: [{name, color, dash, series}]
+    function chart(base, lines) {
+      if (base.length < 2) return '';
+      const W = 640, H = 270, P = { l: 64, r: 40, t: 30, b: 44 };
+      const idx = {}; base.forEach((r, i) => { idx[r.m] = i; });
+      const xs = (i) => P.l + (W - P.l - P.r) * (base.length === 1 ? 0.5 : i / (base.length - 1));
+      const all = lines.flatMap((L) => L.series.map((r) => r.ppm)).filter((v) => v != null);
+      const mx = Math.max(...all), mn = Math.min(...all);
       const lo = mn - (mx - mn) * 0.15, hi = mx + (mx - mn) * 0.15 || mx * 1.1;
       const ys = (v) => P.t + (H - P.t - P.b) * (1 - (v - lo) / ((hi - lo) || 1));
-      const dmax = Math.max(...rows.map((r) => r.deals)), bw = Math.max(4, (W - P.l - P.r) / rows.length * 0.55);
-      const bars = rows.map((r, i) => { const h = (H - P.t - P.b) * 0.35 * r.deals / (dmax || 1); return `<rect x="${xs(i) - bw / 2}" y="${H - P.b - h}" width="${bw}" height="${h}" rx="2" fill="#99d5ce" opacity=".55"><title>${r.m}: ${num(r.deals)} صفقة</title></rect>`; }).join('');
-      const pts = rows.map((r, i) => r.ppm == null ? null : [xs(i), ys(r.ppm), r]).filter(Boolean);
-      const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+      const dmax = Math.max(...base.map((r) => r.deals)), bw = Math.max(4, (W - P.l - P.r) / base.length * 0.55);
+      const bars = base.map((r, i) => { const h = (H - P.t - P.b) * 0.35 * r.deals / (dmax || 1); return `<rect x="${xs(i) - bw / 2}" y="${H - P.b - h}" width="${bw}" height="${h}" rx="2" fill="#99d5ce" opacity=".5"><title>${r.m}: ${num(r.deals)} صفقة</title></rect>`; }).join('');
       const ticks = [lo + (hi - lo) * 0.15, (lo + hi) / 2, hi - (hi - lo) * 0.15].map((v) => `<line x1="${P.l}" x2="${W - P.r}" y1="${ys(v)}" y2="${ys(v)}" stroke="currentColor" opacity=".08"/><text x="${P.l - 6}" y="${ys(v) + 4}" text-anchor="end" font-size="19" fill="currentColor" opacity=".65">${num(v / 1000)}k</text>`).join('');
-      const step = Math.ceil(rows.length / 6);
-      const labels = rows.map((r, i) => i % step && i !== rows.length - 1 ? '' : `<text x="${xs(i)}" y="${H - 14}" text-anchor="middle" font-size="19" fill="currentColor" opacity=".65">${r.m.slice(2, 7).replace('-', '/')}</text>`).join('');
-      const last = pts[pts.length - 1];
-      return `<div class="chart" style="color:var(--ink)"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="وسيط سعر المتر المربع شهريًا">${ticks}${bars}<path d="${line}" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linejoin="round"/>
-        ${pts.map((p) => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#0f766e"><title>${p[2].m}: ${num(p[2].ppm)} درهم/م²</title></circle>`).join('')}
-        ${last ? `<text x="${last[0] - 4}" y="${last[1] - 8}" text-anchor="end" font-size="21" font-weight="800" fill="#0f766e">${num(last[2].ppm)}</text>` : ''}${labels}</svg>
-        <p class="src">الخط: وسيط سعر البيع (درهم لكل م²) · الأعمدة: عدد الصفقات</p></div>`;
+      const paths = lines.map((L) => {
+        const pts = L.series.filter((r) => r.ppm != null && idx[r.m] != null).map((r) => [xs(idx[r.m]), ys(r.ppm), r]);
+        if (!pts.length) return '';
+        const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '), last = pts[pts.length - 1];
+        return `<path d="${d}" fill="none" stroke="${L.color}" stroke-width="2.6" stroke-linejoin="round"${L.dash ? ' stroke-dasharray="7 5"' : ''}/>` +
+          pts.map((p) => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${L.color}"><title>${L.name} ${p[2].m}: ${num(p[2].ppm)} درهم/م²</title></circle>`).join('') +
+          `<text x="${last[0] - 6}" y="${last[1] - 9}" text-anchor="end" font-size="19" font-weight="800" fill="${L.color}">${num(last[2].ppm)}</text>`;
+      }).join('');
+      const step = Math.ceil(base.length / 6);
+      const labels = base.map((r, i) => i % step && i !== base.length - 1 ? '' : `<text x="${xs(i)}" y="${H - 14}" text-anchor="middle" font-size="19" fill="currentColor" opacity=".65">${r.m.slice(2, 7).replace('-', '/')}</text>`).join('');
+      const legend = lines.map((L) => `<span style="display:inline-flex;align-items:center;gap:6px;margin-inline-end:14px"><i style="display:inline-block;width:22px;border-top:3px ${L.dash ? 'dashed' : 'solid'} ${L.color}"></i>${esc(L.name)}</span>`).join('');
+      return `<div class="chart" style="color:var(--ink)"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="وسيط سعر المتر المربع شهريًا">${ticks}${bars}${paths}${labels}</svg>
+        <p class="src">${legend}<span>الأعمدة: عدد الصفقات · الأسعار بالدرهم لكل م²</span></p></div>`;
     }
 
     function card(p) {
@@ -115,12 +122,15 @@
       const real = listings.filter((p) => /^sb-/.test(String(p.id)));
       const prj = projects.filter((p) => inArea([p.name, p.area, p.city].join(' ')));
       const sale = summarize(rows, 'sale'), rent = summarize(rows, 'rent');
+      const ready = summarize(rows, 'sale', 'ready'), offplan = summarize(rows, 'sale', 'offplan');
 
       // أرقام من إعلانات «أنا عقار» الحقيقية فقط (أسعار معروضة، لا صفقات)
       const ask = (deal) => median(real.filter((p) => (deal === 'rent' ? p.dealType === 'rent' && p.rentPeriod !== 'daily' : p.dealType !== 'rent') && p.priceAED > 0 && p.area_m2 > 0).map((p) => p.priceAED / p.area_m2));
       const askSale = ask('sale'), askRent = ask('rent');
-      const yieldPct = rent && sale && rent.ppm && sale.ppm ? rent.ppm / sale.ppm * 100 : askRent && askSale ? askRent / askSale * 100 : null;
-      const yieldSrc = rent && sale && rent.ppm && sale.ppm ? 'من صفقات وإيجارات دائرة الأراضي' : 'تقديري من أسعار الإعلانات المعروضة';
+      // العائد يُقاس على العقارات الجاهزة (المؤجَّرة فعلًا) متى توفرت
+      const base = ready && ready.ppm ? ready : sale;
+      const yieldPct = rent && base && rent.ppm && base.ppm ? rent.ppm / base.ppm * 100 : askRent && askSale ? askRent / askSale * 100 : null;
+      const yieldSrc = rent && base && rent.ppm && base.ppm ? 'إيجارات دائرة الأراضي ÷ ' + (base === ready ? 'أسعار البيع الجاهز' : 'أسعار البيع') : 'تقديري من أسعار الإعلانات المعروضة';
       const kpi = (v, t, d) => `<div class="kpi"><b>${v}</b><small>${t}</small>${d || ''}</div>`;
       const delta = (c) => c == null ? '' : `<span class="d ${c >= 0 ? 'up' : 'dn'}">${c >= 0 ? '▲' : '▼'} ${Math.abs(c).toFixed(1)}% عن العام السابق</span>`;
 
@@ -129,7 +139,11 @@
         html += `<div class="kpis">${kpi(sale ? num(sale.ppm) : '—', 'وسيط سعر البيع (درهم/م²)' + (sale && sale.ppm ? ` · ${num(sale.ppm / SQFT)} للقدم²` : ''), sale ? delta(sale.change) : '')}
           ${kpi(sale ? num(sale.deals) : '—', 'صفقات بيع مسجلة (12 شهرًا)')}${kpi(rent ? num(rent.price) : '—', 'وسيط الإيجار السنوي (درهم)')}
           ${kpi(yieldPct ? yieldPct.toFixed(1) + '%' : '—', 'العائد الإيجاري الإجمالي', yieldPct ? `<span class="d" style="color:var(--muted)">${yieldSrc}</span>` : '')}</div>`;
-        if (sale && sale.series.length > 1) html += `<div class="box"><h2>حركة الأسعار والصفقات</h2><p class="sub">آخر ${sale.series.length} شهرًا من الصفقات المسجلة لدى دائرة الأراضي والأملاك.</p>${chart(sale.series)}</div>`;
+        if (ready || offplan) html += `<div class="kpis" style="grid-template-columns:repeat(2,minmax(0,1fr))">${kpi(ready && ready.ppm ? num(ready.ppm) : '—', `<span style="color:#0f766e">●</span> البيع الجاهز (درهم/م²)${ready ? ' · ' + num(ready.deals) + ' صفقة' : ''}`)}${kpi(offplan && offplan.ppm ? num(offplan.ppm) : '—', `<span style="color:#b45309">●</span> البيع على الخارطة (درهم/م²)${offplan ? ' · ' + num(offplan.deals) + ' صفقة' : ''}`)}</div>`;
+        if (sale && sale.series.length > 1) {
+          const lines = ready || offplan ? [ready && { name: 'جاهز', color: '#0f766e', series: ready.series }, offplan && { name: 'على الخارطة', color: '#b45309', dash: true, series: offplan.series }].filter(Boolean) : [{ name: 'وسيط سعر البيع', color: '#0f766e', series: sale.series }];
+          html += `<div class="box"><h2>حركة الأسعار والصفقات</h2><p class="sub">آخر ${sale.series.length} شهرًا من الصفقات المسجلة لدى دائرة الأراضي والأملاك${ready || offplan ? '، مع الفصل بين الجاهز وعلى الخارطة' : ''}.</p>${chart(sale.series, lines)}</div>`;
+        }
       } else {
         html += `<div class="kpis">${kpi(num(real.length), 'إعلانات نشطة من وسطاء موثّقين')}${kpi(askSale ? num(askSale) : '—', 'وسيط سعر البيع المعروض (درهم/م²)')}${kpi(askRent ? num(askRent) : '—', 'وسيط الإيجار المعروض (درهم/م² سنويًا)')}${kpi(yieldPct ? yieldPct.toFixed(1) + '%' : '—', 'العائد الإيجاري التقديري')}</div>
           <div class="note2"><i class="fas fa-circle-info"></i> لم تُضف بعد صفقات دائرة الأراضي الرسمية لهذه المنطقة؛ الأرقام أعلاه من أسعار الإعلانات المعروضة على «أنا عقار» وليست أسعار بيع فعلية.</div>`;
@@ -154,10 +168,10 @@
         const since = new Date(); since.setMonth(since.getMonth() - 14);
         const r = { data: [] };
         for (let off = 0; off < 30000; off += 1000) {
-          const part = await supabaseClient.from('area_market_stats').select('area_en,area_ar,deals,month').eq('kind', 'sale').gte('month', since.toISOString().slice(0, 10)).order('area_en').order('month').range(off, off + 999);
+          const part = await supabaseClient.from('area_market_stats').select('*').eq('kind', 'sale').gte('month', since.toISOString().slice(0, 10)).order('area_en').order('month').range(off, off + 999);
           r.data = r.data.concat(part.data || []); if (part.error || (part.data || []).length < 1000) break;
         }
-        const by = {}; (r.data || []).forEach((x) => { by[x.area_en] = by[x.area_en] || { en: x.area_en, ar: x.area_ar, deals: 0 }; by[x.area_en].deals += x.deals; });
+        const by = {}; (r.data || []).filter((x) => (x.segment || 'all') === 'all').forEach((x) => { by[x.area_en] = by[x.area_en] || { en: x.area_en, ar: x.area_ar, deals: 0 }; by[x.area_en].deals += x.deals; });
         dld = Object.values(by).sort((a, b) => b.deals - a.deals);
       } catch (e) {}
       const mapped = new Set(AREAS.flatMap((a) => a.dld || []).map((x) => x.toLowerCase()));
@@ -171,8 +185,8 @@
     (q ? areaPage(slug(q)) : indexPage()).catch(() => { $('root').innerHTML = '<div class="empty"><h2>تعذّر التحميل</h2></div>'; });
   })();
   </script>
-  <script src="js/aq-engage.js?v=99" defer></script>
-  <script src="js/aq-back.js?v=99" defer></script>
-  <script src="js/aq-ads.js?v=99" defer></script>
+  <script src="js/aq-engage.js?v=100" defer></script>
+  <script src="js/aq-back.js?v=100" defer></script>
+  <script src="js/aq-ads.js?v=100" defer></script>
 </body>
 </html>

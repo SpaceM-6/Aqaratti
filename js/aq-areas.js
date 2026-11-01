@@ -37,8 +37,10 @@
     return AREAS.find((a) => a.ar === name || a.en.toLowerCase() === n || (a.dld || []).some((d) => d.toLowerCase() === n) || (a.words || []).some((w) => n.includes(w.toLowerCase()) || w.toLowerCase() === n)) || null;
   }
   // ملخص بيانات دائرة الأراضي لمنطقة: آخر 12 شهرًا مقابل الـ12 التي قبلها
-  function summarize(rows, kind) {
-    const r = rows.filter((x) => x.kind === kind);
+  // seg: 'all' (الكل) أو 'ready' (جاهز) أو 'offplan' (على الخارطة)
+  function summarize(rows, kind, seg) {
+    seg = seg || 'all';
+    const r = rows.filter((x) => x.kind === kind && (x.segment || 'all') === seg);
     if (!r.length) return null;
     const months = [...new Set(r.map((x) => x.month))].sort();
     const lastM = months[months.length - 1], cut = new Date(lastM); cut.setMonth(cut.getMonth() - 11);

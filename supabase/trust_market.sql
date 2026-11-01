@@ -192,3 +192,11 @@ begin
 end;
 $$;
 grant execute on function public.admin_inventory_quality() to authenticated;
+
+-- الفصل بين البيع الجاهز وعلى الخارطة (نفس محتوى market_segments.sql)
+alter table public.area_market_stats add column if not exists segment text not null default 'all';
+do $$ begin
+  alter table public.area_market_stats add constraint area_market_stats_segment_chk check (segment in ('all', 'ready', 'offplan'));
+exception when duplicate_object then null; end $$;
+alter table public.area_market_stats drop constraint if exists area_market_stats_pkey;
+alter table public.area_market_stats add primary key (area_en, month, kind, usage, segment);
