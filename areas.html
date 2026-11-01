@@ -8,7 +8,7 @@
   <title>دليل المناطق: الأسعار والإيجارات والصفقات | أنا عقار AnaAqar</title>
   <meta name="description" content="أسعار البيع لكل متر، ومتوسط الإيجارات، وعدد الصفقات المسجلة، والعائد الإيجاري، والعقارات المتاحة في كل منطقة بالإمارات.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://anaaqar.com/areas.html">
+  <link rel="canonical" href="https://anaaqar.com/area/">
   <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#00a896">
@@ -69,7 +69,7 @@
     function meta(title, desc) {
       document.title = title;
       const d = document.querySelector('meta[name="description"]'); if (d) d.content = desc;
-      const c = document.querySelector('link[rel="canonical"]'); if (c) c.href = 'https://anaaqar.com/areas.html' + (q ? '?a=' + encodeURIComponent(q) : '');
+      const c = document.querySelector('link[rel="canonical"]'); if (c) c.href = 'https://anaaqar.com/area/' + (q && window.AQAreas ? AQAreas.slug(q) + '.html' : '');
     }
 
     // ---------- رسم بياني: وسيط سعر المتر (خط لكل فئة) وعدد الصفقات (أعمدة) شهريًا ----------

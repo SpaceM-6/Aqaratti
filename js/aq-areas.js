@@ -127,5 +127,7 @@
     return list.map(([k, v]) => `<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:5px 0"><span style="flex:0 0 96px">${e(landAr(k))}</span><span style="flex:1;height:10px;border-radius:99px;background:#e2e8f0;overflow:hidden"><i style="display:block;height:100%;width:${(v / tot * 100).toFixed(1)}%;background:#0f766e;border-radius:99px"></i></span><span style="flex:0 0 46px;text-align:end;color:var(--muted,#64748b)">${Math.round(v / tot * 100)}%</span></div>`).join('');
   }
 
-  window.AQAreas = { AREAS, find, summarize, marketRows, median, dldProjects, projectCard, projectCss: css, title, LAND_AR, landAr, freehold, landRows, mergeLand, landBars, FH_COLORS };
+  // رابط ثابت لصفحة المنطقة المقروءة لمحركات البحث: /area/dubai-marina.html
+  const slug = (name) => { const a = find(name); const base = a ? (a.dld && a.dld[0] && a.en.length <= 4 ? a.dld[a.dld.length - 1] : a.en) : name; return String(base).toLowerCase().replace(/&/g, ' and ').replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'area'; };
+  window.AQAreas = { slug, AREAS, find, summarize, marketRows, median, dldProjects, projectCard, projectCss: css, title, LAND_AR, landAr, freehold, landRows, mergeLand, landBars, FH_COLORS };
 })();
