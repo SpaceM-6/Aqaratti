@@ -251,5 +251,77 @@
     loadMarket(el);
   }
 
-  window.AQAdminExtra = { loadQuality: loadQuality, loadMarket: loadMarket };
+  // ===================== سجلات دائرة الأراضي (عرض وبحث للإدارة) =====================
+  var regTab = 'brokers';
+  async function loadRegistry(el) {
+    var T = [['brokers', 'الوسطاء المرخّصون', 'fa-user-tie'], ['projects', 'المشاريع', 'fa-city'], ['developers', 'المطوّرون', 'fa-building'], ['market', 'أسعار المناطق', 'fa-chart-line']];
+    el.innerHTML = '<div class="stats" id="rgStats"></div><div class="pills" id="rgTabs">' + T.map(function (t) { return '<button class="pill' + (t[0] === regTab ? ' on' : '') + '" data-t="' + t[0] + '"><i class="fas ' + t[2] + '"></i> ' + t[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="fg"><input id="rgQ" type="search" placeholder="ابحث…"></div><div id="rgList"><div class="card">جاري التحميل…</div></div>';
+    el.querySelectorAll('#rgTabs .pill').forEach(function (b) { b.onclick = function () { regTab = b.dataset.t; loadRegistry(el); }; });
+    var today = new Date().toISOString().slice(0, 10);
+    // الأعداد
+    var cnt = async function (t, f) { try { var q = sb().from(t).select('*', { count: 'exact', head: true }); if (f) q = f(q); var r = await q; return r.error ? null : r.count; } catch (e) { return null; } };
+    Promise.all([cnt('dld_brokers'), cnt('dld_brokers', function (q) { return q.gte('license_end', today); }), cnt('dld_projects'), cnt('dld_projects', function (q) { return q.eq('status', 'ACTIVE'); }), cnt('dld_developers'), cnt('area_market_stats')]).then(function (c) {
+      var st = function (v, t) { return '<div class="stat"><b>' + (v == null ? '—' : num(v)) + '</b><span>' + t + '</span></div>'; };
+      var box = el.querySelector('#rgStats'); if (box) box.innerHTML = st(c[0], 'وسيط في السجل') + st(c[1], 'رخصة سارية') + st(c[2], 'مشروع مسجّل') + st(c[3], 'قيد الإنشاء') + st(c[4], 'مطوّر') + st(c[5], 'ملخص سوق شهري');
+    });
+    var q = el.querySelector('#rgQ'), timer = null;
+    q.placeholder = { brokers: 'ابحث برقم BRN أو اسم الوسيط أو المكتب…', projects: 'ابحث باسم المشروع أو المطوّر أو المنطقة…', developers: 'ابحث باسم المطوّر أو رقمه…', market: 'ابحث باسم المنطقة…' }[regTab];
+    q.oninput = function () { clearTimeout(timer); timer = setTimeout(function () { drawRegistry(el, q.value.trim()); }, 300); };
+    drawRegistry(el, '');
+  }
+  var like = function (v) { return '"%' + String(v).replace(/["\\,()%]/g, ' ').trim() + '%"'; };
+  async function drawRegistry(el, term) {
+    var box = el.querySelector('#rgList'), today = new Date().toISOString().slice(0, 10), r, html = '';
+    var miss = function (e) { return '<div class="card">' + (/relation|does not exist|schema cache/i.test((e && e.message) || '') ? 'شغّلي ملف supabase/dld_registry.sql من SQL Editor، ثم ارفعي الملفات من «بيانات السوق».' : esc(e.message)) + '</div>'; };
+    var row = function (title, sub, right) { return '<div class="card" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div style="min-width:0;flex:1"><b>' + title + '</b><div class="sub" style="margin:2px 0 0">' + sub + '</div></div><div style="font-weight:800">' + (right || '') + '</div></div>'; };
+    if (regTab === 'brokers') {
+      var qb = sb().from('dld_brokers').select('*').order('license_end', { ascending: false }).limit(60);
+      if (term) qb = /^\d+$/.test(term) ? qb.or('broker_number.eq.' + term + ',office_number.eq.' + term) : qb.or('name_en.ilike.' + like(term) + ',office_name.ilike.' + like(term));
+      r = await qb; if (r.error) { box.innerHTML = miss(r.error); return; }
+      html = (r.data || []).map(function (b) {
+        var ok = b.license_end && b.license_end >= today;
+        return row(esc(b.name_en), 'BRN ' + esc(b.broker_number) + ' · ' + esc(b.office_name || '') + (b.office_number ? ' (ORN ' + esc(b.office_number) + ')' : ''),
+          '<span class="badge ' + (ok ? 'done' : 'new') + '">' + (ok ? 'سارية حتى ' : 'منتهية ') + esc(b.license_end || '') + '</span>');
+      }).join('');
+    } else if (regTab === 'projects') {
+      var qp = sb().from('dld_projects').select('*').order('cnt_unit', { ascending: false }).limit(80);
+      if (term) qp = qp.or('name_en.ilike.' + like(term) + ',developer_en.ilike.' + like(term) + ',area_en.ilike.' + like(term));
+      r = await qp; if (r.error) { box.innerHTML = miss(r.error); return; }
+      var ST = { ACTIVE: 'قيد الإنشاء', PENDING: 'بانتظار البدء', FINISHED: 'مكتمل', COMPLETED: 'مكتمل', CANCELLED: 'ملغى' };
+      html = (r.data || []).map(function (p) {
+        return row(esc(p.name_en), esc(p.developer_en || '') + ' · ' + esc(p.area_en || '') + ' · ' + num(p.cnt_unit || 0) + ' وحدة' + (p.end_date ? ' · التسليم ' + esc(p.end_date) : '') + (p.inspection_date ? ' · آخر تفتيش ' + esc(p.inspection_date) : ''),
+          esc(ST[p.status] || p.status || '') + ' · ' + (Number(p.percent_completed) || 0) + '%');
+      }).join('');
+    } else if (regTab === 'developers') {
+      var qd = sb().from('dld_developers').select('*').order('registration_date', { ascending: false }).limit(80);
+      if (term) qd = /^\d+$/.test(term) ? qd.eq('developer_number', term) : qd.ilike('name_en', '%' + term.replace(/[%,()]/g, ' ') + '%');
+      r = await qd; if (r.error) { box.innerHTML = miss(r.error); return; }
+      html = (r.data || []).map(function (d) {
+        var ok = d.license_expiry && d.license_expiry >= today;
+        return row(esc(d.name_en), 'رقم المطوّر ' + esc(d.developer_number) + ' · رخصة ' + esc(d.license_number || '—') + ' · ' + esc(d.license_source || '') + (d.registration_date ? ' · سُجّل ' + esc(d.registration_date) : ''),
+          '<span class="badge ' + (ok ? 'done' : 'new') + '">' + (ok ? 'سارية حتى ' : 'منتهية ') + esc(d.license_expiry || '') + '</span>');
+      }).join('');
+    } else {
+      // أسعار المناطق: آخر 12 شهرًا لكل منطقة (البيع الكلي + الإيجار)
+      var all = [];
+      for (var off = 0; off < 60000; off += 1000) {
+        var part = await sb().from('area_market_stats').select('*').order('area_en').order('month').range(off, off + 999);
+        if (part.error) { box.innerHTML = miss(part.error); return; }
+        all = all.concat(part.data || []); if ((part.data || []).length < 1000) break;
+      }
+      var by = {};
+      all.filter(function (x) { return (x.segment || 'all') === 'all'; }).forEach(function (x) {
+        var a = by[x.area_en] || (by[x.area_en] = { area: x.area_en, sale: 0, rent: 0, ppm: [], rentP: [] });
+        if (x.kind === 'sale') { a.sale += x.deals; if (x.median_ppm2) for (var i = 0; i < Math.min(x.deals, 30); i++) a.ppm.push(+x.median_ppm2); }
+        else { a.rent += x.deals; if (x.median_price) for (var j = 0; j < Math.min(x.deals, 30); j++) a.rentP.push(+x.median_price); }
+      });
+      var list = Object.values(by).filter(function (a) { return !term || a.area.toLowerCase().indexOf(term.toLowerCase()) > -1; }).sort(function (a, b) { return b.sale - a.sale; }).slice(0, 150);
+      html = '<div class="card" style="overflow:auto"><table style="width:100%;border-collapse:collapse;font-size:14px"><tr><th style="text-align:start">المنطقة</th><th>صفقات البيع</th><th>وسيط سعر المتر</th><th>عقود الإيجار</th><th>وسيط الإيجار السنوي</th></tr>' +
+        list.map(function (a) { return '<tr style="border-top:1px solid var(--line)"><td><a href="../areas.html?a=' + encodeURIComponent(a.area) + '" target="_blank">' + esc(a.area) + '</a></td><td style="text-align:center">' + num(a.sale) + '</td><td style="text-align:center">' + (a.ppm.length ? num(median(a.ppm)) : '—') + '</td><td style="text-align:center">' + num(a.rent) + '</td><td style="text-align:center">' + (a.rentP.length ? num(median(a.rentP)) : '—') + '</td></tr>'; }).join('') + '</table></div>';
+    }
+    box.innerHTML = html || '<div class="card">لا نتائج.</div>';
+  }
+
+  window.AQAdminExtra = { loadQuality: loadQuality, loadMarket: loadMarket, loadRegistry: loadRegistry };
 })();

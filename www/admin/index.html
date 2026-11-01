@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../supabase-client.js?v=101"></script>
-  <script src="aq-admin-extra.js?v=101"></script>
+  <script src="../supabase-client.js?v=102"></script>
+  <script src="aq-admin-extra.js?v=102"></script>
   <style>
     :root { --teal:#00a896; --teal-d:#028090; --teal-s:#e6f7f5; --navy:#192038; --gold:#d4af37; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; --red:#e11d48; }
     * { box-sizing:border-box; }
@@ -130,6 +130,7 @@
 
       <div class="group">محتوى الموقع</div>
       <div class="tiles">
+        <a class="tile" href="#s-registry"><span class="ic" style="background:#ecfeff;color:#0e7490"><i class="fas fa-landmark"></i></span><span class="tx"><b>سجلات دائرة الأراضي</b><small>الوسطاء والمشاريع والمطوّرون وأسعار المناطق</small></span></a>
         <a class="tile" href="#s-market"><span class="ic" style="background:#e0f2fe;color:#0369a1"><i class="fas fa-chart-line"></i></span><span class="tx"><b>بيانات السوق</b><small>صفقات وإيجارات دائرة الأراضي لصفحات المناطق</small></span></a>
         <a class="tile" href="#s-ads"><span class="ic" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-rectangle-ad"></i></span><span class="tx"><b>شريط الإعلانات</b><small>الإعلانات العشرة في صفحات الموقع</small></span></a>
         <a class="tile" href="#s-news"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-bullhorn"></i></span><span class="tx"><b>شريط الجديد</b><small>الأخبار المتحركة أعلى الموقع</small></span></a>
@@ -311,6 +312,7 @@
     <!-- ===== جودة الإعلانات / بيانات السوق (admin/aq-admin-extra.js) ===== -->
     <section data-sec="quality"><div id="qualityBox"></div></section>
     <section data-sec="market"><div id="marketBox"></div></section>
+    <section data-sec="registry"><div id="registryBox"></div></section>
 
     <!-- ===== المساعد الذكي ===== -->
     <section data-sec="ai">
@@ -357,8 +359,8 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات', quality: 'جودة الإعلانات والتحقق', market: 'بيانات السوق' };
-    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings(), quality: () => AQAdminExtra.loadQuality($('qualityBox')), market: () => AQAdminExtra.loadMarket($('marketBox')) };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات', quality: 'جودة الإعلانات والتحقق', market: 'بيانات السوق', registry: 'سجلات دائرة الأراضي' };
+    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings(), quality: () => AQAdminExtra.loadQuality($('qualityBox')), market: () => AQAdminExtra.loadMarket($('marketBox')), registry: () => AQAdminExtra.loadRegistry($('registryBox')) };
     let current = '';
     function route() {
       const m = /^#s-(\w+)/.exec(location.hash); const k = m && TITLES[m[1]] ? m[1] : '';
@@ -547,9 +549,15 @@
       if (error) { box.innerHTML = `<div class="empty">${setupMsg(error)}</div>`; return; }
       if (!data.length) { box.innerHTML = '<div class="empty">لا حسابات مهنية بعد. رابط التسجيل للمهنيين: anaaqar.com/pro.html</div>'; return; }
       box.innerHTML = data.map((a) => `<div class="item ${a.verified ? '' : ''}"><div class="tx"><b>${esc(a.company_name || a.full_name || '—')} ${a.verified ? '<span class="badge done">موثّق</span>' : '<span class="badge new">غير موثّق</span>'}</b>
-        <small>${ATYPE[a.account_type] || esc(a.account_type)}${a.company_name && a.full_name ? ' · ' + esc(a.full_name) : ''} · ترخيص: <b dir="ltr" style="display:inline">${esc(a.license_no || 'لم يُضف')}</b> · ${a.listings} إعلان${a.office_id ? ' · عضو في مكتب' : ''}</small>
+        <small>${ATYPE[a.account_type] || esc(a.account_type)}${a.company_name && a.full_name ? ' · ' + esc(a.full_name) : ''} · ترخيص: <b dir="ltr" style="display:inline">${esc(a.license_no || 'لم يُضف')}</b>${a.license_no ? ` <span data-dld="${esc(a.license_no)}"></span>` : ''} · ${a.listings} إعلان${a.office_id ? ' · عضو في مكتب' : ''}</small>
         <small><a href="mailto:${esc(a.email)}" dir="ltr">${esc(a.email)}</a>${a.phone ? ` · <a href="tel:${esc(a.phone)}" dir="ltr">${esc(a.phone)}</a> · <a href="https://wa.me/${waNum(a.phone)}" target="_blank" rel="noopener">واتساب</a>` : ''} · سجّل ${fmt(a.created_at)}</small></div>
         <div class="acts"><button class="btn sm ${a.verified ? 'ghost' : 'teal'}" data-vf="${a.id}" data-v="${a.verified ? '0' : '1'}">${a.verified ? 'إلغاء التوثيق' : 'توثيق'}</button></div></div>`).join('');
+      // حالة رقم الترخيص في سجل دائرة الأراضي
+      box.querySelectorAll('[data-dld]').forEach(async (sp) => {
+        try { const r = await sb.rpc('dld_broker_status', { p_number: sp.dataset.dld }); const d = r.data; if (!d) return;
+          sp.innerHTML = !d.found ? '<span class="badge new">غير موجود في سجل الدائرة</span>' : d.active ? `<span class="badge done">✓ ساري لدى الدائرة: ${esc(d.name || '')}${d.office ? ' · ' + esc(d.office) : ''}</span>` : '<span class="badge new">منتهية في سجل الدائرة</span>';
+        } catch (e) {}
+      });
       box.querySelectorAll('[data-vf]').forEach((b) => b.onclick = async () => {
         const v = b.dataset.v === '1';
         const { error } = await sb.from('profiles').update({ verified: v, verified_at: v ? new Date().toISOString() : null }).eq('id', b.dataset.vf);
@@ -745,6 +753,6 @@
     boot();
   })();
   </script>
-  <script src="../js/aq-back.js?v=101" defer></script>
+  <script src="../js/aq-back.js?v=102" defer></script>
 </body>
 </html>
