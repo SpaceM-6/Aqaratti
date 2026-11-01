@@ -3,10 +3,24 @@
 (function () {
   'use strict';
   if (window.__aqBack) return; window.__aqBack = true;
+  // كل صفحة تُفتح من أعلاها بشكل طبيعي، بلا تمرير متحرك للصفحة (إلا عند الرجوع للخلف فتعود لمكانك)
+  try {
+    var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+    var back = nav.type === 'back_forward';
+    if ('scrollRestoration' in history) history.scrollRestoration = back ? 'auto' : 'manual';
+    var st0 = document.createElement('style');
+    st0.textContent = 'html,body{scroll-behavior:auto!important}';
+    (document.head || document.documentElement).appendChild(st0);
+    if (!back && !location.hash) {
+      var top0 = function () { if (window.scrollY > 0 && !window.__aqUserScrolled) window.scrollTo(0, 0); };
+      ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) { window.addEventListener(ev, function () { window.__aqUserScrolled = true; }, { once: true, passive: true }); });
+      top0(); document.addEventListener('DOMContentLoaded', top0); window.addEventListener('load', function () { top0(); setTimeout(top0, 300); });
+    }
+  } catch (e) {}
   // داخل التطبيق (آيفون/أندرويد): تحميل خصائص الجهاز (المشاركة بالصور، الإشعارات، الاهتزاز)
   try {
     if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() && !document.querySelector('script[src*="aq-native.js"]')) {
-      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=106'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
+      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=107'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
     }
   } catch (e) {}
   // منع اهتزاز الصفحة يمينًا ويسارًا في الجوال: لا شيء يتجاوز عرض الشاشة

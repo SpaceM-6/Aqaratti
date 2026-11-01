@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=106"></script>
+  <script src="supabase-client.js?v=107"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -3167,7 +3167,7 @@
       let idx = propertyCardImageIndices[propId];
       idx = direction === 'next' ? (idx + 1) % slides.length : (idx - 1 + slides.length) % slides.length;
       propertyCardImageIndices[propId] = idx;
-      slides[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      { const r = slides[idx].getBoundingClientRect(), t = track.getBoundingClientRect(); track.scrollBy({ left: (r.left + r.width / 2) - (t.left + t.width / 2), behavior: 'smooth' }); }
     }
 
     /* 📌 دالة حفظ وتمرير بيانات العقار والوسيط بصفحة التفاصيل */
@@ -3824,13 +3824,13 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=106" defer></script>
-  <script src="js/aq-ai.js?v=106" defer></script>
-  <script src="js/aq-engage.js?v=106" defer></script>
-  <script src="js/aq-back.js?v=106" defer></script>
-  <script src="js/aq-stay.js?v=106" defer></script>
-  <script src="js/aq-cars.js?v=106" defer></script>
-  <script src="js/aq-ads.js?v=106" defer></script>
-  <script src="js/aq-home.js?v=106" defer></script>
+  <script src="js/aq-filters.js?v=107" defer></script>
+  <script src="js/aq-ai.js?v=107" defer></script>
+  <script src="js/aq-engage.js?v=107" defer></script>
+  <script src="js/aq-back.js?v=107" defer></script>
+  <script src="js/aq-stay.js?v=107" defer></script>
+  <script src="js/aq-cars.js?v=107" defer></script>
+  <script src="js/aq-ads.js?v=107" defer></script>
+  <script src="js/aq-home.js?v=107" defer></script>
 </body>
 </html>
