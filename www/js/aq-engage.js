@@ -389,7 +389,7 @@
     // عنصر في نافذة التواصل العائمة (الصفحة الرئيسية)
     var menu = document.getElementById('aqFabMenu');
     if (menu && !menu.querySelector('[data-aqe-chat]')) {
-      var head = menu.querySelector('.aq-fm-head');
+      var head = menu.querySelector('.aq-fm-search') || menu.querySelector('.aq-fm-head');
       var b = document.createElement('button');
       b.className = 'aq-fm-item'; b.type = 'button'; b.setAttribute('data-aqe-chat', '');
       b.innerHTML = '<span class="aq-fm-ic" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-comment-dots"></i></span><span class="aq-fm-tx"><b>تحدث معنا الآن</b><small>دردشة مباشرة مع خدمة العملاء</small></span><i class="fas fa-chevron-left aq-fm-go"></i>';

@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=108"></script>
+  <script src="supabase-client.js?v=109"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -1779,6 +1779,12 @@
     @keyframes aqUp { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
     .aq-fm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 12px 16px 10px; }
     .aq-fm-head b { display: block; font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); }
+    .aq-fm-search { display:flex; align-items:center; gap:8px; margin:0 16px 10px; border:1.5px solid #e2e8f0; border-radius:14px; padding:4px 4px 4px 0; padding-inline-start:12px; background:#f8fafc; }
+    .aq-fm-search:focus-within { border-color:#00a896; background:#fff; }
+    .aq-fm-search > i { color:#94a3b8; }
+    .aq-fm-search input { flex:1 1 auto; min-width:0; border:0; background:transparent; font-family:inherit; font-size:15px; padding:8px 0; outline:none; color:inherit; }
+    .aq-fm-search button { border:0; background:#00a896; color:#fff; font-family:inherit; font-weight:900; border-radius:10px; padding:8px 14px; cursor:pointer; }
+    [data-theme="dark"] .aq-fm-search { background:#0f172a; border-color:#334155; }
     .aq-fm-head small { display: block; font-size: 12px; color: #64748b; font-weight: 700; margin-top: 2px; }
     .aq-fab-menu .aq-fm-x { width: 34px; height: 34px; padding: 0; border-radius: 10px; background: #f1f5f9; border: 0; justify-content: center; flex-shrink: 0; }
     .aq-fab-menu .aq-fm-x i { color: #334155; }
@@ -2137,6 +2143,9 @@
     <div class="aq-explore-inner">
       <h2 class="aq-block-title"><i class="fas fa-compass"></i> تصفّح حسب الفئة</h2>
       <div class="aq-grid aq-grid-3">
+        <a class="aq-tile" href="area/"><span class="aq-ico" style="--c:#0f766e"><i class="fas fa-chart-line"></i></span><b>أسعار المناطق</b><small>سعر المتر والإيجارات والصفقات لكل منطقة</small></a>
+        <a class="aq-tile" href="lands.html"><span class="aq-ico" style="--c:#65a30d"><i class="fas fa-map"></i></span><b>الأراضي والتملّك الحر</b><small>أين يحق لغير المواطنين التملّك</small></a>
+        <a class="aq-tile" href="top-brokers.html"><span class="aq-ico" style="--c:#d97706"><i class="fas fa-trophy"></i></span><b>أفضل الوسطاء</b><small>ترتيب الوسطاء حسب أدائهم الفعلي</small></a>
         <a class="aq-tile" href="listings.html?cat=off_plan"><span class="aq-ico" style="--c:#0ea5e9"><i class="fas fa-rocket"></i></span><b>مشاريع جديدة</b><small>إطلاقات المطوّرين على الخارطة</small></a>
         <a class="aq-tile" href="listings.html?cat=under_construction"><span class="aq-ico" style="--c:#f59e0b"><i class="fas fa-helmet-safety"></i></span><b>مشاريع تحت الإنشاء</b><small>استلام خلال الفترة القادمة</small></a>
         <a class="aq-tile" href="listings.html?cat=ready"><span class="aq-ico" style="--c:#16a34a"><i class="fas fa-key"></i></span><b>عقارات جاهزة</b><small>جاهزة للسكن أو التأجير فورًا</small></a>
@@ -2340,6 +2349,9 @@
         <div><b>كيف نساعدك؟</b><small>فريق أنا عقار يرد عليك في أقرب وقت</small></div>
         <button class="aq-fm-x" onclick="toggleAqFab(false)" aria-label="إغلاق"><i class="fas fa-xmark"></i></button>
       </div>
+      <form class="aq-fm-search" action="find.html" role="search">
+        <i class="fas fa-magnifying-glass"></i><input name="q" type="search" placeholder="ابحث: منطقة، عقار، وسيط…" aria-label="ابحث في الموقع" enterkeyhint="search" autocomplete="off"><button aria-label="بحث">بحث</button>
+      </form>
       <button class="aq-fm-item" onclick="toggleAqFab(false); openServiceRequest('general')">
         <span class="aq-fm-ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-headset"></i></span>
         <span class="aq-fm-tx"><b>تواصل مع الفريق</b><small>سؤال، اقتراح، أو مشكلة في الموقع</small></span><i class="fas fa-chevron-left aq-fm-go"></i>
@@ -3825,13 +3837,13 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=108" defer></script>
-  <script src="js/aq-ai.js?v=108" defer></script>
-  <script src="js/aq-engage.js?v=108" defer></script>
-  <script src="js/aq-back.js?v=108" defer></script>
-  <script src="js/aq-stay.js?v=108" defer></script>
-  <script src="js/aq-cars.js?v=108" defer></script>
-  <script src="js/aq-ads.js?v=108" defer></script>
-  <script src="js/aq-home.js?v=108" defer></script>
+  <script src="js/aq-filters.js?v=109" defer></script>
+  <script src="js/aq-ai.js?v=109" defer></script>
+  <script src="js/aq-engage.js?v=109" defer></script>
+  <script src="js/aq-back.js?v=109" defer></script>
+  <script src="js/aq-stay.js?v=109" defer></script>
+  <script src="js/aq-cars.js?v=109" defer></script>
+  <script src="js/aq-ads.js?v=109" defer></script>
+  <script src="js/aq-home.js?v=109" defer></script>
 </body>
 </html>

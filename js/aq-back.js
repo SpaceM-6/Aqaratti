@@ -20,7 +20,7 @@
   // داخل التطبيق (آيفون/أندرويد): تحميل خصائص الجهاز (المشاركة بالصور، الإشعارات، الاهتزاز)
   try {
     if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() && !document.querySelector('script[src*="aq-native.js"]')) {
-      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=108'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
+      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=109'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
     }
   } catch (e) {}
   // منع اهتزاز الصفحة يمينًا ويسارًا في الجوال: لا شيء يتجاوز عرض الشاشة
@@ -77,3 +77,45 @@
     } else { pushed = false; }
   });
 })();
+
+// شارة «جديد» بجانب الأقسام الجديدة في كل الصفحات (الروابط والبلاطات والقوائم)، تختفي وحدها بعد تاريخها
+(function () {
+  'use strict';
+  var NEW = [ // [بداية الرابط، آخر يوم تظهر فيه الشارة]
+    ['area/', '2026-12-01'], ['areas.html', '2026-12-01'], ['lands.html', '2026-12-01'],
+    ['top-brokers.html', '2026-12-01'], ['find.html', '2026-12-01']
+  ];
+  var today = new Date().toISOString().slice(0, 10);
+  NEW = NEW.filter(function (x) { return today <= x[1]; });
+  if (!NEW.length) return;
+  var st = document.createElement('style');
+  st.textContent = '.aq-new{display:inline-block;background:#ef4444;color:#fff!important;font-size:11px;font-weight:900;line-height:1.6;padding:0 7px;border-radius:6px;margin-inline-start:6px;vertical-align:middle;letter-spacing:0;white-space:nowrap}' +
+    '.aq-tile .aq-new{position:absolute;top:10px;inset-inline-end:10px;margin:0}.aq-tile{position:relative}';
+  document.head.appendChild(st);
+  function isNew(href) {
+    if (!href || href.charAt(0) === '#') return false;
+    var path = href.replace(/^https?:\/\/[^/]+/, '').replace(/^\.?\//, '').split('#')[0];
+    return NEW.some(function (x) { return path === x[0] || path === '/' + x[0]; }); // رابط القسم نفسه فقط، لا روابط تفاصيله
+  }
+  function mark(root) {
+    var here = (location.pathname.split('/').pop() || '');
+    (root || document).querySelectorAll('a[href]:not([data-aq-new])').forEach(function (a) {
+      a.setAttribute('data-aq-new', '');
+      var h = a.getAttribute('href');
+      if (!isNew(h) || h === here) return;
+      if (a.closest('.crumbs, .topbar, nav.aqbnav, footer .copyright')) return;
+      var b = document.createElement('span'); b.className = 'aq-new'; b.textContent = 'جديد';
+      var lab = a.querySelector('b, strong');
+      (lab || a).appendChild(b);
+    });
+    (root || document).querySelectorAll('.aq-fm-search:not([data-aq-new])').forEach(function (f) {
+      f.setAttribute('data-aq-new', ''); var b = document.createElement('span'); b.className = 'aq-new'; b.textContent = 'جديد'; f.insertBefore(b, f.querySelector('button'));
+    });
+  }
+  function start() {
+    mark();
+    var t; new MutationObserver(function () { clearTimeout(t); t = setTimeout(mark, 120); }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+

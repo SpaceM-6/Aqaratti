@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>البحث في أنا عقار | AnaAqar</title>
+  <meta name="description" content="ابحث في كل أنا عقار: العقارات والمناطق والوسطاء والمشاريع والأقسام.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://anaaqar.com/find.html">
+  <meta property="og:title" content="البحث في أنا عقار">
+  <meta property="og:description" content="ابحث في العقارات والمناطق والوسطاء والمشاريع.">
+  <meta property="og:image" content="https://anaaqar.com/icons/icon-app-1024.png">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=109">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=109"></script>
+  <script src="js/aq-public.js?v=109"></script>
+  <script src="js/aq-areas.js?v=109"></script>
+  <style>
+    .sform { display:flex; gap:8px; margin:0 0 16px; }
+    .sform input { flex:1 1 auto; min-width:0; border:1.5px solid var(--line); border-radius:14px; padding:12px 14px; font-family:inherit; font-size:16px; background:var(--card); color:var(--ink); }
+    .sform button { border:0; border-radius:14px; padding:0 18px; background:var(--teal); color:#fff; font-family:inherit; font-weight:900; font-size:15px; cursor:pointer; }
+    .grp { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 16px; margin:0 0 14px; }
+    .grp h2 { margin:0 0 10px; font-size:17px; font-weight:900; display:flex; gap:8px; align-items:center; } .grp h2 i { color:var(--teal); }
+    .rs { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; } @media (max-width:640px) { .rs { grid-template-columns:minmax(0, 1fr); } }
+    .r { display:flex; gap:10px; align-items:center; background:var(--bg); border-radius:12px; padding:10px 12px; text-decoration:none; color:inherit; min-width:0; }
+    .r img { width:52px; height:42px; object-fit:cover; border-radius:8px; flex:0 0 auto; background:var(--line); }
+    .r span { min-width:0; } .r b { display:block; font-size:14.5px; line-height:1.5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .r small { display:block; color:var(--muted); font-weight:700; font-size:12.5px; }
+    .more { display:inline-block; margin-top:10px; font-weight:900; color:var(--teal-dark, #0f766e); text-decoration:none; font-size:14px; }
+    .hint { color:var(--muted); font-weight:700; font-size:14px; line-height:1.9; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; } .chips a { background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-weight:800; font-size:13px; text-decoration:none; color:inherit; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-magnifying-glass"></i> البحث في أنا عقار</h1><p>اكتب ما تبحث عنه: منطقة، نوع عقار، اسم وسيط أو مكتب، مشروع، أو خدمة.</p></div></section>
+  <main>
+    <form class="sform" id="sf" role="search"><input id="sq" type="search" placeholder="مثال: شقة في دبي مارينا، فيلا للإيجار، تقييم عقار…" autocomplete="off" enterkeyhint="search" aria-label="ابحث في الموقع"><button>بحث</button></form>
+    <div id="out"></div>
+  </main>
+  <script>
+    (() => {
+      const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const money = (n) => n == null || isNaN(n) ? '' : Number(n).toLocaleString('en-US') + ' درهم';
+      // أقسام الموقع وكلماتها
+      const SECTIONS = [
+        ['listings.html?deal=sale', 'fa-building', 'عقارات للبيع', 'شراء شقة فيلا تملك بيع'], ['listings.html?deal=rent', 'fa-key', 'عقارات للإيجار', 'ايجار سنوي شهري استئجار'],
+        ['stays.html', 'fa-umbrella-beach', 'الإقامات القصيرة', 'ايجار يومي فندقية حجز ليلة اجازة'], ['projects.html', 'fa-city', 'مشاريع على الخارطة', 'مطور خطة سداد اوف بلان خارطة'],
+        ['area/', 'fa-map-location-dot', 'دليل المناطق: الأسعار والصفقات', 'سعر المتر اسعار منطقة صفقات ايجارات عائد'], ['lands.html', 'fa-map', 'دليل الأراضي والتملّك الحر', 'ارض اراضي تملك حر اجانب فري هولد'],
+        ['valuation.html', 'fa-chart-line', 'كم يساوي عقاري؟', 'تقييم تقدير سعر قيمة'], ['brokers-directory.html', 'fa-user-tie', 'دليل الوسطاء والمكاتب', 'وسيط سمسار مكتب عقاري وسطاء'],
+        ['top-brokers.html', 'fa-trophy', 'أفضل الوسطاء حسب الأداء', 'افضل وسيط ترتيب تقييم'], ['services-directory.html', 'fa-screwdriver-wrench', 'خدمات بيتك', 'صيانة نقل اثاث تنظيف ديكور سباك كهربائي مكيف'],
+        ['cars.html', 'fa-car-side', 'موتورات', 'سيارة سيارات دراجة يخت قارب'], ['map.html', 'fa-map-location-dot', 'الخريطة', 'خريطة قريب حولي'],
+        ['request.html', 'fa-paper-plane', 'اطلب عقارك', 'طلب ابحث لي'], ['sell-or-rent.html', 'fa-house-circle-check', 'بع أو أجّر عقارك', 'بيع عقاري تأجير مالك'],
+        ['calculator.html', 'fa-calculator', 'حاسبة التمويل', 'قرض تمويل رهن عقاري قسط بنك'], ['offers.html', 'fa-tags', 'العروض', 'عرض خصم'],
+        ['compare.html', 'fa-code-compare', 'المقارنة', 'قارن مقارنة'], ['my.html', 'fa-heart', 'قوائمي والمفضلة', 'مفضلة محفوظ تنبيه'],
+        ['pro.html', 'fa-briefcase', 'بوابة الوسطاء والمكاتب', 'لوحة الوسيط اضافة اعلان اعلاناتي'], ['add-property.html', 'fa-plus', 'أضف عقارًا', 'اضف اعلان نشر'],
+        ['broker-registration.html', 'fa-id-card', 'سجّل كوسيط', 'تسجيل وسيط رخصة'], ['privacy-policy.html', 'fa-shield', 'سياسة الخصوصية', 'خصوصية بيانات'], ['terms-of-service.html', 'fa-file-contract', 'شروط الاستخدام', 'شروط احكام']
+      ];
+      const norm = (s) => String(s || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ًٌٍَُِّْـ]/g, '').trim();
+      const STOP = new Set(['في', 'من', 'الى', 'على', 'عن', 'او', 'و', 'ال', 'مع', 'لل', 'ب']);
+      const words = (q) => norm(q).split(/[\s،,]+/).filter((w) => w.length > 1 && !STOP.has(w));
+      const grp = (icon, title, html, more) => `<div class="grp"><h2><i class="fas ${icon}"></i> ${title}</h2>${html}${more || ''}</div>`;
+      const out = document.getElementById('out'), inp = document.getElementById('sq');
+
+      async function run(q) {
+        q = q.trim();
+        if (!q) { out.innerHTML = `<div class="grp"><p class="hint">جرّب البحث عن:</p><div class="chips">${['دبي مارينا', 'فيلا للإيجار', 'استوديو', 'تقييم عقار', 'تملك حر', 'صيانة مكيفات', 'إقامة يومية', 'مشاريع إعمار'].map((x) => `<a href="?q=${encodeURIComponent(x)}">${x}</a>`).join('')}</div></div>`; return; }
+        const W = words(q); if (!W.length) W.push(norm(q));
+        const hit = (txt) => { const t = norm(txt); return W.filter((w) => t.includes(w)).length; };
+        let html = '';
+        // الأقسام
+        const secs = SECTIONS.map((s) => [s, hit(s[2] + ' ' + s[3])]).filter((x) => x[1]).sort((a, b) => b[1] - a[1]).slice(0, 6).map((x) => x[0]);
+        if (secs.length) html += grp('fa-grip', 'أقسام الموقع', `<div class="rs">${secs.map((s) => `<a class="r" href="${s[0]}"><i class="fas ${s[1]}" style="color:var(--teal);width:22px;text-align:center"></i><span><b>${esc(s[2])}</b></span></a>`).join('')}</div>`);
+        // المناطق
+        const AH = window.AQAreas ? AQAreas.AREAS.map((a) => [a, hit([a.ar, a.en].concat(a.words || []).join(' '))]).filter((x) => x[1]) : [];
+        const AM = Math.max(0, ...AH.map((x) => x[1])), A = AH.filter((x) => x[1] === AM).map((x) => x[0]).slice(0, 6);
+        if (A.length) html += grp('fa-map-location-dot', 'المناطق', `<div class="rs">${A.map((a) => `<a class="r" href="areas.html?a=${encodeURIComponent(a.ar)}"><i class="fas fa-location-dot" style="color:var(--teal);width:22px;text-align:center"></i><span><b>${esc(a.ar)}</b><small>الأسعار والإيجارات والصفقات في ${esc(a.ar)}</small></span></a>`).join('')}</div>`);
+        out.innerHTML = html + '<div class="grp" id="gWait"><p class="hint">جاري البحث في العقارات والوسطاء والمشاريع…</p></div>';
+
+        const like = (s) => '"%' + String(s).replace(/[%_,()"\\]/g, ' ').trim() + '%"';
+        const sb = typeof supabaseClient !== 'undefined' ? supabaseClient : null;
+        const term = W.slice().sort((a, b) => b.length - a.length)[0];
+        const raw = q.replace(/[%_,()"\\]/g, ' ').trim();
+        const tasks = [
+          // العقارات: من الموقع (المعتمدة) ومن ملف الإعلانات
+          (async () => {
+            let rows = [];
+            if (sb) { try { const r = await sb.from('properties').select('id,title,price_aed,city,image_urls,deal_type,rent_period').eq('status', 'approved').or(`title.ilike.${like(raw)},title.ilike.${like(term)},city.ilike.${like(term)},description.ilike.${like(raw)}`).limit(12); rows = (r.data || []).map((p) => ({ url: (p.rent_period === 'daily' ? 'stay.html?id=sb-' : 'property-details.html?id=sb-') + p.id, t: p.title, s: [money(p.price_aed), p.city].filter(Boolean).join(' · '), img: (p.image_urls || [])[0] })); } catch (e) {} }
+            try { const j = await (await fetch('properties.json', { cache: 'force-cache' })).json(); const list = Array.isArray(j) ? j : (j.properties || []);
+              list.map((p) => [p, hit([p.title, p.city, p.location, p.address, p.propertyType].join(' '))]).filter((x) => x[1] >= Math.min(2, W.length)).sort((a, b) => b[1] - a[1]).slice(0, 12 - rows.length)
+                .forEach(([p]) => rows.push({ url: 'property-details.html?id=' + encodeURIComponent(p.id), t: p.title, s: [money(p.priceAED || p.price_aed), p.city].filter(Boolean).join(' · '), img: p.image || (p.imagesList || [])[0] })); } catch (e) {}
+            return rows.length ? grp('fa-building', 'عقارات', `<div class="rs">${rows.map((x) => `<a class="r" href="${esc(x.url)}">${x.img ? `<img src="${esc(x.img)}" alt="" loading="lazy">` : ''}<span><b>${esc(x.t)}</b><small>${esc(x.s)}</small></span></a>`).join('')}</div>`, `<a class="more" href="listings.html?q=${encodeURIComponent(q)}">كل العقارات المطابقة ←</a>`) : '';
+          })(),
+          // الوسطاء والمكاتب (بالاسم أو رقم الوسيط أو المكتب)، بلا أي بيانات تواصل
+          (async () => {
+            if (!sb) return '';
+            try { const r = await sb.from('individual_brokers').select('id,name_ar,name_en,office_name,dld_broker_number').or(`name_ar.ilike.${like(raw)},name_en.ilike.${like(raw)},office_name.ilike.${like(raw)},dld_broker_number.eq.${raw.replace(/\D/g, '') || '0'}`).limit(8);
+              const d = r.data || []; return d.length ? grp('fa-user-tie', 'الوسطاء', `<div class="rs">${d.map((b) => `<a class="r" href="individual-broker-profile.html?id=${encodeURIComponent(b.id)}"><img src="icons/avatar.svg" alt="" style="width:40px;height:40px;border-radius:50%"><span><b>${esc(b.name_ar || b.name_en)}</b><small>${esc(b.office_name || '')}${b.dld_broker_number ? ' · رقم ' + esc(b.dld_broker_number) : ''}</small></span></a>`).join('')}</div>`, `<a class="more" href="brokers-directory.html">دليل الوسطاء كاملًا ←</a>`) : ''; } catch (e) { return ''; }
+          })(),
+          // المشاريع المسجلة لدى دائرة الأراضي
+          (async () => {
+            if (!sb) return '';
+            try { const r = await sb.from('dld_projects').select('name_en,developer_en,area_en,percent_completed').or(`name_en.ilike.${like(raw)},developer_en.ilike.${like(raw)},area_en.ilike.${like(raw)}`).neq('status', 'CANCELLED').limit(6);
+              const d = r.data || [], T = (s) => window.AQAreas ? AQAreas.title(s) : s; return d.length ? grp('fa-city', 'مشاريع مسجلة لدى دائرة الأراضي', `<div class="rs">${d.map((p) => `<a class="r" href="projects.html#dld"><i class="fas fa-helmet-safety" style="color:var(--teal);width:22px;text-align:center"></i><span><b>${esc(T(p.name_en))}</b><small>${esc(T(p.developer_en))} · ${esc(T(p.area_en))} · إنجاز ${Number(p.percent_completed) || 0}%</small></span></a>`).join('')}</div>`) : ''; } catch (e) { return ''; }
+          })()
+        ];
+        const parts = await Promise.all(tasks);
+        const w = document.getElementById('gWait'); if (w) w.remove();
+        out.insertAdjacentHTML('beforeend', parts.join(''));
+        if (!out.querySelector('.grp')) out.innerHTML = grp('fa-circle-info', 'لا نتائج', `<p class="hint">لم نجد نتائج لـ«${esc(q)}». جرّب كلمة أخرى، أو أرسل طلبك ونبحث لك.</p><div class="acts"><a class="btn btn-teal" href="request.html">اطلب عقارك</a><a class="btn btn-soft" href="listings.html">كل العقارات</a></div>`);
+      }
+      const q0 = new URLSearchParams(location.search).get('q') || '';
+      inp.value = q0; run(q0);
+      document.getElementById('sf').onsubmit = (e) => { e.preventDefault(); const q = inp.value.trim(); history.replaceState(null, '', q ? '?q=' + encodeURIComponent(q) : location.pathname); run(q); inp.blur(); };
+      if (!q0) inp.focus();
+    })();
+  </script>
+  <script src="js/aq-engage.js?v=109" defer></script>
+  <script src="js/aq-back.js?v=109" defer></script>
+  <script src="js/aq-ads.js?v=109" defer></script>
+</body>
+</html>

@@ -63,6 +63,7 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
