@@ -14,7 +14,7 @@
     { ar: 'دبي هيلز', en: 'Dubai Hills Estate', city: 'دبي', dld: ['Hadaeq Sheikh Mohammed Bin Rashid', 'Dubai Hills'], words: ['دبي هيلز', 'dubai hills'] },
     { ar: 'جميرا بيتش ريزيدنس', en: 'JBR', city: 'دبي', dld: ['Jumeirah Beach Residence'], words: ['جميرا بيتش', 'jbr'] },
     { ar: 'المرابع العربية', en: 'Arabian Ranches', city: 'دبي', dld: ['Arabian Ranches'], words: ['المرابع العربية', 'arabian ranches'] },
-    { ar: 'دبي الجنوب', en: 'Dubai South', city: 'دبي', dld: ['Dubai South'], words: ['دبي الجنوب', 'dubai south'] },
+    { ar: 'دبي الجنوب', en: 'Dubai South', city: 'دبي', dld: ['Dubai South', 'Madinat Al Mataar'], words: ['دبي الجنوب', 'dubai south'] },
     { ar: 'الفرجان', en: 'Al Furjan', city: 'دبي', dld: ['Al Furjan'], words: ['الفرجان', 'al furjan'] },
     { ar: 'موتور سيتي', en: 'Motor City', city: 'دبي', dld: ['Motor City'], words: ['موتور سيتي', 'motor city'] },
     { ar: 'المدينة الرياضية', en: 'Dubai Sports City', city: 'دبي', dld: ['Dubai Sports City'], words: ['المدينة الرياضية', 'sports city'] },
