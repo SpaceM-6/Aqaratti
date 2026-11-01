@@ -55,6 +55,11 @@ create table if not exists public.building_area_stats (
   updated_at     timestamptz not null default now()
 );
 
+-- تفعيل حماية الصفوف (RLS) صراحةً لكل جدول
+alter table public.schools enable row level security;
+alter table public.transit_stations enable row level security;
+alter table public.building_area_stats enable row level security;
+
 do $$
 declare t text;
 begin
