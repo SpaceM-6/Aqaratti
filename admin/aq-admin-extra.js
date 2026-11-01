@@ -60,7 +60,7 @@
     date: ['instance_date', 'contract_start_date', 'start_date_of_contract', 'transaction_date', 'trans_date', 'registration_date', 'contract_start_date', 'start_date', 'date'],
     area_en: ['area_name_en', 'area_en', 'area_name', 'area', 'master_project_en'],
     area_ar: ['area_name_ar', 'area_ar'],
-    group: ['trans_group_en', 'transaction_type', 'trans_type', 'transaction_type_en', 'transaction_group_en', 'trans_group', 'procedure_name_en', 'procedure_en'],
+    group: ['group_en', 'trans_group_en', 'transaction_type', 'trans_type', 'transaction_type_en', 'transaction_group_en', 'trans_group', 'procedure_name_en', 'procedure_en'],
     usage: ['property_usage_en', 'usage_en', 'property_usage', 'usage'],
     worth: ['actual_worth', 'trans_value', 'transaction_value', 'amount', 'property_value'],
     size: ['procedure_area', 'transaction_size_sq_m', 'property_size_sq_m', 'size_sq_m', 'actual_area_sq_m', 'actual_area', 'property_size_sq_m', 'size_sqm', 'area_sqm', 'area_m2'],
@@ -124,9 +124,9 @@
         }
         res.data.forEach(function (r) {
           n++;
-          var mo = month(r[map.date]), area = String(r[map.area_en] || '').trim();
+          var mo = month(r[map.date]), area = String(r[map.area_en] || '').trim().toLowerCase().replace(/(^|[\s\-\/(])([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); });
           if (!mo || !area) { skipped++; return; }
-          if (kind === 'sale' && map.group && !/sale|بيع|مبايع/i.test(r[map.group] || '')) { skipped++; return; }
+          if (kind === 'sale' && map.group && !/sale|sell|بيع|مبايع/i.test(r[map.group] || '')) { skipped++; return; }
           var price = kind === 'sale' ? toNum(r[map.worth]) : toNum(r[map.rent]);
           var size = toNum(r[map.size]);
           var ppm = kind === 'sale' ? (toNum(r[map.ppm2]) || (price && size ? price / size : null)) : (toNum(r[map.rppm2]) || (price && size ? price / size : null));
