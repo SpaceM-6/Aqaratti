@@ -1,0 +1,40 @@
+# صور متجر آبل (آيفون 6.9 إنش) من الموقع الحقيقي — تُحفظ في store/ios/screenshots
+# التشغيل: تلقائيًا عند تعديل السكربت، أو يدويًا من Actions → store-screenshots → Run workflow
+name: store-screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/store-screenshots.mjs', '.github/workflows/store-screenshots.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          mkdir -p "$RUNNER_TEMP/pw" && cd "$RUNNER_TEMP/pw" && npm init -y >/dev/null
+          npm install --no-audit --no-fund playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: Take screenshots
+        env:
+          PW_DIR: ${{ runner.temp }}/pw/node_modules
+        run: node scripts/store-screenshots.mjs
+      - name: Commit
+        run: |
+          git add store/ios/screenshots
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "anaaqar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "صور متجر آبل"
+          git pull --rebase origin main
+          git push

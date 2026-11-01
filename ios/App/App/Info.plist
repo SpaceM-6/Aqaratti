@@ -5,9 +5,28 @@
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>ar</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ar</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleDisplayName</key>
-        <string>AnaAqar</string>
+	<string>أنا عقار</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>لتصوير العقار أو المركبة وإرفاق الصور بإعلانك على «أنا عقار».</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>لاختيار صور إعلانك من معرض الصور ورفعها على «أنا عقار».</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>لحفظ صور الإعلانات التي تشاركها في معرض الصور.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>لعرض العقارات والإقامات القريبة منك على الخريطة.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -49,13 +68,11 @@
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

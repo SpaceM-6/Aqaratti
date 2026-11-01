@@ -382,6 +382,7 @@
     })).then(function (l) { return l.filter(Boolean); });
   }
   function canShareFiles() {
+    if (window.AQNative && AQNative.canShareFiles) return true;
     try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File(['x'], 'a.jpg', { type: 'image/jpeg' })] })); } catch (e) { return false; }
   }
   // opts: {url, title, images}
@@ -419,7 +420,7 @@
       (album ? '<button type="button" class="aqsh-album" data-album><span class="th">' + imgs.slice(0, 3).map(function (u) { return '<i style="background-image:url(\'' + esc(u) + '\')"></i>'; }).join('') + '</span><span class="tx"><b>أرسل كإعلان مصغّر</b><small>' + Math.min(imgs.length, 6) + ' صور مع الوصف والرابط — واتساب وغيره</small></span><i class="fas fa-chevron-left"></i></button>' : '') +
       '<div class="aqsh-grid">' + nets() + '</div>' +
       '<div class="aqsh-link"><input readonly value="' + esc(url) + '" aria-label="الرابط" dir="ltr"><button type="button" data-copy><i class="fas fa-copy"></i> نسخ</button></div>' +
-      (navigator.share ? '<button type="button" class="aqsh-more" data-native><i class="fas fa-share-nodes"></i> تطبيقات أخرى</button>' : '') + '</div>';
+      (navigator.share || (window.AQNative && AQNative.shareLink) ? '<button type="button" class="aqsh-more" data-native><i class="fas fa-share-nodes"></i> تطبيقات أخرى</button>' : '') + '</div>';
     document.body.appendChild(ov);
     // رابط صفحة المشاركة (بصورة الإعلان) إن كانت جاهزة، وإلا يبقى رابط الإعلان نفسه
     var key = shareKey(url);
@@ -434,13 +435,16 @@
     ov.addEventListener('click', function (ev) {
       if (ev.target === ov || ev.target.closest('[data-x]')) { ov.remove(); return; }
       if (ev.target.closest('[data-copy]')) { copy(); return; }
-      if (ev.target.closest('[data-native]')) { navigator.share({ title: title, text: adText || title, url: url }).catch(function () {}); return; }
+      if (ev.target.closest('[data-native]')) { var so = { title: title, text: adText || title, url: url }; (window.AQNative && AQNative.shareLink ? AQNative.shareLink(so) : navigator.share(so)).catch(function () {}); return; }
       var ab = ev.target.closest('[data-album]');
       if (ab) {
         if (ab.classList.contains('busy')) return;
         ab.classList.add('busy'); var sm = ab.querySelector('small'), old = sm.textContent; sm.textContent = 'جارٍ تجهيز الصور…';
         Promise.all([files, ready]).then(function (r) { var fl = r[0];
           if (!fl.length) { ab.classList.remove('busy'); sm.textContent = old; toast('تعذّر تحميل الصور، شارك الرابط بدلًا منها'); return; }
+          if (window.AQNative && AQNative.canShareFiles) {
+            return AQNative.shareFiles(fl, msg(), title).then(function () { ab.classList.remove('busy'); sm.textContent = old; }, function () { ab.classList.remove('busy'); sm.textContent = old; });
+          }
           var data = { files: fl, text: msg() };
           if (navigator.canShare && !navigator.canShare(data)) data = { files: fl };
           return navigator.share(data).then(function () { ab.classList.remove('busy'); sm.textContent = old; }, function (err) {

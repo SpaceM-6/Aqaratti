@@ -4,6 +4,23 @@
   "webDir": "www",
   "server": {
     "url": "https://anaaqar.com",
-    "cleartext": false
+    "cleartext": false,
+    "errorPath": "offline.html"
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#ffffff",
+    "scheme": "AnaAqar"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "launchAutoHide": true,
+      "backgroundColor": "#ffffff",
+      "showSpinner": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
   }
 }

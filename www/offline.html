@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لا يوجد اتصال | أنا عقار</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; font-family: -apple-system, "SF Arabic", Tahoma, sans-serif; background: #f6faf9; color: #0f172a; text-align: center; }
+  @media (prefers-color-scheme: dark) { body { background: #0b1220; color: #e2e8f0; } p { color: #94a3b8 !important; } }
+  .box { max-width: 360px; }
+  .logo { width: 96px; height: 96px; border-radius: 24px; background: #00a896; display: grid; place-items: center; margin: 0 auto 22px; box-shadow: 0 10px 30px rgba(0,168,150,.3); }
+  .logo svg { width: 64px; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  p { margin: 0 0 22px; color: #64748b; font-size: 16px; line-height: 1.7; }
+  button { border: 0; border-radius: 14px; background: #00a896; color: #fff; font: inherit; font-weight: 800; font-size: 17px; padding: 14px 34px; cursor: pointer; }
+  small { display: block; margin-top: 14px; color: #94a3b8; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="logo"><svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"><path d="M10 30 32 12l22 18"/><path d="M18 26v24h28V26"/><path d="M27 50V38h10v12"/></svg></div>
+    <h1>لا يوجد اتصال بالإنترنت</h1>
+    <p>تأكد من اتصالك بشبكة الواي فاي أو بيانات الجوال، ثم أعد المحاولة لتصفّح العقارات والإقامات والموتورات.</p>
+    <button type="button" id="retry">إعادة المحاولة</button>
+    <small id="st"></small>
+  </div>
+  <script>
+    function go() { document.getElementById('st').textContent = 'جارٍ الاتصال…'; location.href = 'https://anaaqar.com/'; }
+    document.getElementById('retry').onclick = go;
+    window.addEventListener('online', go);
+  </script>
+</body>
+</html>

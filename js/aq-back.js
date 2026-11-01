@@ -3,6 +3,12 @@
 (function () {
   'use strict';
   if (window.__aqBack) return; window.__aqBack = true;
+  // داخل التطبيق (آيفون/أندرويد): تحميل خصائص الجهاز (المشاركة بالصور، الإشعارات، الاهتزاز)
+  try {
+    if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() && !document.querySelector('script[src*="aq-native.js"]')) {
+      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=95'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
+    }
+  } catch (e) {}
   // منع اهتزاز الصفحة يمينًا ويسارًا في الجوال: لا شيء يتجاوز عرض الشاشة
   try {
     const st = document.createElement('style');

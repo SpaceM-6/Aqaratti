@@ -1,0 +1,119 @@
+# تطبيق «أنا عقار» للآيفون — يُبنى على أجهزة ماك السحابية من GitHub (لا حاجة لجهاز ماك).
+#
+#  • قبل إضافة مفاتيح آبل: يتحقق فقط أن المشروع يُبنى بلا أخطاء (نسخة للمحاكي).
+#  • بعد إضافة المفاتيح (Settings → Secrets and variables → Actions):
+#       ASC_KEY_ID      رقم مفتاح App Store Connect API
+#       ASC_ISSUER_ID   رقم المُصدِر (Issuer ID)
+#       ASC_KEY_P8      محتوى ملف ‎AuthKey_XXXX.p8‎ كاملًا
+#       APPLE_TEAM_ID   رقم الفريق (Team ID)
+#    يُوقَّع التطبيق ويُرفع تلقائيًا إلى App Store Connect فيظهر في TestFlight.
+#  التشغيل: تبويب Actions → ios → Run workflow (واختاري رقم الإصدار إن أردتِ).
+name: ios
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'رقم الإصدار الظاهر في المتجر (مثل 1.0 أو 1.1)'
+        required: false
+        default: '1.0'
+  push:
+    branches: [main]
+    paths: ['ios/**', 'capacitor.config.json', 'package.json', 'www/offline.html', '.github/workflows/ios.yml']
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+      HAS_KEYS: ${{ secrets.ASC_KEY_ID != '' && secrets.ASC_ISSUER_ID != '' && secrets.ASC_KEY_P8 != '' && secrets.APPLE_TEAM_ID != '' }}
+      VERSION: ${{ github.event.inputs.version || '1.0' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Select Xcode
+        run: |
+          # آبل تشترط البناء بأحدث Xcode (26 فما فوق) لقبول الرفع إلى المتجر
+          X="$(ls -d /Applications/Xcode_26*.app 2>/dev/null | grep -v -i beta | sort -V | tail -1)"
+          [ -z "$X" ] && X="$(ls -d /Applications/Xcode_*.app | grep -v -i beta | sort -V | tail -1)"
+          sudo xcode-select -s "$X"
+          xcodebuild -version
+
+      - name: Install Capacitor
+        run: npm install --no-audit --no-fund --ignore-scripts
+
+      - name: Sync iOS project
+        run: npx cap sync ios
+
+      # ----- التحقق فقط (قبل إضافة مفاتيح آبل) -----
+      - name: Verify build (simulator, unsigned)
+        if: env.HAS_KEYS != 'true'
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build | tail -40
+
+      # ----- التوقيع والرفع إلى App Store Connect -----
+      - name: Write App Store Connect key
+        if: env.HAS_KEYS == 'true'
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/keys"
+          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8"
+
+      - name: Archive
+        if: env.HAS_KEYS == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic \
+            MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            archive | tail -60
+
+      - name: Upload to App Store Connect (TestFlight)
+        if: env.HAS_KEYS == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          cat > "$RUNNER_TEMP/export.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/export.plist" -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          echo "✅ رُفعت النسخة ${VERSION} (${{ github.run_number }}) — تظهر في TestFlight بعد معالجة آبل (10–30 دقيقة)."
+
+      - name: Remove key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keys"
