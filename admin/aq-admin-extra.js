@@ -342,13 +342,13 @@
       html += '<div class="card" style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><span class="sub" style="margin:0">دليل الوسطاء في الموقع يُحدَّث تلقائيًا عند رفع ملف Broker. ويمكنك تحديثه يدويًا من السجل المحفوظ:</span><button class="btn soft sm" id="rgSync"><i class="fas fa-rotate"></i> تحديث دليل الوسطاء</button></div>';
     }
     if (regTab === 'brokers') {
-      var qb = sb().from('dld_brokers').select('*').order('license_end', { ascending: false }).limit(60);
+      var qb = sb().from('dld_brokers').select('*').order('license_end', { ascending: false, nullsFirst: false }).limit(60);
       if (term) qb = /^\d+$/.test(term) ? qb.or('broker_number.eq.' + term + ',office_number.eq.' + term) : qb.or('name_en.ilike.' + like(term) + ',office_name.ilike.' + like(term));
       r = await qb; if (r.error) { box.innerHTML = miss(r.error); return; }
       html += (r.data || []).map(function (b) {
         var ok = b.license_end && b.license_end >= today;
         return row(esc(b.name_en), 'BRN ' + esc(b.broker_number) + ' · ' + esc(b.office_name || '') + (b.office_number ? ' (ORN ' + esc(b.office_number) + ')' : ''),
-          '<span class="badge ' + (ok ? 'done' : 'new') + '">' + (ok ? 'سارية حتى ' : 'منتهية ') + esc(b.license_end || '') + '</span>');
+          '<span class="badge ' + (ok ? 'done' : 'new') + '">' + (ok ? 'سارية حتى ' + esc(b.license_end) : b.license_end ? 'منتهية ' + esc(b.license_end) : 'بلا تاريخ رخصة') + '</span>');
       }).join('');
     } else if (regTab === 'projects') {
       var qp = sb().from('dld_projects').select('*').order('cnt_unit', { ascending: false }).limit(80);
