@@ -106,7 +106,7 @@
     el.innerHTML = '<div class="card"><h2>بيانات السوق الرسمية</h2>' +
       '<p class="sub">تُبنى منها صفحات المناطق (متوسط سعر المتر، عدد الصفقات، الإيجارات، العائد الإيجاري). نحفظ ملخصًا شهريًا لكل منطقة فقط، لا الصفقات نفسها.</p>' +
       '<ol style="margin:0 0 12px;padding-inline-start:20px;line-height:1.9;font-size:14px"><li>من موقع دائرة الأراضي والأملاك ← البيانات المفتوحة (Open Data) حمّلي ملف <b>Transactions</b> (صفقات البيع) أو <b>Rents</b> (عقود الإيجار) بصيغة CSV للفترة التي تريدينها.</li>' +
-      '<li>اختاري الملف هنا، وراجعي المعاينة، ثم اضغطي «حفظ».</li><li>كرري شهريًا لتبقى الأرقام محدّثة. رفع الشهر نفسه مرة أخرى يستبدل أرقامه.</li></ol>' +
+      '<li>يقبل أيضًا ملفات <b>Project</b> (المشاريع ونسب إنجازها) و<b>Broker</b> (الوسطاء المرخّصون، ومنه يُفحص ترخيص المعلن تلقائيًا) و<b>Developer</b> (المطوّرون). يتعرف على نوع الملف وحده.</li><li>اختاري الملف هنا، وراجعي المعاينة، ثم اضغطي «حفظ».</li><li>كرري شهريًا لتبقى الأرقام محدّثة. رفع الشهر نفسه مرة أخرى يستبدل أرقامه.</li></ol>' +
       '<div class="grid2"><div class="fg"><label>نوع الملف</label><select id="mkKind"><option value="auto">تحديد تلقائي</option><option value="sale">صفقات بيع</option><option value="rent">عقود إيجار</option></select></div>' +
       '<div class="fg"><label>ملف CSV</label><input type="file" id="mkFile" accept=".csv,text/csv"></div></div><div id="mkOut"></div></div>' +
       '<div class="card" id="mkSaved">جاري تحميل الملخصات المحفوظة…</div>';
@@ -127,10 +127,66 @@
       Object.values(by).slice(0, 36).map(function (x) { return '<tr><td>' + esc(x.month.slice(0, 7)) + '</td><td>' + (x.kind === 'sale' ? 'بيع' : 'إيجار') + '</td><td style="text-align:center">' + num(x.areas) + '</td><td style="text-align:center">' + num(x.deals) + '</td></tr>'; }).join('') + '</table></div>';
   }
 
+  // ===== سجلات الدائرة: المشاريع والوسطاء والمطوّرون =====
+  var d10 = function (v) { var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m && m[1] > '1900' ? m[1] + '-' + m[2] + '-' + m[3] : null; };
+  var txt = function (v) { var t = String(v == null ? '' : v).trim(); return t && t !== '0' ? t : null; };
+  var int = function (v) { var n = parseInt(v, 10); return isFinite(n) ? n : null; };
+  var REG = {
+    projects: { table: 'dld_projects', key: 'project_number', title: 'سجل المشاريع', test: function (H) { return H.indexOf('project_number') > -1 && H.indexOf('percent_completed') > -1; },
+      row: function (r) { return txt(r.PROJECT_NUMBER) && txt(r.PROJECT_EN) ? { project_number: txt(r.PROJECT_NUMBER), name_en: txt(r.PROJECT_EN), developer_number: txt(r.DEVELOPER_NUMBER), developer_en: txt(r.DEVELOPER_EN), status: txt(r.PROJECT_STATUS), percent_completed: toNum(r.PERCENT_COMPLETED) || 0, start_date: d10(r.START_DATE), end_date: d10(r.END_DATE), completion_date: d10(r.COMPLETION_DATE), inspection_date: d10(r.INSPECTION_DATE), area_en: txt(r.AREA_EN), zone_en: txt(r.ZONE_EN), master_project_en: txt(r.MASTER_PROJECT_EN), cnt_building: int(r.CNT_BUILDING), cnt_villa: int(r.CNT_VILLA), cnt_unit: int(r.CNT_UNIT), project_value: toNum(r.PROJECT_VALUE), description_en: txt(r.DESCRIPTION_EN), updated_at: new Date().toISOString() } : null; },
+      stats: function (rows) { var a = rows.filter(function (x) { return x.status === 'ACTIVE'; }).length; return 'نشطة: ' + num(a) + ' · بانتظار البدء: ' + num(rows.filter(function (x) { return x.status === 'PENDING'; }).length) + ' · الوحدات: ' + num(rows.reduce(function (t, x) { return t + (x.cnt_unit || 0); }, 0)); } },
+    brokers: { table: 'dld_brokers', key: 'broker_number', title: 'سجل الوسطاء المرخّصين', test: function (H) { return H.indexOf('broker_number') > -1 && H.indexOf('license_end_date') > -1; },
+      row: function (r) { return txt(r.BROKER_NUMBER) && txt(r.BROKER_EN) ? { broker_number: txt(r.BROKER_NUMBER), name_en: txt(r.BROKER_EN), license_start: d10(r.LICENSE_START_DATE), license_end: d10(r.LICENSE_END_DATE), office_number: txt(r.REAL_ESTATE_NUMBER), office_name: txt(r.REAL_ESTATE_EN), updated_at: new Date().toISOString() } : null; },
+      stats: function (rows) { var t = new Date().toISOString().slice(0, 10); return 'رخص سارية: ' + num(rows.filter(function (x) { return x.license_end && x.license_end >= t; }).length) + ' · مكاتب: ' + num(new Set(rows.map(function (x) { return x.office_number; })).size); } },
+    developers: { table: 'dld_developers', key: 'developer_number', title: 'سجل المطوّرين', test: function (H) { return H.indexOf('developer_number') > -1 && H.indexOf('license_expiry_date') > -1 && H.indexOf('project_number') < 0; },
+      row: function (r) { return txt(r.DEVELOPER_NUMBER) && txt(r.DEVELOPER_EN) ? { developer_number: txt(r.DEVELOPER_NUMBER), name_en: txt(r.DEVELOPER_EN), license_number: txt(r.LICENSE_NUMBER), license_source: txt(r.LICENSE_SOURCE_EN), license_issue: d10(r.LICENSE_ISSUE_DATE), license_expiry: d10(r.LICENSE_EXPIRY_DATE), registration_date: d10(r.REGISTRATION_DATE), updated_at: new Date().toISOString() } : null; },
+      stats: function (rows) { var t = new Date().toISOString().slice(0, 10); return 'رخص سارية: ' + num(rows.filter(function (x) { return x.license_expiry && x.license_expiry >= t; }).length); } }
+  };
+  var regPending = null;
+  function regKind(fields) {
+    var H = (fields || []).map(norm);
+    if (H.indexOf('land_type_en') > -1) return 'land';
+    for (var k in REG) if (REG[k].test(H)) return k;
+    return null;
+  }
+  function parseRegistry(file, el, k) {
+    var out = el.querySelector('#mkOut');
+    if (k === 'land') { out.innerHTML = '<p class="sub" style="color:#b45309;font-weight:800">هذا ملف الأراضي (Land). لا نستخدمه حاليًا، فلا حاجة لرفعه.</p>'; return; }
+    var R = REG[k], rows = [], bad = 0, seen = {};
+    Papa.parse(file, { header: true, skipEmptyLines: true,
+      chunk: function (res) { res.data.forEach(function (r) { var x = R.row(r); if (!x) { bad++; return; } if (seen[x[R.key]] != null) rows[seen[x[R.key]]] = x; else { seen[x[R.key]] = rows.length; rows.push(x); } }); out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> قُرئ ' + num(rows.length) + ' سجلًا…</p>'; },
+      complete: function () {
+        regPending = { k: k, rows: rows };
+        out.innerHTML = '<div class="card" style="background:#f8fafc"><b>المعاينة — ' + R.title + '</b><p class="sub" style="margin:6px 0">السجلات: ' + num(rows.length) + (bad ? ' · تُرك ' + num(bad) + ' ناقص' : '') + ' · ' + R.stats(rows) + '</p>' +
+          '<p class="sub" style="margin:0 0 6px">مثال: ' + esc(Object.values(rows[0] || {}).slice(0, 5).filter(Boolean).join(' · ')) + '</p>' +
+          '<button class="btn teal" id="mkSave"><i class="fas fa-floppy-disk"></i> حفظ ' + num(rows.length) + ' سجلًا</button></div>';
+        out.querySelector('#mkSave').onclick = function () { saveRegistry(el, out); };
+      },
+      error: function (e) { out.innerHTML = '<p class="sub" style="color:#b91c1c">تعذّرت قراءة الملف: ' + esc(e && e.message) + '</p>'; }
+    });
+  }
+  async function saveRegistry(el, out) {
+    if (!regPending) return;
+    var R = REG[regPending.k], rows = regPending.rows, btn = out.querySelector('#mkSave'); btn.disabled = true;
+    for (var i = 0; i < rows.length; i += 500) {
+      btn.textContent = 'جاري الحفظ… ' + Math.min(100, Math.round(100 * i / rows.length)) + '%';
+      var r = await sb().from(R.table).upsert(rows.slice(i, i + 500), { onConflict: R.key });
+      if (r.error) { btn.disabled = false; btn.textContent = 'إعادة المحاولة'; alert(/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/dld_registry.sql من SQL Editor أولًا.' : r.error.message); return; }
+    }
+    var extra = '';
+    if (regPending.k === 'brokers') { var x = await sb().rpc('aq_sync_license_checks'); if (!x.error) extra = ' وفُحصت رخصة المعلن تلقائيًا في ' + num(x.data || 0) + ' إعلانًا.'; }
+    regPending = null;
+    out.innerHTML = '<p class="sub" style="color:#15803d;font-weight:900">✅ حُفظ ' + R.title + ' (' + num(rows.length) + ' سجلًا).' + extra + '</p>';
+  }
+
   async function parseFile(file, el) {
     var out = el.querySelector('#mkOut');
     out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> جاري قراءة الملف… (الملفات الكبيرة تأخذ دقيقة)</p>';
     try { await loadPapa(); } catch (e) { out.innerHTML = '<p class="sub">تعذّر تحميل قارئ الملفات.</p>'; return; }
+    // نقرأ السطر الأول لنعرف نوع الملف: صفقات/إيجارات أم سجل (مشاريع، وسطاء، مطوّرون)
+    var head = await file.slice(0, 4096).text();
+    var rk = regKind(Papa.parse(head.split(/\r?\n/)[0]).data[0]);
+    if (rk) return parseRegistry(file, el, rk);
     var map = null, kind = el.querySelector('#mkKind').value, agg = {}, n = 0, used = 0, skipped = 0;
     Papa.parse(file, {
       header: true, skipEmptyLines: true, worker: false,

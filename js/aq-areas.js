@@ -65,5 +65,31 @@
   }
 
 
-  window.AQAreas = { AREAS, find, summarize, marketRows, median };
+  // ===== مشاريع دائرة الأراضي (dld_projects) =====
+  const title = (t) => String(t || '').toLowerCase().replace(/(^|[\s\-\/(&.])([a-z])/g, (m, a, b) => a + b.toUpperCase()).replace(/\bL\.?l\.?c\b/gi, 'LLC');
+  const ST = { ACTIVE: ['قيد الإنشاء', '#0f766e', '#dcfce7'], PENDING: ['بانتظار البدء', '#92400e', '#fef3c7'], FINISHED: ['مكتمل', '#1d4ed8', '#dbeafe'], COMPLETED: ['مكتمل', '#1d4ed8', '#dbeafe'] };
+  async function dldProjects(names, limit) {
+    if (typeof supabaseClient === 'undefined') return [];
+    try {
+      let q = supabaseClient.from('dld_projects').select('*').neq('status', 'CANCELLED');
+      if (names && names.length) { const v = (n) => '"' + n.replace(/["\\,()]/g, ' ').trim() + '"'; q = q.or(names.map((n) => `area_en.ilike.${v(n)}`).join(',')); }
+      const r = await q.order('cnt_unit', { ascending: false }).limit(limit || 60);
+      return r.data || [];
+    } catch (e) { return []; }
+  }
+  function projectCard(p) {
+    const e = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const st = ST[p.status] || [p.status || '', '#475569', '#f1f5f9'], pc = Math.max(0, Math.min(100, Number(p.percent_completed) || 0));
+    const end = p.end_date ? new Date(p.end_date).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }) : '';
+    const units = [p.cnt_unit ? p.cnt_unit.toLocaleString('en-US') + ' وحدة' : '', p.cnt_villa ? p.cnt_villa + ' فيلا' : '', p.cnt_building ? p.cnt_building + ' مبنى' : ''].filter(Boolean).join(' · ');
+    return `<div class="dldp"><div class="t"><b>${e(title(p.name_en))}</b><span style="background:${st[2]};color:${st[1]}">${e(st[0])}</span></div>
+      <small>${e(title(p.developer_en))}${p.area_en ? ' · ' + e(p.area_en) : ''}</small>
+      <div class="bar" title="نسبة الإنجاز حسب آخر تفتيش"><i style="width:${pc}%"></i></div>
+      <div class="m"><span>الإنجاز <b>${pc.toFixed(pc % 1 ? 1 : 0)}%</b></span>${end ? `<span>التسليم المتوقع <b>${e(end)}</b></span>` : ''}${units ? `<span>${e(units)}</span>` : ''}</div>
+      ${p.inspection_date ? `<small class="ins">آخر تفتيش: ${new Date(p.inspection_date).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', year: 'numeric' })}</small>` : ''}</div>`;
+  }
+  const PROJECT_CSS = '.dldp{background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:14px;padding:12px 14px;min-width:0}.dldp .t{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.dldp .t b{font-size:15px;line-height:1.4}.dldp .t span{flex:0 0 auto;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:900}.dldp small{display:block;color:var(--muted,#64748b);font-weight:700;font-size:12.5px;margin-top:2px}.dldp .bar{height:8px;border-radius:99px;background:#e2e8f0;margin:10px 0 6px;overflow:hidden}.dldp .bar i{display:block;height:100%;background:linear-gradient(90deg,#14b8a6,#0f766e);border-radius:99px}.dldp .m{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;font-weight:700;color:var(--muted,#64748b)}.dldp .m b{color:var(--ink,#0f172a)}.dldp .ins{font-size:11.5px!important}.dldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}@media(max-width:860px){.dldgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.dldgrid{grid-template-columns:minmax(0,1fr)}}';
+  function css() { if (document.getElementById('dldCss')) return; const st = document.createElement('style'); st.id = 'dldCss'; st.textContent = PROJECT_CSS; document.head.appendChild(st); }
+
+  window.AQAreas = { AREAS, find, summarize, marketRows, median, dldProjects, projectCard, projectCss: css, title };
 })();
