@@ -38,7 +38,7 @@ for (const [name, url] of SHOTS) {
   } catch (e) { console.warn(name, e.message); }
   await page.waitForTimeout(3500);
   // إخفاء أي نافذة منبثقة متبقية
-  await page.evaluate(() => document.querySelectorAll('.aqe-ov, .aqs-ov, .aqs-coach, [class*="cookie"], #pwaInstallBanner').forEach((el) => el.remove()));
+  await page.evaluate(() => document.querySelectorAll('.aqe-ov, .aqe-tip, .aqs-ov, .aqs-coach, [class*="cookie"], #pwaInstallBanner').forEach((el) => el.remove()));
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(500);
   await page.screenshot({ path: path.join(OUT, 'raw', name + '.png') });
