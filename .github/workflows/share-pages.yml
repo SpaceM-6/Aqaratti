@@ -26,6 +26,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Hide listings not confirmed for 60 days (warn at 50)
+        run: |
+          URL=$(grep -oP "SUPABASE_URL\s*=\s*'\K[^']+" supabase-client.js); KEY=$(grep -oP "SUPABASE_ANON_KEY\s*=\s*'\K[^']+" supabase-client.js)
+          curl -s -m 30 -X POST "$URL/rest/v1/rpc/aq_expire_stale_listings" -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{}' || true
       - name: Build share pages
         run: node scripts/build-share-pages.mjs
       - name: Build SEO pages (areas, listings, sitemap)

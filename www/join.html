@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>انضم إلى أنا عقار: للوسطاء والمكاتب والمطورين وشركات الخدمات | AnaAqar</title>
+  <meta name="description" content="اعرض عقاراتك ومشاريعك وخدماتك على أنا عقار: إعلانات موثّقة، ونظام لإدارة العملاء، وبيانات السوق الرسمية، وترتيب شفاف بالأداء.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anaaqar.com/join.html">
+  <meta property="og:title" content="انضم إلى أنا عقار">
+  <meta property="og:description" content="للوسطاء والمكاتب والمطورين وشركات الخدمات في الإمارات.">
+  <meta property="og:image" content="https://anaaqar.com/icons/icon-app-1024.png">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=110">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=110"></script>
+  <script src="js/aq-public.js?v=110"></script>
+  <style>
+    .aud { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin:0 0 16px; }
+    @media (max-width:900px) { .aud { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .aud button { background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px 10px; font:800 15px 'Tajawal', sans-serif; color:var(--ink); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .aud button i { font-size:22px; color:var(--teal); } .aud button.on { border-color:var(--teal); background:#e6f7f5; } [data-theme="dark"] .aud button.on { background:#0f2e33; }
+    .box { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin:0 0 16px; }
+    .box h2 { margin:0 0 10px; font-size:20px; font-weight:900; }
+    .ben { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; } @media (max-width:640px) { .ben { grid-template-columns:minmax(0, 1fr); } }
+    .ben div { display:flex; gap:10px; align-items:flex-start; background:var(--bg); border-radius:14px; padding:12px; } .ben i { color:var(--teal); font-size:18px; margin-top:3px; width:22px; text-align:center; flex:0 0 auto; }
+    .ben b { display:block; font-size:15px; } .ben small { display:block; color:var(--muted); font-weight:700; font-size:13px; line-height:1.7; }
+    .steps { counter-reset:s; display:grid; gap:8px; } .steps div { counter-increment:s; display:flex; gap:10px; align-items:center; font-weight:800; }
+    .steps div::before { content:counter(s); flex:0 0 30px; height:30px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-weight:900; }
+    .cta { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    .faq details { background:var(--bg); border-radius:12px; padding:10px 14px; margin:0 0 8px; } .faq summary { font-weight:900; cursor:pointer; } .faq p { margin:8px 0 0; color:var(--muted); font-weight:600; line-height:1.8; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="index.html">الرئيسية ←</a>
+  </div></header>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-handshake"></i> انضم إلى أنا عقار</h1><p>منصة عقارية تنطلق من الإمارات، مبنية على الثقة: إعلانات موثّقة المستندات، وبيانات السوق الرسمية من دائرة الأراضي والأملاك، وترتيب شفاف بالأداء.</p></div></section>
+  <main>
+    <div class="aud" id="aud">
+      <button data-a="broker"><i class="fas fa-user-tie"></i>وسيط عقاري</button>
+      <button data-a="office"><i class="fas fa-building-user"></i>مكتب عقاري</button>
+      <button data-a="developer"><i class="fas fa-city"></i>مطوّر عقاري</button>
+      <button data-a="services"><i class="fas fa-screwdriver-wrench"></i>شركة خدمات</button>
+    </div>
+    <div id="pane"></div>
+    <div class="box faq"><h2>أسئلة شائعة</h2>
+      <details><summary>من يستطيع الانضمام؟</summary><p>الوسطاء والمكاتب المرخّصون، والمطوّرون العقاريون، وشركات الخدمات المرخّصة (مقاولات، ديكور، صيانة، نظافة، نقل أثاث وغيرها) في الإمارات.</p></details>
+      <details><summary>كيف تتحققون من الإعلانات؟</summary><p>نطابق رقم الوسيط مع سجل دائرة الأراضي والأملاك، ويرفع الوسيط سند الملكية ونموذج A لكل عقار فتراجعهما الإدارة، ويؤكد توافر العقار دوريًا. كل فحص يظهر للزوار بتاريخه.</p></details>
+      <details><summary>هل تظهر بيانات تواصلي للجميع؟</summary><p>تظهر بيانات التواصل التي تختارها على إعلاناتك وملفك فقط. وبيانات التواصل في دليل الوسطاء المأخوذ من السجل العام تبقى مخفية حتى يفعّل الوسيط ملفه بنفسه.</p></details>
+      <details><summary>كيف يُحسب الترتيب في «أفضل الوسطاء»؟</summary><p>تلقائيًا من الأداء: الإعلانات الموثّقة، وسرعة الرد على العملاء، وتحديث توافر العقارات، والرخصة السارية. لا يمكن شراء الترتيب.</p></details>
+      <details><summary>عندي سؤال قبل التسجيل</summary><p>راسلنا على info@anaaqar.com أو من زر المحادثة أسفل الصفحة.</p></details>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const P = {
+        broker: { t: 'للوسيط العقاري', b: [
+          ['fa-certificate', 'ملف موثّق برقمك في دائرة الأراضي', 'رقم الوسيط (BRN) وحالة رخصتك تظهر على ملفك وإعلاناتك تلقائيًا.'],
+          ['fa-file-shield', 'إعلانات موثّقة المستندات', 'ارفع سند الملكية ونموذج A لكل عقار، فيظهر للزوار «فُحصت الملكية» و«فُحص التفويض».'],
+          ['fa-address-book', 'نظام لإدارة عملائك', 'مراحل العميل، وسجل التواصل، ومهام المتابعة، ورسائل واتساب جاهزة، ورد مقترح بالذكاء الاصطناعي.'],
+          ['fa-wand-magic', 'مطابقة تلقائية', 'يرشّح النظام من إعلاناتك ما يناسب ميزانية كل عميل، وترسلها له برسالة واحدة.'],
+          ['fa-file-pdf', 'بروشور لكل عقار', 'صفحة جاهزة للطباعة أو الحفظ PDF فيها الصور والتفاصيل ورمز QR.'],
+          ['fa-trophy', 'ترتيب شفاف بالأداء', 'كلما وثّقت إعلاناتك ورددت على عملائك بسرعة ارتفع ترتيبك في «أفضل الوسطاء».']],
+          s: ['أنشئ حسابًا مهنيًا برقم الوسيط', 'أضف عقاراتك بالصور والتفاصيل', 'ارفع سند الملكية ونموذج A', 'استقبل العملاء وتابعهم من لوحتك'],
+          c: [['pro.html?signup=broker', 'أنشئ حساب وسيط', 'btn-teal'], ['brokers-directory.html', 'ابحث عن ملفك في دليل الوسطاء', 'btn-soft']] },
+        office: { t: 'للمكتب العقاري', b: [
+          ['fa-users', 'فريقك في مكان واحد', 'أضف وسطاءك، ووزّع العملاء عليهم، وتابع أداء كل وسيط.'],
+          ['fa-certificate', 'رقم المكتب (ORN) موثّق', 'يظهر اسم مكتبك ورخصته على كل إعلانات فريقك.'],
+          ['fa-file-shield', 'إعلانات موثّقة المستندات', 'سند الملكية ونموذج A لكل عقار، تراجعها الإدارة وتظهر شارتها للزوار.'],
+          ['fa-chart-line', 'مشاهدات وعملاء لكل إعلان', 'تعرف أي إعلان يجلب العملاء، وما يحتاج تحسينًا.'],
+          ['fa-database', 'بيانات السوق الرسمية', 'أسعار المتر والإيجارات والصفقات لكل منطقة من دائرة الأراضي والأملاك، لتقنع عملاءك بالأرقام.'],
+          ['fa-file-export', 'تصدير العملاء', 'صدّر قائمة عملائك إلى Excel متى شئت.']],
+          s: ['أنشئ حساب مكتب برقم المكتب', 'أضف وسطاء فريقك', 'أضف العقارات ووثّقها', 'تابع العملاء والأداء من لوحة المكتب'],
+          c: [['pro.html?signup=office', 'أنشئ حساب مكتب', 'btn-teal']] },
+        developer: { t: 'للمطوّر العقاري', b: [
+          ['fa-city', 'صفحة لكل مشروع', 'الصور، وخطة السداد، ونسبة الإنجاز، وموعد التسليم، والوحدات المتاحة.'],
+          ['fa-database', 'ربط بسجل المشاريع الرسمي', 'مشاريعك المسجلة لدى دائرة الأراضي والأملاك تظهر بنسبة إنجازها الرسمية.'],
+          ['fa-users', 'عملاء مهتمون مباشرة', 'يصلك كل طلب استفسار عن مشروعك في لوحتك مع بيانات التواصل.'],
+          ['fa-handshake', 'وصول للوسطاء', 'آلاف الوسطاء في دليلنا يستطيعون تسويق مشاريعك.']],
+          s: ['أنشئ حساب مطوّر', 'أضف مشاريعك وخطط السداد', 'استقبل طلبات المشترين والوسطاء'],
+          c: [['pro.html?signup=developer', 'أنشئ حساب مطوّر', 'btn-teal'], ['projects.html', 'شاهد صفحة المشاريع', 'btn-soft']] },
+        services: { t: 'لشركات الخدمات', b: [
+          ['fa-screwdriver-wrench', 'ملف لشركتك في قسمها', 'مقاولات، ديكور، صيانة، نظافة، نقل أثاث، مكافحة حشرات، حدائق، مسابح، أنظمة أمان وغيرها.'],
+          ['fa-users', 'عملاء يملكون عقارات', 'زوار أنا عقار ملّاك ومستأجرون ومشترون يحتاجون خدماتك فعلًا.'],
+          ['fa-certificate', 'شارة «رخصة موثّقة»', 'بعد مراجعة رخصتك التجارية تظهر الشارة على ملف شركتك.'],
+          ['fa-images', 'أعمالك وصورها', 'اعرض مشاريعك السابقة ونبذة عن فريقك.']],
+          s: ['اختر قسم خدمتك', 'أرسل بيانات شركتك ورخصتها', 'تظهر شركتك في الدليل بعد المراجعة'],
+          c: [['services-directory.html?join=1', 'أضف شركتك إلى الدليل', 'btn-teal'], ['services-directory.html', 'تصفّح دليل الخدمات', 'btn-soft']] }
+      };
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const show = (k) => {
+        const x = P[k] || P.broker;
+        document.querySelectorAll('#aud button').forEach((b) => b.classList.toggle('on', b.dataset.a === k));
+        document.getElementById('pane').innerHTML = `<div class="box"><h2>${x.t}</h2><div class="ben">${x.b.map(([i, t, d]) => `<div><i class="fas ${i}"></i><span><b>${esc(t)}</b><small>${esc(d)}</small></span></div>`).join('')}</div></div>
+          <div class="box"><h2>كيف تبدأ؟</h2><div class="steps">${x.s.map((t) => `<div>${esc(t)}</div>`).join('')}</div><div class="cta">${x.c.map(([u, t, c]) => `<a class="btn ${c}" href="${u}">${esc(t)}</a>`).join('')}</div></div>`;
+        try { history.replaceState(null, '', '?for=' + k); } catch (e) {}
+      };
+      document.getElementById('aud').onclick = (e) => { const b = e.target.closest('button[data-a]'); if (b) show(b.dataset.a); };
+      const f = new URLSearchParams(location.search).get('for');
+      show(P[f] ? f : 'broker');
+    })();
+  </script>
+  <script src="js/aq-engage.js?v=110" defer></script>
+  <script src="js/aq-back.js?v=110" defer></script>
+  <script src="js/aq-ads.js?v=110" defer></script>
+</body>
+</html>

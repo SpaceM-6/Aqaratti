@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=109"></script>
+  <script src="supabase-client.js?v=110"></script>
   <script src="js/service-categories.js"></script>
   <style>
     :root { --teal:#00a896; --teal-dark:#028090; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
@@ -273,7 +273,9 @@
     let cat = new URLSearchParams(location.search).get('cat');
     const landing = !CATS[cat];
     if (landing) cat = Object.keys(CATS)[0];
-    let all = [], emirate = '', query = '', page = 1;
+    const QS = new URLSearchParams(location.search);
+    let all = [], emirate = QS.get('e') || '', query = (QS.get('q') || '').trim().toLowerCase(), page = 1;
+    if (query) setTimeout(() => { const i = document.getElementById('q'); if (i) i.value = QS.get('q'); }, 0);
 
     function renderHead() {
       $('tabs').innerHTML = `<a class="tab" href="services-directory.html"><i class="fas fa-grip"></i> كل الأقسام</a>` + Object.entries(CATS).map(([k, c]) =>
@@ -464,6 +466,7 @@
     document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('open'); }));
     $('reqBtn').addEventListener('click', () => { $('reqForm').hidden = false; $('reqOk').hidden = true; open('reqModal'); });
     $('joinBtn').addEventListener('click', () => { $('jCat').value = cat; $('joinForm').hidden = false; $('joinOk').hidden = true; open('joinModal'); });
+    if (new URLSearchParams(location.search).get('join')) setTimeout(() => $('joinBtn').click(), 300);
     $('jCat').innerHTML = Object.entries(CATS).map(([k, c]) => `<option value="${k}">${c.t}</option>`).join('');
     $('jEmirate').innerHTML = '<option value="">اختر</option>' + EMIRATES.map(e => `<option>${e}</option>`).join('');
 
@@ -525,8 +528,8 @@
   })();
   </script>
   <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="services" data-title="إعلانات"></div></div>
-  <script src="js/aq-ads.js?v=109" defer></script>
-  <script src="js/aq-engage.js?v=109" defer></script>
-  <script src="js/aq-back.js?v=109" defer></script>
+  <script src="js/aq-ads.js?v=110" defer></script>
+  <script src="js/aq-engage.js?v=110" defer></script>
+  <script src="js/aq-back.js?v=110" defer></script>
 </body>
 </html>

@@ -139,7 +139,7 @@
     el.innerHTML = '<div class="card"><h2>بيانات السوق الرسمية</h2>' +
       '<p class="sub">تُبنى منها صفحات المناطق (متوسط سعر المتر، عدد الصفقات، الإيجارات، العائد الإيجاري). نحفظ ملخصًا شهريًا لكل منطقة فقط، لا الصفقات نفسها.</p>' +
       '<ol style="margin:0 0 12px;padding-inline-start:20px;line-height:1.9;font-size:14px"><li>من موقع دائرة الأراضي والأملاك ← البيانات المفتوحة (Open Data) حمّلي ملف <b>Transactions</b> (صفقات البيع) أو <b>Rents</b> (عقود الإيجار) بصيغة CSV للفترة التي تريدينها.</li>' +
-      '<li>يقبل أيضًا ملفات <b>Project</b> (المشاريع ونسب إنجازها) و<b>Broker</b> (الوسطاء المرخّصون، ومنه يُفحص ترخيص المعلن تلقائيًا) و<b>Developer</b> (المطوّرون). يتعرف على نوع الملف وحده.</li><li>اختاري الملف هنا، وراجعي المعاينة، ثم اضغطي «حفظ».</li><li>كرري شهريًا لتبقى الأرقام محدّثة. رفع الشهر نفسه مرة أخرى يستبدل أرقامه.</li></ol>' +
+      '<li>يقبل أيضًا ملفات <b>Project</b> (المشاريع ونسب إنجازها) و<b>Broker</b> (الوسطاء المرخّصون، ومنه يُفحص ترخيص المعلن تلقائيًا) و<b>Developer</b> (المطوّرون) و<b>Land</b> و<b>Building</b> (المباني). ومن منصة دبي للبيانات (Dubai Pulse): ملف المدارس الخاصة من هيئة المعرفة <b>KHDA</b>، وملفات محطات المترو والترام من هيئة الطرق <b>RTA</b>. يتعرف على نوع الملف وحده.</li><li>اختاري الملف هنا، وراجعي المعاينة، ثم اضغطي «حفظ».</li><li>كرري شهريًا لتبقى الأرقام محدّثة. رفع الشهر نفسه مرة أخرى يستبدل أرقامه.</li></ol>' +
       '<div class="grid2"><div class="fg"><label>نوع الملف</label><select id="mkKind"><option value="auto">تحديد تلقائي</option><option value="sale">صفقات بيع</option><option value="rent">عقود إيجار</option></select></div>' +
       '<div class="fg"><label>ملف CSV</label><input type="file" id="mkFile" accept=".csv,text/csv"></div></div><div id="mkOut"></div></div>' +
       '<div class="card" id="mkSaved">جاري تحميل الملخصات المحفوظة…</div>';
@@ -164,6 +164,9 @@
   var d10 = function (v) { var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m && m[1] > '1900' ? m[1] + '-' + m[2] + '-' + m[3] : null; };
   var txt = function (v) { var t = String(v == null ? '' : v).trim(); return t && t !== '0' ? t : null; };
   var int = function (v) { var n = parseInt(v, 10); return isFinite(n) ? n : null; };
+  // قيمة أول عمود موجود من عدة أسماء محتملة، بأي حالة أحرف
+  var g = function (r) { var keys = Array.prototype.slice.call(arguments, 1); var low = r.__low || (r.__low = (function () { var o = {}; Object.keys(r).forEach(function (k) { if (k !== '__low') o[norm(k)] = r[k]; }); return o; })()); for (var i = 0; i < keys.length; i++) { var v = low[keys[i]]; if (v != null && String(v).trim() !== '') return v; } return null; };
+  var flt = function (v) { var n = parseFloat(v); return isFinite(n) && n !== 0 ? n : null; };
   var REG = {
     projects: { table: 'dld_projects', key: 'project_number', title: 'سجل المشاريع', test: function (H) { return H.indexOf('project_number') > -1 && H.indexOf('percent_completed') > -1; },
       row: function (r) { return txt(r.PROJECT_NUMBER) && txt(r.PROJECT_EN) ? { project_number: txt(r.PROJECT_NUMBER), name_en: txt(r.PROJECT_EN), developer_number: txt(r.DEVELOPER_NUMBER), developer_en: txt(r.DEVELOPER_EN), status: txt(r.PROJECT_STATUS), percent_completed: toNum(r.PERCENT_COMPLETED) || 0, start_date: d10(r.START_DATE), end_date: d10(r.END_DATE), completion_date: d10(r.COMPLETION_DATE), inspection_date: d10(r.INSPECTION_DATE), area_en: txt(r.AREA_EN), zone_en: txt(r.ZONE_EN), master_project_en: txt(r.MASTER_PROJECT_EN), cnt_building: int(r.CNT_BUILDING), cnt_villa: int(r.CNT_VILLA), cnt_unit: int(r.CNT_UNIT), project_value: toNum(r.PROJECT_VALUE), description_en: txt(r.DESCRIPTION_EN), updated_at: new Date().toISOString() } : null; },
@@ -173,18 +176,33 @@
       stats: function (rows) { var t = new Date().toISOString().slice(0, 10); return 'رخص سارية: ' + num(rows.filter(function (x) { return x.license_end && x.license_end >= t; }).length) + ' · مكاتب: ' + num(new Set(rows.map(function (x) { return x.office_number; })).size); } },
     developers: { table: 'dld_developers', key: 'developer_number', title: 'سجل المطوّرين', test: function (H) { return H.indexOf('developer_number') > -1 && H.indexOf('license_expiry_date') > -1 && H.indexOf('project_number') < 0; },
       row: function (r) { return txt(r.DEVELOPER_NUMBER) && txt(r.DEVELOPER_EN) ? { developer_number: txt(r.DEVELOPER_NUMBER), name_en: txt(r.DEVELOPER_EN), license_number: txt(r.LICENSE_NUMBER), license_source: txt(r.LICENSE_SOURCE_EN), license_issue: d10(r.LICENSE_ISSUE_DATE), license_expiry: d10(r.LICENSE_EXPIRY_DATE), registration_date: d10(r.REGISTRATION_DATE), updated_at: new Date().toISOString() } : null; },
-      stats: function (rows) { var t = new Date().toISOString().slice(0, 10); return 'رخص سارية: ' + num(rows.filter(function (x) { return x.license_expiry && x.license_expiry >= t; }).length); } }
+      stats: function (rows) { var t = new Date().toISOString().slice(0, 10); return 'رخص سارية: ' + num(rows.filter(function (x) { return x.license_expiry && x.license_expiry >= t; }).length); } },
+    schools: { table: 'schools', key: 'id', title: 'المدارس الخاصة (هيئة المعرفة KHDA)', setup: 'city_guides.sql', test: function (H) { return H.indexOf('education_center_id') > -1 || (H.indexOf('curriculum_en') > -1 && H.indexOf('name_eng') > -1); },
+      row: function (r) { var id = txt(g(r, 'education_center_id', 'id')), n = txt(g(r, 'name_eng', 'name_en')); return id && n ? { id: id, name_en: n, name_ar: txt(g(r, 'name_ar')), lat: flt(g(r, 'lat', 'latitude')), lng: flt(g(r, 'long', 'lng', 'longitude')),
+        rating_en: txt(g(r, 'overall_performance_en')), rating_ar: txt(g(r, 'overall_performance_ar')), inspection_year: txt(g(r, 'inspection_year')), curriculum_en: txt(g(r, 'curriculum_en')), curriculum_ar: txt(g(r, 'curriculum_ar')),
+        area_en: txt(g(r, 'area_en')), area_ar: txt(g(r, 'area_ar')), students: int(g(r, 'student_count')), established: d10(g(r, 'established_on')), telephone: txt(g(r, 'telephone')), website: txt(g(r, 'web_address', 'website')),
+        address: txt(g(r, 'address')), address_ar: txt(g(r, 'address_ar')), image_url: txt(g(r, 'image_large_url', 'image_small_url')), report_url: txt(g(r, 'inspection_report_pdf_link_en')), updated_at: new Date().toISOString() } : null; },
+      stats: function (rows) { var c = {}; rows.forEach(function (x) { if (x.rating_en) c[x.rating_en] = (c[x.rating_en] || 0) + 1; }); return Object.entries(c).map(function (e) { return esc(e[0]) + ': ' + num(e[1]); }).join(' · '); } },
+    stations: { table: 'transit_stations', key: 'id', title: 'محطات المواصلات (هيئة الطرق RTA)', setup: 'city_guides.sql',
+      test: function (H) { return (H.indexOf('stop_lat') > -1 || ((H.indexOf('station_name_en') > -1 || H.indexOf('station_name') > -1 || H.indexOf('station_id') > -1) && (H.indexOf('latitude') > -1 || H.indexOf('lat') > -1 || H.indexOf('location_latitude') > -1))); },
+      row: function (r) { var n = txt(g(r, 'station_name_en', 'station_name', 'stop_name', 'name_en', 'location_name_english', 'name')); var lat = flt(g(r, 'latitude', 'lat', 'stop_lat', 'location_latitude')), lng = flt(g(r, 'longitude', 'long', 'lng', 'stop_lon', 'location_longitude'));
+        if (!n || !lat || !lng) return null; var line = txt(g(r, 'line_name', 'line', 'line_name_en', 'route', 'metro_line')) || ''; var all = (n + ' ' + line + ' ' + (txt(g(r, 'type', 'station_type', 'mode')) || '')).toLowerCase();
+        var kind = /tram/.test(all) ? 'tram' : /bus/.test(all) ? 'bus' : /marine|ferry|abra|water/.test(all) ? 'marine' : 'metro';
+        return { id: String(txt(g(r, 'station_id', 'stop_id', 'location_id', 'id')) || (kind + '-' + n)).slice(0, 80), kind: kind, name_en: n, name_ar: txt(g(r, 'station_name_ar', 'name_ar', 'location_name_arabic')), line: line || null, lat: lat, lng: lng, updated_at: new Date().toISOString() }; },
+      stats: function (rows) { var c = {}; rows.forEach(function (x) { c[x.kind] = (c[x.kind] || 0) + 1; }); return Object.entries(c).map(function (e) { return ({ metro: 'مترو', tram: 'ترام', bus: 'حافلات', marine: 'بحري' })[e[0]] + ': ' + num(e[1]); }).join(' · '); } }
   };
   var regPending = null;
   function regKind(fields) {
     var H = (fields || []).map(norm);
     if (H.indexOf('land_type_en') > -1) return 'land';
+    if ((H.indexOf('building_number') > -1 || H.indexOf('bld_number') > -1 || H.indexOf('building_name_en') > -1) && H.indexOf('area_name_en') + H.indexOf('area_en') > -2) return 'buildings';
     for (var k in REG) if (REG[k].test(H)) return k;
     return null;
   }
   function parseRegistry(file, el, k) {
     var out = el.querySelector('#mkOut');
     if (k === 'land') return parseLand(file, el);
+    if (k === 'buildings') return parseBuildings(file, el);
     var R = REG[k], rows = [], bad = 0, seen = {};
     Papa.parse(file, { header: true, skipEmptyLines: true,
       chunk: function (res) { res.data.forEach(function (r) { var x = R.row(r); if (!x) { bad++; return; } if (seen[x[R.key]] != null) rows[seen[x[R.key]]] = x; else { seen[x[R.key]] = rows.length; rows.push(x); } }); out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> قُرئ ' + num(rows.length) + ' سجلًا…</p>'; },
@@ -196,6 +214,42 @@
         out.querySelector('#mkSave').onclick = function () { saveRegistry(el, out); };
       },
       error: function (e) { out.innerHTML = '<p class="sub" style="color:#b91c1c">تعذّرت قراءة الملف: ' + esc(e && e.message) + '</p>'; }
+    });
+  }
+  // ===== ملف المباني من دائرة الأراضي: ملخص لكل منطقة =====
+  function parseBuildings(file, el) {
+    var out = el.querySelector('#mkOut'), agg = {}, n = 0;
+    Papa.parse(file, { header: true, skipEmptyLines: true,
+      chunk: function (res) {
+        res.data.forEach(function (r) {
+          var area = txt(g(r, 'area_name_en', 'area_en')); if (!area) return; n++;
+          area = area.toLowerCase().replace(/(^|[\s\-\/(])([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); });
+          var a = agg[area] || (agg[area] = { area_en: area, buildings: 0, fl: [], units: 0, years: [], prj: {} });
+          a.buildings++;
+          var f = int(g(r, 'floors', 'no_of_floors', 'floors_count', 'number_of_floors')); if (f && f < 200) a.fl.push(f);
+          var u = int(g(r, 'units', 'no_of_units', 'unit_count', 'rooms', 'flats')); if (u && u < 5000) a.units += u;
+          var y = String(g(r, 'creation_date', 'completion_date', 'built_date', 'construction_date') || '').match(/(19|20)\d{2}/); if (y) a.years.push(+y[0]);
+          var pj = txt(g(r, 'project_name_en', 'master_project_en', 'project_en')); if (pj) a.prj[pj] = (a.prj[pj] || 0) + 1;
+        });
+        out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> قُرئ ' + num(n) + ' مبنى…</p>';
+      },
+      complete: function () {
+        var rows = Object.values(agg).map(function (a) {
+          var top = {}; Object.entries(a.prj).sort(function (x, y) { return y[1] - x[1]; }).slice(0, 6).forEach(function (e) { top[e[0]] = e[1]; });
+          a.years.sort(); a.fl.sort(function (x, y) { return x - y; });
+          return { area_en: a.area_en, buildings: a.buildings, floors_avg: a.fl.length ? Math.round(a.fl.reduce(function (t, x) { return t + x; }, 0) / a.fl.length * 10) / 10 : null, floors_max: a.fl.length ? a.fl[a.fl.length - 1] : null,
+            units: a.units || null, newest_year: a.years.length ? a.years[a.years.length - 1] : null, median_year: a.years.length ? a.years[a.years.length >> 1] : null, top_projects: top, updated_at: new Date().toISOString() };
+        });
+        out.innerHTML = '<div class="card" style="background:#f8fafc"><b>المعاينة — المباني</b><p class="sub" style="margin:6px 0">المباني: ' + num(n) + ' · المناطق: ' + num(rows.length) + '</p><button class="btn teal" id="mkSave"><i class="fas fa-floppy-disk"></i> حفظ ملخص ' + num(rows.length) + ' منطقة</button></div>';
+        out.querySelector('#mkSave').onclick = async function () {
+          var btn = this; btn.disabled = true;
+          for (var i = 0; i < rows.length; i += 500) {
+            var r = await sb().from('building_area_stats').upsert(rows.slice(i, i + 500), { onConflict: 'area_en' });
+            if (r.error) { btn.disabled = false; alert(/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/city_guides.sql من SQL Editor أولًا.' : r.error.message); return; }
+          }
+          out.innerHTML = '<p class="sub" style="color:#15803d;font-weight:900">✅ حُفظ ملخص المباني لـ ' + num(rows.length) + ' منطقة.</p>';
+        };
+      }
     });
   }
   // ===== ملف الأراضي: ملخص لكل منطقة (لا نخزن القطع نفسها) =====
@@ -261,7 +315,7 @@
     for (var i = 0; i < rows.length; i += 500) {
       btn.textContent = 'جاري الحفظ… ' + Math.min(100, Math.round(100 * i / rows.length)) + '%';
       var r = await sb().from(R.table).upsert(rows.slice(i, i + 500), { onConflict: R.key });
-      if (r.error) { btn.disabled = false; btn.textContent = 'إعادة المحاولة'; alert(/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/dld_registry.sql من SQL Editor أولًا.' : r.error.message); return; }
+      if (r.error) { btn.disabled = false; btn.textContent = 'إعادة المحاولة'; alert(/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/' + (R.setup || 'dld_registry.sql') + ' من SQL Editor أولًا.' : r.error.message); return; }
     }
     var extra = '';
     if (regPending.k === 'brokers') {

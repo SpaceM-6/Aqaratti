@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>بروشور العقار | أنا عقار</title>
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=110"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root { --teal:#00a896; --navy:#192038; --muted:#64748b; --line:#e2e8f0; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#e2e8f0; font-family:'Tajawal', sans-serif; color:var(--navy); }
+    .bar { position:sticky; top:0; z-index:5; display:flex; gap:8px; justify-content:center; padding:10px 16px; background:var(--navy); }
+    .bar button, .bar a { border:0; border-radius:10px; padding:9px 16px; font:800 15px 'Tajawal', sans-serif; cursor:pointer; text-decoration:none; background:var(--teal); color:#fff; }
+    .bar a { background:#334155; }
+    .sheet { width:210mm; min-height:297mm; margin:16px auto; background:#fff; padding:12mm; display:flex; flex-direction:column; gap:7mm; }
+    @media (max-width:820px) { .sheet { width:auto; min-height:0; margin:12px; padding:16px; } }
+    .hd { display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid var(--teal); padding-bottom:4mm; }
+    .hd img { height:40px; } .hd b { font-size:22px; color:var(--teal); font-weight:900; }
+    .deal { background:var(--teal); color:#fff; border-radius:999px; padding:4px 14px; font-weight:900; font-size:14px; }
+    h1 { margin:0; font-size:26px; line-height:1.4; font-weight:900; }
+    .price { font-size:28px; font-weight:900; color:#0f766e; }
+    .hero { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:12px; background:#f1f5f9; }
+    .thumbs { display:grid; grid-template-columns:repeat(3, 1fr); gap:3mm; } .thumbs img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:8px; }
+    .facts { display:grid; grid-template-columns:repeat(4, 1fr); gap:3mm; }
+    @media (max-width:600px) { .facts { grid-template-columns:repeat(2, 1fr); } }
+    .facts div { background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:3mm; text-align:center; } .facts b { display:block; font-size:18px; font-weight:900; } .facts small { color:var(--muted); font-weight:700; }
+    .desc { font-size:15px; line-height:2; white-space:pre-wrap; margin:0; }
+    .ft { margin-top:auto; display:flex; justify-content:space-between; gap:6mm; align-items:center; border-top:1px solid var(--line); padding-top:5mm; }
+    .ag b { display:block; font-size:18px; font-weight:900; } .ag div { color:var(--muted); font-weight:700; font-size:14px; line-height:1.9; }
+    .qr { text-align:center; font-size:11px; color:var(--muted); font-weight:700; } .qr #qr { width:96px; height:96px; margin:0 auto 4px; } .qr #qr img, .qr #qr canvas { width:96px !important; height:96px !important; }
+    .msg { text-align:center; padding:60px 16px; font-weight:800; }
+    @media print { body { background:#fff; } .bar { display:none; } .sheet { margin:0; box-shadow:none; width:auto; min-height:auto; padding:0; } @page { size:A4; margin:10mm; } }
+  </style>
+</head>
+<body>
+  <div class="bar"><button onclick="print()">حفظ PDF أو طباعة</button><a href="pro.html#listings">رجوع</a></div>
+  <div id="root"><div class="msg">جاري التحميل…</div></div>
+  <script>
+    (async () => {
+      const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const num = (n) => n == null || n === '' || isNaN(n) ? '' : Number(n).toLocaleString('en-US');
+      const root = document.getElementById('root');
+      const id = String(new URLSearchParams(location.search).get('id') || '').replace(/^sb-/, '');
+      if (!id) { root.innerHTML = '<div class="msg">لم يُحدَّد العقار.</div>'; return; }
+      const r = await supabaseClient.from('properties').select('*').eq('id', id).maybeSingle();
+      const p = r.data;
+      if (!p) { root.innerHTML = '<div class="msg">الإعلان غير متاح.</div>'; return; }
+      let ag = {}; if (p.broker_id) { const a = await supabaseClient.from('profiles').select('full_name,company_name,phone,whatsapp,license_no,logo_url').eq('id', p.broker_id).maybeSingle(); ag = a.data || {}; }
+      const imgs = p.image_urls || [], daily = p.rent_period === 'daily';
+      const deal = daily ? 'إقامة قصيرة' : p.deal_type === 'rent' ? 'للإيجار' : 'للبيع';
+      const price = daily ? `${num(p.nightly_price || p.price_aed)} درهم / الليلة` : `${num(p.price_aed)} درهم${p.deal_type === 'rent' ? (p.rent_period === 'monthly' ? ' شهريًا' : ' سنويًا') : ''}`;
+      const FURN = { furnished: 'مفروش', unfurnished: 'غير مفروش', partly: 'مفروش جزئيًا' };
+      const facts = [[p.bedrooms === 0 ? 'استوديو' : p.bedrooms, 'غرف النوم'], [p.bathrooms, 'الحمامات'], [p.area_m2 ? num(p.area_m2) + ' م²' : '', 'المساحة'], [FURN[p.furnishing] || p.city || '', FURN[p.furnishing] ? 'الفرش' : 'المدينة']].filter((f) => f[0] !== '' && f[0] != null);
+      const url = `https://anaaqar.com/s/p-sb-${p.id}.html`;
+      document.title = p.title + ' | أنا عقار';
+      root.innerHTML = `<div class="sheet">
+        <div class="hd"><div style="display:flex;gap:8px;align-items:center"><img src="icons/logo.svg" alt=""><b>أنا عقار</b></div><span class="deal">${deal}</span></div>
+        <div><h1>${esc(p.title)}</h1><div class="price">${esc(price)}</div><div style="color:var(--muted);font-weight:700">${esc(p.city || '')}${p.permit_number ? ' · رقم التصريح ' + esc(p.permit_number) : ''}</div></div>
+        ${imgs[0] ? `<img class="hero" src="${esc(imgs[0])}" alt="">` : ''}
+        ${imgs.length > 1 ? `<div class="thumbs">${imgs.slice(1, 4).map((u) => `<img src="${esc(u)}" alt="">`).join('')}</div>` : ''}
+        ${facts.length ? `<div class="facts">${facts.map((f) => `<div><b>${esc(f[0])}</b><small>${f[1]}</small></div>`).join('')}</div>` : ''}
+        ${p.description ? `<p class="desc">${esc(String(p.description).slice(0, 900))}</p>` : ''}
+        <div class="ft"><div class="ag"><b>${esc(ag.full_name || ag.company_name || 'أنا عقار')}</b><div>${ag.company_name && ag.company_name !== ag.full_name ? esc(ag.company_name) + '<br>' : ''}${ag.phone || ag.whatsapp ? `<span dir="ltr">${esc(ag.phone || ag.whatsapp)}</span><br>` : ''}${ag.license_no ? 'رقم الوسيط ' + esc(ag.license_no) : ''}</div></div>
+          <div class="qr"><div id="qr"></div>امسح لرؤية كل الصور<br>anaaqar.com</div></div>
+      </div>`;
+      try { new QRCode(document.getElementById('qr'), { text: url, width: 192, height: 192, correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=109">
+  <link rel="stylesheet" href="css/aq-pages.css?v=110">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=109"></script>
+  <script src="supabase-client.js?v=110"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=109"></script>
+  <script src="js/aq-ai.js?v=110"></script>
   <script>
   (function () {
     'use strict';
@@ -115,7 +115,7 @@
 
     const TYPES = { broker: ['وسيط فرد', 'fa-user-tie'], office: ['مكتب عقاري', 'fa-building-user'], developer: ['مطوّر عقاري', 'fa-city'] };
     const STAGES = { new: 'جديد', contacted: 'تم التواصل', viewing: 'معاينة', negotiating: 'تفاوض', won: 'تمت الصفقة', lost: 'لم يتم' };
-    const PSTATUS = { approved: 'منشور', pending: 'قيد المراجعة', rejected: 'مرفوض', paused: 'موقوف مؤقتًا', sold: 'تم البيع', rented: 'تم التأجير' };
+    const PSTATUS = { approved: 'منشور', pending: 'قيد المراجعة', rejected: 'مرفوض', paused: 'موقوف مؤقتًا', sold: 'تم البيع', rented: 'تم التأجير', expired: 'مخفي: لم يؤكَّد توافره' };
     const KINDS = { note: ['ملاحظة', 'fa-note-sticky'], call: ['اتصال', 'fa-phone'], whatsapp: ['واتساب', 'fa-whatsapp'], email: ['بريد', 'fa-envelope'], meeting: ['اجتماع/معاينة', 'fa-handshake'], stage: ['تغيير المرحلة', 'fa-arrow-left'] };
     const PRI = { urgent: ['عاجل', '#b91c1c'], high: ['مهم', '#c2410c'], medium: ['متوسط', '#0369a1'], low: ['عادي', '#64748b'] };
     const WA_TPL_DEFAULT = [
@@ -131,7 +131,7 @@
     async function boot() {
       const { data } = await sb.auth.getSession();
       user = data.session && data.session.user;
-      if (!user) return authView('login');
+      if (!user) { const su = new URLSearchParams(location.search).get('signup'); authView(su ? 'signup' : 'login'); if (TYPES[su]) { const b = document.querySelector(`.types button[data-t="${su}"]`); if (b) b.click(); } return; }
       $('logoutBtn').hidden = false;
       const r = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
       me = r.data || { id: user.id, account_type: 'user' };
@@ -350,6 +350,7 @@
         <div class="panel" style="padding:12px;border-color:#ddd6fe"><b style="font-size:14px"><i class="fas fa-wand-magic-sparkles" style="color:#8b5cf6"></i> رد مقترح بالذكاء الاصطناعي</b> ${scorePill(l)}
           <div class="quick"><select id="aiTone" style="border:1.5px solid var(--line);border-radius:10px;padding:6px;font:inherit;background:var(--card);color:var(--ink)"><option>ودية</option><option>رسمية</option><option>مختصرة</option><option>بالإنجليزية</option></select><button class="btn btn-soft sm" id="aiReplyBtn">اقترح ردًا</button></div>
           <div id="aiReplyOut"></div></div>
+        <div class="panel" style="padding:12px;border-color:#99f6e4"><b style="font-size:14px"><i class="fas fa-wand-magic" style="color:#0d9488"></i> عقارات مطابقة من إعلاناتك</b><p class="mut" style="margin:4px 0 8px">حسب ميزانيته ومتطلباته. اختر ما يناسب وأرسله له برسالة واحدة.</p><div id="mList" class="mut">جاري البحث…</div></div>
         <div class="panel" style="padding:12px">
           <div class="mut">${l.buyer_phone ? `<span dir="ltr">${esc(l.buyer_phone)}</span> · ` : ''}${l.buyer_email ? esc(l.buyer_email) + ' · ' : ''}${fmt(l.created_at)}</div>
           ${l.property_title ? `<p style="margin:6px 0"><b>العقار:</b> ${l.property_id ? `<a href="property-details.html?id=${encodeURIComponent(l.property_id)}" target="_blank">${esc(l.property_title)}</a>` : esc(l.property_title)}</p>` : ''}
@@ -375,6 +376,35 @@
         q('#tl').innerHTML = (r.data || []).map((a) => `<li><b><i class="fa${a.kind === 'whatsapp' ? 'b' : 's'} ${KINDS[a.kind][1]}"></i> ${KINDS[a.kind][0]}${a.kind === 'stage' ? ': ' + esc(STAGES[a.body] || a.body) : ''}${a.outcome ? ' — ' + esc(a.outcome) : ''}</b>${a.kind !== 'stage' && a.body ? esc(a.body) : ''}<small>${fmt(a.created_at)}${a.actor_id && a.actor_id !== user.id ? ' · ' + esc(memberName(a.actor_id)) : ''}</small></li>`).join('') || '<li class="mut">لا شيء بعد.</li>';
       };
       loadTl();
+      // مطابقة تلقائية: يرشّح من إعلانات الوسيط المنشورة ما يناسب ميزانية العميل ومتطلباته
+      (async () => {
+        const box = q('#mList'); if (!box) return;
+        const r = await sb.from('properties').select('id,title,price_aed,city,bedrooms,deal_type,rent_period,description').eq('broker_id', user.id).eq('status', 'approved').limit(300);
+        const norm = (t) => String(t || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+        const need = norm([l.requirements, l.message, l.property_title].join(' '));
+        const words = need.split(/[\s،,.]+/).filter((w) => w.length > 2 && !['في', 'من', 'على', 'اريد', 'ابحث', 'عن', 'مع', 'غرف', 'غرفه'].includes(w));
+        const beds = (need.match(/(\d+)\s*(غرف|غرفه|bed|br)/) || [])[1], wantsRent = /ايجار|اجار|rent/.test(need), wantsSale = /شراء|بيع|تملك|buy|sale/.test(need);
+        const budget = Number(l.budget) || null;
+        const list = (r.data || []).filter((p) => String(p.id) !== String(l.property_id || '').replace(/^sb-/, '')).map((p) => {
+          let sc = 0; const t = norm([p.title, p.city, p.description].join(' '));
+          words.forEach((w) => { if (t.includes(w)) sc += 2; });
+          if (budget && p.price_aed) { if (p.price_aed <= budget * 1.1) sc += 3; else if (p.price_aed > budget * 1.3) sc -= 5; }
+          if (beds && p.bedrooms != null) sc += Number(beds) === p.bedrooms ? 3 : -1;
+          if (wantsRent && p.deal_type === 'rent') sc += 2; if (wantsSale && p.deal_type === 'sale') sc += 2;
+          if ((wantsRent && p.deal_type === 'sale') || (wantsSale && p.deal_type === 'rent')) sc -= 4;
+          return [p, sc];
+        }).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 6).map((x) => x[0]);
+        if (!list.length) { box.innerHTML = 'لا توجد عقارات مطابقة في إعلاناتك الآن. أضف الميزانية والمتطلبات ثم احفظ لتتحسن المطابقة.'; return; }
+        box.innerHTML = list.map((p) => `<label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-weight:700;color:var(--ink)"><input type="checkbox" data-mp="${p.id}" checked style="margin-top:5px"><span>${esc(p.title)}<small class="mut" style="display:block">${money(p.price_aed)} · ${esc(p.city || '')}</small></span></label>`).join('') +
+          (l.buyer_phone ? '<button class="btn btn-teal sm" id="mSend"><i class="fab fa-whatsapp"></i> أرسل المختارة على واتساب</button>' : '<p class="mut">أضف رقم العميل لإرسالها له.</p>');
+        const send = q('#mSend'); if (send) send.onclick = () => {
+          const pick = list.filter((p) => box.querySelector(`[data-mp="${p.id}"]`).checked); if (!pick.length) return toast('اختر عقارًا واحدًا على الأقل', true);
+          const msg = `مرحبًا ${(l.buyer_name || '').split(' ')[0]}، اخترت لك هذه العقارات المناسبة لطلبك:\n\n` + pick.map((p, i) => `${i + 1}) ${p.title} — ${money(p.price_aed)}\nhttps://anaaqar.com/s/p-sb-${p.id}.html`).join('\n\n') + `\n\nأخبرني أيها يعجبك لنرتب معاينة.\n${me.full_name || ''}`;
+          const ph = String(l.buyer_phone).replace(/\D/g, '').replace(/^0+/, '');
+          window.open('https://wa.me/' + (ph.length <= 9 ? '971' + ph : ph) + '?text=' + encodeURIComponent(msg), '_blank');
+          sb.from('lead_activities').insert({ lead_id: id, actor_id: user.id, kind: 'whatsapp', body: 'أُرسلت عقارات مطابقة: ' + pick.map((p) => p.title).join('، ').slice(0, 450) }).then(loadTl);
+        };
+      })();
       d.el.querySelectorAll('[data-log]').forEach((a) => a.addEventListener('click', () => { sb.from('lead_activities').insert({ lead_id: id, actor_id: user.id, kind: a.dataset.log, body: a.dataset.log === 'whatsapp' ? (a.textContent || '').trim().slice(0, 500) : null }).then(loadTl); if ((l.stage || 'new') === 'new') sb.from('leads').update({ stage: 'contacted' }).eq('id', id).then(() => { l.stage = 'contacted'; q('#dStage').value = 'contacted'; }); }));
       q('#aiReplyBtn').onclick = async () => {
         const btn = q('#aiReplyBtn'), out = q('#aiReplyOut');
@@ -474,21 +504,24 @@
       stats = {}; (s.data || []).forEach((x) => { stats[x.property_id] = x; });
       const list = p.data || [];
       m.innerHTML = `<h1 class="pg">عقاراتي</h1><p class="pgsub">عدّل إعلاناتك أو أوقفها مؤقتًا أو علّمها كمباعة. أي تعديل يعود للمراجعة قبل نشره.</p>
+        <div class="panel" style="background:#fffbeb;border-color:#fde68a;color:#854d0e;font-weight:700;line-height:1.9;margin-bottom:12px"><i class="fas fa-circle-info"></i> للحفاظ على مصداقية الإعلانات: اضغط «ما زال متاحًا» على كل عقار مرة على الأقل كل 60 يومًا. يصلك تنبيه قبل الموعد بعشرة أيام، وإن لم تؤكد يُخفى الإعلان عن الزوار مؤقتًا <b>ولا يُحذف</b>، ويعود فورًا بضغطة واحدة.</div>
         <div class="acts" style="margin-bottom:12px"><a class="btn btn-teal" href="add-property.html"><i class="fas fa-plus"></i> أضف عقارًا</a></div>
         <div class="panel list">${list.map((x) => {
           const st = stats[x.id] || {}, img = (x.image_urls || [])[0] || '';
           return `<div class="li"><a class="th" href="property-details.html?id=sb-${x.id}" target="_blank" style="background-image:url('${esc(img)}')"></a><div class="tx"><b>${esc(x.title)}</b>
             <small>${money(x.price_aed)} · ${esc(x.city || '')}</small><small><span class="pill2 st-${x.status}">${PSTATUS[x.status] || esc(x.status)}</span> <i class="fas fa-eye"></i> ${st.views_30d || 0} مشاهدة (30 يومًا) · <i class="fas fa-address-book"></i> ${st.leads || 0} عميل</small>
             ${x.status === 'rejected' && x.rejection_reason ? `<small style="color:var(--red)">سبب الرفض: ${esc(x.rejection_reason)}</small>` : ''}</div>
+            ${x.status === 'expired' ? `<small style="color:#b45309;font-weight:800"><i class="fas fa-eye-slash"></i> مخفي عن الزوار منذ ${x.expired_at ? new Date(x.expired_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) : 'مدة'} لعدم تأكيد التوافر. الإعلان محفوظ بكل بياناته، اضغط «ما زال متاحًا» ليعود فورًا.</small>` : ''}
+            ${x.status === 'approved' ? (() => { const left = 60 - Math.floor((Date.now() - new Date(x.available_at || x.reviewed_at || x.created_at)) / 864e5); return left <= 15 ? `<small style="color:#b91c1c;font-weight:800"><i class="fas fa-triangle-exclamation"></i> ${left > 0 ? `أكّد توافره خلال ${left} يومًا وإلا سيُخفى مؤقتًا` : 'سيُخفى قريبًا، أكّد توافره الآن'}</small>` : ''; })() : ''}
             ${x.status === 'approved' ? `<small style="${x.available_at && (Date.now() - new Date(x.available_at)) / 864e5 > 30 ? 'color:var(--red,#dc2626)' : 'color:#15803d'}"><i class="fas fa-circle-check"></i> آخر تأكيد للتوافر: ${x.available_at ? new Date(x.available_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) : 'لم يؤكَّد'} · الإعلان على الموقع منذ ${Math.max(0, Math.floor((Date.now() - new Date(x.created_at)) / 864e5))} يومًا</small>` : ''}
             <small><i class="fas fa-file-shield"></i> ${docTag(x.id, 'title_deed', 'سند الملكية')} · ${docTag(x.id, 'form_a', 'نموذج A')}</small>
-            <div class="ac"><button class="btn btn-soft sm" data-docs="${x.id}"><i class="fas fa-file-arrow-up"></i> المستندات</button>${x.status === 'approved' ? `<button class="btn btn-teal sm" data-av="${x.id}" title="يظهر للزوار أن العقار ما زال متاحًا"><i class="fas fa-check"></i> ما زال متاحًا</button>` : ''}<button class="btn btn-soft sm" data-ed="${x.id}">تعديل</button>
+            <div class="ac">${x.status === 'approved' ? `<a class="btn btn-ghost sm" href="brochure.html?id=sb-${x.id}" target="_blank"><i class="fas fa-file-pdf"></i> بروشور</a>` : ''}<button class="btn btn-soft sm" data-docs="${x.id}"><i class="fas fa-file-arrow-up"></i> المستندات</button>${['approved', 'expired'].includes(x.status) ? `<button class="btn btn-teal sm" data-av="${x.id}" title="يظهر للزوار أن العقار ما زال متاحًا"><i class="fas fa-check"></i> ما زال متاحًا</button>` : ''}<button class="btn btn-soft sm" data-ed="${x.id}">تعديل</button>
             ${x.status === 'approved' ? `<button class="btn btn-ghost sm" data-st="paused" data-id="${x.id}">إيقاف مؤقت</button><button class="btn btn-ghost sm" data-st="${x.deal_type === 'rent' ? 'rented' : 'sold'}" data-id="${x.id}">${x.deal_type === 'rent' ? 'تم التأجير' : 'تم البيع'}</button>` : ''}
             ${['paused', 'sold', 'rented'].includes(x.status) ? `<button class="btn btn-teal sm" data-st="active" data-id="${x.id}">إعادة تفعيل</button>` : ''}
             <button class="btn btn-red sm" data-del="${x.id}"><i class="fas fa-trash"></i></button></div></div>`;
         }).join('') || '<p class="mut">لم تضف عقارات بعد.</p>'}</div>`;
       m.querySelectorAll('[data-st]').forEach((b) => b.onclick = async () => { const { data, error } = await sb.rpc('broker_property_set_state', { p_id: b.dataset.id, p_state: b.dataset.st }); if (error) return toast(setupErr(error), true); toast('الحالة الآن: ' + (PSTATUS[data] || data)); renderListings(); });
-      m.querySelectorAll('[data-av]').forEach((b) => b.onclick = async () => { const { error } = await sb.rpc('confirm_property_available', { p_id: b.dataset.av }); if (error) return toast(setupErr(error), true); toast('تم ✅ يظهر الآن للزوار أن العقار متاح'); renderListings(); });
+      m.querySelectorAll('[data-av]').forEach((b) => b.onclick = async () => { const { error } = await sb.rpc('confirm_property_available', { p_id: b.dataset.av }); if (error) return toast(setupErr(error), true); toast('تم ✅ الإعلان ظاهر للزوار ومؤكَّد التوافر'); renderListings(); });
       m.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان نهائيًا؟')) return; const { error } = await sb.from('properties').delete().eq('id', b.dataset.del); if (error) return toast(error.message, true); renderListings(); });
       m.querySelectorAll('[data-ed]').forEach((b) => b.onclick = () => editProperty(list.find((x) => String(x.id) === b.dataset.ed)));
       m.querySelectorAll('[data-docs]').forEach((b) => b.onclick = () => propertyDocs(list.find((x) => String(x.id) === b.dataset.docs)));
@@ -806,7 +839,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=109" defer></script>
-  <script src="js/aq-back.js?v=109" defer></script>
+  <script src="js/aq-engage.js?v=110" defer></script>
+  <script src="js/aq-back.js?v=110" defer></script>
 </body>
 </html>

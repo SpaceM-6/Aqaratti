@@ -13,10 +13,10 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=109">
+  <link rel="stylesheet" href="css/aq-pages.css?v=110">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=109"></script>
-  <script src="js/aq-cars.js?v=109"></script>
+  <script src="supabase-client.js?v=110"></script>
+  <script src="js/aq-cars.js?v=110"></script>
   <style>
     .form { max-width:760px; margin:0 auto; }
     .seg { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:10px; } .seg.d4 { grid-template-columns:repeat(4, minmax(0, 1fr)); }
@@ -27,6 +27,10 @@
     .row3 { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; } @media (max-width:620px) { .row3 { grid-template-columns:1fr 1fr; } }
     .chk { display:flex; flex-wrap:wrap; gap:8px; } .chk label { display:flex; align-items:center; gap:6px; border:1.5px solid var(--line); border-radius:10px; padding:8px 12px; font-weight:700; cursor:pointer; }
     .thumbs { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; } .thumbs img { width:84px; height:64px; object-fit:cover; border-radius:10px; }
+    .thumbs .tb { position:relative; } .thumbs .tb button { position:absolute; top:-6px; left:-6px; width:22px; height:22px; border-radius:50%; border:0; background:#b91c1c; color:#fff; font-size:13px; line-height:22px; cursor:pointer; }
+    .thumbs .tb.first::after { content:'الرئيسية'; position:absolute; bottom:3px; right:3px; background:rgba(0,0,0,.65); color:#fff; font-size:10px; font-weight:800; border-radius:6px; padding:0 5px; }
+    .shotguide { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 8px; } .shotguide span { background:#e6f7f5; color:#0f766e; border-radius:999px; padding:4px 10px; font-size:12.5px; font-weight:800; }
+    .shotguide b { width:100%; font-size:13px; color:#475569; }
     h3.s { margin:18px 0 8px; font-size:17px; font-weight:900; color:var(--teal-dark); }
     .mine .row img { width:84px; height:64px; object-fit:cover; border-radius:10px; flex:0 0 auto; }
     .pill { display:inline-block; font-size:12.5px; font-weight:900; padding:2px 9px; border-radius:999px; background:#fef3c7; color:#92400e; }
@@ -111,7 +115,7 @@
           <div class="fg"><label>&nbsp;</label><div class="chk"><label data-show="land"><input type="checkbox" id="ins"> تأمين شامل</label><label data-show="yacht"><input type="checkbox" id="cap"> يشمل الكابتن</label><label><input type="checkbox" id="dlv"> توصيل</label></div></div></div>
         <div data-show="veh"><h3 class="s">المزايا</h3><div class="chk" id="feats"></div></div>
         <h3 class="s">الصور والوصف</h3>
-        <div class="fg"><label>الصور (حتى 10)</label><input id="imgs" type="file" accept="image/*" multiple><div class="thumbs" id="th"></div></div>
+        <div class="fg"><label id="imgL">الصور (حتى 12)</label><div class="shotguide" id="shotG" data-show="veh"></div><input id="imgs" type="file" accept="image/*" multiple><div class="thumbs" id="th"></div><p class="hint" id="imgN"></p></div>
         <div class="fg"><label>الوصف</label><textarea id="desc" maxlength="4000"></textarea></div>
         <h3 class="s">بيانات التواصل</h3>
         <div class="row3"><div class="fg"><label>صفة المعلن</label><select id="seller"></select></div>
@@ -132,6 +136,7 @@
         $('seller').innerHTML = opts(C.SELLER.filter(([v]) => deal === 'parts' ? ['parts_shop', 'owner', 'dealer'].includes(v) : deal === 'service' ? v === 'workshop' : deal === 'rent' ? ['rental_company', 'owner', 'dealer'].includes(v) : ['owner', 'dealer'].includes(v)));
         const vis = { veh, parts: deal === 'parts', service: deal === 'service', rent: deal === 'rent', cond: deal !== 'service', land: kind !== 'yacht', car: kind === 'car', moto: kind === 'moto', yacht: kind === 'yacht' };
         document.querySelectorAll('[data-show]').forEach((el) => { el.hidden = !el.dataset.show.split(' ').every((k) => vis[k]); });
+        try { drawGuide(); } catch (e) {}
         // مزايا خاصة بنوع المركبة داخل قسم المركبة
         if (veh) document.querySelectorAll('#cf [data-show="land"],#cf [data-show="car"],#cf [data-show="moto"],#cf [data-show="yacht"]').forEach((el) => { el.hidden = !vis[el.dataset.show]; });
         $('vH').textContent = K.one; $('mkL').textContent = kind === 'yacht' ? 'الشركة المصنّعة *' : 'الماركة *';
@@ -142,13 +147,27 @@
       $('kSeg').onclick = (e) => { const b = e.target.closest('[data-k]'); if (b) { kind = b.dataset.k; apply(); } };
       $('dSeg').onclick = (e) => { const b = e.target.closest('[data-d]'); if (b) { deal = b.dataset.d; apply(); } };
       apply();
-      $('imgs').onchange = () => { files = [...$('imgs').files].slice(0, 10); $('th').innerHTML = files.map((f) => `<img src="${URL.createObjectURL(f)}" alt="">`).join(''); };
+      // صور من عدة زوايا: تُضاف الصور على دفعات، ويُحذف أي منها، والأولى هي صورة الغلاف
+      const SHOTS = { car: ['الأمام', 'الخلف', 'الجانب الأيمن', 'الجانب الأيسر', 'المقاعد الأمامية', 'المقاعد الخلفية', 'لوحة العدادات (الكيلومترات)', 'المحرك', 'الجنوط والإطارات'],
+        moto: ['الجانب الأيمن', 'الجانب الأيسر', 'الأمام', 'الخلف', 'لوحة العدادات', 'المحرك'], yacht: ['من الخارج كاملًا', 'سطح القارب', 'الصالون الداخلي', 'الغرف', 'قمرة القيادة', 'المحركات'] };
+      const MIN_SHOTS = 4, MAX_SHOTS = 12;
+      const drawThumbs = () => {
+        $('th').innerHTML = files.map((f, i) => `<div class="tb${i ? '' : ' first'}"><img src="${URL.createObjectURL(f)}" alt=""><button type="button" data-rm="${i}" aria-label="حذف الصورة">×</button></div>`).join('');
+        const veh = ['sale', 'rent'].includes(deal), need = veh ? Math.max(0, MIN_SHOTS - files.length) : 0;
+        $('imgN').textContent = files.length ? `${files.length} صورة${need ? ` — أضف ${need} على الأقل من زوايا مختلفة` : ' ✓'}` : (veh ? `أضف ${MIN_SHOTS} صور على الأقل من زوايا مختلفة، والصور الداخلية تساعد على البيع أو التأجير أسرع.` : '');
+        $('imgN').style.color = need ? '#b45309' : '#15803d';
+      };
+      $('th').onclick = (e) => { const b = e.target.closest('[data-rm]'); if (!b) return; files.splice(+b.dataset.rm, 1); drawThumbs(); };
+      $('imgs').onchange = () => { files = files.concat([...$('imgs').files]).slice(0, MAX_SHOTS); $('imgs').value = ''; drawThumbs(); };
+      const drawGuide = () => { const g = $('shotG'); if (g) g.innerHTML = '<b>صوّر من هذه الزوايا:</b>' + (SHOTS[kind] || SHOTS.car).map((t) => `<span>${t}</span>`).join(''); drawThumbs(); };
+      drawGuide();
       $('cf').onsubmit = async (e) => {
         e.preventDefault(); const m = $('cMsg'), v = (id) => $(id).value.trim(), n = (id) => v(id) === '' ? null : +v(id);
         const veh = ['sale', 'rent'].includes(deal), city = deal === 'service' ? v('city2') : v('city');
         const miss = !city || v('phone').replace(/\D/g, '').length < 7 || (deal !== 'service' && !n('price')) ||
           (veh && (!v('make') || !v('model'))) || (deal === 'parts' && (!v('ptitle') || !v('pcat'))) || (deal === 'service' && (!v('stitle') || !v('stype')));
         if (miss) { m.textContent = 'أكمل الحقول المطلوبة المعلّمة بنجمة (*) ورقم الهاتف.'; return; }
+        if (veh && files.length < MIN_SHOTS) { m.textContent = `أضف ${MIN_SHOTS} صور على الأقل من زوايا مختلفة (الأمام والخلف والجانبين والداخل). الإعلانات بصور كثيرة تُباع وتُؤجَّر أسرع.`; $('imgs').scrollIntoView({ block: 'center' }); return; }
         $('cGo').disabled = true; $('cGo').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ النشر…';
         const urls = [];
         for (let i = 0; i < files.length; i++) {
@@ -168,7 +187,7 @@
         const { error } = await sb.from('cars').insert(row);
         $('cGo').disabled = false; $('cGo').innerHTML = '<i class="fas fa-paper-plane"></i> انشر الإعلان';
         if (error) { m.textContent = /rate_limited/.test(error.message) ? 'وصلت للحد اليومي (10 إعلانات). حاول غدًا.' : /relation|does not exist|column|check constraint/.test(error.message) ? 'هذا القسم يحتاج تشغيل ملف supabase/stays_cars_ads.sql في قاعدة البيانات.' : 'تعذّر النشر: ' + error.message; return; }
-        e.target.reset(); files = []; $('th').innerHTML = ''; apply();
+        e.target.reset(); files = []; drawThumbs(); apply();
         m.textContent = '✅ استلمنا إعلانك، وسيظهر بعد المراجعة.'; mine();
       };
       mine();
@@ -200,7 +219,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=109" defer></script>
-  <script src="js/aq-back.js?v=109" defer></script>
+  <script src="js/aq-engage.js?v=110" defer></script>
+  <script src="js/aq-back.js?v=110" defer></script>
 </body>
 </html>

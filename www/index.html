@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=109"></script>
+  <script src="supabase-client.js?v=110"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -2065,6 +2065,7 @@
             <button class="royal-tab active" data-type="sale" onclick="switchRoyalTab(this)"><i class="fas fa-key"></i> للشراء</button>
             <button class="royal-tab" data-type="rent" onclick="switchRoyalTab(this)"><i class="fas fa-building"></i> للإيجار</button>
             <a class="royal-tab" href="stays.html" style="text-decoration:none"><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة</a>
+            <button class="royal-tab" data-type="services" onclick="switchRoyalTab(this)"><i class="fas fa-screwdriver-wrench"></i> الخدمات</button>
             <button class="royal-tab" data-type="residential" onclick="switchRoyalTab(this)"><i class="fas fa-house-chimney"></i> سكني</button>
             <button class="royal-tab" data-type="commercial" onclick="switchRoyalTab(this)"><i class="fas fa-store"></i> تجاري</button>
             <button class="royal-tab" data-type="golden" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold); color: #fff8dc;" onclick="switchRoyalTab(this)"><i class="fas fa-passport"></i> عقارات الإقامة الذهبية</button>
@@ -2074,17 +2075,31 @@
         </div>
 
         <div class="pearl-inputs-grid">
-          <div class="royal-input-box">
+          <div class="royal-input-box dynamic-field" data-tabs="!services">
             <span class="royal-label"><i class="fas fa-city"></i> المدينة</span>
             <select class="royal-select" id="citySelector" onchange="updateLandmarksByCity(this.value)"></select>
           </div>
 
-          <div class="royal-input-box">
-            <span class="royal-label"><i class="fas fa-search-location"></i> المنطقة / مشروع</span>
-            <input type="text" id="searchInput" placeholder="مثال: داون تاون..." class="royal-input">
+          <div class="royal-input-box dynamic-field" data-tabs="!services">
+            <span class="royal-label"><i class="fas fa-search-location"></i> المنطقة / المشروع / نوع العقار</span>
+            <input type="search" id="searchInput" list="aqAreaList" placeholder="مثال: دبي مارينا، فيلا، استوديو" class="royal-input" autocomplete="off" enterkeyhint="search">
+            <datalist id="aqAreaList"></datalist>
           </div>
 
-          <div class="royal-input-box aq-price-range">
+          <div class="royal-input-box dynamic-field" data-tabs="services" style="display:none">
+            <span class="royal-label"><i class="fas fa-screwdriver-wrench"></i> نوع الخدمة</span>
+            <select class="royal-select" id="svcCat"></select>
+          </div>
+          <div class="royal-input-box dynamic-field" data-tabs="services" style="display:none">
+            <span class="royal-label"><i class="fas fa-city"></i> الإمارة</span>
+            <select class="royal-select" id="svcEmirate"><option value="">كل الإمارات</option><option>دبي</option><option>أبوظبي</option><option>الشارقة</option><option>عجمان</option><option>رأس الخيمة</option><option>الفجيرة</option><option>أم القيوين</option><option>العين</option></select>
+          </div>
+          <div class="royal-input-box dynamic-field" data-tabs="services" style="display:none">
+            <span class="royal-label"><i class="fas fa-magnifying-glass"></i> اسم الشركة أو المنطقة (اختياري)</span>
+            <input type="search" id="svcQ" placeholder="مثال: عزل، مكيفات، البرشاء" class="royal-input" autocomplete="off" enterkeyhint="search">
+          </div>
+
+          <div class="royal-input-box aq-price-range dynamic-field" data-tabs="!services">
             <span class="royal-label"><i class="fas fa-wallet"></i> السعر (درهم)</span>
             <div class="aq-pr-row">
               <input type="number" inputmode="numeric" id="minPriceInput" placeholder="من" class="royal-input" aria-label="أقل سعر">
@@ -2120,11 +2135,11 @@
         </div>
 
         <div class="pearl-action-bar">
-          <div class="hero-center-badges">
+          <div class="hero-center-badges dynamic-field" data-tabs="!services">
             <button class="hero-badge-btn ai-btn" onclick="openAISearchModal()"><i class="fas fa-wand-magic-sparkles"></i> البحث الذكي</button>
             <button class="hero-badge-btn ai-btn" id="nearMeBtn" onclick="searchPropertiesNearMe()"><i class="fas fa-location-crosshairs"></i> عقارات قريبة مني</button>
           </div>
-          <button class="btn-royal-search" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
+          <button class="btn-royal-search" id="mainSearchBtn" onclick="executeSearch()"><i class="fas fa-search"></i> ابحث عن العقارات الآن</button>
         </div>
       </div>
     </div>
@@ -2390,6 +2405,7 @@
       <a href="cars.html"><i class="fas fa-car-side"></i> موتورات: سيارات، دراجات نارية، يخوت</a>
       <a href="brokers-directory.html"><i class="fas fa-building-user"></i> دليل الوسطاء والمكاتب</a>
       <a href="top-brokers.html"><i class="fas fa-trophy"></i> أفضل الوسطاء حسب الأداء</a>
+      <a href="join.html"><i class="fas fa-handshake"></i> انضم إلى أنا عقار (وسطاء، مكاتب، مطورون، شركات)</a>
       <a href="services-directory.html"><i class="fas fa-screwdriver-wrench"></i> دليل الخدمات</a>
       <a href="offers.html"><i class="fas fa-tags"></i> العروض</a>
       <a href="projects.html"><i class="fas fa-city"></i> مشاريع على الخارطة</a>
@@ -2399,6 +2415,8 @@
       <a href="valuation.html"><i class="fas fa-chart-line"></i> كم يساوي عقاري؟ (تقدير السعر)</a>
       <a href="areas.html"><i class="fas fa-map-location-dot"></i> دليل المناطق: الأسعار والصفقات</a>
       <a href="lands.html"><i class="fas fa-map"></i> دليل الأراضي والتملّك الحر</a>
+      <a href="schools.html"><i class="fas fa-school"></i> دليل المدارس</a>
+      <a href="transport.html"><i class="fas fa-train-subway"></i> المواصلات: المترو والترام</a>
       <a href="compare.html"><i class="fas fa-code-compare"></i> المقارنة</a>
       <a href="my.html"><i class="fas fa-bookmark"></i> قوائمي: المفضلة والبحوث والإشعارات <span data-aqe-notif-count style="color:#e11d48;font-weight:900"></span></a>
 
@@ -2841,11 +2859,19 @@
     // 🔄 تبديل حقول البحث حسب التبويب المختار: كل نية بحث (شراء/إيجار/استثمار) لها الحقول الأنسب لها
     function updateSearchFieldsForTab(type) {
       document.querySelectorAll('.dynamic-field').forEach(field => {
-        const tabs = field.getAttribute('data-tabs').split(',');
-        field.style.display = tabs.includes(type) ? '' : 'none';
+        const spec = field.getAttribute('data-tabs');
+        const show = spec.charAt(0) === '!' ? !spec.slice(1).split(',').includes(type) : spec.split(',').includes(type);
+        field.style.display = show ? '' : 'none';
       });
+      const btn = document.getElementById('mainSearchBtn');
+      if (btn) btn.innerHTML = type === 'services' ? '<i class="fas fa-search"></i> ابحث عن الخدمة' : '<i class="fas fa-search"></i> ابحث عن العقارات الآن';
+      if (type === 'services') aqFillServiceCats();
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+      ['searchInput', 'minPriceInput', 'maxPriceInput', 'svcQ'].forEach((id) => { const el = document.getElementById(id); if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); executeSearch(); } }); });
+      const ci = document.getElementById('citySelector'); if (ci) ci.addEventListener('change', () => setTimeout(aqPruneLandmarks, 0));
+    });
     function scrollRoyalTabs(direction) {
       const el = document.getElementById('royalTabsBar');
       if (el) el.scrollBy({ left: direction * 140, behavior: 'smooth' });
@@ -3120,7 +3146,10 @@
       const data = countryData[countryKey] || { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['المدينة الرئيسية'] };
       
       citySelect.innerHTML = '<option value="all">كل المدن</option>';
-      data.cities.forEach(city => {
+      let cities = data.cities.slice();
+      window.aqCountryKey = countryKey;
+      if (countryKey === 'uae' && getAllProperties().length) { try { const seen = {}; getAllProperties().forEach((p) => { const c = (p.city || '').trim(); if (c) seen[c] = (seen[c] || 0) + 1; }); ['دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة', 'الفجيرة', 'أم القيوين', 'العين'].forEach((c) => { if (seen[c] && !cities.includes(c)) cities.push(c); }); cities = cities.filter((c) => seen[c]); } catch (e) {} }
+      cities.forEach(city => {
         citySelect.innerHTML += `<option value="${city}">${city}</option>`;
       });
       hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${data.bg}')`;
@@ -3153,6 +3182,50 @@
         <option value="metro">🚇 قريب من محطة مترو</option>
       `;
       landmarkSelect.innerHTML = optionsHTML;
+      aqPruneLandmarks();
+    }
+    // لا نعرض في «قريب من» إلا المعالم التي لها عقارات فعلًا (مع العدد)، حتى لا يختار الزائر خيارًا بلا نتائج
+    function aqPruneLandmarks() {
+      const sel = document.getElementById('landmarkSelector'); if (!sel || !window.AQFilters) return;
+      let all = []; try { all = getAllProperties(); } catch (e) {}
+      if (!all.length) return;
+      const city = (document.getElementById('citySelector') || {}).value;
+      const inCity = all.filter((p) => !city || city === 'all' || (p.city || '').includes(city));
+      const keep = sel.value;
+      [...sel.options].forEach((o) => {
+        if (!o.value) return;
+        const n = inCity.filter((p) => { try { return AQFilters.nearMatch(p, o.value); } catch (e) { return false; } }).length;
+        if (!n) { o.remove(); return; }
+        o.textContent = o.textContent.replace(/\s*\(\d+\)$/, '') + ` (${n})`;
+      });
+      if (keep && [...sel.options].some((o) => o.value === keep)) sel.value = keep;
+    }
+    window.aqPruneLandmarks = aqPruneLandmarks;
+    // أنواع الخدمات من دليل الخدمات نفسه
+    function aqFillServiceCats() {
+      const sel = document.getElementById('svcCat'); if (!sel || sel.options.length) return;
+      const C = window.AQ_SERVICE_CATS || {};
+      sel.innerHTML = Object.entries(C).map(([k, c]) => `<option value="${k}">${c.t}</option>`).join('');
+      // عدد الشركات الفعلي في كل قسم وكل إمارة: نُخفي ما ليس فيه شركات
+      const em = document.getElementById('svcEmirate');
+      const fill = (rows) => {
+        const by = {}; rows.forEach((r) => { (by[r.category] = by[r.category] || {})[r.emirate || ''] = ((by[r.category] || {})[r.emirate || ''] || 0) + 1; });
+        [...sel.options].forEach((o) => { const n = Object.values(by[o.value] || {}).reduce((a, b) => a + b, 0); if (!n) o.remove(); else o.textContent = C[o.value].t + ` (${n})`; });
+        const upd = () => {
+          const m = by[sel.value] || {}, keep = em.value, tot = Object.values(m).reduce((a, b) => a + b, 0);
+          em.innerHTML = `<option value="">كل الإمارات (${tot})</option>` + Object.entries(m).filter(([k]) => k).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<option value="${k}">${k} (${n})</option>`).join('');
+          if ([...em.options].some((o) => o.value === keep)) em.value = keep;
+        };
+        sel.onchange = upd; upd();
+      };
+      try { if (typeof supabaseClient !== 'undefined') supabaseClient.from('service_providers').select('category,emirate').eq('is_active', true).limit(10000).then((r) => { if (r && r.data && r.data.length) fill(r.data); }); } catch (e) {}
+    }
+    // قائمة اقتراحات المناطق والمدن وأنواع العقار تحت خانة البحث
+    function aqFillAreaList() {
+      const dl = document.getElementById('aqAreaList'); if (!dl || dl.options.length) return;
+      const names = new Set(['شقة', 'فيلا', 'استوديو', 'تاون هاوس', 'بنتهاوس', 'مكتب', 'محل تجاري', 'أرض', 'دبي', 'أبوظبي', 'الشارقة', 'عجمان', 'رأس الخيمة']);
+      if (window.AQAreas) AQAreas.AREAS.forEach((a) => names.add(a.ar));
+      dl.innerHTML = [...names].map((n) => `<option value="${n}"></option>`).join('');
     }
 
     function applyCurrency(code, symbol, rate) {
@@ -3338,6 +3411,8 @@ function renderPropertiesList(list) {
         }
       }
       loadedScrapedList = [...jsonProperties, ...supabaseProperties];
+      // بعد وصول البيانات: المدن والمعالم والاقتراحات تُبنى من العقارات الموجودة فعلًا
+      try { const cs = document.getElementById('citySelector'), keepCity = cs && cs.value; if (window.aqCountryKey === undefined || window.aqCountryKey === 'uae') updateCitiesAndBackground('uae'); if (cs && keepCity && [...cs.options].some((o) => o.value === keepCity)) cs.value = keepCity; aqFillAreaList(); aqPruneLandmarks(); } catch (e) {}
 
       if (!demoListingsVisible) {
         // عقارات حقيقية فقط: الأحدث أولاً
@@ -3515,7 +3590,7 @@ function renderPropertiesList(list) {
         else if (currentTabType === 'offers') matchesTab = (p.hasOffer === true);
         else if (currentTabType === 'no_commission') matchesTab = isNoCommissionProperty(p);
 
-        const matchesKeyword = !keyword || (p.title && p.title.toLowerCase().includes(keyword)) || (p.description && p.description.toLowerCase().includes(keyword));
+        const matchesKeyword = !keyword || aqKeywordMatch(p, keyword);
         const matchesPrice = (p.priceAED || p.price || 0) <= maxPrice && (p.priceAED || p.price || 0) >= minPrice;
         const matchesCity = !selectedCity || selectedCity === 'all' || (p.city && p.city.includes(selectedCity));
         const matchesFilters = !window.AQFilters || (window.AQFilters.match(p) && window.AQFilters.nearMatch(p, landmark));
@@ -3523,7 +3598,29 @@ function renderPropertiesList(list) {
       };
     }
     window.aqBuildSearchPredicate = aqBuildSearchPredicate;
+    const aqNorm = (t) => String(t || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652\u0640]/g, '');
+    let aqKwCache = { k: null };
+    function aqKeywordMatch(p, keyword) {
+      if (aqKwCache.k !== keyword) {
+        const k = aqNorm(keyword).trim();
+        // إن كانت الكلمة اسم منطقة (بأي صيغة) نبحث بكل أسمائها
+        let groups = null;
+        if (window.AQAreas) { const a = AQAreas.AREAS.find((x) => [x.ar, x.en].concat(x.words || []).some((w) => { const n = aqNorm(w); return n === k || (k.length > 3 && (n.includes(k) || k.includes(n))); })); if (a) groups = [[a.ar, a.en].concat(a.words || [], a.dld || []).map(aqNorm)]; }
+        if (!groups) groups = k.split(/[\s،,]+/).filter((w) => w.length > 1 && !['في', 'من', 'على', 'او', 'مع'].includes(w)).map((w) => [w, w.replace(/^ال/, '')]);
+        aqKwCache = { k: keyword, groups };
+      }
+      const t = aqNorm([p.title, p.description, p.city, p.area, p.location, p.propertyType].join(' '));
+      return aqKwCache.groups.every((g) => g.some((w) => w && t.includes(w)));
+    }
     function executeSearch(noScroll) {
+      if (currentTabType === 'services') {
+        const cat = (document.getElementById('svcCat') || {}).value || '';
+        const e = (document.getElementById('svcEmirate') || {}).value || '', q = ((document.getElementById('svcQ') || {}).value || '').trim();
+        location.href = 'services-directory.html?cat=' + encodeURIComponent(cat) + (e ? '&e=' + encodeURIComponent(e) : '') + (q ? '&q=' + encodeURIComponent(q) : '');
+        return;
+      }
+      const mn = document.getElementById('minPriceInput'), mx = document.getElementById('maxPriceInput');
+      if (mn && mx && +mn.value && +mx.value && +mn.value > +mx.value) { const t = mn.value; mn.value = mx.value; mx.value = t; }
       const allProps = getAllProperties();
       window.aqSearchPredicate = aqBuildSearchPredicate();
       let filtered = allProps.filter(window.aqSearchPredicate);
@@ -3532,6 +3629,18 @@ function renderPropertiesList(list) {
 
       const RESULTS_CAP = 60;
       renderPropertiesList(filtered.slice(0, RESULTS_CAP));
+      if (!filtered.length) {
+        const kw = (document.getElementById('searchInput').value || '').trim();
+        const c = document.getElementById('properties-container');
+        if (c) c.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:18px">
+          <div style="font-size:34px">🔎</div><h3 style="margin:8px 0;font-weight:900">لا توجد عقارات تطابق كل الشروط الآن</h3>
+          <p style="color:#64748b;font-weight:700;margin:0 0 14px">جرّب تخفيف أحد الشروط، أو اترك طلبك ونرسله للوسطاء ليبحثوا لك.</p>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn-royal-search" style="width:auto;padding:10px 18px" onclick="aqResetSearch()">مسح الشروط وعرض الكل</button>
+            <a class="btn-royal-search" style="width:auto;padding:10px 18px;background:#192038;text-decoration:none" href="request.html">اطلب عقارك</a>
+            ${kw ? `<a class="btn-royal-search" style="width:auto;padding:10px 18px;background:#0f766e;text-decoration:none" href="find.html?q=${encodeURIComponent(kw)}">ابحث عن «${kw.replace(/[<>&"]/g, '')}» في كل الموقع</a>` : ''}
+          </div></div>`;
+      }
 
       const titleEl = document.getElementById('resultsSectionTitle');
       if (currentTabType === 'all') titleEl.innerText = 'كل العقارات: للشراء والإيجار 🏙️';
@@ -3551,6 +3660,15 @@ function renderPropertiesList(list) {
       if (propSection && noScroll !== true) {
         propSection.scrollIntoView({ behavior: 'smooth' });
       }
+    }
+
+    function aqResetSearch() {
+      ['searchInput', 'minPriceInput', 'maxPriceInput'].forEach((id) => { const el = document.getElementById(id); if (el) el.value = ''; });
+      const c = document.getElementById('citySelector'); if (c) c.value = 'all';
+      const l = document.getElementById('landmarkSelector'); if (l) l.value = '';
+      if (window.AQFilters && AQFilters.state) { try { const st = AQFilters.state(); Object.keys(st).forEach((k) => { if (Array.isArray(st[k])) st[k].length = 0; else if (st[k] && typeof st[k] === 'object') Object.keys(st[k]).forEach((x) => delete st[k][x]); }); } catch (e) {} }
+      const all = document.querySelector('.royal-tab[data-type="all"]'); if (all) switchRoyalTab(all);
+      executeSearch();
     }
 
     function openInstantDropdown(menuId, event) {
@@ -3837,13 +3955,15 @@ function renderPropertiesList(list) {
     <a href="terms-of-service.html" style="color:#9ca3af; font-weight:900;">الشروط والأحكام</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=109" defer></script>
-  <script src="js/aq-ai.js?v=109" defer></script>
-  <script src="js/aq-engage.js?v=109" defer></script>
-  <script src="js/aq-back.js?v=109" defer></script>
-  <script src="js/aq-stay.js?v=109" defer></script>
-  <script src="js/aq-cars.js?v=109" defer></script>
-  <script src="js/aq-ads.js?v=109" defer></script>
-  <script src="js/aq-home.js?v=109" defer></script>
+  <script src="js/aq-filters.js?v=110" defer></script>
+  <script src="js/aq-areas.js?v=110" defer></script>
+  <script src="js/service-categories.js?v=109" defer></script>
+  <script src="js/aq-ai.js?v=110" defer></script>
+  <script src="js/aq-engage.js?v=110" defer></script>
+  <script src="js/aq-back.js?v=110" defer></script>
+  <script src="js/aq-stay.js?v=110" defer></script>
+  <script src="js/aq-cars.js?v=110" defer></script>
+  <script src="js/aq-ads.js?v=110" defer></script>
+  <script src="js/aq-home.js?v=110" defer></script>
 </body>
 </html>

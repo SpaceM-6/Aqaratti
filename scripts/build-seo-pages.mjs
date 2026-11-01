@@ -44,6 +44,10 @@ const [market, lands, projects, props] = await Promise.all([
   fetchAll('dld_projects', 'select=*&status=neq.CANCELLED&order=cnt_unit.desc'),
   fetchAll('properties', 'select=*&status=eq.approved')
 ]);
+// أدلة المدينة (اختيارية: إن لم تُرفع بعد تُترك أقسامها)
+const dbOk0 = dbOk;
+const [schools, buildings] = await Promise.all([fetchAll('schools', 'select=id,name_en,name_ar,rating_en,rating_ar,curriculum_en,curriculum_ar,area_en,area_ar,students'), fetchAll('building_area_stats', 'select=*')]);
+dbOk = dbOk0;
 if (!dbOk || !market.length) { console.log('قاعدة البيانات غير متاحة الآن؛ تُترك الصفحات الحالية كما هي'); process.exit(0); }
 console.log('market', market.length, 'lands', lands.length, 'projects', projects.length, 'properties', props.length);
 
@@ -118,7 +122,11 @@ for (const [slug, a] of areas) {
   const fh = land && A.freehold(land);
   const prj = projects.filter((p) => a.names.includes(lc(p.area_en)));
   const listings = props.filter((p) => a.words.some((w) => lc(p.title).includes(w)));
-  if (!sale && !rent && !fh && !prj.length && !listings.length) continue;
+  const RANK = { 'outstanding': 1, 'very good': 2, 'good': 3, 'acceptable': 4, 'weak': 5 };
+  const sch = schools.filter((x) => a.names.some((n) => lc(x.area_en).includes(n) || n.includes(lc(x.area_en) || '#')) || (a.ar && x.area_ar && lc(x.area_ar).includes(lc(a.ar)))).sort((x, y) => (RANK[lc(x.rating_en)] || 9) - (RANK[lc(y.rating_en)] || 9));
+  const bld = buildings.filter((b) => a.names.includes(lc(b.area_en)));
+  const bTot = bld.reduce((t, b) => t + b.buildings, 0), bFl = bld.length ? Math.max(...bld.map((b) => b.floors_max || 0)) : 0;
+  if (!sale && !rent && !fh && !prj.length && !listings.length && !sch.length && !bTot) continue;
   const name = a.ar || a.en, nameFull = a.ar ? `${a.ar} (${a.en})` : a.en;
   const base = ready && ready.ppm ? ready : sale;
   const yieldPct = rent && base && rent.ppm && base.ppm ? rent.ppm / base.ppm * 100 : null;
@@ -138,6 +146,7 @@ for (const [slug, a] of areas) {
   const faq = [
     sale && sale.ppm ? [`كم سعر المتر المربع في ${name}؟`, `وسيط سعر البيع المسجل خلال آخر 12 شهرًا ${num(sale.ppm)} درهم للمتر المربع، أي نحو ${num(sale.ppm / 10.7639)} درهم للقدم المربع، حسب صفقات دائرة الأراضي والأملاك.`] : null,
     rent && rent.price ? [`كم متوسط الإيجار في ${name}؟`, `وسيط الإيجار السنوي ${num(rent.price)} درهم حسب عقود الإيجار المسجلة${yieldPct ? `، والعائد الإيجاري الإجمالي نحو ${yieldPct.toFixed(1)}%` : ''}.`] : null,
+    sch.length ? [`كم مدرسة في ${name}؟`, `في ${name} وحولها ${num(sch.length)} مدرسة خاصة مسجلة لدى هيئة المعرفة والتنمية البشرية، منها ${num(sch.filter((x) => (RANK[lc(x.rating_en)] || 9) <= 2).length)} بتقييم متميز أو جيد جدًا.`] : null,
     fh ? [`هل يستطيع الأجنبي التملّك في ${name}؟`, fh.cls === 'ok' ? `نعم، ${name} منطقة تملّك حر؛ ${Math.round(fh.pct)}% من أراضيها السكنية والتجارية مسجلة تملّكًا حرًا. ويُؤكَّد وضع كل عقار من سند ملكيته.` : `${fh.label}: ${Math.round(fh.pct)}% فقط من أراضيها السكنية والتجارية تملّك حر، فتأكد من وضع العقار نفسه قبل الشراء.`] : null
   ].filter(Boolean);
 
@@ -146,11 +155,13 @@ for (const [slug, a] of areas) {
     ${sale || rent ? `<div class="kpis">${kpi(sale ? num(sale.ppm) : '—', 'وسيط سعر البيع (درهم/م²)')}${kpi(sale ? num(sale.deals) : '—', 'صفقات بيع مسجلة (12 شهرًا)')}${kpi(rent ? num(rent.price) : '—', 'وسيط الإيجار السنوي (درهم)')}${kpi(yieldPct ? yieldPct.toFixed(1) + '%' : '—', 'العائد الإيجاري الإجمالي')}</div>` : ''}
     ${sale && sale.series.length > 1 ? `<div class="box"><h2>سعر المتر شهريًا في ${esc(name)}</h2><div style="overflow:auto"><table><tr><th>الشهر</th><th>وسيط سعر المتر (درهم)</th><th>عدد الصفقات</th></tr>${sale.series.slice(-12).reverse().map((r) => `<tr><td>${esc(r.m.slice(0, 7))}</td><td>${num(r.ppm)}</td><td>${num(r.deals)}</td></tr>`).join('')}</table></div></div>` : ''}
     ${fh ? `<div class="box"><h2>الأراضي والتملّك الحر</h2><p>${esc(fh.label)} — ${Math.round(fh.pct)}% من الأراضي السكنية والتجارية. عدد القطع المسجلة ${num(land.plots)}، منها ${num(land.offplan)} عليها مشاريع على الخارطة.</p><p>${Object.entries(land.land_types || {}).filter(([k]) => k !== 'Unspecified').sort((x, y) => y[1] - x[1]).slice(0, 5).map(([k, v]) => `${esc(A.landAr(k))} ${Math.round(v / land.plots * 100)}%`).join(' · ')}</p></div>` : ''}
+    ${bTot ? `<div class="box"><h2>المباني في ${esc(name)}</h2><p>عدد المباني المسجلة لدى دائرة الأراضي والأملاك ${num(bTot)} مبنى${bFl ? `، أعلاها ${num(bFl)} طابقًا` : ''}${bld[0] && bld[0].floors_avg ? `، ومتوسط الارتفاع ${bld[0].floors_avg} طوابق` : ''}${bld[0] && bld[0].median_year ? `، ونصفها تقريبًا بُني قبل ${bld[0].median_year}` : ''}.</p></div>` : ''}
+    ${sch.length ? `<div class="box"><h2>مدارس في ${esc(name)} وحولها</h2><table><tr><th>المدرسة</th><th>المنهج</th><th>تقييم KHDA</th></tr>${sch.slice(0, 12).map((x) => `<tr><td>${esc(x.name_ar || x.name_en)}</td><td>${esc(x.curriculum_ar || x.curriculum_en || '')}</td><td>${esc(x.rating_ar || x.rating_en || '—')}</td></tr>`).join('')}</table><p style="margin-top:8px"><a href="/schools.html?area=${encodeURIComponent(sch[0].area_en || '')}">كل المدارس ←</a></p></div>` : ''}
     ${prj.length ? `<div class="box"><h2>مشاريع جديدة في ${esc(name)}</h2><table><tr><th>المشروع</th><th>المطوّر</th><th>الإنجاز</th><th>التسليم المتوقع</th><th>الوحدات</th></tr>${prj.slice(0, 15).map((p) => `<tr><td>${esc(A.title(p.name_en))}</td><td>${esc(A.title(p.developer_en))}</td><td>${Number(p.percent_completed) || 0}%</td><td>${esc((p.end_date || '').slice(0, 7))}</td><td>${num(p.cnt_unit)}</td></tr>`).join('')}</table></div>` : ''}
     ${listings.length ? `<div class="box"><h2>عقارات متاحة في ${esc(name)}</h2><div class="links">${listings.slice(0, 12).map((p) => `<a href="/property/sb-${esc(p.id)}.html">${esc(p.title)}<small>${num(p.price_aed)} درهم</small></a>`).join('')}</div></div>` : ''}
     ${faq.length ? `<div class="box faq"><h2>أسئلة شائعة عن ${esc(name)}</h2>${faq.map(([q, ans]) => `<details open><summary>${esc(q)}</summary><p>${esc(ans)}</p></details>`).join('')}</div>` : ''}
     <div class="acts" style="margin:0 0 14px"><a class="btn btn-teal" href="${interactive}"><i class="fas fa-chart-line"></i> الرسم البياني والعقارات المتاحة</a><a class="btn btn-soft" href="/listings.html?q=${encodeURIComponent(a.ar || a.en)}">كل العقارات في ${esc(name)}</a><a class="btn btn-ghost" href="/lands.html">دليل التملّك الحر</a></div>
-    <p class="src">المصادر: البيانات المفتوحة لدائرة الأراضي والأملاك في دبي (صفقات البيع وعقود الإيجار وسجل الأراضي والمشاريع)، محدّثة في ${today}. الأرقام للاسترشاد ولا تغني عن تقييم معتمد.</p>`;
+    <p class="src">المصادر: البيانات المفتوحة لدائرة الأراضي والأملاك في دبي (صفقات البيع وعقود الإيجار وسجل الأراضي والمشاريع والمباني)${sch.length ? '، وهيئة المعرفة والتنمية البشرية (المدارس)' : ''}، محدّثة في ${today}. الأرقام للاسترشاد ولا تغني عن تقييم معتمد.</p>`;
   const jsonld = [
     { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'أنا عقار', item: SITE + '/' }, { '@type': 'ListItem', position: 2, name: 'دليل المناطق', item: SITE + '/area/' }, { '@type': 'ListItem', position: 3, name, item: `${SITE}/area/${slug}.html` }] },
     faq.length ? { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, ans]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: ans } })) } : null
@@ -194,7 +205,7 @@ console.log('property pages:', propUrls.length);
 const STATIC = [
   ['', 'daily', '1.0'], ['listings.html', 'daily', '0.9'], ['stays.html', 'daily', '0.9'], ['cars.html', 'daily', '0.8'], ['projects.html', 'daily', '0.8'],
   ['area/', 'weekly', '0.8'], ['areas.html', 'weekly', '0.6'], ['lands.html', 'weekly', '0.7'], ['valuation.html', 'monthly', '0.7'], ['map.html', 'daily', '0.6'], ['offers.html', 'weekly', '0.6'],
-  ['brokers-directory.html', 'weekly', '0.7'], ['top-brokers.html', 'weekly', '0.6'], ['services-directory.html', 'weekly', '0.7'], ['sell-or-rent.html', 'monthly', '0.6'], ['request.html', 'monthly', '0.5'],
+  ['brokers-directory.html', 'weekly', '0.7'], ['top-brokers.html', 'weekly', '0.6'], ['join.html', 'monthly', '0.6'], ['schools.html', 'weekly', '0.7'], ['transport.html', 'monthly', '0.6'], ['services-directory.html', 'weekly', '0.7'], ['sell-or-rent.html', 'monthly', '0.6'], ['request.html', 'monthly', '0.5'],
   ['calculator.html', 'monthly', '0.5'], ['broker-registration.html', 'monthly', '0.4'], ['privacy-policy.html', 'yearly', '0.2'], ['terms-of-service.html', 'yearly', '0.2'], ['account-deletion.html', 'yearly', '0.2']
 ];
 const urls = STATIC.map(([u, f, p]) => ({ loc: `${SITE}/${u}`, f, p }));
