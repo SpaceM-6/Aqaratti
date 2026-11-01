@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=103"></script>
+  <script src="supabase-client.js?v=106"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -302,7 +302,7 @@
 
       <div class="trubroker-body-content">
         <div class="broker-info-side">
-          <img id="brokerAvatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300" class="broker-avatar-circle" alt="صورة الوكيل">
+          <img id="brokerAvatar" src="/icons/avatar.svg" class="broker-avatar-circle" alt="صورة الوكيل">
           <div class="broker-text-details">
             <h1 id="brokerName"></h1>
             <span class="agency-link-text"><i class="fas fa-building"></i> <span id="brokerAgency"></span></span>
@@ -328,7 +328,7 @@
       <!-- العمود الأيمن الجانبي -->
       <div>
         <div class="agency-logo-box">
-          <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=300" alt="شعار المكتب">
+          <img src="/icons/office.svg" alt="شعار المكتب">
           <div style="font-size:14px; font-weight:900; color:var(--dubizzle-navy); margin-top:8px;" id="agencyBoxName"></div>
         </div>
         <div id="brokerScore"></div>
@@ -567,7 +567,7 @@
         name: urlParams.get('name') || 'وسيط AnaAqar',
         agency: urlParams.get('agency') || 'AnaAqar',
         phone: urlParams.get('phone') || '',
-        avatar: urlParams.get('avatar') || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'
+        avatar: urlParams.get('avatar') || '/icons/avatar.svg'
       };
 
       document.getElementById('brokerName').innerText = currentBroker.name;
@@ -630,8 +630,8 @@
     });
   </script>
 
-  <script src="js/aq-trust.js?v=103"></script>
-  <script src="js/aq-ads.js?v=103" defer></script>
-  <script src="js/aq-back.js?v=103" defer></script>
+  <script src="js/aq-trust.js?v=106"></script>
+  <script src="js/aq-ads.js?v=106" defer></script>
+  <script src="js/aq-back.js?v=106" defer></script>
 </body>
 </html>

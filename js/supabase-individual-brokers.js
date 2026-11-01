@@ -67,7 +67,7 @@
     const isActive = !!b.is_active;
     // بيانات التواصل تظهر فقط للوسيط المفعّل (وإن فعّل ملفه بنفسه: بشرط موافقته على عرضها)
     const showContact = isActive && (b.claimed_by == null || b.public_contact_consent === true);
-    const photo = b.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200';
+    const photo = b.photo_url || '/icons/avatar.svg';
 
     return `
       <div class="broker-card" onclick="location.href='individual-broker-profile.html?id=${b.id}'">

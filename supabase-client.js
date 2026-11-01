@@ -297,7 +297,7 @@ function mapSupabasePropertyToAnaAqar(row) {
       agency: p.agency || 'AnaAqar',
       phone: p.phone || null,
       whatsapp: p.whatsapp || p.phone || null,
-      avatar: p.avatar_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'
+      avatar: p.avatar_url || '/icons/avatar.svg'
     },
     featured: false
   };

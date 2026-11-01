@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=103"></script>
+  <script src="supabase-client.js?v=106"></script>
 
   <style>
     :root {
@@ -766,7 +766,7 @@
         return `
           <div class="broker-card">
             <div class="broker-card-top">
-              <img class="broker-logo" src="${b.logo || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
+              <img class="broker-logo" src="${b.logo || '/icons/office.svg'}" alt="${b.name_ar || ''}" loading="lazy">
               <div class="broker-names">
                 <div class="broker-name-ar">${b.name_ar || '-'}</div>
                 <div class="broker-name-en">${b.name_en || ''}</div>
@@ -877,14 +877,14 @@
     });
   </script>
 
-  <script src="js/supabase-brokers.js"></script>
-  <script src="js/supabase-individual-brokers.js?v=103"></script>
+  <script src="js/supabase-brokers.js?v=106"></script>
+  <script src="js/supabase-individual-brokers.js?v=106"></script>
   <script src="js/supabase-developers.js"></script>
   <script src="js/image-lightbox.js"></script>
 
   <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="brokers" data-title="إعلانات"></div></div>
-  <script src="js/aq-ads.js?v=103" defer></script>
-  <script src="js/aq-engage.js?v=103" defer></script>
-  <script src="js/aq-back.js?v=103" defer></script>
+  <script src="js/aq-ads.js?v=106" defer></script>
+  <script src="js/aq-engage.js?v=106" defer></script>
+  <script src="js/aq-back.js?v=106" defer></script>
 </body>
 </html>
