@@ -11,7 +11,7 @@ function generateUAEPropertiesWithBrokers() {
       agency: "إعمار العقارية (Emaar Properties)",
       phone: "971501234567",
       whatsapp: "201030110959", // الرقم المخصص لاستقبال الاستفسارات والعمولات
-      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200",
+      avatar: "/icons/avatar.svg",
       badge: "وسيط موثوق 🌟"
     },
     {
@@ -20,7 +20,7 @@ function generateUAEPropertiesWithBrokers() {
       agency: "داماك العقارية (DAMAC)",
       phone: "971509876543",
       whatsapp: "201030110959",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200",
+      avatar: "/icons/avatar.svg",
       badge: "وسيط مميز 💎"
     },
     {
@@ -29,7 +29,7 @@ function generateUAEPropertiesWithBrokers() {
       agency: "بيتر هومز (Betterhomes)",
       phone: "971504567890",
       whatsapp: "201030110959",
-      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200",
+      avatar: "/icons/avatar.svg",
       badge: "وكيل معتمد Check"
     },
     {
@@ -38,7 +38,7 @@ function generateUAEPropertiesWithBrokers() {
       agency: "إف إيه إم العقارية (fām Properties)",
       phone: "971503332211",
       whatsapp: "201030110959",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200",
+      avatar: "/icons/avatar.svg",
       badge: "وسيط ذهبي 🥇"
     }
   ];

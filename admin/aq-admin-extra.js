@@ -23,14 +23,34 @@
       st(q.active, 'إعلانات نشطة') + st(q.stale_30, 'لم يُؤكَّد توافرها منذ 30 يومًا', true) + st(q.stale_60, 'منذ 60 يومًا', true) +
       st(q.age_median_days, 'متوسط عمر الإعلان (يوم)') + st(q.duplicates, 'إعلانات بصور مكررة', true) + st(q.no_permit, 'بلا رقم تصريح', true) + st(q.fully_checked, 'موثّقة بالكامل') + '</div>' +
       '<div class="card"><b>النشطة في كل مدينة:</b> ' + (q.by_city || []).map(function (c) { return esc(c.city) + ' <b>' + num(c.n) + '</b>'; }).join(' · ') + '</div>' +
-      '<div class="pills" id="qPills"><button class="pill' + (qFilter === 'stale' ? ' on' : '') + '" data-f="stale">الأقدم تأكيدًا أولًا</button><button class="pill' + (qFilter === 'unchecked' ? ' on' : '') + '" data-f="unchecked">لم تُفحص ملكيتها</button><button class="pill' + (qFilter === 'new' ? ' on' : '') + '" data-f="new">الأحدث</button></div>' +
+      '<div class="pills" id="qPills"><button class="pill' + (qFilter === 'stale' ? ' on' : '') + '" data-f="stale">الأقدم تأكيدًا أولًا</button><button class="pill' + (qFilter === 'unchecked' ? ' on' : '') + '" data-f="unchecked">لم تُفحص ملكيتها</button><button class="pill' + (qFilter === 'new' ? ' on' : '') + '" data-f="new">الأحدث</button><button class="pill' + (qFilter === 'docs' ? ' on' : '') + '" data-f="docs">مستندات بانتظار المراجعة</button></div>' +
       '<p class="sub">علّمي كل فحص بعد التحقق منه (رقم الرخصة في سجل دائرة الأراضي، سند الملكية، نموذج تفويض التسويق A، اتصال بالمعلن للتوافر). يظهر كل فحص للزوار مع تاريخه.</p><div id="qList"></div>';
     el.querySelectorAll('#qPills .pill').forEach(function (b) { b.onclick = function () { qFilter = b.dataset.f; loadQuality(el); }; });
     var qb = sb().from('properties').select('id,title,city,created_at,available_at,check_license_at,check_ownership_at,check_mandate_at,permit_number,license_number,broker_id').eq('status', 'approved').limit(80);
     if (qFilter === 'stale') qb = qb.order('available_at', { ascending: true, nullsFirst: true });
     else if (qFilter === 'unchecked') qb = qb.is('check_ownership_at', null).order('created_at', { ascending: false });
+    else if (qFilter === 'docs') {
+      var pd = await sb().from('property_docs').select('property_id').eq('status', 'pending').order('created_at').limit(200);
+      var pids = Array.from(new Set((pd.data || []).map(function (x) { return x.property_id; })));
+      qb = sb().from('properties').select('id,title,city,created_at,available_at,check_license_at,check_ownership_at,check_mandate_at,permit_number,license_number,broker_id').in('id', pids.length ? pids : ['00000000-0000-0000-0000-000000000000']);
+    }
     else qb = qb.order('created_at', { ascending: false });
     var l = await qb;
+    var docsBy = {};
+    if (!l.error && (l.data || []).length) {
+      var dr = await sb().from('property_docs').select('*').in('property_id', l.data.map(function (p) { return p.id; })).order('created_at', { ascending: false });
+      (dr.data || []).forEach(function (x) { (docsBy[x.property_id] = docsBy[x.property_id] || []).push(x); });
+    }
+    var DK = { title_deed: 'سند الملكية', form_a: 'نموذج A', other: 'مستند' }, DS = { pending: '⏳ بانتظار المراجعة', accepted: '✓ مقبول', rejected: '✗ مرفوض' };
+    var docsHtml = function (id) {
+      var list = docsBy[id] || [];
+      if (!list.length) return '<small style="display:block;margin-top:6px;color:var(--muted);font-weight:700">لم يرفع المعلن مستندات بعد.</small>';
+      return '<div style="margin-top:8px;border-top:1px dashed #e2e8f0;padding-top:6px">' + list.map(function (f) {
+        return '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0"><b style="font-size:13px">' + (DK[f.kind] || 'مستند') + '</b><small style="font-weight:700;color:var(--muted)">' + fmt(f.created_at) + ' · ' + (DS[f.status] || esc(f.status)) + (f.review_note ? ' · ' + esc(f.review_note) : '') + '</small>' +
+          '<button class="btn sm ghost" data-dv="' + esc(f.path) + '">عرض</button>' +
+          (f.status !== 'accepted' ? '<button class="btn sm teal" data-dok="' + f.id + '">قبول</button>' : '') + (f.status !== 'rejected' ? '<button class="btn sm ghost" data-dno="' + f.id + '">رفض</button>' : '') + '</div>';
+      }).join('') + '</div>';
+    };
     var box = el.querySelector('#qList');
     if (l.error) { box.innerHTML = '<div class="card">' + setupMsg(l.error) + '</div>'; return; }
     var K = [['license', 'الرخصة', 'check_license_at'], ['ownership', 'الملكية', 'check_ownership_at'], ['mandate', 'التفويض', 'check_mandate_at'], ['available', 'التوافر', 'available_at']];
@@ -41,8 +61,21 @@
         '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">' + K.map(function (k) {
           var on = !!p[k[2]];
           return '<button class="btn sm ' + (on ? 'teal' : 'ghost') + '" data-ck="' + k[0] + '" data-id="' + esc(p.id) + '" data-on="' + (on ? 1 : 0) + '" title="' + (on ? 'فُحص ' + fmt(p[k[2]]) : 'لم يُفحص') + '">' + (on ? '✓ ' : '') + k[1] + '</button>';
-        }).join('') + '</div></div>';
-    }).join('') || '<div class="card">لا توجد إعلانات.</div>';
+        }).join('') + '</div>' + docsHtml(p.id) + '</div>';
+    }).join('') || '<div class="card">' + (qFilter === 'docs' ? 'لا مستندات بانتظار المراجعة.' : 'لا توجد إعلانات.') + '</div>';
+    box.querySelectorAll('[data-dv]').forEach(function (b) {
+      b.onclick = async function () { var u = await sb().storage.from('property-docs').createSignedUrl(b.dataset.dv, 300); if (u.error) return alert(u.error.message); window.open(u.data.signedUrl, '_blank'); };
+    });
+    box.querySelectorAll('[data-dok],[data-dno]').forEach(function (b) {
+      b.onclick = async function () {
+        var ok = !!b.dataset.dok, note = ok ? null : prompt('سبب الرفض (يظهر للوسيط):', 'المستند غير واضح أو لا يطابق العقار');
+        if (!ok && note === null) return;
+        b.disabled = true;
+        var x = await sb().rpc('admin_review_property_doc', { p_doc: b.dataset.dok || b.dataset.dno, p_ok: ok, p_note: note });
+        if (x.error) { b.disabled = false; return alert(/function|does not exist/.test(x.error.message) ? 'شغّلي ملف supabase/property_docs.sql أولًا.' : x.error.message); }
+        loadQuality(el);
+      };
+    });
     box.querySelectorAll('[data-ck]').forEach(function (b) {
       b.onclick = async function () {
         b.disabled = true;

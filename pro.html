@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=107">
+  <link rel="stylesheet" href="css/aq-pages.css?v=108">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=107"></script>
+  <script src="supabase-client.js?v=108"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=107"></script>
+  <script src="js/aq-ai.js?v=108"></script>
   <script>
   (function () {
     'use strict';
@@ -467,8 +467,10 @@
     // ===================== عقاراتي =====================
     async function renderListings() {
       const m = $('main');
-      const [p, s] = await Promise.all([sb.from('properties').select('*').eq('broker_id', user.id).order('created_at', { ascending: false }), sb.rpc('my_property_stats')]);
+      const [p, s, dq] = await Promise.all([sb.from('properties').select('*').eq('broker_id', user.id).order('created_at', { ascending: false }), sb.rpc('my_property_stats'), sb.from('property_docs').select('property_id,kind,status').eq('broker_id', user.id)]);
       if (p.error) { m.innerHTML = `<div class="empty">${setupErr(p.error)}</div>`; return; }
+      const docs = {}; (dq.data || []).forEach((d) => { const k = d.property_id + '|' + d.kind, r = { accepted: 3, pending: 2, rejected: 1 }; if (!docs[k] || r[d.status] > r[docs[k]]) docs[k] = d.status; });
+      const docTag = (id, kind, t) => { const v = docs[id + '|' + kind]; return v === 'accepted' ? `<span style="color:#15803d">✓ ${t}</span>` : v === 'pending' ? `<span style="color:#b45309">⏳ ${t} قيد المراجعة</span>` : v === 'rejected' ? `<span style="color:#b91c1c">✗ ${t} مرفوض</span>` : `<span class="mut">${t}: لم يُرفع</span>`; };
       stats = {}; (s.data || []).forEach((x) => { stats[x.property_id] = x; });
       const list = p.data || [];
       m.innerHTML = `<h1 class="pg">عقاراتي</h1><p class="pgsub">عدّل إعلاناتك أو أوقفها مؤقتًا أو علّمها كمباعة. أي تعديل يعود للمراجعة قبل نشره.</p>
@@ -479,7 +481,8 @@
             <small>${money(x.price_aed)} · ${esc(x.city || '')}</small><small><span class="pill2 st-${x.status}">${PSTATUS[x.status] || esc(x.status)}</span> <i class="fas fa-eye"></i> ${st.views_30d || 0} مشاهدة (30 يومًا) · <i class="fas fa-address-book"></i> ${st.leads || 0} عميل</small>
             ${x.status === 'rejected' && x.rejection_reason ? `<small style="color:var(--red)">سبب الرفض: ${esc(x.rejection_reason)}</small>` : ''}</div>
             ${x.status === 'approved' ? `<small style="${x.available_at && (Date.now() - new Date(x.available_at)) / 864e5 > 30 ? 'color:var(--red,#dc2626)' : 'color:#15803d'}"><i class="fas fa-circle-check"></i> آخر تأكيد للتوافر: ${x.available_at ? new Date(x.available_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) : 'لم يؤكَّد'} · الإعلان على الموقع منذ ${Math.max(0, Math.floor((Date.now() - new Date(x.created_at)) / 864e5))} يومًا</small>` : ''}
-            <div class="ac">${x.status === 'approved' ? `<button class="btn btn-teal sm" data-av="${x.id}" title="يظهر للزوار أن العقار ما زال متاحًا"><i class="fas fa-check"></i> ما زال متاحًا</button>` : ''}<button class="btn btn-soft sm" data-ed="${x.id}">تعديل</button>
+            <small><i class="fas fa-file-shield"></i> ${docTag(x.id, 'title_deed', 'سند الملكية')} · ${docTag(x.id, 'form_a', 'نموذج A')}</small>
+            <div class="ac"><button class="btn btn-soft sm" data-docs="${x.id}"><i class="fas fa-file-arrow-up"></i> المستندات</button>${x.status === 'approved' ? `<button class="btn btn-teal sm" data-av="${x.id}" title="يظهر للزوار أن العقار ما زال متاحًا"><i class="fas fa-check"></i> ما زال متاحًا</button>` : ''}<button class="btn btn-soft sm" data-ed="${x.id}">تعديل</button>
             ${x.status === 'approved' ? `<button class="btn btn-ghost sm" data-st="paused" data-id="${x.id}">إيقاف مؤقت</button><button class="btn btn-ghost sm" data-st="${x.deal_type === 'rent' ? 'rented' : 'sold'}" data-id="${x.id}">${x.deal_type === 'rent' ? 'تم التأجير' : 'تم البيع'}</button>` : ''}
             ${['paused', 'sold', 'rented'].includes(x.status) ? `<button class="btn btn-teal sm" data-st="active" data-id="${x.id}">إعادة تفعيل</button>` : ''}
             <button class="btn btn-red sm" data-del="${x.id}"><i class="fas fa-trash"></i></button></div></div>`;
@@ -488,6 +491,39 @@
       m.querySelectorAll('[data-av]').forEach((b) => b.onclick = async () => { const { error } = await sb.rpc('confirm_property_available', { p_id: b.dataset.av }); if (error) return toast(setupErr(error), true); toast('تم ✅ يظهر الآن للزوار أن العقار متاح'); renderListings(); });
       m.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان نهائيًا؟')) return; const { error } = await sb.from('properties').delete().eq('id', b.dataset.del); if (error) return toast(error.message, true); renderListings(); });
       m.querySelectorAll('[data-ed]').forEach((b) => b.onclick = () => editProperty(list.find((x) => String(x.id) === b.dataset.ed)));
+      m.querySelectorAll('[data-docs]').forEach((b) => b.onclick = () => propertyDocs(list.find((x) => String(x.id) === b.dataset.docs)));
+    }
+    // مستندات الإعلان: سند الملكية ونموذج تفويض التسويق (A). خاصة: لا يراها إلا صاحبها والإدارة.
+    const DOCK = { title_deed: 'سند الملكية (Title Deed)', form_a: 'نموذج تفويض التسويق (Form A)' };
+    const DOCST = { pending: '⏳ قيد المراجعة', accepted: '✓ مقبول', rejected: '✗ مرفوض' };
+    async function propertyDocs(x) {
+      const d = overlay(`<h2>مستندات الإعلان</h2><p class="mut">${esc(x.title)}</p>
+        <p class="mut" style="line-height:1.8">ارفع سند الملكية ونموذج A الموقّع من المالك. تراجعهما الإدارة، وبعد القبول يظهر لزوار إعلانك «فُحصت الملكية» و«فُحص تفويض التسويق»، ويرتفع ترتيبك بين الوسطاء. الملفات خاصة لا يراها الزوار أبدًا. (PDF أو صورة، حتى 10 ميجابايت)</p>
+        <div id="dList" class="mut">جاري التحميل…</div>
+        ${Object.entries(DOCK).map(([k, t]) => `<div class="fg"><label>ارفع ${t}</label><input type="file" data-up="${k}" accept="application/pdf,image/*"></div>`).join('')}`);
+      const load = async () => {
+        const r = await sb.from('property_docs').select('*').eq('property_id', x.id).order('created_at', { ascending: false });
+        const box = d.el.querySelector('#dList');
+        if (r.error) { box.innerHTML = /does not exist|schema cache/.test(r.error.message || '') ? 'هذه الميزة تحتاج تشغيل ملف supabase/property_docs.sql أولًا.' : esc(r.error.message); return; }
+        box.innerHTML = (r.data || []).map((f) => `<div class="li" style="padding:8px 0"><div class="tx"><b>${DOCK[f.kind] || 'مستند'}</b><small>${esc(f.file_name || '')} · ${new Date(f.created_at).toLocaleDateString('ar-EG')} · ${DOCST[f.status] || f.status}</small>${f.review_note ? `<small style="color:#b91c1c">ملاحظة الإدارة: ${esc(f.review_note)}</small>` : ''}</div>
+          <div class="ac"><button class="btn btn-ghost sm" data-view="${esc(f.path)}">عرض</button>${f.status !== 'accepted' ? `<button class="btn btn-red sm" data-rm="${f.id}" data-path="${esc(f.path)}"><i class="fas fa-trash"></i></button>` : ''}</div></div>`).join('') || '<p class="mut">لم ترفع مستندات بعد.</p>';
+        box.querySelectorAll('[data-view]').forEach((b) => b.onclick = async () => { const u = await sb.storage.from('property-docs').createSignedUrl(b.dataset.view, 300); if (u.error) return toast(u.error.message, true); window.open(u.data.signedUrl, '_blank'); });
+        box.querySelectorAll('[data-rm]').forEach((b) => b.onclick = async () => { if (!confirm('حذف المستند؟')) return; const { error } = await sb.from('property_docs').delete().eq('id', b.dataset.rm); if (error) return toast(error.message, true); await sb.storage.from('property-docs').remove([b.dataset.path]); load(); });
+      };
+      d.el.querySelectorAll('[data-up]').forEach((inp) => inp.onchange = async () => {
+        const f = inp.files[0]; if (!f) return;
+        if (f.size > 10485760) { inp.value = ''; return toast('الملف أكبر من 10 ميجابايت', true); }
+        inp.disabled = true; toast('جاري الرفع…');
+        const ext = (f.name.split('.').pop() || 'pdf').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'pdf';
+        const path = `${user.id}/${x.id}/${inp.dataset.up}-${Date.now()}.${ext}`;
+        const up = await sb.storage.from('property-docs').upload(path, f, { contentType: f.type || undefined, upsert: false });
+        if (up.error) { inp.disabled = false; return toast(/bucket|not found/i.test(up.error.message) ? 'شغّلي ملف supabase/property_docs.sql أولًا' : up.error.message, true); }
+        const { error } = await sb.from('property_docs').insert({ property_id: x.id, broker_id: user.id, kind: inp.dataset.up, path, file_name: f.name.slice(0, 120) });
+        inp.disabled = false; inp.value = '';
+        if (error) { await sb.storage.from('property-docs').remove([path]); return toast(error.message, true); }
+        toast('تم الرفع ✅ ستراجعه الإدارة قريبًا'); load(); renderListings();
+      });
+      load();
     }
     function editProperty(x) {
       const d = overlay(`<h2>تعديل الإعلان</h2><p class="mut">بعد الحفظ يعود الإعلان «قيد المراجعة» حتى تعتمده الإدارة.</p><form id="ef">
@@ -770,7 +806,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=107" defer></script>
-  <script src="js/aq-back.js?v=107" defer></script>
+  <script src="js/aq-engage.js?v=108" defer></script>
+  <script src="js/aq-back.js?v=108" defer></script>
 </body>
 </html>
