@@ -207,6 +207,21 @@
     });
   }
 
+  // مزامنة دليل الوسطاء على دفعات (حتى لا تتجاوز مهلة Supabase)
+  async function syncDirectory(onProgress) {
+    var tot = { updated: 0, inserted: 0, processed: 0 };
+    for (var off = 0; off < 200000; off += 2000) {
+      var y = await sb().rpc('aq_sync_directory_batch', { p_offset: off, p_limit: 2000 });
+      if (y.error) { y.error.partial = tot; throw y.error; }
+      tot.updated += y.data.updated; tot.inserted += y.data.inserted; tot.processed += y.data.processed;
+      if (onProgress) onProgress(tot);
+      if (y.data.processed < 2000) break;
+    }
+    var c = await sb().from('individual_brokers').select('id', { count: 'exact', head: true }).eq('country', 'uae');
+    tot.total = c.count; return tot;
+  }
+  var syncErr = function (e) { return /aq_sync_directory_batch|function|does not exist|schema cache/i.test((e && e.message) || '') ? 'شغّلي ملف supabase/dld_directory_sync_batch.sql من SQL Editor، ثم اضغطي «تحديث دليل الوسطاء» في سجلات الدائرة.' : 'تعذّر تحديث دليل الوسطاء: ' + ((e && e.message) || ''); };
+
   async function saveRegistry(el, out) {
     if (!regPending) return;
     var R = REG[regPending.k], rows = regPending.rows, btn = out.querySelector('#mkSave'); btn.disabled = true;
@@ -218,9 +233,10 @@
     var extra = '';
     if (regPending.k === 'brokers') {
       var x = await sb().rpc('aq_sync_license_checks'); if (!x.error) extra = ' وفُحصت رخصة المعلن تلقائيًا في ' + num(x.data || 0) + ' إعلانًا.';
-      btn.textContent = 'جاري تحديث دليل الوسطاء…';
-      var y = await sb().rpc('aq_sync_directory_from_dld');
-      extra += y.error ? ' (لتحديث دليل الوسطاء شغّلي ملف supabase/dld_lands_directory.sql ثم اضغطي «تحديث دليل الوسطاء» في سجلات الدائرة.)' : ' وحُدّث دليل الوسطاء: ' + num(y.data.updated) + ' وسيطًا محدّثًا، و' + num(y.data.inserted) + ' وسيطًا جديدًا، والإجمالي ' + num(y.data.total) + '.';
+      try {
+        var y = await syncDirectory(function (t) { btn.textContent = 'جاري تحديث دليل الوسطاء… ' + Math.min(100, Math.round(100 * t.processed / rows.length)) + '%'; });
+        extra += ' وحُدّث دليل الوسطاء: ' + num(y.updated) + ' وسيطًا محدّثًا، و' + num(y.inserted) + ' وسيطًا جديدًا، والإجمالي ' + num(y.total) + '.';
+      } catch (e) { extra += ' (' + syncErr(e) + ')'; }
     }
     regPending = null;
     out.innerHTML = '<p class="sub" style="color:#15803d;font-weight:900">✅ حُفظ ' + R.title + ' (' + num(rows.length) + ' سجلًا).' + extra + '</p>';
@@ -380,9 +396,10 @@
     var sy = box.querySelector('#rgSync');
     if (sy) sy.onclick = async function () {
       sy.disabled = true; sy.textContent = 'جاري التحديث…';
-      var y = await sb().rpc('aq_sync_directory_from_dld');
-      if (y.error) { sy.disabled = false; sy.textContent = 'تحديث دليل الوسطاء'; alert(/function|does not exist|schema cache/i.test(y.error.message || '') ? 'شغّلي ملف supabase/dld_lands_directory.sql من SQL Editor أولًا.' : y.error.message); return; }
-      sy.outerHTML = '<b style="color:#15803d">✅ حُدّث: ' + num(y.data.updated) + ' · جديد: ' + num(y.data.inserted) + ' · الإجمالي: ' + num(y.data.total) + '</b>';
+      try {
+        var y = await syncDirectory(function (t) { sy.textContent = 'جاري التحديث… ' + num(t.processed) + ' وسيط'; });
+        sy.outerHTML = '<b style="color:#15803d">✅ حُدّث: ' + num(y.updated) + ' · جديد: ' + num(y.inserted) + ' · الإجمالي في الدليل: ' + num(y.total) + '</b>';
+      } catch (e) { sy.disabled = false; sy.textContent = 'تحديث دليل الوسطاء'; alert(syncErr(e)); }
     };
   }
 
