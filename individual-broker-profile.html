@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=102"></script>
+  <script src="supabase-client.js?v=103"></script>
 
   <style>
     :root {
@@ -202,6 +202,7 @@
 
     function renderProfile(b) {
       const isActive = !!b.is_active;
+      const esc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       // بيانات التواصل لا تُعرض إلا لوسيط مفعّل (وإن فعّل ملفه بنفسه: بشرط موافقته على عرضها)
       const showContact = isActive && (b.claimed_by == null || b.public_contact_consent === true);
       if (!showContact) { b = Object.assign({}, b, { phone: null, email: null, mobile: null }); }
@@ -214,8 +215,9 @@
           <div class="profile-header">
             <img class="profile-photo" src="${b.photo_url || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200'}" alt="${b.name_ar || ''}" loading="lazy">
             <div class="profile-header-names">
-              <div class="profile-name-ar">${b.name_ar || '-'}</div>
-              ${b.office_name ? `<div class="profile-office"><i class="fas fa-building"></i> ${b.office_name}</div>` : ''}
+              <div class="profile-name-ar">${esc(b.name_ar || b.name_en || '-')}</div>
+              ${b.name_ar && b.name_en ? `<div class="profile-office" dir="ltr" style="text-align:right">${esc(b.name_en)}</div>` : ''}
+              ${b.office_name || b.office_name_en ? `<div class="profile-office"><i class="fas fa-building"></i> ${esc(b.office_name || b.office_name_en)}</div>` : ''}
             </div>
           </div>
 
@@ -223,8 +225,10 @@
             <div class="info-grid">
               <div class="info-item">
                 <div class="info-label"><i class="fas fa-id-card"></i> رقم الوسيط (DLD)</div>
-                <div class="info-value">${b.dld_broker_number}</div>
+                <div class="info-value">${esc(b.dld_broker_number)}</div>
               </div>
+              ${b.office_number ? `<div class="info-item"><div class="info-label"><i class="fas fa-building"></i> رقم المكتب (ORN)</div><div class="info-value">${esc(b.office_number)}</div></div>` : ''}
+              ${b.license_expiry_date ? `<div class="info-item"><div class="info-label"><i class="fas fa-calendar-check"></i> الرخصة</div><div class="info-value" style="color:${b.license_expiry_date >= new Date().toISOString().slice(0, 10) ? '#15803d' : '#b91c1c'}">${b.license_expiry_date >= new Date().toISOString().slice(0, 10) ? 'سارية حتى' : 'منتهية في'} ${esc(b.license_expiry_date)}</div></div>` : ''}
 
               ${b.phone ? `
               <div class="info-item">
@@ -274,12 +278,12 @@
         return;
       }
 
-      document.title = `${broker.name_ar || 'وسيط عقاري'} | AnaAqar`;
+      document.title = `${broker.name_ar || broker.name_en || 'وسيط عقاري'} | AnaAqar`;
       renderProfile(broker);
     });
   </script>
 
-  <script src="js/aq-ads.js?v=102" defer></script>
-  <script src="js/aq-back.js?v=102" defer></script>
+  <script src="js/aq-ads.js?v=103" defer></script>
+  <script src="js/aq-back.js?v=103" defer></script>
 </body>
 </html>

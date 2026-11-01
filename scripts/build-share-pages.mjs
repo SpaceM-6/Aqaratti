@@ -184,7 +184,7 @@ async function restSoft(table, query) {
   const today = new Date().toISOString().slice(0, 10);
   const STATIC = [
     ['', 'daily', '1.0'], ['listings.html', 'daily', '0.9'], ['stays.html', 'daily', '0.9'], ['cars.html', 'daily', '0.8'], ['projects.html', 'daily', '0.8'],
-    ['areas.html', 'weekly', '0.8'], ['valuation.html', 'monthly', '0.7'], ['map.html', 'daily', '0.7'], ['offers.html', 'weekly', '0.7'],
+    ['areas.html', 'weekly', '0.8'], ['lands.html', 'weekly', '0.7'], ['valuation.html', 'monthly', '0.7'], ['map.html', 'daily', '0.7'], ['offers.html', 'weekly', '0.7'],
     ['brokers-directory.html', 'weekly', '0.7'], ['services-directory.html', 'weekly', '0.7'], ['sell-or-rent.html', 'monthly', '0.6'], ['request.html', 'monthly', '0.6'],
     ['calculator.html', 'monthly', '0.5'], ['broker-registration.html', 'monthly', '0.4'], ['privacy-policy.html', 'yearly', '0.2'], ['terms-of-service.html', 'yearly', '0.2'], ['account-deletion.html', 'yearly', '0.2']
   ];

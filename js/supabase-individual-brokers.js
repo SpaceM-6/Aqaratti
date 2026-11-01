@@ -40,7 +40,8 @@
       if (tsQuery) query = query.textSearch('search_vector', tsQuery, { config: 'simple' });
     }
 
-    query = query.order('id', { ascending: true }).range(off, off + PAGE_SIZE - 1);
+    // الرخص السارية أولًا (الأحدث انتهاءً)، ثم المنتهية
+    query = query.order('license_expiry_date', { ascending: false, nullsFirst: false }).order('id', { ascending: true }).range(off, off + PAGE_SIZE - 1);
 
     const { data, error, count } = await query;
     if (error) {
@@ -49,6 +50,17 @@
     }
     await aqAttachBrokerContacts('individual_brokers', data || []);
     return { data: data || [], count: count || 0 };
+  }
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // حالة الرخصة من سجل دائرة الأراضي (معلومة عامة تهم المتعامل)
+  function licenseBadge(b) {
+    const end = b.license_expiry_date, today = new Date().toISOString().slice(0, 10);
+    if (!end) return `<div class="active-badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-circle-check"></i> مسجل في DLD</div>`;
+    const d = new Date(end).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short' });
+    return end >= today
+      ? `<div class="active-badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-circle-check"></i> رخصة سارية لدى DLD حتى ${d}</div>`
+      : `<div class="active-badge" style="background:#fee2e2; color:#b91c1c;"><i class="fas fa-circle-xmark"></i> الرخصة منتهية منذ ${d}</div>`;
   }
 
   function brokerCardHTML(b) {
@@ -60,14 +72,15 @@
     return `
       <div class="broker-card" onclick="location.href='individual-broker-profile.html?id=${b.id}'">
         <div class="broker-card-top">
-          <img class="broker-logo is-photo" src="${photo}" alt="${b.name_ar || ''}" loading="lazy">
+          <img class="broker-logo is-photo" src="${photo}" alt="${esc(b.name_ar || b.name_en || '')}" loading="lazy">
           <div class="broker-names">
-            <div class="broker-name-ar">${b.name_ar || '-'}</div>
-            <div class="broker-name-en">${b.office_name || ''}</div>
+            <div class="broker-name-ar">${esc(b.name_ar || b.name_en || '-')}</div>
+            <div class="broker-name-en">${esc(b.name_ar && b.name_en ? b.name_en : '')}</div>
+            <div class="broker-name-en">${esc(b.office_name || b.office_name_en || '')}</div>
           </div>
         </div>
 
-        <div class="active-badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-circle-check"></i> مسجل في DLD</div>
+        ${licenseBadge(b)}
         ${!isActive ? `<div class="inactive-badge"><i class="fas fa-triangle-exclamation"></i> غير مفعل</div>
         <a class="claim-link" href="claim-profile.html?dld=${encodeURIComponent(b.dld_broker_number)}" onclick="event.stopPropagation()"><i class="fas fa-user-check"></i> هل هذا ملفك؟ فعّله الآن</a>` : ''}
 
@@ -121,16 +134,20 @@
     const bar = document.getElementById('individualStatsBar');
     if (!bar) return;
 
-    const [{ count: activeCount }, { count: inactiveCount }, { count: total }] = await Promise.all([
+    const today = new Date().toISOString().slice(0, 10);
+    const [{ count: activeCount }, { count: inactiveCount }, { count: total }, { count: licensed }] = await Promise.all([
       supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }).eq('country', COUNTRY).eq('is_active', true),
       supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }).eq('country', COUNTRY).eq('is_active', false),
       supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }).eq('country', COUNTRY),
+      supabaseClient.from('individual_brokers').select('id', { count: 'exact', head: true }).eq('country', COUNTRY).gte('license_expiry_date', today),
     ]);
 
     bar.innerHTML = `
       <span class="stat-item">مفعل: <span class="stat-count">${(activeCount || 0).toLocaleString('en-US')}</span></span>
       <span class="stat-divider"></span>
       <span class="stat-item">غير مفعل: <span class="stat-count">${(inactiveCount || 0).toLocaleString('en-US')}</span></span>
+      <span class="stat-divider"></span>
+      <span class="stat-item">رخصة سارية: <span class="stat-count">${(licensed || 0).toLocaleString('en-US')}</span></span>
       <span class="stat-divider"></span>
       <span class="stat-item stat-total">الإجمالي: <span class="stat-count">${(total || 0).toLocaleString('en-US')}</span></span>
     `;

@@ -151,7 +151,7 @@
   }
   function parseRegistry(file, el, k) {
     var out = el.querySelector('#mkOut');
-    if (k === 'land') { out.innerHTML = '<p class="sub" style="color:#b45309;font-weight:800">هذا ملف الأراضي (Land). لا نستخدمه حاليًا، فلا حاجة لرفعه.</p>'; return; }
+    if (k === 'land') return parseLand(file, el);
     var R = REG[k], rows = [], bad = 0, seen = {};
     Papa.parse(file, { header: true, skipEmptyLines: true,
       chunk: function (res) { res.data.forEach(function (r) { var x = R.row(r); if (!x) { bad++; return; } if (seen[x[R.key]] != null) rows[seen[x[R.key]]] = x; else { seen[x[R.key]] = rows.length; rows.push(x); } }); out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> قُرئ ' + num(rows.length) + ' سجلًا…</p>'; },
@@ -165,6 +165,48 @@
       error: function (e) { out.innerHTML = '<p class="sub" style="color:#b91c1c">تعذّرت قراءة الملف: ' + esc(e && e.message) + '</p>'; }
     });
   }
+  // ===== ملف الأراضي: ملخص لكل منطقة (لا نخزن القطع نفسها) =====
+  var landPending = null;
+  function parseLand(file, el) {
+    var out = el.querySelector('#mkOut'), agg = {}, n = 0;
+    var LT = function (t) { t = String(t || '').trim(); return !t ? 'Unspecified' : /^public facilit|^facilities$/i.test(t) ? 'Public Facilities' : /^transport/i.test(t) ? 'Transport' : t; };
+    Papa.parse(file, { header: true, skipEmptyLines: true,
+      chunk: function (res) {
+        res.data.forEach(function (r) {
+          var area = String(r.AREA_EN || '').trim(); if (!area) return; n++;
+          var a = agg[area] || (agg[area] = { area_en: area, zone_en: txt(r.ZONE_EN), plots: 0, area_m2: 0, freehold: 0, offplan: 0, pp: 0, pf: 0, prj: {}, land_types: {}, sub_types: {} });
+          a.plots++; a.area_m2 += toNum(r.ACTUAL_AREA) || 0;
+          if (/^free\s*hold/i.test(r.IS_FREE_HOLD_EN || '')) a.freehold++;
+          if (/off/i.test(r.IS_OFFPLAN_EN || '')) a.offplan++;
+          if (txt(r.PROJECT_NUMBER)) a.prj[r.PROJECT_NUMBER] = 1;
+          var lt = LT(r.LAND_TYPE_EN); a.land_types[lt] = (a.land_types[lt] || 0) + 1;
+          if (/^(Residential|Commercial|Hospitality)$/.test(lt)) { a.pp++; if (/^free\s*hold/i.test(r.IS_FREE_HOLD_EN || '')) a.pf++; }
+          var st = String(r.PROP_SUB_TYPE_EN || '').trim(); if (st) a.sub_types[st] = (a.sub_types[st] || 0) + 1;
+        });
+        out.innerHTML = '<p class="sub"><i class="fas fa-spinner fa-spin"></i> قُرئت ' + num(n) + ' قطعة…</p>';
+      },
+      complete: function () {
+        var rows = Object.values(agg).map(function (a) {
+          var top = Object.entries(a.sub_types).sort(function (x, y) { return y[1] - x[1]; }).slice(0, 8), st = {}; top.forEach(function (e) { st[e[0]] = e[1]; });
+          return { area_en: a.area_en, zone_en: a.zone_en, plots: a.plots, area_m2: Math.round(a.area_m2), freehold: a.freehold, private_plots: a.pp, private_freehold: a.pf, offplan: a.offplan, projects: Object.keys(a.prj).length, land_types: a.land_types, sub_types: st, source: 'DLD', updated_at: new Date().toISOString() };
+        });
+        landPending = rows;
+        var fh = rows.reduce(function (t, x) { return t + x.freehold; }, 0), pl = rows.reduce(function (t, x) { return t + x.plots; }, 0);
+        var fhAreas = rows.filter(function (x) { return (x.private_plots ? x.private_freehold / x.private_plots : x.freehold / x.plots) >= 0.7; }).length;
+        out.innerHTML = '<div class="card" style="background:#f8fafc"><b>المعاينة — سجل الأراضي</b><p class="sub" style="margin:6px 0">القطع: ' + num(pl) + ' · المناطق: ' + num(rows.length) + ' · قطع التملّك الحر: ' + num(fh) + ' (' + Math.round(100 * fh / (pl || 1)) + '%) · مناطق تملّك حر: ' + num(fhAreas) + '</p>' +
+          '<p class="sub" style="margin:0 0 6px">نحفظ ملخصًا لكل منطقة فقط (' + num(rows.length) + ' ملخصًا)، لا القطع نفسها.</p><button class="btn teal" id="mkSave"><i class="fas fa-floppy-disk"></i> حفظ ملخص ' + num(rows.length) + ' منطقة</button></div>';
+        out.querySelector('#mkSave').onclick = async function () {
+          var btn = this; btn.disabled = true; btn.textContent = 'جاري الحفظ…';
+          for (var i = 0; i < landPending.length; i += 200) {
+            var r = await sb().from('land_area_stats').upsert(landPending.slice(i, i + 200), { onConflict: 'area_en' });
+            if (r.error) { btn.disabled = false; btn.textContent = 'إعادة المحاولة'; alert(/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/dld_lands_directory.sql من SQL Editor أولًا.' : r.error.message); return; }
+          }
+          out.innerHTML = '<p class="sub" style="color:#15803d;font-weight:900">✅ حُفظ دليل الأراضي (' + num(landPending.length) + ' منطقة). يظهر في صفحة «دليل الأراضي» وفي صفحات المناطق.</p>'; landPending = null;
+        };
+      }
+    });
+  }
+
   async function saveRegistry(el, out) {
     if (!regPending) return;
     var R = REG[regPending.k], rows = regPending.rows, btn = out.querySelector('#mkSave'); btn.disabled = true;
@@ -174,7 +216,12 @@
       if (r.error) { btn.disabled = false; btn.textContent = 'إعادة المحاولة'; alert(/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/dld_registry.sql من SQL Editor أولًا.' : r.error.message); return; }
     }
     var extra = '';
-    if (regPending.k === 'brokers') { var x = await sb().rpc('aq_sync_license_checks'); if (!x.error) extra = ' وفُحصت رخصة المعلن تلقائيًا في ' + num(x.data || 0) + ' إعلانًا.'; }
+    if (regPending.k === 'brokers') {
+      var x = await sb().rpc('aq_sync_license_checks'); if (!x.error) extra = ' وفُحصت رخصة المعلن تلقائيًا في ' + num(x.data || 0) + ' إعلانًا.';
+      btn.textContent = 'جاري تحديث دليل الوسطاء…';
+      var y = await sb().rpc('aq_sync_directory_from_dld');
+      extra += y.error ? ' (لتحديث دليل الوسطاء شغّلي ملف supabase/dld_lands_directory.sql ثم اضغطي «تحديث دليل الوسطاء» في سجلات الدائرة.)' : ' وحُدّث دليل الوسطاء: ' + num(y.data.updated) + ' وسيطًا محدّثًا، و' + num(y.data.inserted) + ' وسيطًا جديدًا، والإجمالي ' + num(y.data.total) + '.';
+    }
     regPending = null;
     out.innerHTML = '<p class="sub" style="color:#15803d;font-weight:900">✅ حُفظ ' + R.title + ' (' + num(rows.length) + ' سجلًا).' + extra + '</p>';
   }
@@ -254,7 +301,7 @@
   // ===================== سجلات دائرة الأراضي (عرض وبحث للإدارة) =====================
   var regTab = 'brokers';
   async function loadRegistry(el) {
-    var T = [['brokers', 'الوسطاء المرخّصون', 'fa-user-tie'], ['projects', 'المشاريع', 'fa-city'], ['developers', 'المطوّرون', 'fa-building'], ['market', 'أسعار المناطق', 'fa-chart-line']];
+    var T = [['brokers', 'الوسطاء المرخّصون', 'fa-user-tie'], ['projects', 'المشاريع', 'fa-city'], ['developers', 'المطوّرون', 'fa-building'], ['lands', 'الأراضي', 'fa-map'], ['market', 'أسعار المناطق', 'fa-chart-line']];
     el.innerHTML = '<div class="stats" id="rgStats"></div><div class="pills" id="rgTabs">' + T.map(function (t) { return '<button class="pill' + (t[0] === regTab ? ' on' : '') + '" data-t="' + t[0] + '"><i class="fas ' + t[2] + '"></i> ' + t[1] + '</button>'; }).join('') + '</div>' +
       '<div class="fg"><input id="rgQ" type="search" placeholder="ابحث…"></div><div id="rgList"><div class="card">جاري التحميل…</div></div>';
     el.querySelectorAll('#rgTabs .pill').forEach(function (b) { b.onclick = function () { regTab = b.dataset.t; loadRegistry(el); }; });
@@ -266,7 +313,7 @@
       var box = el.querySelector('#rgStats'); if (box) box.innerHTML = st(c[0], 'وسيط في السجل') + st(c[1], 'رخصة سارية') + st(c[2], 'مشروع مسجّل') + st(c[3], 'قيد الإنشاء') + st(c[4], 'مطوّر') + st(c[5], 'ملخص سوق شهري');
     });
     var q = el.querySelector('#rgQ'), timer = null;
-    q.placeholder = { brokers: 'ابحث برقم BRN أو اسم الوسيط أو المكتب…', projects: 'ابحث باسم المشروع أو المطوّر أو المنطقة…', developers: 'ابحث باسم المطوّر أو رقمه…', market: 'ابحث باسم المنطقة…' }[regTab];
+    q.placeholder = { brokers: 'ابحث برقم BRN أو اسم الوسيط أو المكتب…', projects: 'ابحث باسم المشروع أو المطوّر أو المنطقة…', developers: 'ابحث باسم المطوّر أو رقمه…', lands: 'ابحث باسم المنطقة…', market: 'ابحث باسم المنطقة…' }[regTab];
     q.oninput = function () { clearTimeout(timer); timer = setTimeout(function () { drawRegistry(el, q.value.trim()); }, 300); };
     drawRegistry(el, '');
   }
@@ -275,11 +322,14 @@
     var box = el.querySelector('#rgList'), today = new Date().toISOString().slice(0, 10), r, html = '';
     var miss = function (e) { return '<div class="card">' + (/relation|does not exist|schema cache/i.test((e && e.message) || '') ? 'شغّلي ملف supabase/dld_registry.sql من SQL Editor، ثم ارفعي الملفات من «بيانات السوق».' : esc(e.message)) + '</div>'; };
     var row = function (title, sub, right) { return '<div class="card" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div style="min-width:0;flex:1"><b>' + title + '</b><div class="sub" style="margin:2px 0 0">' + sub + '</div></div><div style="font-weight:800">' + (right || '') + '</div></div>'; };
+    if (regTab === 'brokers' && !term) {
+      html += '<div class="card" style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><span class="sub" style="margin:0">دليل الوسطاء في الموقع يُحدَّث تلقائيًا عند رفع ملف Broker. ويمكنك تحديثه يدويًا من السجل المحفوظ:</span><button class="btn soft sm" id="rgSync"><i class="fas fa-rotate"></i> تحديث دليل الوسطاء</button></div>';
+    }
     if (regTab === 'brokers') {
       var qb = sb().from('dld_brokers').select('*').order('license_end', { ascending: false }).limit(60);
       if (term) qb = /^\d+$/.test(term) ? qb.or('broker_number.eq.' + term + ',office_number.eq.' + term) : qb.or('name_en.ilike.' + like(term) + ',office_name.ilike.' + like(term));
       r = await qb; if (r.error) { box.innerHTML = miss(r.error); return; }
-      html = (r.data || []).map(function (b) {
+      html += (r.data || []).map(function (b) {
         var ok = b.license_end && b.license_end >= today;
         return row(esc(b.name_en), 'BRN ' + esc(b.broker_number) + ' · ' + esc(b.office_name || '') + (b.office_number ? ' (ORN ' + esc(b.office_number) + ')' : ''),
           '<span class="badge ' + (ok ? 'done' : 'new') + '">' + (ok ? 'سارية حتى ' : 'منتهية ') + esc(b.license_end || '') + '</span>');
@@ -302,6 +352,12 @@
         return row(esc(d.name_en), 'رقم المطوّر ' + esc(d.developer_number) + ' · رخصة ' + esc(d.license_number || '—') + ' · ' + esc(d.license_source || '') + (d.registration_date ? ' · سُجّل ' + esc(d.registration_date) : ''),
           '<span class="badge ' + (ok ? 'done' : 'new') + '">' + (ok ? 'سارية حتى ' : 'منتهية ') + esc(d.license_expiry || '') + '</span>');
       }).join('');
+    } else if (regTab === 'lands') {
+      var ql = sb().from('land_area_stats').select('*').order('plots', { ascending: false }).limit(300);
+      if (term) ql = ql.ilike('area_en', '%' + term.replace(/[%,()]/g, ' ') + '%');
+      r = await ql; if (r.error) { box.innerHTML = '<div class="card">' + (/relation|does not exist|schema cache/i.test(r.error.message || '') ? 'شغّلي ملف supabase/dld_lands_directory.sql ثم ارفعي ملف Land من «بيانات السوق».' : esc(r.error.message)) + '</div>'; return; }
+      html = '<div class="card" style="overflow:auto"><table style="width:100%;border-collapse:collapse;font-size:14px"><tr><th style="text-align:start">المنطقة</th><th>القطع</th><th>التملّك الحر</th><th>على الخارطة</th><th>المشاريع</th><th>أكثر استخدام</th></tr>' +
+        (r.data || []).map(function (a) { var top = Object.entries(a.land_types || {}).sort(function (x, y) { return y[1] - x[1]; })[0]; return '<tr style="border-top:1px solid var(--line)"><td><a href="../areas.html?a=' + encodeURIComponent(a.area_en) + '" target="_blank">' + esc(a.area_en) + '</a></td><td style="text-align:center">' + num(a.plots) + '</td><td style="text-align:center">' + Math.round(100 * a.freehold / (a.plots || 1)) + '%</td><td style="text-align:center">' + num(a.offplan) + '</td><td style="text-align:center">' + num(a.projects) + '</td><td style="text-align:center">' + esc(top ? top[0] : '') + '</td></tr>'; }).join('') + '</table></div>';
     } else {
       // أسعار المناطق: آخر 12 شهرًا لكل منطقة (البيع الكلي + الإيجار)
       var all = [];
@@ -321,6 +377,13 @@
         list.map(function (a) { return '<tr style="border-top:1px solid var(--line)"><td><a href="../areas.html?a=' + encodeURIComponent(a.area) + '" target="_blank">' + esc(a.area) + '</a></td><td style="text-align:center">' + num(a.sale) + '</td><td style="text-align:center">' + (a.ppm.length ? num(median(a.ppm)) : '—') + '</td><td style="text-align:center">' + num(a.rent) + '</td><td style="text-align:center">' + (a.rentP.length ? num(median(a.rentP)) : '—') + '</td></tr>'; }).join('') + '</table></div>';
     }
     box.innerHTML = html || '<div class="card">لا نتائج.</div>';
+    var sy = box.querySelector('#rgSync');
+    if (sy) sy.onclick = async function () {
+      sy.disabled = true; sy.textContent = 'جاري التحديث…';
+      var y = await sb().rpc('aq_sync_directory_from_dld');
+      if (y.error) { sy.disabled = false; sy.textContent = 'تحديث دليل الوسطاء'; alert(/function|does not exist|schema cache/i.test(y.error.message || '') ? 'شغّلي ملف supabase/dld_lands_directory.sql من SQL Editor أولًا.' : y.error.message); return; }
+      sy.outerHTML = '<b style="color:#15803d">✅ حُدّث: ' + num(y.data.updated) + ' · جديد: ' + num(y.data.inserted) + ' · الإجمالي: ' + num(y.data.total) + '</b>';
+    };
   }
 
   window.AQAdminExtra = { loadQuality: loadQuality, loadMarket: loadMarket, loadRegistry: loadRegistry };

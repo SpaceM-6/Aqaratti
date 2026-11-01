@@ -15,12 +15,12 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=102">
+  <link rel="stylesheet" href="css/aq-pages.css?v=103">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=102"></script>
-  <script src="js/aq-public.js?v=102"></script>
-  <script src="js/aq-trust.js?v=102"></script>
-  <script src="js/aq-areas.js?v=102"></script>
+  <script src="supabase-client.js?v=103"></script>
+  <script src="js/aq-public.js?v=103"></script>
+  <script src="js/aq-trust.js?v=103"></script>
+  <script src="js/aq-areas.js?v=103"></script>
   <style>
     .kpis { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin:0 0 16px; }
     @media (max-width:760px) { .kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
@@ -148,6 +148,16 @@
         html += `<div class="kpis">${kpi(num(real.length), 'إعلانات نشطة من وسطاء موثّقين')}${kpi(askSale ? num(askSale) : '—', 'وسيط سعر البيع المعروض (درهم/م²)')}${kpi(askRent ? num(askRent) : '—', 'وسيط الإيجار المعروض (درهم/م² سنويًا)')}${kpi(yieldPct ? yieldPct.toFixed(1) + '%' : '—', 'العائد الإيجاري التقديري')}</div>
           <div class="note2"><i class="fas fa-circle-info"></i> لم تُضف بعد صفقات دائرة الأراضي الرسمية لهذه المنطقة؛ الأرقام أعلاه من أسعار الإعلانات المعروضة على «أنا عقار» وليست أسعار بيع فعلية.</div>`;
       }
+      const land = AQAreas.mergeLand(await AQAreas.landRows([...(A.dld || []), A.en].filter(Boolean)));
+      const fh = land && AQAreas.freehold(land);
+      if (fh) {
+        const c = AQAreas.FH_COLORS[fh.cls];
+        html += `<div class="box"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap"><div><h2>الأراضي والتملّك</h2><p class="sub">من سجل الأراضي لدى دائرة الأراضي والأملاك.</p></div>
+          <span style="background:${c[0]};color:${c[1]};border-radius:999px;padding:6px 14px;font-weight:900;font-size:14px"><i class="fas fa-key"></i> ${esc(fh.label)} · ${Math.round(fh.pct)}%</span></div>
+          <div class="kpis" style="margin:10px 0">${kpi(num(land.plots), 'قطعة أرض مسجلة')}${kpi(Math.round(fh.pct) + '%', 'نسبة التملّك الحر في الأراضي السكنية والتجارية')}${kpi(num(land.offplan), 'قطعة عليها مشاريع على الخارطة')}${kpi(num(land.projects), 'مشروعًا مسجلًا على أراضيها')}</div>
+          <b style="font-size:14px">استخدامات الأراضي</b>${AQAreas.landBars(land.land_types)}
+          <p class="src">${esc(fh.note)}. الوضع النهائي لكل عقار يُؤكَّد من سند ملكيته. <a href="lands.html">دليل الأراضي والتملّك الحر ←</a></p></div>`;
+      }
       const dp = await AQAreas.dldProjects([...(A.dld || []), A.en].filter(Boolean), 30);
       if (dp.length) { AQAreas.projectCss(); html += `<div class="box"><h2>مشاريع جديدة مسجلة لدى دائرة الأراضي (${num(dp.length)})</h2><p class="sub">نسبة الإنجاز حسب آخر تفتيش رسمي، وموعد التسليم المتوقع، وعدد الوحدات.</p><div class="dldgrid">${dp.slice(0, 9).map(AQAreas.projectCard).join('')}</div>${dp.length > 9 ? `<div class="acts" style="margin-top:12px"><a class="btn btn-soft sm" href="projects.html?area=${encodeURIComponent((A.dld || [A.en])[0] || '')}#dld">عرض الكل</a></div>` : ''}</div>`; }
       if (prj.length) html += `<div class="box"><h2>مشاريع على الخارطة في ${esc(A.ar)}</h2><div class="pcards">${prj.slice(0, 6).map((p) => `<a class="pc" href="project.html?id=${p.id}"><div class="im" style="background-image:url('${esc((p.images || [])[0] || '')}')"></div><div class="tx"><b>${esc(p.name)}</b><small>${p.price_from ? 'يبدأ من ' + num(p.price_from) + ' درهم' : ''}${p.handover ? ' · التسليم ' + esc(p.handover) : ''}</small></div></a>`).join('')}</div></div>`;
@@ -179,6 +189,7 @@
       const mapped = new Set(AREAS.flatMap((a) => a.dld || []).map((x) => x.toLowerCase()));
       const tile = (href, b, s) => `<a href="${href}"><b>${esc(b)}</b><small>${esc(s)}</small></a>`;
       $('root').innerHTML = `<div class="srch"><input id="as" type="search" placeholder="ابحث عن منطقة… مثل: دبي مارينا"></div>
+        <a href="lands.html" style="display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-decoration:none;margin:0 0 16px"><i class="fas fa-key" style="color:#0f766e;font-size:20px"></i><span><b>أين يحق لغير المواطنين التملّك؟</b><br><small style="color:var(--muted);font-weight:700">دليل الأراضي والتملّك الحر لكل منطقة ←</small></span></a>
         <h2 style="font-size:19px;margin:0 0 10px">مناطق مطلوبة</h2><div class="alist" id="al">${AREAS.map((a) => tile('areas.html?a=' + encodeURIComponent(a.ar), a.ar, a.en + ' · ' + a.city)).join('')}</div>
         ${dld.length ? `<h2 style="font-size:19px;margin:20px 0 10px">كل المناطق بحسب الصفقات المسجلة</h2><div class="alist" id="al2">${dld.filter((d) => !mapped.has(d.en.toLowerCase())).slice(0, 120).map((d) => tile('areas.html?a=' + encodeURIComponent(d.en), d.ar || d.en, (d.ar ? d.en + ' · ' : '') + num(d.deals) + ' صفقة في آخر سنة')).join('')}</div>` : ''}`;
       $('as').oninput = (e) => { const t = e.target.value.trim().toLowerCase(); document.querySelectorAll('.alist a').forEach((a) => { a.hidden = !!t && !a.textContent.toLowerCase().includes(t); }); };
@@ -187,8 +198,8 @@
     (q ? areaPage(slug(q)) : indexPage()).catch(() => { $('root').innerHTML = '<div class="empty"><h2>تعذّر التحميل</h2></div>'; });
   })();
   </script>
-  <script src="js/aq-engage.js?v=102" defer></script>
-  <script src="js/aq-back.js?v=102" defer></script>
-  <script src="js/aq-ads.js?v=102" defer></script>
+  <script src="js/aq-engage.js?v=103" defer></script>
+  <script src="js/aq-back.js?v=103" defer></script>
+  <script src="js/aq-ads.js?v=103" defer></script>
 </body>
 </html>

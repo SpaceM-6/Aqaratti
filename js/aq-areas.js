@@ -91,5 +91,41 @@
   const PROJECT_CSS = '.dldp{background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:14px;padding:12px 14px;min-width:0}.dldp .t{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.dldp .t b{font-size:15px;line-height:1.4}.dldp .t span{flex:0 0 auto;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:900}.dldp small{display:block;color:var(--muted,#64748b);font-weight:700;font-size:12.5px;margin-top:2px}.dldp .bar{height:8px;border-radius:99px;background:#e2e8f0;margin:10px 0 6px;overflow:hidden}.dldp .bar i{display:block;height:100%;background:linear-gradient(90deg,#14b8a6,#0f766e);border-radius:99px}.dldp .m{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;font-weight:700;color:var(--muted,#64748b)}.dldp .m b{color:var(--ink,#0f172a)}.dldp .ins{font-size:11.5px!important}.dldgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}@media(max-width:860px){.dldgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.dldgrid{grid-template-columns:minmax(0,1fr)}}';
   function css() { if (document.getElementById('dldCss')) return; const st = document.createElement('style'); st.id = 'dldCss'; st.textContent = PROJECT_CSS; document.head.appendChild(st); }
 
-  window.AQAreas = { AREAS, find, summarize, marketRows, median, dldProjects, projectCard, projectCss: css, title };
+  // ===== الأراضي والتملّك الحر (land_area_stats) =====
+  const LAND_AR = { Residential: 'سكني', Commercial: 'تجاري', Industrial: 'صناعي', 'Public Facilities': 'مرافق عامة', 'Government Authorities': 'جهات حكومية', 'Open Space': 'مساحات مفتوحة', Utility: 'خدمات ومرافق', Agricultural: 'زراعي', 'Future Development': 'تطوير مستقبلي', Recreational: 'ترفيهي', Transport: 'نقل ومواصلات', Hospitality: 'ضيافة', Educational: 'تعليمي', 'Water Body': 'مسطحات مائية', Healthcare: 'صحي', Unspecified: 'غير محدد' };
+  const landAr = (k) => LAND_AR[k] || k;
+  // تصنيف المنطقة حسب نسبة قطع التملّك الحر فيها
+  function freehold(a) {
+    if (!a || !a.plots) return null;
+    // على الأراضي القابلة للتملّك (سكني وتجاري وضيافة) إن توفرت، وإلا على كل القطع
+    const pct = a.private_plots >= 5 ? a.private_freehold / a.private_plots * 100 : a.freehold / a.plots * 100;
+    if (pct >= 70) return { pct, cls: 'ok', label: 'منطقة تملّك حر', note: 'يحق لغير المواطنين التملّك فيها' };
+    if (pct >= 20) return { pct, cls: 'mid', label: 'تملّك حر في أجزاء منها', note: 'تأكد من وضع العقار نفسه قبل الشراء' };
+    if (pct > 0) return { pct, cls: 'low', label: 'تملّك حر محدود', note: 'أغلب أراضيها ليست تملّكًا حرًا' };
+    return { pct, cls: 'no', label: 'ليست منطقة تملّك حر', note: 'التملّك فيها للمواطنين ومن في حكمهم غالبًا' };
+  }
+  async function landRows(names) {
+    if (typeof supabaseClient === 'undefined') return [];
+    try {
+      let q = supabaseClient.from('land_area_stats').select('*');
+      if (names && names.length) { const v = (n) => '"' + n.replace(/["\\,()]/g, ' ').trim() + '"'; q = q.or(names.map((n) => `area_en.ilike.${v(n)}`).join(',')); }
+      const r = await q.order('plots', { ascending: false }).limit(1000);
+      return r.data || [];
+    } catch (e) { return []; }
+  }
+  // يدمج ملخصات عدة مناطق رسمية (لمنطقة شائعة تقابل أكثر من اسم رسمي)
+  function mergeLand(rows) {
+    if (!rows.length) return null;
+    const m = { plots: 0, freehold: 0, private_plots: 0, private_freehold: 0, offplan: 0, projects: 0, area_m2: 0, land_types: {} };
+    rows.forEach((r) => { m.plots += r.plots; m.freehold += r.freehold; m.private_plots += r.private_plots || 0; m.private_freehold += r.private_freehold || 0; m.offplan += r.offplan; m.projects += r.projects; m.area_m2 += Number(r.area_m2) || 0; Object.entries(r.land_types || {}).forEach(([k, v]) => { m.land_types[k] = (m.land_types[k] || 0) + v; }); });
+    return m;
+  }
+  const FH_COLORS = { ok: ['#dcfce7', '#15803d'], mid: ['#fef3c7', '#92400e'], low: ['#ffedd5', '#c2410c'], no: ['#f1f5f9', '#475569'] };
+  function landBars(types, max) {
+    const e = (x) => String(x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const list = Object.entries(types || {}).filter(([k]) => k !== 'Unspecified').sort((a, b) => b[1] - a[1]).slice(0, max || 6), tot = list.reduce((t, x) => t + x[1], 0) || 1;
+    return list.map(([k, v]) => `<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:5px 0"><span style="flex:0 0 96px">${e(landAr(k))}</span><span style="flex:1;height:10px;border-radius:99px;background:#e2e8f0;overflow:hidden"><i style="display:block;height:100%;width:${(v / tot * 100).toFixed(1)}%;background:#0f766e;border-radius:99px"></i></span><span style="flex:0 0 46px;text-align:end;color:var(--muted,#64748b)">${Math.round(v / tot * 100)}%</span></div>`).join('');
+  }
+
+  window.AQAreas = { AREAS, find, summarize, marketRows, median, dldProjects, projectCard, projectCss: css, title, LAND_AR, landAr, freehold, landRows, mergeLand, landBars, FH_COLORS };
 })();

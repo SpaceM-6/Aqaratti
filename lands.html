@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل الأراضي والتملّك الحر في دبي | أنا عقار AnaAqar</title>
+  <meta name="description" content="أين يحق لغير المواطنين التملّك في دبي؟ نسبة التملّك الحر في كل منطقة، وعدد قطع الأراضي، واستخداماتها (سكني، تجاري، صناعي)، والأراضي المتاحة للبيع، من سجل دائرة الأراضي والأملاك.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anaaqar.com/lands.html">
+  <meta property="og:title" content="دليل الأراضي والتملّك الحر في دبي | أنا عقار">
+  <meta property="og:description" content="نسبة التملّك الحر واستخدامات الأراضي في كل منطقة بدبي، من سجل دائرة الأراضي والأملاك.">
+  <meta property="og:image" content="https://anaaqar.com/icons/icon-app-1024.png">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=103">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=103"></script>
+  <script src="js/aq-public.js?v=103"></script>
+  <script src="js/aq-areas.js?v=103"></script>
+  <style>
+    .kpis { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin:0 0 16px; }
+    @media (max-width:760px) { .kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .kpi { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; min-width:0; }
+    .kpi b { display:block; font-size:22px; font-weight:900; color:#0f766e; line-height:1.3; }
+    [data-theme="dark"] .kpi b { color:#5eead4; }
+    .kpi small { display:block; color:var(--muted); font-size:12.5px; font-weight:700; line-height:1.5; }
+    .box { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin:0 0 16px; }
+    .box h2 { margin:0 0 4px; font-size:18px; font-weight:900; } .box .sub { margin:0 0 12px; color:var(--muted); font-size:13.5px; font-weight:600; line-height:1.7; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; } @media (max-width:860px) { .two { grid-template-columns:1fr; } }
+    .faq { display:grid; gap:10px; }
+    .faq details { background:var(--bg); border-radius:12px; padding:10px 14px; }
+    .faq summary { font-weight:900; cursor:pointer; font-size:15px; }
+    .faq p { margin:8px 0 0; color:var(--muted); font-size:14px; line-height:1.8; font-weight:600; }
+    .tools { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px; }
+    .tools input { flex:1 1 220px; min-width:0; border:1.5px solid var(--line); border-radius:12px; padding:10px 14px; font-family:inherit; font-size:15px; background:var(--card); color:var(--ink); }
+    .fhgrid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
+    @media (max-width:860px) { .fhgrid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width:520px) { .fhgrid { grid-template-columns:minmax(0, 1fr); } }
+    .ar { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; text-decoration:none; min-width:0; display:block; }
+    .ar .t { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+    .ar b { font-size:15.5px; line-height:1.4; } .ar .pill { flex:0 0 auto; border-radius:999px; padding:2px 10px; font-size:12px; font-weight:900; }
+    .ar small { display:block; color:var(--muted); font-weight:700; font-size:12.5px; margin-top:4px; }
+    .ar .bar { height:7px; border-radius:99px; background:#e2e8f0; margin-top:8px; overflow:hidden; } .ar .bar i { display:block; height:100%; background:#0f766e; border-radius:99px; }
+    .note2 { background:#fefce8; border:1px solid #fde68a; color:#854d0e; border-radius:14px; padding:10px 14px; font-size:13px; font-weight:700; margin:0 0 16px; line-height:1.8; }
+    [data-theme="dark"] .note2 { background:#3a2f0b; border-color:#6b5513; color:#fde68a; }
+    .src { color:var(--muted); font-size:12px; font-weight:600; margin:8px 0 0; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="areas.html">دليل المناطق ←</a>
+  </div></header>
+  <section class="head"><div class="head-in"><h1><i class="fas fa-map"></i> دليل الأراضي والتملّك الحر</h1><p>أين يحق لغير المواطنين التملّك في دبي؟ وما استخدامات الأراضي في كل منطقة؟ من سجل الأراضي الرسمي لدى دائرة الأراضي والأملاك.</p></div></section>
+  <main id="root"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></main>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const num = (n) => n == null || isNaN(n) ? '—' : Math.round(n).toLocaleString('en-US');
+    const A = window.AQAreas;
+    // اسم المنطقة الشائع بالعربية إن كانت من المناطق المعروفة
+    const arName = (en) => { const k = A.AREAS.find((a) => (a.dld || []).some((d) => d.toLowerCase() === String(en).toLowerCase()) || a.en.toLowerCase() === String(en).toLowerCase()); return k ? k.ar : ''; };
+    let rows = [], filter = 'all', term = '', shown = 30;
+
+    function card(a) {
+      const f = A.freehold(a), c = A.FH_COLORS[f.cls], top = Object.entries(a.land_types || {}).filter(([k]) => k !== 'Unspecified').sort((x, y) => y[1] - x[1]).slice(0, 2).map(([k]) => A.landAr(k)).join('، ');
+      const ar = arName(a.area_en);
+      return `<a class="ar" href="areas.html?a=${encodeURIComponent(ar || a.area_en)}"><div class="t"><b>${esc(ar || a.area_en)}${ar ? `<small style="display:inline;margin:0 6px 0 0">${esc(a.area_en)}</small>` : ''}</b><span class="pill" style="background:${c[0]};color:${c[1]}">${esc(f.label)}</span></div>
+        <div class="bar" title="نسبة التملّك الحر"><i style="width:${f.pct.toFixed(0)}%"></i></div>
+        <small>تملّك حر ${Math.round(f.pct)}% من الأراضي السكنية والتجارية · ${num(a.plots)} قطعة${top ? ' · غالبًا ' + esc(top) : ''}${a.offplan ? ' · ' + num(a.offplan) + ' على الخارطة' : ''}</small></a>`;
+    }
+    function draw() {
+      const t = term.toLowerCase();
+      const list = rows.filter((a) => {
+        const f = A.freehold(a);
+        if (filter === 'ok' && f.cls !== 'ok') return false;
+        if (filter === 'mid' && !(f.cls === 'mid' || f.cls === 'low')) return false;
+        if (filter === 'no' && f.cls !== 'no') return false;
+        return !t || (a.area_en + ' ' + arName(a.area_en)).toLowerCase().includes(t);
+      });
+      $('cnt').textContent = num(list.length) + ' منطقة';
+      $('grid').innerHTML = list.slice(0, shown).map(card).join('') || '<p style="color:var(--muted)">لا توجد مناطق مطابقة.</p>';
+      $('more').hidden = list.length <= shown;
+    }
+
+    (async () => {
+      rows = await A.landRows(null);
+      if (!rows.length) {
+        $('root').innerHTML = '<div class="empty"><i class="fas fa-map"></i><h2>دليل الأراضي قيد التحديث</h2><p>نجهّز بيانات الأراضي والتملّك الحر من سجل دائرة الأراضي والأملاك.</p><a class="btn btn-teal" href="areas.html">دليل المناطق</a></div>';
+        return;
+      }
+      const T = A.mergeLand(rows), fhPct = T.private_plots ? T.private_freehold / T.private_plots * 100 : T.freehold / T.plots * 100;
+      const fhAreas = rows.filter((a) => A.freehold(a).cls === 'ok').length;
+      const top = rows.filter((a) => A.freehold(a).cls === 'ok' && a.plots >= 50).sort((x, y) => y.plots - x.plots).slice(0, 9);
+      const kpi = (v, t) => `<div class="kpi"><b>${v}</b><small>${t}</small></div>`;
+      $('root').innerHTML = `
+        <div class="kpis">${kpi(num(T.plots), 'قطعة أرض مسجلة في دبي')}${kpi(Math.round(fhPct) + '%', 'من الأراضي السكنية والتجارية تملّك حر')}${kpi(num(fhAreas), 'منطقة تملّك حر')}${kpi(num(T.offplan), 'قطعة عليها مشاريع على الخارطة')}</div>
+        <div class="two">
+          <div class="box"><h2>استخدامات الأراضي في دبي</h2><p class="sub">توزيع القطع المسجلة حسب الاستخدام المخطط لها.</p>${A.landBars(T.land_types, 9)}</div>
+          <div class="box"><h2>ما معنى «التملّك الحر»؟</h2><p class="sub">التملّك الحر (Freehold) يعني أن المشتري يملك العقار والأرض ملكية تامة دون مدة محددة، ويحق فيه لغير المواطنين التملّك في المناطق التي يحددها القانون في دبي. أما خارجها فالتملّك غالبًا للمواطنين ومواطني دول الخليج، أو بعقود انتفاع وإيجار طويل لغيرهم.</p>
+            <div class="note2"><i class="fas fa-circle-info"></i> النسبة في هذا الدليل محسوبة من قطع الأراضي السكنية والتجارية المسجلة في كل منطقة، دون الطرق والمرافق والأراضي الحكومية. الوضع النهائي لكل عقار يُؤكَّد من سند ملكيته أو من دائرة الأراضي قبل الشراء.</div></div>
+        </div>
+        ${top.length ? `<div class="box"><h2>أبرز مناطق التملّك الحر</h2><p class="sub">مناطق يحق لغير المواطنين التملّك فيها، مرتبة حسب عدد قطع الأراضي.</p><div class="fhgrid">${top.map(card).join('')}</div></div>` : ''}
+        <div class="box"><h2>كل المناطق <small id="cnt" style="font-size:13px;color:var(--muted)"></small></h2>
+          <div class="tools"><input id="q" type="search" placeholder="ابحث عن منطقة… مثل: Palm Jumeirah أو دبي مارينا">
+            <div class="tabs" id="flt" style="margin:0"><button class="tab on" data-f="all">الكل</button><button class="tab" data-f="ok">تملّك حر</button><button class="tab" data-f="mid">تملّك حر جزئي</button><button class="tab" data-f="no">غير متاحة للتملّك الحر</button></div></div>
+          <div class="fhgrid" id="grid"></div>
+          <div style="text-align:center;margin-top:12px"><button class="btn btn-soft" type="button" id="more" hidden>عرض المزيد</button></div></div>
+        <div class="box"><h2>تبحث عن أرض؟</h2><p class="sub">أراضٍ سكنية وتجارية معروضة للبيع من وسطاء موثّقين، أو اترك طلبك وسيتواصل معك الوسطاء.</p>
+          <div class="acts"><a class="btn btn-teal" href="listings.html?cat=land"><i class="fas fa-map-location-dot"></i> أراضٍ للبيع</a><a class="btn btn-soft" href="request.html"><i class="fas fa-paper-plane"></i> اطلب أرضًا</a><a class="btn btn-ghost" href="projects.html#dld"><i class="fas fa-city"></i> المشاريع المسجلة</a></div></div>
+        <div class="box"><h2>أسئلة شائعة</h2><div class="faq">
+          <details><summary>هل يمكن للأجنبي شراء أرض في دبي؟</summary><p>نعم في مناطق التملّك الحر، يستطيع غير المواطن شراء أرض أو عقار وتسجيله باسمه في دائرة الأراضي والأملاك. استخدم الفلتر «تملّك حر» أعلاه لمعرفتها.</p></details>
+          <details><summary>ما الفرق بين الأرض السكنية والتجارية؟</summary><p>الاستخدام المخطط للأرض يحدد ما يُبنى عليها: السكنية للفلل والمباني السكنية، والتجارية للمحلات والمكاتب والمباني متعددة الاستخدام، ولكل منها اشتراطات بناء مختلفة لدى الجهة المختصة.</p></details>
+          <details><summary>كيف أتأكد من وضع أرض بعينها؟</summary><p>اطلب من البائع أو الوسيط سند الملكية أو مخطط الأرض (Affection Plan)، وتحقق من رقم القطعة لدى دائرة الأراضي والأملاك قبل أي دفعة.</p></details>
+          <details><summary>من أين هذه البيانات؟</summary><p>من سجل الأراضي في البيانات المفتوحة لدائرة الأراضي والأملاك في دبي، ونحدّثها دوريًا. نعرض ملخص كل منطقة فقط، لا بيانات القطع أو ملّاكها.</p></details>
+        </div></div>
+        <p class="src">المصدر: البيانات المفتوحة لدائرة الأراضي والأملاك في دبي (سجل الأراضي). للاسترشاد فقط ولا يغني عن التحقق الرسمي.</p>`;
+      $('q').oninput = (e) => { term = e.target.value.trim(); shown = 30; draw(); };
+      $('flt').querySelectorAll('.tab').forEach((b) => b.onclick = () => { $('flt').querySelectorAll('.tab').forEach((x) => x.classList.toggle('on', x === b)); filter = b.dataset.f; shown = 30; draw(); });
+      $('more').onclick = () => { shown += 30; draw(); };
+      draw();
+    })();
+  })();
+  </script>
+  <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="listings" data-title="قد يهمك أيضًا"></div></div>
+  <script src="js/aq-engage.js?v=103" defer></script>
+  <script src="js/aq-back.js?v=103" defer></script>
+  <script src="js/aq-ads.js?v=103" defer></script>
+</body>
+</html>
