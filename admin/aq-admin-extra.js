@@ -194,8 +194,9 @@
   var regPending = null;
   function regKind(fields) {
     var H = (fields || []).map(norm);
+    // ملف المباني فيه أيضًا عمود نوع الأرض، فنتعرّف عليه أولًا من أعمدته الخاصة (الطوابق، الشقق، المساحة المبنية)
+    if (H.indexOf('buidling_levels') > -1 || H.indexOf('building_levels') > -1 || H.indexOf('built_up_area') > -1 || (H.indexOf('flats') > -1 && H.indexOf('offices') > -1) || H.indexOf('building_number') > -1 || H.indexOf('bld_number') > -1) return 'buildings';
     if (H.indexOf('land_type_en') > -1) return 'land';
-    if ((H.indexOf('building_number') > -1 || H.indexOf('bld_number') > -1 || H.indexOf('building_name_en') > -1 || H.indexOf('buidling_levels') > -1 || H.indexOf('building_levels') > -1 || (H.indexOf('flats') > -1 && H.indexOf('offices') > -1)) && H.indexOf('land_type_en') < 0) return 'buildings';
     for (var k in REG) if (REG[k].test(H)) return k;
     return null;
   }

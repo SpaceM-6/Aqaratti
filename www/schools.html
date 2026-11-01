@@ -18,11 +18,11 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=110">
+  <link rel="stylesheet" href="css/aq-pages.css?v=111">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=110"></script>
-  <script src="js/aq-public.js?v=110"></script>
-  <script src="js/aq-areas.js?v=110"></script>
+  <script src="supabase-client.js?v=111"></script>
+  <script src="js/aq-public.js?v=111"></script>
+  <script src="js/aq-areas.js?v=111"></script>
   <style>
     .tools { display:grid; grid-template-columns:2fr 1fr 1fr; gap:8px; margin:0 0 12px; } @media (max-width:700px) { .tools { grid-template-columns:1fr 1fr; } .tools input { grid-column:1/-1; } }
     .tools input, .tools select { min-width:0; border:1.5px solid var(--line); border-radius:12px; padding:10px 12px; font:700 15px 'Tajawal', sans-serif; background:var(--card); color:var(--ink); }
@@ -51,6 +51,7 @@
     (async () => {
       const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       const RAT = { 'outstanding': ['متميز', '#dcfce7', '#15803d', 1], 'very good': ['جيد جدًا', '#e0f2fe', '#0369a1', 2], 'good': ['جيد', '#fef9c3', '#a16207', 3], 'acceptable': ['مقبول', '#ffedd5', '#c2410c', 4], 'weak': ['ضعيف', '#fee2e2', '#b91c1c', 5], 'very weak': ['ضعيف جدًا', '#fee2e2', '#b91c1c', 6] };
+      const arArea = (en) => { try { const a = en && window.AQAreas && AQAreas.find(en); return a ? a.ar : en; } catch (e) { return en; } };
       const rk = (s) => RAT[String(s.rating_en || '').trim().toLowerCase()];
       const out = document.getElementById('out');
       let all = [];
@@ -63,13 +64,13 @@
       let shown = 40;
       const draw = () => {
         const q = document.getElementById('q').value.trim().toLowerCase(), c = document.getElementById('cur').value, r = document.getElementById('rat').value;
-        const L = all.filter((s) => (!c || s.curriculum_en === c) && (!r || String(s.rating_en || '').toLowerCase() === r) && (!q || [s.name_en, s.name_ar, s.area_en, s.area_ar].join(' ').toLowerCase().includes(q)))
+        const L = all.filter((s) => (!c || s.curriculum_en === c) && (!r || String(s.rating_en || '').toLowerCase() === r) && (!q || [s.name_en, s.name_ar, s.area_en, s.area_ar, arArea(s.area_en)].join(' ').toLowerCase().includes(q)))
           .sort((a, b) => ((rk(a) || [, , , 9])[3] - (rk(b) || [, , , 9])[3]) || (b.students || 0) - (a.students || 0));
         const top = L.filter((s) => (rk(s) || [])[3] <= 2).length;
         document.getElementById('k').innerHTML = `<div class="kpi"><b>${L.length}</b><small>مدرسة</small></div><div class="kpi"><b>${top}</b><small>متميز أو جيد جدًا</small></div><div class="kpi"><b>${new Set(L.map((s) => s.curriculum_en)).size}</b><small>منهج</small></div><div class="kpi"><b>${L.reduce((t, s) => t + (s.students || 0), 0).toLocaleString('en-US')}</b><small>طالب</small></div>`;
         out.innerHTML = L.slice(0, shown).map((s) => { const x = rk(s); return `<div class="it"><div class="t"><b>${esc(s.name_ar || s.name_en)}</b>${x ? `<span class="pill" style="background:${x[1]};color:${x[2]}">${x[0]}</span>` : ''}</div>
-          <small>${s.name_ar && s.name_en ? esc(s.name_en) + '<br>' : ''}${esc(s.curriculum_ar || s.curriculum_en || '')} · ${esc(s.area_ar || s.area_en || '')}${s.students ? ' · ' + s.students.toLocaleString('en-US') + ' طالب' : ''}${s.inspection_year ? ' · تقييم ' + esc(s.inspection_year) : ''}</small>
-          <div class="lk">${s.lat && s.lng ? `<a href="https://www.google.com/maps?q=${s.lat},${s.lng}" target="_blank" rel="noopener"><i class="fas fa-location-dot"></i> الموقع</a>` : ''}${s.website ? `<a href="${esc(/^https?:/.test(s.website) ? s.website : 'https://' + s.website)}" target="_blank" rel="noopener nofollow">الموقع الإلكتروني</a>` : ''}${s.telephone ? `<a href="tel:${esc(s.telephone)}" dir="ltr">${esc(s.telephone)}</a>` : ''}${s.report_url ? `<a href="${esc(s.report_url)}" target="_blank" rel="noopener">تقرير التفتيش</a>` : ''}<a href="listings.html?q=${encodeURIComponent(s.area_ar || s.area_en || '')}">عقارات قريبة</a></div></div>`; }).join('') || '<div class="empty" style="grid-column:1/-1">لا مدارس تطابق البحث. جرّب كلمة أخرى.</div>';
+          <small>${s.name_ar && s.name_en ? esc(s.name_en) + '<br>' : ''}${esc(s.curriculum_ar || s.curriculum_en || '')} · ${esc(s.area_ar || arArea(s.area_en) || '')}${s.students ? ' · ' + s.students.toLocaleString('en-US') + ' طالب' : ''}${s.inspection_year ? ' · تقييم ' + esc(s.inspection_year) : ''}</small>
+          <div class="lk">${s.lat && s.lng ? `<a href="https://www.google.com/maps?q=${s.lat},${s.lng}" target="_blank" rel="noopener"><i class="fas fa-location-dot"></i> الموقع</a>` : ''}${s.website ? `<a href="${esc(/^https?:/.test(s.website) ? s.website : 'https://' + s.website)}" target="_blank" rel="noopener nofollow">الموقع الإلكتروني</a>` : ''}${s.telephone ? `<a href="tel:${esc(s.telephone)}" dir="ltr">${esc(s.telephone)}</a>` : ''}${s.report_url ? `<a href="${esc(s.report_url)}" target="_blank" rel="noopener">تقرير التفتيش</a>` : ''}<a href="listings.html?q=${encodeURIComponent(s.area_ar || arArea(s.area_en) || '')}">عقارات قريبة</a></div></div>`; }).join('') || '<div class="empty" style="grid-column:1/-1">لا مدارس تطابق البحث. جرّب كلمة أخرى.</div>';
         document.getElementById('more').innerHTML = L.length > shown ? `<button class="btn btn-soft" id="mb">عرض المزيد (${L.length - shown})</button>` : '';
         const mb = document.getElementById('mb'); if (mb) mb.onclick = () => { shown += 40; draw(); };
       };
@@ -77,8 +78,8 @@
       draw();
     })();
   </script>
-  <script src="js/aq-engage.js?v=110" defer></script>
-  <script src="js/aq-back.js?v=110" defer></script>
-  <script src="js/aq-ads.js?v=110" defer></script>
+  <script src="js/aq-engage.js?v=111" defer></script>
+  <script src="js/aq-back.js?v=111" defer></script>
+  <script src="js/aq-ads.js?v=111" defer></script>
 </body>
 </html>

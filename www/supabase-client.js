@@ -177,8 +177,34 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
   document.head.appendChild(s);
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };
+  // وضع الموافقة: لا تُحفظ ملفات تعريف الارتباط الخاصة بالإحصاءات إلا بعد موافقة الزائر، ولا إعلانات مخصّصة أبدًا
+  let ok = null; try { ok = localStorage.getItem('aq_cookie_consent'); } catch (e) {}
+  window.gtag('consent', 'default', { analytics_storage: ok === 'all' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
   window.gtag('js', new Date());
   window.gtag('config', ANAAQAR_GA4_ID);
+})();
+
+// ==================== 🍪 شريط الموافقة على ملفات تعريف الارتباط ====================
+// يظهر مرة واحدة لكل زائر. «قبول» يفعّل الإحصاءات، و«الضرورية فقط» يُبقي الموقع يعمل بلا إحصاءات.
+(function aqCookieBanner() {
+  if (location.pathname.indexOf('/admin/') !== -1) return;
+  let saved = null; try { saved = localStorage.getItem('aq_cookie_consent'); } catch (e) { return; }
+  if (saved) return;
+  const show = () => {
+    if (document.getElementById('aqCk')) return;
+    const st = document.createElement('style');
+    st.textContent = '#aqCk{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:2147483647;max-width:520px;margin:0 auto;background:#fff;color:#0f172a;border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 12px 40px rgba(2,8,23,.22);padding:14px 16px;font-family:Tajawal,sans-serif;direction:rtl}' +
+      '#aqCk b{display:block;font-size:16px;font-weight:900;margin-bottom:4px}#aqCk p{margin:0 0 10px;font-size:13.5px;line-height:1.8;color:#475569;font-weight:600}#aqCk a{color:#0f766e;font-weight:800}' +
+      '#aqCk .r{display:flex;gap:8px}#aqCk button{flex:1;border:0;border-radius:12px;padding:10px 12px;font:800 14px Tajawal,sans-serif;cursor:pointer}#aqCk .y{background:#00a896;color:#fff}#aqCk .n{background:#f1f5f9;color:#0f172a}' +
+      '[data-theme="dark"] #aqCk{background:#0f172a;color:#e2e8f0;border-color:#2b3654}[data-theme="dark"] #aqCk p{color:#94a3b8}[data-theme="dark"] #aqCk .n{background:#1e293b;color:#e2e8f0}';
+    document.head.appendChild(st);
+    const d = document.createElement('div'); d.id = 'aqCk'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'ملفات تعريف الارتباط');
+    d.innerHTML = '<b>🍪 خصوصيتك</b><p>نستخدم ملفات ضرورية لتشغيل الموقع (تسجيل الدخول والمفضلة)، وملفات إحصاءات لنعرف كيف نحسّن الموقع، دون إعلانات مخصّصة. <a href="/privacy-policy.html#cookies">التفاصيل</a></p><div class="r"><button class="y" data-c="all">قبول</button><button class="n" data-c="essential">الضرورية فقط</button></div>';
+    d.onclick = (e) => { const b = e.target.closest('[data-c]'); if (!b) return; try { localStorage.setItem('aq_cookie_consent', b.dataset.c); } catch (x) {}
+      if (window.gtag) window.gtag('consent', 'update', { analytics_storage: b.dataset.c === 'all' ? 'granted' : 'denied' }); d.remove(); };
+    document.body.appendChild(d);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(show, 1200)); else setTimeout(show, 1200);
 })();
 
 // ==================== 📲 Service Worker: تسجيل + تحديث تلقائي ====================
