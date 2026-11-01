@@ -195,7 +195,7 @@
   function regKind(fields) {
     var H = (fields || []).map(norm);
     if (H.indexOf('land_type_en') > -1) return 'land';
-    if ((H.indexOf('building_number') > -1 || H.indexOf('bld_number') > -1 || H.indexOf('building_name_en') > -1) && H.indexOf('area_name_en') + H.indexOf('area_en') > -2) return 'buildings';
+    if ((H.indexOf('building_number') > -1 || H.indexOf('bld_number') > -1 || H.indexOf('building_name_en') > -1 || H.indexOf('buidling_levels') > -1 || H.indexOf('building_levels') > -1 || (H.indexOf('flats') > -1 && H.indexOf('offices') > -1)) && H.indexOf('land_type_en') < 0) return 'buildings';
     for (var k in REG) if (REG[k].test(H)) return k;
     return null;
   }
@@ -222,12 +222,12 @@
     Papa.parse(file, { header: true, skipEmptyLines: true,
       chunk: function (res) {
         res.data.forEach(function (r) {
-          var area = txt(g(r, 'area_name_en', 'area_en')); if (!area) return; n++;
+          var area = txt(g(r, 'area_name_en', 'area_en', 'area', 'area_name')); if (!area) return; n++;
           area = area.toLowerCase().replace(/(^|[\s\-\/(])([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); });
           var a = agg[area] || (agg[area] = { area_en: area, buildings: 0, fl: [], units: 0, years: [], prj: {} });
           a.buildings++;
-          var f = int(g(r, 'floors', 'no_of_floors', 'floors_count', 'number_of_floors')); if (f && f < 200) a.fl.push(f);
-          var u = int(g(r, 'units', 'no_of_units', 'unit_count', 'rooms', 'flats')); if (u && u < 5000) a.units += u;
+          var f = int(g(r, 'floors', 'buidling_levels', 'building_levels', 'no_of_floors', 'floors_count', 'number_of_floors')); if (f && f < 200) a.fl.push(f);
+          var u = int(g(r, 'units', 'no_of_units', 'unit_count')); if (u == null) u = (int(g(r, 'flats')) || 0) + (int(g(r, 'shops')) || 0) + (int(g(r, 'offices')) || 0); if (u && u < 5000) a.units += u;
           var y = String(g(r, 'creation_date', 'completion_date', 'built_date', 'construction_date') || '').match(/(19|20)\d{2}/); if (y) a.years.push(+y[0]);
           var pj = txt(g(r, 'project_name_en', 'master_project_en', 'project_en')); if (pj) a.prj[pj] = (a.prj[pj] || 0) + 1;
         });
