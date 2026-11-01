@@ -15,12 +15,12 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=97">
+  <link rel="stylesheet" href="css/aq-pages.css?v=98">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=97"></script>
-  <script src="js/aq-public.js?v=97"></script>
-  <script src="js/aq-trust.js?v=97"></script>
-  <script src="js/aq-areas.js?v=97"></script>
+  <script src="supabase-client.js?v=98"></script>
+  <script src="js/aq-public.js?v=98"></script>
+  <script src="js/aq-trust.js?v=98"></script>
+  <script src="js/aq-areas.js?v=98"></script>
   <style>
     .kpis { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin:0 0 16px; }
     @media (max-width:760px) { .kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
@@ -152,7 +152,11 @@
       let dld = [];
       try {
         const since = new Date(); since.setMonth(since.getMonth() - 14);
-        const r = await supabaseClient.from('area_market_stats').select('area_en,area_ar,deals,median_ppm2,kind').eq('kind', 'sale').gte('month', since.toISOString().slice(0, 10)).limit(5000);
+        const r = { data: [] };
+        for (let off = 0; off < 30000; off += 1000) {
+          const part = await supabaseClient.from('area_market_stats').select('area_en,area_ar,deals,month').eq('kind', 'sale').gte('month', since.toISOString().slice(0, 10)).order('area_en').order('month').range(off, off + 999);
+          r.data = r.data.concat(part.data || []); if (part.error || (part.data || []).length < 1000) break;
+        }
         const by = {}; (r.data || []).forEach((x) => { by[x.area_en] = by[x.area_en] || { en: x.area_en, ar: x.area_ar, deals: 0 }; by[x.area_en].deals += x.deals; });
         dld = Object.values(by).sort((a, b) => b.deals - a.deals);
       } catch (e) {}
@@ -167,8 +171,8 @@
     (q ? areaPage(slug(q)) : indexPage()).catch(() => { $('root').innerHTML = '<div class="empty"><h2>تعذّر التحميل</h2></div>'; });
   })();
   </script>
-  <script src="js/aq-engage.js?v=97" defer></script>
-  <script src="js/aq-back.js?v=97" defer></script>
-  <script src="js/aq-ads.js?v=97" defer></script>
+  <script src="js/aq-engage.js?v=98" defer></script>
+  <script src="js/aq-back.js?v=98" defer></script>
+  <script src="js/aq-ads.js?v=98" defer></script>
 </body>
 </html>

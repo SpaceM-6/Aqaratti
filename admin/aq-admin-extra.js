@@ -100,7 +100,13 @@
       '<div class="fg"><label>ملف CSV</label><input type="file" id="mkFile" accept=".csv,text/csv"></div></div><div id="mkOut"></div></div>' +
       '<div class="card" id="mkSaved">جاري تحميل الملخصات المحفوظة…</div>';
     el.querySelector('#mkFile').onchange = function (e) { var f = e.target.files[0]; if (f) parseFile(f, el); };
-    var s = await sb().from('area_market_stats').select('kind,month,area_en,deals').order('month', { ascending: false }).limit(5000);
+    // Supabase يعيد 1000 صف كحد أقصى في الطلب الواحد، فنجلب على دفعات
+    var s = { data: [], error: null };
+    for (var off = 0; off < 50000; off += 1000) {
+      var part = await sb().from('area_market_stats').select('kind,month,area_en,deals').order('month', { ascending: false }).order('area_en').range(off, off + 999);
+      if (part.error) { s.error = part.error; break; }
+      s.data = s.data.concat(part.data || []); if ((part.data || []).length < 1000) break;
+    }
     var box = el.querySelector('#mkSaved');
     if (s.error) { box.innerHTML = setupMsg(s.error); return; }
     var rows = s.data || [];

@@ -196,7 +196,9 @@ async function restSoft(table, query) {
   vm.createContext(ctx2); vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/aq-areas.js'), 'utf8'), ctx2);
   const areaNames = new Set((W2.AQAreas ? W2.AQAreas.AREAS : []).map((a) => a.ar));
   const mapped = new Set((W2.AQAreas ? W2.AQAreas.AREAS : []).flatMap((a) => a.dld || []).map((x) => x.toLowerCase()));
-  for (const r of await restSoft('area_market_stats', 'select=area_en&kind=eq.sale&limit=20000')) if (r.area_en && !mapped.has(r.area_en.toLowerCase())) areaNames.add(r.area_en);
+  let mk = [];
+  for (let off = 0; off < 50000; off += 1000) { const part = await restSoft('area_market_stats', `select=area_en&kind=eq.sale&order=area_en,month&offset=${off}&limit=1000`); mk = mk.concat(part); if (part.length < 1000) break; }
+  for (const r of mk) if (r.area_en && !mapped.has(r.area_en.toLowerCase())) areaNames.add(r.area_en);
   for (const a of areaNames) urls.push({ loc: `${SITE}/areas.html?a=${encodeURIComponent(a)}`, f: 'weekly', p: '0.6' });
   const xmlEsc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const seen = new Set();
