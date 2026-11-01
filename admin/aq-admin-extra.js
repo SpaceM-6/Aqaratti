@@ -57,18 +57,18 @@
   // ===================== بيانات السوق (دائرة الأراضي) =====================
   // أسماء الأعمدة تختلف بين ملفات Dubai Pulse ومنصة دائرة الأراضي، فنبحث بعدة أسماء
   var COLS = {
-    date: ['instance_date', 'transaction_date', 'trans_date', 'registration_date', 'contract_start_date', 'start_date', 'date'],
+    date: ['instance_date', 'contract_start_date', 'start_date_of_contract', 'transaction_date', 'trans_date', 'registration_date', 'contract_start_date', 'start_date', 'date'],
     area_en: ['area_name_en', 'area_en', 'area_name', 'area', 'master_project_en'],
     area_ar: ['area_name_ar', 'area_ar'],
-    group: ['trans_group_en', 'transaction_group_en', 'trans_group', 'procedure_name_en', 'procedure_en'],
+    group: ['trans_group_en', 'transaction_type', 'trans_type', 'transaction_type_en', 'transaction_group_en', 'trans_group', 'procedure_name_en', 'procedure_en'],
     usage: ['property_usage_en', 'usage_en', 'property_usage', 'usage'],
     worth: ['actual_worth', 'trans_value', 'transaction_value', 'amount', 'property_value'],
-    size: ['procedure_area', 'actual_area', 'property_size_sq_m', 'size_sqm', 'area_sqm', 'area_m2'],
+    size: ['procedure_area', 'transaction_size_sq_m', 'property_size_sq_m', 'size_sq_m', 'actual_area_sq_m', 'actual_area', 'property_size_sq_m', 'size_sqm', 'area_sqm', 'area_m2'],
     ppm2: ['meter_sale_price', 'price_per_sqm', 'meter_price'],
-    rent: ['annual_amount', 'contract_amount', 'rent_value', 'annual_rent'],
+    rent: ['annual_amount', 'annual_rent_amount', 'contract_amount', 'rent_value', 'annual_rent'],
     rppm2: ['meter_rent_price']
   };
-  var norm = function (h) { return String(h || '').toLowerCase().replace(/^﻿/, '').trim().replace(/[\s\-]+/g, '_'); };
+  var norm = function (h) { return String(h || '').toLowerCase().replace(/^\ufeff/, '').trim().replace(/[^a-z0-9\u0600-\u06ff]+/g, '_').replace(/^_+|_+$/g, ''); };
   function pick(headers) {
     var m = {}, H = headers.map(norm);
     Object.keys(COLS).forEach(function (k) { for (var i = 0; i < COLS[k].length; i++) { var j = H.indexOf(COLS[k][i]); if (j > -1) { m[k] = headers[j]; break; } } });
