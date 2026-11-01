@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=95">
+  <link rel="stylesheet" href="css/aq-pages.css?v=96">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=95"></script>
+  <script src="supabase-client.js?v=96"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=95"></script>
+  <script src="js/aq-ai.js?v=96"></script>
   <script>
   (function () {
     'use strict';
@@ -478,12 +478,14 @@
           return `<div class="li"><a class="th" href="property-details.html?id=sb-${x.id}" target="_blank" style="background-image:url('${esc(img)}')"></a><div class="tx"><b>${esc(x.title)}</b>
             <small>${money(x.price_aed)} · ${esc(x.city || '')}</small><small><span class="pill2 st-${x.status}">${PSTATUS[x.status] || esc(x.status)}</span> <i class="fas fa-eye"></i> ${st.views_30d || 0} مشاهدة (30 يومًا) · <i class="fas fa-address-book"></i> ${st.leads || 0} عميل</small>
             ${x.status === 'rejected' && x.rejection_reason ? `<small style="color:var(--red)">سبب الرفض: ${esc(x.rejection_reason)}</small>` : ''}</div>
-            <div class="ac"><button class="btn btn-soft sm" data-ed="${x.id}">تعديل</button>
+            ${x.status === 'approved' ? `<small style="${x.available_at && (Date.now() - new Date(x.available_at)) / 864e5 > 30 ? 'color:var(--red,#dc2626)' : 'color:#15803d'}"><i class="fas fa-circle-check"></i> آخر تأكيد للتوافر: ${x.available_at ? new Date(x.available_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) : 'لم يؤكَّد'} · الإعلان على الموقع منذ ${Math.max(0, Math.floor((Date.now() - new Date(x.created_at)) / 864e5))} يومًا</small>` : ''}
+            <div class="ac">${x.status === 'approved' ? `<button class="btn btn-teal sm" data-av="${x.id}" title="يظهر للزوار أن العقار ما زال متاحًا"><i class="fas fa-check"></i> ما زال متاحًا</button>` : ''}<button class="btn btn-soft sm" data-ed="${x.id}">تعديل</button>
             ${x.status === 'approved' ? `<button class="btn btn-ghost sm" data-st="paused" data-id="${x.id}">إيقاف مؤقت</button><button class="btn btn-ghost sm" data-st="${x.deal_type === 'rent' ? 'rented' : 'sold'}" data-id="${x.id}">${x.deal_type === 'rent' ? 'تم التأجير' : 'تم البيع'}</button>` : ''}
             ${['paused', 'sold', 'rented'].includes(x.status) ? `<button class="btn btn-teal sm" data-st="active" data-id="${x.id}">إعادة تفعيل</button>` : ''}
             <button class="btn btn-red sm" data-del="${x.id}"><i class="fas fa-trash"></i></button></div></div>`;
         }).join('') || '<p class="mut">لم تضف عقارات بعد.</p>'}</div>`;
       m.querySelectorAll('[data-st]').forEach((b) => b.onclick = async () => { const { data, error } = await sb.rpc('broker_property_set_state', { p_id: b.dataset.id, p_state: b.dataset.st }); if (error) return toast(setupErr(error), true); toast('الحالة الآن: ' + (PSTATUS[data] || data)); renderListings(); });
+      m.querySelectorAll('[data-av]').forEach((b) => b.onclick = async () => { const { error } = await sb.rpc('confirm_property_available', { p_id: b.dataset.av }); if (error) return toast(setupErr(error), true); toast('تم ✅ يظهر الآن للزوار أن العقار متاح'); renderListings(); });
       m.querySelectorAll('[data-del]').forEach((b) => b.onclick = async () => { if (!confirm('حذف الإعلان نهائيًا؟')) return; const { error } = await sb.from('properties').delete().eq('id', b.dataset.del); if (error) return toast(error.message, true); renderListings(); });
       m.querySelectorAll('[data-ed]').forEach((b) => b.onclick = () => editProperty(list.find((x) => String(x.id) === b.dataset.ed)));
     }
@@ -768,7 +770,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=95" defer></script>
-  <script src="js/aq-back.js?v=95" defer></script>
+  <script src="js/aq-engage.js?v=96" defer></script>
+  <script src="js/aq-back.js?v=96" defer></script>
 </body>
 </html>

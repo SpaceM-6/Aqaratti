@@ -14,10 +14,10 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=95">
+  <link rel="stylesheet" href="css/aq-pages.css?v=96">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=95"></script>
-  <script src="js/aq-public.js?v=95"></script>
+  <script src="supabase-client.js?v=96"></script>
+  <script src="js/aq-public.js?v=96"></script>
 </head>
 <body>
   <header class="topbar"><div class="topbar-in">
@@ -65,8 +65,9 @@
     <button class="btn btn-ghost more" id="more" hidden>عرض المزيد</button>
     <div class="acts" style="justify-content:center;margin-top:22px"><a class="btn btn-soft" href="request.html"><i class="fas fa-paper-plane"></i> لم تجد ما تريد؟ اطلب عقارك</a><a class="btn btn-ghost" href="map.html"><i class="fas fa-map"></i> على الخريطة</a></div>
   </main>
-  <script src="js/aq-filters.js?v=95"></script>
-  <script src="js/aq-ai.js?v=95"></script>
+  <script src="js/aq-filters.js?v=96"></script>
+  <script src="js/aq-ai.js?v=96"></script>
+  <script src="js/aq-trust.js?v=96"></script>
   <script>
   (function () {
     const { esc, money } = AQPublic, $ = (id) => document.getElementById(id);
@@ -91,14 +92,15 @@
     if (qs.get('cat') === 'monthly') { location.replace('stays.html?period=monthly'); return; }
     const key = CATS[qs.get('cat')] ? qs.get('cat') : 'all', C = CATS[key];
     document.title = C[1] + ' | أنا عقار';
-    $('hT').innerHTML = `<i class="fas ${C[0]}"></i> ${esc(C[1])}`; $('hP').textContent = C[2];
+    $('hT').innerHTML = `<i class="fas ${C[0]}"></i> ${esc(C[1])}${qs.get('q') ? ' — ' + esc(qs.get('q')) : ''}`; $('hP').textContent = C[2];
     if (qs.get('deal')) $('deal').value = qs.get('deal'); if (qs.get('max')) $('maxPriceInput').value = qs.get('max'); if (qs.get('min')) $('minPriceInput').value = qs.get('min');
     if (['sale', 'rent', 'monthly'].includes(key)) $('deal').closest('select').hidden = true;
     let pool = [], shown = 24, rows = [];
     try { $('sort').value = sessionStorage.getItem('aq_sort') || 'fit'; } catch (e) {}
     const pred = () => {
       const d = $('deal').value, c = $('city').value, mn = +$('minPriceInput').value || 0, mx = +$('maxPriceInput').value || Infinity;
-      return (p) => C[3](p) && (!d || (d === 'rent' ? p.dealType === 'rent' : p.dealType !== 'rent')) && (!c || p.city === c) && (Number(p.priceAED) || 0) >= mn && (Number(p.priceAED) || 0) <= mx && (!window.AQFilters || AQFilters.match(p));
+      const tq = (qs.get('q') || '').trim().toLowerCase();
+      return (p) => C[3](p) && (!tq || (p.title + ' ' + (p.description || '')).toLowerCase().includes(tq)) && (!d || (d === 'rent' ? p.dealType === 'rent' : p.dealType !== 'rent')) && (!c || p.city === c) && (Number(p.priceAED) || 0) >= mn && (Number(p.priceAED) || 0) <= mx && (!window.AQFilters || AQFilters.match(p));
     };
     // ما يحتاجه زر «الفلاتر» المشترك مع الصفحة الرئيسية
     window.getAllProperties = () => pool;
@@ -113,7 +115,7 @@
         <div class="in"><div class="price">${money(p.priceAED)}${p.dealType === 'rent' ? ` <small style="font-size:12px;color:var(--muted)">/ ${p.rentPeriod === 'monthly' ? 'شهريًا' : 'سنويًا'}</small>` : ''}</div>
         <h3><a href="${url}">${esc(p.title)}</a></h3><div class="meta"><i class="fas fa-location-dot"></i> ${esc(p.city || '')} · ${esc(AQAI.UNIT_AR[a.unit] || p.propertyType || '')}</div>
         <div class="specs">${p.bedrooms != null ? `<span><i class="fas fa-bed"></i> ${p.bedrooms === 0 ? 'استوديو' : esc(p.bedrooms) + ' غرف'}</span>` : ''}${p.bathrooms ? `<span><i class="fas fa-bath"></i> ${esc(p.bathrooms)}</span>` : ''}${p.area_m2 ? `<span><i class="fas fa-ruler-combined"></i> ${esc(p.area_m2)} م²</span>` : ''}${a.furn === 'furnished' ? '<span>مفروش</span>' : ''}${a.sea ? '<span>🌊 بحر</span>' : ''}</div>
-        ${p.hasOffer && p.offerText ? `<div class="meta" style="color:var(--red)"><i class="fas fa-tag"></i> ${esc(p.offerText)}</div>` : ''}</div></article>`;
+        ${p.hasOffer && p.offerText ? `<div class="meta" style="color:var(--red)"><i class="fas fa-tag"></i> ${esc(p.offerText)}</div>` : ''}${window.AQTrust ? `<div class="meta">${AQTrust.fresh(p)}</div>` : ''}</div></article>`;
     };
     function draw() {
       rows = AQAI.sortList(pool.filter(pred()));
@@ -136,9 +138,9 @@
     });
   })();
   </script>
-  <script src="js/aq-engage.js?v=95" defer></script>
-  <script src="js/aq-back.js?v=95" defer></script>
-  <script src="js/aq-ads.js?v=95" defer></script>
+  <script src="js/aq-engage.js?v=96" defer></script>
+  <script src="js/aq-back.js?v=96" defer></script>
+  <script src="js/aq-ads.js?v=96" defer></script>
   <script>document.addEventListener('DOMContentLoaded', () => window.AQAds && AQAds.bottomNav(''));</script>
 </body>
 </html>

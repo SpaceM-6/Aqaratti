@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../supabase-client.js?v=95"></script>
+  <script src="../supabase-client.js?v=96"></script>
+  <script src="aq-admin-extra.js?v=95"></script>
   <style>
     :root { --teal:#00a896; --teal-d:#028090; --teal-s:#e6f7f5; --navy:#192038; --gold:#d4af37; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; --red:#e11d48; }
     * { box-sizing:border-box; }
@@ -109,6 +110,7 @@
       <div class="group">يحتاج متابعتك</div>
       <div class="tiles">
         <a class="tile" href="properties.html"><span class="ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-house-circle-check"></i></span><span class="tx"><b>مراجعة العقارات</b><small>اعتماد أو رفض الإعلانات الجديدة</small></span><span class="tn" id="tnProps"></span></a>
+        <a class="tile" href="#s-quality"><span class="ic" style="background:#dcfce7;color:#15803d"><i class="fas fa-shield-halved"></i></span><span class="tx"><b>جودة الإعلانات والتحقق</b><small>الملكية والتفويض والتوافر، والإعلانات القديمة والمكررة</small></span></a>
         <a class="tile" href="#s-chat"><span class="ic" style="background:#dbeafe;color:#1d4ed8"><i class="fas fa-comment-dots"></i></span><span class="tx"><b>الدردشة المباشرة</b><small>محادثات الزوار مع خدمة العملاء</small></span><span class="tn" id="tnChat"></span></a>
         <a class="tile" href="service-requests.html"><span class="ic" style="background:#fef3c7;color:#92400e"><i class="fas fa-bell-concierge"></i></span><span class="tx"><b>الطلبات والاستفسارات</b><small>طلبات الخدمات والمعاينات وطلبات الملاك</small></span><span class="tn" id="tnReq"></span></a>
         <a class="tile" href="#s-reports"><span class="ic" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-flag"></i></span><span class="tx"><b>البلاغات والشكاوى</b><small>الإعلانات المضللة والمخالفات</small></span><span class="tn" id="tnRep"></span></a>
@@ -128,6 +130,7 @@
 
       <div class="group">محتوى الموقع</div>
       <div class="tiles">
+        <a class="tile" href="#s-market"><span class="ic" style="background:#e0f2fe;color:#0369a1"><i class="fas fa-chart-line"></i></span><span class="tx"><b>بيانات السوق</b><small>صفقات وإيجارات دائرة الأراضي لصفحات المناطق</small></span></a>
         <a class="tile" href="#s-ads"><span class="ic" style="background:#fee2e2;color:#b91c1c"><i class="fas fa-rectangle-ad"></i></span><span class="tx"><b>شريط الإعلانات</b><small>الإعلانات العشرة في صفحات الموقع</small></span></a>
         <a class="tile" href="#s-news"><span class="ic" style="background:#fbf3dc;color:#a16207"><i class="fas fa-bullhorn"></i></span><span class="tx"><b>شريط الجديد</b><small>الأخبار المتحركة أعلى الموقع</small></span></a>
         <a class="tile" href="#s-offers"><span class="ic" style="background:#ffe4e6;color:#be123c"><i class="fas fa-tags"></i></span><span class="tx"><b>العروض</b><small>صفحة العروض وشاراتها على العقارات</small></span></a>
@@ -305,6 +308,10 @@
       <div id="bkList"></div>
     </section>
 
+    <!-- ===== جودة الإعلانات / بيانات السوق (admin/aq-admin-extra.js) ===== -->
+    <section data-sec="quality"><div id="qualityBox"></div></section>
+    <section data-sec="market"><div id="marketBox"></div></section>
+
     <!-- ===== المساعد الذكي ===== -->
     <section data-sec="ai">
       <div class="card" id="aiBox"></div>
@@ -350,8 +357,8 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات' };
-    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings() };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات', quality: 'جودة الإعلانات والتحقق', market: 'بيانات السوق' };
+    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings(), quality: () => AQAdminExtra.loadQuality($('qualityBox')), market: () => AQAdminExtra.loadMarket($('marketBox')) };
     let current = '';
     function route() {
       const m = /^#s-(\w+)/.exec(location.hash); const k = m && TITLES[m[1]] ? m[1] : '';
@@ -738,6 +745,6 @@
     boot();
   })();
   </script>
-  <script src="../js/aq-back.js?v=95" defer></script>
+  <script src="../js/aq-back.js?v=96" defer></script>
 </body>
 </html>

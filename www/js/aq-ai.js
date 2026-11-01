@@ -157,7 +157,7 @@
     const stats = [inArea.length ? `العقارات المعروضة هنا: ${inArea.length}` : '', sale.length >= 3 ? `متوسط سعر المتر للبيع ${money(median(sale))}` : '', rent.length >= 3 ? `متوسط الإيجار السنوي ${money(median(rent))}` : ''].filter(Boolean);
     const last = document.getElementById('aqiSimilar') || after;
     last.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiArea"><h3><i class="fas fa-map-location-dot" style="color:#00a896"></i> عن منطقة ${esc(an)} <span class="aqi-tag">ذكاء اصطناعي</span></h3>
-      ${stats.length ? `<div class="aqi-chips">${stats.map((s) => `<span>${esc(s)}</span>`).join('')}</div>` : ''}<div id="aqiAreaBody"><p class="aqi-sub"><i class="fas fa-spinner fa-spin"></i> جاري تجهيز النبذة...</p></div></div>`);
+      ${stats.length ? `<div class="aqi-chips">${stats.map((s) => `<span>${esc(s)}</span>`).join('')}</div>` : ''}<a href="areas.html?a=${encodeURIComponent(an)}" style="display:inline-flex;gap:6px;align-items:center;margin:4px 0 8px;color:#00897b;font-weight:900;font-size:14px;text-decoration:none"><i class="fas fa-chart-line"></i> أسعار ${esc(an)} وصفقاتها المسجلة ←</a><div id="aqiAreaBody"><p class="aqi-sub"><i class="fas fa-spinner fa-spin"></i> جاري تجهيز النبذة...</p></div></div>`);
     try {
       const r = await call('area_summary', { area: an, city: self.city || '' });
       const body = document.getElementById('aqiAreaBody');

@@ -14,10 +14,10 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=95">
+  <link rel="stylesheet" href="css/aq-pages.css?v=96">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=95"></script>
-  <script src="js/aq-public.js?v=95"></script>
+  <script src="supabase-client.js?v=96"></script>
+  <script src="js/aq-public.js?v=96"></script>
 </head>
 <body>
   <header class="topbar"><div class="topbar-in">
@@ -53,13 +53,13 @@
         <div class="row2"><div class="fg"><label>المساحة</label><input id="size" type="number" inputmode="numeric" placeholder="مثال: 120" required></div>
         <div class="fg"><label>الوحدة</label><select id="su"><option value="m2">متر مربع</option><option value="sqft">قدم مربع</option></select></div></div>
         <button class="btn btn-teal" style="width:100%">احسب التقدير</button>
-        <p class="hint" style="margin-top:10px">التقدير مبني على أسعار الإعلانات المعروضة حاليًا، لا على أسعار الصفقات المسجلة رسميًا، فهو للاسترشاد فقط ولا يغني عن تقييم معتمد.</p>
+        <p class="hint" style="margin-top:10px">التقدير مبني على أسعار الإعلانات المعروضة حاليًا، ونضيف تحته أسعار الصفقات المسجلة لدى دائرة الأراضي متى توفرت للمنطقة. للاسترشاد فقط، ولا يغني عن تقييم معتمد.</p>
       </form>
       <div class="box" id="out"><div class="empty" style="border:0;padding:20px"><i class="fas fa-house-circle-check"></i><h2>أدخل بيانات عقارك</h2><p>ونعرض لك نطاق السعر المتوقع والعقارات التي قارنّا بها.</p></div></div>
     </div>
   </main>
-  <script src="js/aq-filters.js?v=95"></script>
-  <script src="js/aq-ai.js?v=95"></script>
+  <script src="js/aq-filters.js?v=96"></script>
+  <script src="js/aq-ai.js?v=96"></script>
   <script>
   (function () {
     const $ = (id) => document.getElementById(id), { esc, money } = AQPublic;
@@ -90,13 +90,27 @@
         <div class="kv"><span>دقة التقدير</span><span class="conf" style="background:${conf[1]};color:${conf[2]}">${conf[0]}</span></div>
         <div class="kv"><span>متوسط سعر المتر</span><b>${money(AQAI.median(ppm))}</b></div><div class="kv"><span>عدد العقارات المقارنة</span><b>${comps.length}</b></div>${yieldTxt}
         <h3 style="margin:14px 0 4px;font-size:16px">العقارات التي قارنّا بها</h3><div class="cmp">${comps.slice(0, 6).map((p) => `<a href="property-details.html?id=${encodeURIComponent(p.id)}"><img src="${esc(p.image || '')}" alt="" loading="lazy"><span>${esc(p.title)} · ${esc(p.area_m2)} م²</span><b>${money(p.priceAED)}</b></a>`).join('')}</div>
-        <div class="acts" style="margin-top:12px"><a class="btn btn-soft" href="calculator.html?price=${Math.round(mid)}">احسب التمويل</a><a class="btn btn-ghost" href="request.html">اطلب تقييمًا من وسيط موثّق</a></div>`;
+        <div class="acts" style="margin-top:12px"><a class="btn btn-soft" href="calculator.html?price=${Math.round(mid)}">احسب التمويل</a><a class="btn btn-ghost" href="request.html">اطلب تقييمًا من وسيط موثّق</a></div><div id="dldBox"></div>`;
+      official(ar, deal, size);
+    }
+    // المقارنة بالصفقات المسجلة رسميًا لدى دائرة الأراضي (إن رُفعت بياناتها للمنطقة)
+    async function official(ar, deal, size) {
+      if (!ar || !window.AQAreas) return;
+      const A = AQAreas.find(ar), names = A ? [...(A.dld || []), A.ar] : [ar];
+      const s = AQAreas.summarize(await AQAreas.marketRows(names), deal === 'sale' ? 'sale' : 'rent');
+      const box = $('dldBox'); if (!box || !s || !s.ppm) return;
+      box.innerHTML = `<div style="margin-top:14px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:14px;padding:12px 14px"><b><i class="fas fa-landmark"></i> حسب الصفقات المسجلة رسميًا في ${esc(A ? A.ar : ar)}</b>
+        <div class="kv"><span>${deal === 'sale' ? 'وسيط سعر البيع المسجل' : 'وسيط الإيجار المسجل'} (آخر 12 شهرًا)</span><b>${money(s.ppm)} / م²</b></div>
+        <div class="kv"><span>القيمة على هذا الأساس لمساحة ${Math.round(size)} م²</span><b>${money(Math.round(s.ppm * size / 1000) * 1000)}</b></div>
+        <div class="kv"><span>عدد ${deal === 'sale' ? 'صفقات البيع' : 'عقود الإيجار'}</span><b>${s.deals.toLocaleString('en-US')}</b></div>
+        <p class="hint" style="margin:6px 0 0">المصدر: البيانات المفتوحة لدائرة الأراضي والأملاك. <a href="areas.html?a=${encodeURIComponent(A ? A.ar : ar)}">تفاصيل المنطقة ←</a></p></div>`;
     }
   })();
   </script>
   <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="listings" data-title="قد يهمك أيضًا"></div></div>
-  <script src="js/aq-ads.js?v=95" defer></script>
-  <script src="js/aq-engage.js?v=95" defer></script>
-  <script src="js/aq-back.js?v=95" defer></script>
+  <script src="js/aq-areas.js?v=96"></script>
+  <script src="js/aq-ads.js?v=96" defer></script>
+  <script src="js/aq-engage.js?v=96" defer></script>
+  <script src="js/aq-back.js?v=96" defer></script>
 </body>
 </html>

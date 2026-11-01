@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل المناطق: الأسعار والإيجارات والصفقات | أنا عقار AnaAqar</title>
+  <meta name="description" content="أسعار البيع لكل متر، ومتوسط الإيجارات، وعدد الصفقات المسجلة، والعائد الإيجاري، والعقارات المتاحة في كل منطقة بالإمارات.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anaaqar.com/areas.html">
+  <link rel="icon" type="image/png" href="icons/app-icon-v3-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=96">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=96"></script>
+  <script src="js/aq-public.js?v=96"></script>
+  <script src="js/aq-trust.js?v=96"></script>
+  <script src="js/aq-areas.js?v=96"></script>
+  <style>
+    .kpis { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; margin:0 0 16px; }
+    @media (max-width:760px) { .kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .kpi { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; min-width:0; }
+    .kpi b { display:block; font-size:21px; font-weight:900; color:#0f766e; line-height:1.3; }
+    [data-theme="dark"] .kpi b { color:#5eead4; }
+    .kpi small { display:block; color:var(--muted); font-size:12.5px; font-weight:700; line-height:1.5; }
+    .kpi .d { font-size:12px; font-weight:900; } .kpi .d.up { color:#15803d; } .kpi .d.dn { color:#b91c1c; }
+    .box { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin:0 0 16px; }
+    .box h2 { margin:0 0 4px; font-size:18px; font-weight:900; } .box .sub { margin:0 0 12px; color:var(--muted); font-size:13px; font-weight:600; }
+    .chart svg { width:100%; height:auto; display:block; }
+    .src { color:var(--muted); font-size:12px; font-weight:600; margin:8px 0 0; }
+    .alist { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
+    @media (max-width:760px) { .alist { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .alist a { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; text-decoration:none; min-width:0; }
+    .alist a b { display:block; font-size:15.5px; } .alist a small { display:block; color:var(--muted); font-size:12.5px; font-weight:700; }
+    .srch { display:flex; gap:8px; margin:0 0 16px; } .srch input { flex:1; min-width:0; border:1.5px solid var(--line); border-radius:12px; padding:11px 14px; font-family:inherit; font-size:15px; background:var(--card); color:var(--ink); }
+    .pcards { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+    @media (max-width:860px) { .pcards { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width:520px) { .pcards { grid-template-columns:minmax(0, 1fr); } }
+    .pc { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; text-decoration:none; min-width:0; display:flex; flex-direction:column; }
+    .pc .im { aspect-ratio:16/10; background:#0f172a center/cover no-repeat; }
+    .pc .tx { padding:10px 12px; } .pc b { display:block; font-size:14.5px; line-height:1.4; } .pc .pr { color:#00897b; font-weight:900; } .pc small { color:var(--muted); font-weight:700; font-size:12.5px; }
+    .note2 { background:#fefce8; border:1px solid #fde68a; color:#854d0e; border-radius:14px; padding:10px 14px; font-size:13px; font-weight:700; margin:0 0 16px; }
+    [data-theme="dark"] .note2 { background:#3a2f0b; border-color:#6b5513; color:#fde68a; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in">
+    <a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a>
+    <a class="back" href="areas.html" id="backLink">كل المناطق ←</a>
+  </div></header>
+  <section class="head"><div class="head-in"><h1 id="h1"><i class="fas fa-map-location-dot"></i> دليل المناطق</h1><p id="hp">أسعار البيع لكل متر، ومتوسط الإيجارات، والصفقات المسجلة رسميًا، والعقارات المتاحة في كل منطقة.</p></div></section>
+  <main id="root"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></main>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const num = (n) => n == null || isNaN(n) ? '—' : Math.round(n).toLocaleString('en-US');
+    const SQFT = 10.7639;
+
+    const { AREAS, summarize, marketRows, median } = window.AQAreas;
+    const slug = (s) => String(s).trim();
+    const q = new URLSearchParams(location.search).get('a');
+
+    function meta(title, desc) {
+      document.title = title;
+      const d = document.querySelector('meta[name="description"]'); if (d) d.content = desc;
+      const c = document.querySelector('link[rel="canonical"]'); if (c) c.href = 'https://anaaqar.com/areas.html' + (q ? '?a=' + encodeURIComponent(q) : '');
+    }
+
+    // ---------- رسم بياني صغير: وسيط سعر المتر (خط) وعدد الصفقات (أعمدة) شهريًا ----------
+    function chart(rows) {
+      if (rows.length < 2) return '';
+      const W = 640, H = 260, P = { l: 64, r: 14, t: 28, b: 44 };
+      const xs = (i) => P.l + (W - P.l - P.r) * (rows.length === 1 ? 0.5 : i / (rows.length - 1));
+      const ppm = rows.map((r) => r.ppm).filter((v) => v != null), mx = Math.max(...ppm), mn = Math.min(...ppm);
+      const lo = mn - (mx - mn) * 0.15, hi = mx + (mx - mn) * 0.15 || mx * 1.1;
+      const ys = (v) => P.t + (H - P.t - P.b) * (1 - (v - lo) / ((hi - lo) || 1));
+      const dmax = Math.max(...rows.map((r) => r.deals)), bw = Math.max(4, (W - P.l - P.r) / rows.length * 0.55);
+      const bars = rows.map((r, i) => { const h = (H - P.t - P.b) * 0.35 * r.deals / (dmax || 1); return `<rect x="${xs(i) - bw / 2}" y="${H - P.b - h}" width="${bw}" height="${h}" rx="2" fill="#99d5ce" opacity=".55"><title>${r.m}: ${num(r.deals)} صفقة</title></rect>`; }).join('');
+      const pts = rows.map((r, i) => r.ppm == null ? null : [xs(i), ys(r.ppm), r]).filter(Boolean);
+      const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+      const ticks = [lo + (hi - lo) * 0.15, (lo + hi) / 2, hi - (hi - lo) * 0.15].map((v) => `<line x1="${P.l}" x2="${W - P.r}" y1="${ys(v)}" y2="${ys(v)}" stroke="currentColor" opacity=".08"/><text x="${P.l - 6}" y="${ys(v) + 4}" text-anchor="end" font-size="19" fill="currentColor" opacity=".65">${num(v / 1000)}k</text>`).join('');
+      const step = Math.ceil(rows.length / 6);
+      const labels = rows.map((r, i) => i % step && i !== rows.length - 1 ? '' : `<text x="${xs(i)}" y="${H - 14}" text-anchor="middle" font-size="19" fill="currentColor" opacity=".65">${r.m.slice(2, 7).replace('-', '/')}</text>`).join('');
+      const last = pts[pts.length - 1];
+      return `<div class="chart" style="color:var(--ink)"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="وسيط سعر المتر المربع شهريًا">${ticks}${bars}<path d="${line}" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linejoin="round"/>
+        ${pts.map((p) => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#0f766e"><title>${p[2].m}: ${num(p[2].ppm)} درهم/م²</title></circle>`).join('')}
+        ${last ? `<text x="${last[0] - 4}" y="${last[1] - 8}" text-anchor="end" font-size="21" font-weight="800" fill="#0f766e">${num(last[2].ppm)}</text>` : ''}${labels}</svg>
+        <p class="src">الخط: وسيط سعر البيع (درهم لكل م²) · الأعمدة: عدد الصفقات</p></div>`;
+    }
+
+    function card(p) {
+      const url = (p.rentPeriod === 'daily' ? 'stay.html?id=' : 'property-details.html?id=') + encodeURIComponent(p.id);
+      return `<a class="pc" href="${url}"><div class="im" style="background-image:url('${esc(p.image || '')}')"></div><div class="tx"><span class="pr">${num(p.priceAED)} درهم${p.dealType === 'rent' ? ' / سنويًا' : ''}</span><b>${esc(p.title)}</b>
+        <small>${p.bedrooms === 0 ? 'استوديو' : p.bedrooms ? p.bedrooms + ' غرف' : ''}${p.area_m2 ? ' · ' + num(p.area_m2) + ' م²' : ''}</small>${window.AQTrust ? '<div>' + AQTrust.fresh(p) + '</div>' : ''}</div></a>`;
+    }
+
+    // ================= صفحة منطقة =================
+    async function areaPage(name) {
+      const known = AQAreas.find(name);
+      const A = known || { ar: name, en: '', city: '', dld: [name], words: [name] };
+      $('h1').innerHTML = `<i class="fas fa-map-location-dot"></i> ${esc(A.ar)}${A.en ? ` <small style="font-size:.55em;opacity:.8">${esc(A.en)}</small>` : ''}`;
+      $('hp').textContent = 'أسعار البيع والإيجار والصفقات المسجلة والعقارات المتاحة' + (A.city ? ' في ' + A.ar + '، ' + A.city : '') + '.';
+      meta(`${A.ar}: أسعار العقارات والإيجارات والصفقات | أنا عقار`, `متوسط سعر المتر، وعدد الصفقات المسجلة، ومتوسط الإيجار السنوي، والعائد الإيجاري، والعقارات المتاحة للبيع والإيجار في ${A.ar}.`);
+
+      const [rows, all, projects] = await Promise.all([marketRows([...(A.dld || []), A.ar]), AQPublic.loadListings(), AQPublic.loadProjects()]);
+      const W = (A.words || [A.ar]).map((w) => w.toLowerCase());
+      const inArea = (t) => W.some((w) => String(t || '').toLowerCase().includes(w));
+      const listings = all.filter((p) => inArea(p.title + ' ' + (p.description || '').slice(0, 200)));
+      const real = listings.filter((p) => /^sb-/.test(String(p.id)));
+      const prj = projects.filter((p) => inArea([p.name, p.area, p.city].join(' ')));
+      const sale = summarize(rows, 'sale'), rent = summarize(rows, 'rent');
+
+      // أرقام من إعلانات «أنا عقار» الحقيقية فقط (أسعار معروضة، لا صفقات)
+      const ask = (deal) => median(real.filter((p) => (deal === 'rent' ? p.dealType === 'rent' && p.rentPeriod !== 'daily' : p.dealType !== 'rent') && p.priceAED > 0 && p.area_m2 > 0).map((p) => p.priceAED / p.area_m2));
+      const askSale = ask('sale'), askRent = ask('rent');
+      const yieldPct = rent && sale && rent.ppm && sale.ppm ? rent.ppm / sale.ppm * 100 : askRent && askSale ? askRent / askSale * 100 : null;
+      const yieldSrc = rent && sale && rent.ppm && sale.ppm ? 'من صفقات وإيجارات دائرة الأراضي' : 'تقديري من أسعار الإعلانات المعروضة';
+      const kpi = (v, t, d) => `<div class="kpi"><b>${v}</b><small>${t}</small>${d || ''}</div>`;
+      const delta = (c) => c == null ? '' : `<span class="d ${c >= 0 ? 'up' : 'dn'}">${c >= 0 ? '▲' : '▼'} ${Math.abs(c).toFixed(1)}% عن العام السابق</span>`;
+
+      let html = '';
+      if (sale || rent) {
+        html += `<div class="kpis">${kpi(sale ? num(sale.ppm) : '—', 'وسيط سعر البيع (درهم/م²)' + (sale && sale.ppm ? ` · ${num(sale.ppm / SQFT)} للقدم²` : ''), sale ? delta(sale.change) : '')}
+          ${kpi(sale ? num(sale.deals) : '—', 'صفقات بيع مسجلة (12 شهرًا)')}${kpi(rent ? num(rent.price) : '—', 'وسيط الإيجار السنوي (درهم)')}
+          ${kpi(yieldPct ? yieldPct.toFixed(1) + '%' : '—', 'العائد الإيجاري الإجمالي', yieldPct ? `<span class="d" style="color:var(--muted)">${yieldSrc}</span>` : '')}</div>`;
+        if (sale && sale.series.length > 1) html += `<div class="box"><h2>حركة الأسعار والصفقات</h2><p class="sub">آخر ${sale.series.length} شهرًا من الصفقات المسجلة لدى دائرة الأراضي والأملاك.</p>${chart(sale.series)}</div>`;
+      } else {
+        html += `<div class="kpis">${kpi(num(real.length), 'إعلانات نشطة من وسطاء موثّقين')}${kpi(askSale ? num(askSale) : '—', 'وسيط سعر البيع المعروض (درهم/م²)')}${kpi(askRent ? num(askRent) : '—', 'وسيط الإيجار المعروض (درهم/م² سنويًا)')}${kpi(yieldPct ? yieldPct.toFixed(1) + '%' : '—', 'العائد الإيجاري التقديري')}</div>
+          <div class="note2"><i class="fas fa-circle-info"></i> لم تُضف بعد صفقات دائرة الأراضي الرسمية لهذه المنطقة؛ الأرقام أعلاه من أسعار الإعلانات المعروضة على «أنا عقار» وليست أسعار بيع فعلية.</div>`;
+      }
+      if (prj.length) html += `<div class="box"><h2>مشاريع على الخارطة في ${esc(A.ar)}</h2><div class="pcards">${prj.slice(0, 6).map((p) => `<a class="pc" href="project.html?id=${p.id}"><div class="im" style="background-image:url('${esc((p.images || [])[0] || '')}')"></div><div class="tx"><b>${esc(p.name)}</b><small>${p.price_from ? 'يبدأ من ' + num(p.price_from) + ' درهم' : ''}${p.handover ? ' · التسليم ' + esc(p.handover) : ''}</small></div></a>`).join('')}</div></div>`;
+      const forSale = listings.filter((p) => p.dealType !== 'rent'), forRent = listings.filter((p) => p.dealType === 'rent');
+      const best = (l) => l.slice().sort((a, b) => (/^sb-/.test(String(b.id)) - /^sb-/.test(String(a.id))) || ((b.checks && b.checks.available ? 1 : 0) - (a.checks && a.checks.available ? 1 : 0))).slice(0, 6);
+      if (forSale.length) html += `<div class="box"><h2>للبيع في ${esc(A.ar)} (${num(forSale.length)})</h2><div class="pcards">${best(forSale).map(card).join('')}</div><div class="acts" style="margin-top:12px"><a class="btn btn-soft sm" href="listings.html?deal=sale&q=${encodeURIComponent(A.ar)}">عرض الكل</a></div></div>`;
+      if (forRent.length) html += `<div class="box"><h2>للإيجار في ${esc(A.ar)} (${num(forRent.length)})</h2><div class="pcards">${best(forRent).map(card).join('')}</div><div class="acts" style="margin-top:12px"><a class="btn btn-soft sm" href="listings.html?deal=rent&q=${encodeURIComponent(A.ar)}">عرض الكل</a></div></div>`;
+      if (!forSale.length && !forRent.length) html += `<div class="empty"><i class="fas fa-house"></i><h2>لا توجد إعلانات في ${esc(A.ar)} حاليًا</h2><p>اترك طلبك وسيتواصل معك الوسطاء عند توفر ما يناسبك.</p><a class="btn btn-teal" href="request.html">اطلب عقارك</a></div>`;
+      html += `<div class="acts" style="margin:6px 0 14px"><a class="btn btn-ghost sm" href="map.html"><i class="fas fa-map"></i> الخريطة</a><a class="btn btn-ghost sm" href="valuation.html"><i class="fas fa-calculator"></i> قيّم عقارك</a><button class="btn btn-ghost sm" type="button" data-share-url="areas.html?a=${encodeURIComponent(A.ar)}" data-share-title="${esc(A.ar + ': أسعار العقارات والإيجارات | أنا عقار')}"><i class="fas fa-share-nodes"></i> مشاركة</button></div>
+        <p class="src">المصادر: البيانات المفتوحة لدائرة الأراضي والأملاك في دبي (صفقات البيع المسجلة وعقود الإيجار، ملخصة شهريًا)، وإعلانات «أنا عقار». العائد الإيجاري إجمالي قبل الرسوم والصيانة. الأرقام للاسترشاد ولا تغني عن تقييم معتمد.</p>`;
+      $('root').innerHTML = html;
+    }
+
+    // ================= فهرس المناطق =================
+    async function indexPage() {
+      meta('دليل المناطق: الأسعار والإيجارات والصفقات | أنا عقار', 'أسعار البيع لكل متر، ومتوسط الإيجارات، وعدد الصفقات المسجلة، والعائد الإيجاري، والعقارات المتاحة في كل منطقة بالإمارات.');
+      $('backLink').href = 'index.html'; $('backLink').textContent = 'الرئيسية ←';
+      let dld = [];
+      try {
+        const since = new Date(); since.setMonth(since.getMonth() - 14);
+        const r = await supabaseClient.from('area_market_stats').select('area_en,area_ar,deals,median_ppm2,kind').eq('kind', 'sale').gte('month', since.toISOString().slice(0, 10)).limit(5000);
+        const by = {}; (r.data || []).forEach((x) => { by[x.area_en] = by[x.area_en] || { en: x.area_en, ar: x.area_ar, deals: 0 }; by[x.area_en].deals += x.deals; });
+        dld = Object.values(by).sort((a, b) => b.deals - a.deals);
+      } catch (e) {}
+      const mapped = new Set(AREAS.flatMap((a) => a.dld || []).map((x) => x.toLowerCase()));
+      const tile = (href, b, s) => `<a href="${href}"><b>${esc(b)}</b><small>${esc(s)}</small></a>`;
+      $('root').innerHTML = `<div class="srch"><input id="as" type="search" placeholder="ابحث عن منطقة… مثل: دبي مارينا"></div>
+        <h2 style="font-size:19px;margin:0 0 10px">مناطق مطلوبة</h2><div class="alist" id="al">${AREAS.map((a) => tile('areas.html?a=' + encodeURIComponent(a.ar), a.ar, a.en + ' · ' + a.city)).join('')}</div>
+        ${dld.length ? `<h2 style="font-size:19px;margin:20px 0 10px">كل المناطق بحسب الصفقات المسجلة</h2><div class="alist" id="al2">${dld.filter((d) => !mapped.has(d.en.toLowerCase())).slice(0, 120).map((d) => tile('areas.html?a=' + encodeURIComponent(d.en), d.ar || d.en, (d.ar ? d.en + ' · ' : '') + num(d.deals) + ' صفقة في آخر سنة')).join('')}</div>` : ''}`;
+      $('as').oninput = (e) => { const t = e.target.value.trim().toLowerCase(); document.querySelectorAll('.alist a').forEach((a) => { a.hidden = !!t && !a.textContent.toLowerCase().includes(t); }); };
+    }
+
+    (q ? areaPage(slug(q)) : indexPage()).catch(() => { $('root').innerHTML = '<div class="empty"><h2>تعذّر التحميل</h2></div>'; });
+  })();
+  </script>
+  <script src="js/aq-engage.js?v=96" defer></script>
+  <script src="js/aq-back.js?v=96" defer></script>
+  <script src="js/aq-ads.js?v=96" defer></script>
+</body>
+</html>

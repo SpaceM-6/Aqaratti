@@ -173,3 +173,33 @@ let keys = pages.map((p) => p.key);
 if (restFailed) { try { keys = [...new Set(JSON.parse(fs.readFileSync(path.join(OUT, 'index.json'), 'utf8')).concat(keys))]; } catch (e) {} }
 fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(keys));
 console.log('share pages:', pages.length);
+
+// ===== خريطة الموقع (sitemap.xml) لمحركات البحث: الصفحات الثابتة + كل إعلان حقيقي + صفحات المناطق =====
+async function restSoft(table, query) {
+  try { const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }); return r.ok ? await r.json() : []; } catch (e) { return []; }
+}
+{
+  const today = new Date().toISOString().slice(0, 10);
+  const STATIC = [
+    ['', 'daily', '1.0'], ['listings.html', 'daily', '0.9'], ['stays.html', 'daily', '0.9'], ['cars.html', 'daily', '0.8'], ['projects.html', 'daily', '0.8'],
+    ['areas.html', 'weekly', '0.8'], ['valuation.html', 'monthly', '0.7'], ['map.html', 'daily', '0.7'], ['offers.html', 'weekly', '0.7'],
+    ['brokers-directory.html', 'weekly', '0.7'], ['services-directory.html', 'weekly', '0.7'], ['sell-or-rent.html', 'monthly', '0.6'], ['request.html', 'monthly', '0.6'],
+    ['calculator.html', 'monthly', '0.5'], ['broker-registration.html', 'monthly', '0.4'], ['privacy-policy.html', 'yearly', '0.2'], ['terms-of-service.html', 'yearly', '0.2'], ['account-deletion.html', 'yearly', '0.2']
+  ];
+  const urls = STATIC.map(([u, f, p]) => ({ loc: `${SITE}/${u}`, f, p }));
+  // الإعلانات الحقيقية فقط (لا إعلانات العرض التجريبي)
+  for (const p of pages) if (/^(p-sb-|pr-|c-(?!demo))/.test(p.key)) urls.push({ loc: `${SITE}/${p.target}`, f: 'weekly', p: p.key.startsWith('pr-') ? '0.7' : '0.6' });
+  // صفحات المناطق: المعروفة + كل منطقة لها صفقات مسجلة
+  const W2 = {}; const ctx2 = { window: W2, console };
+  vm.createContext(ctx2); vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/aq-areas.js'), 'utf8'), ctx2);
+  const areaNames = new Set((W2.AQAreas ? W2.AQAreas.AREAS : []).map((a) => a.ar));
+  const mapped = new Set((W2.AQAreas ? W2.AQAreas.AREAS : []).flatMap((a) => a.dld || []).map((x) => x.toLowerCase()));
+  for (const r of await restSoft('area_market_stats', 'select=area_en&kind=eq.sale&limit=20000')) if (r.area_en && !mapped.has(r.area_en.toLowerCase())) areaNames.add(r.area_en);
+  for (const a of areaNames) urls.push({ loc: `${SITE}/areas.html?a=${encodeURIComponent(a)}`, f: 'weekly', p: '0.6' });
+  const xmlEsc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const seen = new Set();
+  const body = urls.filter((u) => !seen.has(u.loc) && seen.add(u.loc)).slice(0, 49000)
+    .map((u) => `  <url><loc>${xmlEsc(u.loc)}</loc><lastmod>${today}</lastmod><changefreq>${u.f}</changefreq><priority>${u.p}</priority></url>`).join('\n');
+  fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`);
+  console.log('sitemap urls:', seen.size);
+}

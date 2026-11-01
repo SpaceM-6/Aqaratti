@@ -284,6 +284,13 @@ function mapSupabasePropertyToAnaAqar(row) {
     accessibility: Array.isArray(row.accessibility) ? row.accessibility : [],
     holidayPermit: row.holiday_permit || null,
     createdAt: row.created_at || null,
+    // مستويات التحقق من الإعلان وتاريخ كل فحص (supabase/trust_market.sql)
+    checks: {
+      license: row.check_license_at || (row.license_number ? (row.reviewed_at || row.created_at) : null),
+      ownership: row.check_ownership_at || null,
+      mandate: row.check_mandate_at || null,
+      available: row.available_at || null
+    },
     broker: {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',

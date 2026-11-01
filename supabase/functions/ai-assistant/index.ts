@@ -70,10 +70,18 @@ Deno.serve(async (req) => {
   // ===== المرشّحون: عقارات ومشاريع منشورة =====
   const items: Item[] = [];
   const { data: props } = await sb.from("properties")
-    .select("id,title,city,deal_type,price_aed,bedrooms,bathrooms,area_m2,property_type,completion_status,has_offer,no_commission,is_golden")
+    .select("*")
     .eq("status", "approved").order("created_at", { ascending: false }).limit(500);
   for (const p of props ?? []) {
-    const line = `sb-${p.id} | ${p.title} | ${p.city ?? ""} | ${p.deal_type === "rent" ? "إيجار" : "بيع"} | ${p.price_aed ?? "?"} درهم | ${p.bedrooms ?? "?"} غرف | ${p.area_m2 ?? "?"} م² | ${p.property_type ?? ""}${p.completion_status ? " | " + p.completion_status : ""}${p.has_offer ? " | عليه عرض" : ""}${p.no_commission ? " | بدون عمولة" : ""}`;
+    const extra = [
+      p.rent_period === "daily" ? `إقامة قصيرة ${p.nightly_price ?? "?"} درهم/الليلة` : p.rent_period === "monthly" ? "إيجار شهري" : "",
+      p.furnishing === "furnished" ? "مفروش" : p.furnishing === "partly" ? "مفروش جزئيًا" : "",
+      p.sea_access ? "قريب من البحر/إطلالة بحرية" : "", p.is_luxury ? "فاخر" : "", p.no_commission ? "بدون عمولة" : "",
+      (p.amenities ?? []).slice(0, 6).join("، "), (p.nearby ?? []).length ? "قريب من: " + (p.nearby ?? []).slice(0, 5).join("، ") : "",
+      p.check_ownership_at && p.check_mandate_at ? "إعلان موثّق" : "",
+      p.completion_status === "off_plan" ? "على الخارطة" : p.completion_status === "ready" ? "جاهز" : "",
+    ].filter(Boolean).join(" | ");
+    const line = `sb-${p.id} | ${p.title} | ${p.city ?? ""} | ${p.deal_type === "rent" ? "إيجار" : "بيع"} | ${p.price_aed ?? "?"} درهم | ${p.bedrooms ?? "?"} غرف | ${p.area_m2 ?? "?"} م² | ${p.property_type ?? ""}${extra ? " | " + extra : ""}`;
     items.push({ id: `sb-${p.id}`, kind: "property", line, text: line.toLowerCase() });
   }
   if ((props ?? []).length < 50) {
@@ -101,11 +109,14 @@ Deno.serve(async (req) => {
     .sort((a, b) => b.s - a.s).slice(0, 70).map((x) => x.it);
 
   const system = `أنت «مساعد أنا عقار»، مستشار عقاري ودود لمنصة أنا عقار في الإمارات (تبدأ من دبي).
-- أجب بالعربية الفصحى المبسطة، بإيجاز (3 جمل كحد أقصى)، ثم اقترح حتى 6 عقارات أو مشاريع من القائمة فقط.
+- أجب بالعربية الفصحى المبسطة، بإيجاز (3 جمل كحد أقصى)، ثم اقترح حتى 6 عقارات أو مشاريع من القائمة فقط، الأنسب أولًا.
+- افهم نمط حياة السائل لا الكلمات فقط: العائلة والأطفال، القرب من العمل أو المدارس أو البحر أو المترو، الاستثمار والعائد، الميزانية الشهرية.
+- إن نقصت معلومة تغيّر النتائج كثيرًا (الميزانية، أو شراء أم إيجار، أو المنطقة، أو عدد الغرف) فاطرح سؤالًا واحدًا قصيرًا في "ask"، واقترح مع ذلك أقرب الموجود. لا تسأل عن شيء سبق أن قاله.
+- لكل عقار مقترح اكتب في "why" سببًا واحدًا قصيرًا (8 كلمات تقريبًا) يربطه بطلب السائل، مثل: "ضمن ميزانيتك وقريب من المترو".
 - لا تخترع عقارات أو أسعارًا أو معلومات غير موجودة في القائمة. إن لم يوجد ما يناسب فقل ذلك واقترح أن يترك طلبه في صفحة «اطلب عقارك».
 - لا تقدّم وعودًا استثمارية أو قانونية، ولا تذكر أنك نموذج ذكاء اصطناعي من شركة معينة.
 - إن سأل عن شيء خارج العقار فاعتذر بلطف وأعده إلى البحث العقاري.
-- الرد يجب أن يكون JSON فقط بالشكل: {"reply":"...","ids":["sb-1","project-2"]}
+- الرد يجب أن يكون JSON فقط بالشكل: {"reply":"...","ids":["sb-1","project-2"],"why":{"sb-1":"..."},"ask":"سؤال واحد أو نص فارغ"}
 
 القائمة المتاحة (المعرّف | التفاصيل):
 ${scored.map((i) => i.line).join("\n")}`;
@@ -115,7 +126,7 @@ ${scored.map((i) => i.line).join("\n")}`;
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({
       model: Deno.env.get("AI_MODEL") || "claude-haiku-5-5",
-      max_tokens: 700,
+      max_tokens: 900,
       system,
       messages: [...history, { role: "user", content: message }],
     }),
@@ -123,12 +134,15 @@ ${scored.map((i) => i.line).join("\n")}`;
   if (!r.ok) { console.error("anthropic", r.status, await r.text()); return json({ error: "ai_failed" }, 502); }
   const out = await r.json();
   const text: string = (out.content ?? []).map((c: { text?: string }) => c.text ?? "").join("");
-  let reply = text, ids: string[] = [];
+  let reply = text, ids: string[] = [], ask = "";
+  const why: Record<string, string> = {};
   try {
     const m = text.match(/\{[\s\S]*\}/);
     const parsed = JSON.parse(m ? m[0] : text);
     reply = String(parsed.reply ?? "");
     ids = (Array.isArray(parsed.ids) ? parsed.ids : []).map(String).filter((id: string) => items.some((i) => i.id === id)).slice(0, 6);
+    ask = String(parsed.ask ?? "").slice(0, 200);
+    if (parsed.why && typeof parsed.why === "object") for (const id of ids) if (parsed.why[id]) why[id] = String(parsed.why[id]).slice(0, 120);
   } catch { /* الرد نص عادي */ }
-  return json({ reply, ids });
+  return json({ reply, ids, why, ask });
 });

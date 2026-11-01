@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=95"></script>
+  <script src="supabase-client.js?v=96"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -619,23 +619,23 @@
           <span>│</span>
           <span><i class="fas fa-ruler-combined" style="color:var(--primary-turquoise);"></i> <span id="propArea">-</span> م²</span>
           <span>│</span>
-          <span><i class="fas fa-couch" style="color:var(--primary-turquoise);"></i> مفروشة</span>
+          <span id="quickFurn" hidden><i class="fas fa-couch" style="color:var(--primary-turquoise);"></i> <span id="quickFurnTx"></span></span>
         </div>
 
         <div class="info-section-card">
           <div class="info-card-title">معلومات عن العقار</div>
           <div class="details-table-grid">
             <div class="table-row-item"><span class="table-label">نوع العقار:</span> <span class="table-value" id="propCategory">شقة / استوديو</span></div>
-            <div class="table-row-item"><span class="table-label">التأثيث:</span> <span class="table-value">مفروشة بالكامل</span></div>
-            <div class="table-row-item"><span class="table-label">نوع العرض:</span> <span class="table-value">للبيع</span></div>
+            <div class="table-row-item" id="furnRow" hidden><span class="table-label">التأثيث:</span> <span class="table-value" id="furnText"></span></div>
+            <div class="table-row-item"><span class="table-label">نوع العرض:</span> <span class="table-value" id="dealText">—</span></div>
             <div class="table-row-item" id="permitRow" style="display:none;"><span class="table-label">رقم تصريح الإعلان:</span> <span class="table-value" id="permitNumberText" dir="ltr"></span></div>
             <div class="table-row-item"><span class="table-label">حالة التوثيق:</span> <span class="table-value" id="verificationStatusText" style="color:#d97706;">لم يتم التحقق من الرخصة بعد</span></div>
-            <div class="table-row-item"><span class="table-label">الرقم المرجعي:</span> <span class="table-value">AnaAqar-103218</span></div>
-            <div class="table-row-item"><span class="table-label">تاريخ الإضافة:</span> <span class="table-value">4 أغسطس 2026</span></div>
-            <div class="table-row-item"><span class="table-label">حالة البناء:</span> <span class="table-value">قيد الإنشاء / تسليم 2027</span></div>
-            <div class="table-row-item"><span class="table-label">الملكية:</span> <span class="table-value">تملك حر 100%</span></div>
+            <div class="table-row-item"><span class="table-label">الرقم المرجعي:</span> <span class="table-value" id="refText" dir="ltr">—</span></div>
+            <div class="table-row-item" id="addedRow" hidden><span class="table-label">تاريخ الإضافة:</span> <span class="table-value" id="addedText"></span></div>
+            <div class="table-row-item" id="buildRow" hidden><span class="table-label">حالة البناء:</span> <span class="table-value" id="buildText"></span></div>
           </div>
         </div>
+        <div id="trustPanel"></div>
 
         <p style="margin:-6px 0 14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;"><a href="calculator.html" id="calcLink" hidden style="color:#00a896; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-calculator"></i> احسب القسط الشهري لهذا العقار</a><a href="report.html" id="reportListingLink" style="color:#94a3b8; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-flag"></i> إبلاغ عن هذا الإعلان</a></p>
         <div class="info-section-card" id="secLocation">
@@ -768,7 +768,7 @@
           </div>
 
           <div style="margin-top:12px; text-align:center; border-top:1px solid #f1f5f9; padding-top:8px;">
-            <a href="broker-profile.html?id=b1" style="font-size:12px; font-weight:900; color:var(--primary-turquoise); text-decoration:none;">
+            <a id="brokerAllLink" href="brokers-directory.html" style="font-size:12px; font-weight:900; color:var(--primary-turquoise); text-decoration:none;">
               عرض جميع عقارات الوسيط ❯
             </a>
           </div>
@@ -1150,6 +1150,22 @@
         document.getElementById('quickBeds').innerHTML = `<i class="fas fa-bed" style="color:var(--primary-turquoise);"></i> ${bedsText}`;
         document.getElementById('quickBaths').innerHTML = `<i class="fas fa-bath" style="color:var(--primary-turquoise);"></i> ${property.bathrooms || 1} حمام`;
 
+        // بيانات حقيقية من الإعلان بدل القيم الثابتة
+        try {
+          const FURN = { furnished: 'مفروش', unfurnished: 'غير مفروش', partly: 'مفروش جزئيًا' };
+          const DONE = { ready: 'جاهز للسكن', under_construction: 'تحت الإنشاء', off_plan: 'على الخارطة' };
+          const fu = FURN[property.furnishing];
+          if (fu) { document.getElementById('furnRow').hidden = false; document.getElementById('furnText').innerText = fu; document.getElementById('quickFurn').hidden = false; document.getElementById('quickFurnTx').innerText = fu; }
+          document.getElementById('dealText').innerText = property.dealType === 'rent' ? (property.rentPeriod === 'monthly' ? 'للإيجار الشهري' : 'للإيجار') : 'للبيع';
+          const ref = 'AnaAqar-' + String(propId).replace(/^sb-/, '').slice(0, 8).toUpperCase();
+          document.getElementById('refText').innerText = ref; const rc = document.getElementById('refCodeText'); if (rc) rc.innerText = ref.replace('AnaAqar-', '');
+          if (property.createdAt) { document.getElementById('addedRow').hidden = false; document.getElementById('addedText').innerText = new Date(property.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); }
+          if (DONE[property.completionStatus]) { document.getElementById('buildRow').hidden = false; document.getElementById('buildText').innerText = DONE[property.completionStatus]; }
+          if (window.AQTrust) AQTrust.panel(document.getElementById('trustPanel'), property);
+          const b0 = property.broker || {}, bl = document.getElementById('brokerAllLink');
+          if (bl && b0.brokerId) bl.href = 'broker-profile.html?' + new URLSearchParams({ id: b0.brokerId, name: b0.name || '', agency: b0.agency || '', phone: b0.phone || '', avatar: b0.avatar || '' }).toString();
+        } catch (e) {}
+
         const catEl = document.getElementById('propCategory');
         if (catEl) catEl.innerText = property.propertyType || 'شقة سكنية';
         document.getElementById('propertyMapFrame').src = getMapEmbedSrc(property.city);
@@ -1380,11 +1396,12 @@
       location.href = 'report.html?kind=listing&target=' + encodeURIComponent(t.trim().slice(0, 180)) + '&url=' + encodeURIComponent('property-details.html' + location.search);
     });
   </script>
-  <script src="js/aq-ads.js?v=95"></script>
-  <script src="js/aq-public.js?v=95" defer></script>
-  <script src="js/aq-filters.js?v=95" defer></script>
-  <script src="js/aq-ai.js?v=95" defer></script>
-  <script src="js/aq-engage.js?v=95" defer></script>
-  <script src="js/aq-back.js?v=95" defer></script>
+  <script src="js/aq-trust.js?v=96" defer></script>
+  <script src="js/aq-ads.js?v=96"></script>
+  <script src="js/aq-public.js?v=96" defer></script>
+  <script src="js/aq-filters.js?v=96" defer></script>
+  <script src="js/aq-ai.js?v=96" defer></script>
+  <script src="js/aq-engage.js?v=96" defer></script>
+  <script src="js/aq-back.js?v=96" defer></script>
 </body>
 </html>
