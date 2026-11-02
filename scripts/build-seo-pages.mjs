@@ -68,6 +68,8 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
 <head>
   <meta charset="UTF-8">
   <base href="/">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
