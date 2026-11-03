@@ -432,7 +432,7 @@
       if (top && top.id > seen) {
         LS.set('aqe_notif_seen', top.id);
         if (seen && 'Notification' in window && Notification.permission === 'granted') {
-          try { new Notification(top.title, { body: top.body || '', icon: 'icons/app-icon-v3-192.png' }); } catch (e) {}
+          try { new Notification(top.title, { body: top.body || '', icon: 'icons/app-icon-v4-192.png' }); } catch (e) {}
         } else if (seen) {
           toast(top.title, 'success', { label: 'عرض', run: function () { location.href = 'my.html#notifications'; } });
         }
