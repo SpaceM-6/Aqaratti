@@ -184,12 +184,11 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
   window.gtag('config', ANAAQAR_GA4_ID);
 })();
 
-// ==================== 🍪 شريط الموافقة على ملفات تعريف الارتباط ====================
-// يظهر مرة واحدة لكل زائر. «قبول» يفعّل الإحصاءات، و«الضرورية فقط» يُبقي الموقع يعمل بلا إحصاءات.
+// ==================== 🍪 تفضيلات الخصوصية ====================
+// لا تظهر أي نافذة تلقائيًا: الإحصاءات تعمل افتراضيًا بلا ملفات تعريف ارتباط (عدّ مجهول الهوية)،
+// ومن أراد يفتح «تفضيلات الخصوصية» من أسفل الموقع أو من سياسة الخصوصية ويختار بنفسه.
 (function aqCookieBanner() {
   if (location.pathname.indexOf('/admin/') !== -1) return;
-  let saved = null; try { saved = localStorage.getItem('aq_cookie_consent'); } catch (e) { return; }
-  if (saved) return;
   const show = () => {
     if (document.getElementById('aqCk')) return;
     const st = document.createElement('style');
@@ -199,12 +198,12 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
       '[data-theme="dark"] #aqCk{background:#0f172a;color:#e2e8f0;border-color:#2b3654}[data-theme="dark"] #aqCk p{color:#94a3b8}[data-theme="dark"] #aqCk .n{background:#1e293b;color:#e2e8f0}';
     document.head.appendChild(st);
     const d = document.createElement('div'); d.id = 'aqCk'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'ملفات تعريف الارتباط');
-    d.innerHTML = '<b>🍪 خصوصيتك</b><p>نستخدم ملفات ضرورية لتشغيل الموقع (تسجيل الدخول والمفضلة)، وملفات إحصاءات لنعرف كيف نحسّن الموقع، دون إعلانات مخصّصة. <a href="/privacy-policy.html#cookies">التفاصيل</a></p><div class="r"><button class="y" data-c="all">قبول</button><button class="n" data-c="essential">الضرورية فقط</button></div>';
+    d.innerHTML = '<b>تفضيلات الخصوصية</b><p>الموقع يعمل كاملًا في الحالتين. اسمح بالإحصاءات إن أردت مساعدتنا على تحسين الموقع، ولا نستخدم أي إعلانات مخصّصة. <a href="/privacy-policy.html#cookies">التفاصيل</a></p><div class="r"><button class="y" data-c="all">السماح بالإحصاءات</button><button class="n" data-c="essential">الضرورية فقط</button></div>';
     d.onclick = (e) => { const b = e.target.closest('[data-c]'); if (!b) return; try { localStorage.setItem('aq_cookie_consent', b.dataset.c); } catch (x) {}
       if (window.gtag) window.gtag('consent', 'update', { analytics_storage: b.dataset.c === 'all' ? 'granted' : 'denied' }); d.remove(); };
     document.body.appendChild(d);
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(show, 1200)); else setTimeout(show, 1200);
+  window.aqPrivacyPrefs = show;
 })();
 
 // ==================== 📲 Service Worker: تسجيل + تحديث تلقائي ====================
