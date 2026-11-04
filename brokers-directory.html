@@ -12,11 +12,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=116"></script>
+  <script src="supabase-client.js?v=117"></script>
 
   <style>
     :root {
-      --primary-turquoise: #00a896;
+      --primary-turquoise: #00857a;
       --turquoise-light: #e6f7f5;
       --dubizzle-navy: #192038;
       --dubizzle-bg: #f4f6f9;
@@ -83,7 +83,7 @@
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 16px;
     }
-    .portal-card h3 { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 6px; }
+    .portal-card h2, .portal-card h3 { font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 6px; }
     .portal-card p { font-size: 12.5px; color: var(--text-muted); font-weight: 700; }
 
     .back-to-portal-bar { max-width: 1200px; margin: 16px auto 0; padding: 0 20px; }
@@ -249,11 +249,11 @@
     .claim-cta {
       display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
       max-width: 1200px; margin: 14px auto 0; padding: 14px 18px; border-radius: 16px;
-      background: linear-gradient(135deg, #00a896, #028090); color: #fff;
+      background: linear-gradient(135deg, #00857a, #006e64); color: #fff;
     }
     .claim-cta strong { font-size: 15px; }
     .claim-cta span { font-size: 13px; opacity: .9; display: block; }
-    .claim-cta a { background: #fff; color: #028090; font-weight: 900; padding: 10px 18px; border-radius: 12px; text-decoration: none; white-space: nowrap; }
+    .claim-cta a { background: #fff; color: #006e64; font-weight: 900; padding: 10px 18px; border-radius: 12px; text-decoration: none; white-space: nowrap; }
     .inactive-badge {
       display: flex; align-items: center; gap: 6px;
       background: #fee2e2; color: #b91c1c;
@@ -377,6 +377,7 @@
       .portal-landing { grid-template-columns: 1fr; margin-top: -20px; }
     }
   </style>
+  <link rel="stylesheet" href="css/aq-polish.css?v=117">
 </head>
 <body>
 
@@ -395,17 +396,17 @@
   <div class="portal-landing" id="portalLanding">
     <div class="portal-card" id="cardOffices">
       <i class="fas fa-building"></i>
-      <h3>المكاتب العقارية</h3>
+      <h2>المكاتب العقارية</h2>
       <p>تصفّح دليل المكاتب العقارية المرخّصة وتواصل معها مباشرة</p>
     </div>
     <div class="portal-card" id="cardIndividuals">
       <i class="fas fa-user-tie"></i>
-      <h3>الوسطاء الأفراد</h3>
+      <h2>الوسطاء الأفراد</h2>
       <p>تصفّح دليل الوسطاء العقاريين الأفراد وتواصل معهم مباشرة</p>
     </div>
     <div class="portal-card" id="cardDevelopers">
       <i class="fas fa-city"></i>
-      <h3>المطورين العقاريين</h3>
+      <h2>المطورين العقاريين</h2>
       <p>تصفّح دليل المطورين العقاريين المعتمدين وتواصل معهم مباشرة</p>
     </div>
   </div>
@@ -889,8 +890,8 @@
   <script src="js/image-lightbox.js"></script>
 
   <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="brokers" data-title="إعلانات"></div></div>
-  <script src="js/aq-ads.js?v=116" defer></script>
-  <script src="js/aq-engage.js?v=116" defer></script>
-  <script src="js/aq-back.js?v=116" defer></script>
+  <script src="js/aq-ads.js?v=117" defer></script>
+  <script src="js/aq-engage.js?v=117" defer></script>
+  <script src="js/aq-back.js?v=117" defer></script>
 </body>
 </html>

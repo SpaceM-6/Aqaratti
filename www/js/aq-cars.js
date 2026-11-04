@@ -106,7 +106,7 @@
       <div class="in"><div class="price" style="color:#e11d48">${price(c)}</div><h3><a href="${u}" style="text-decoration:none">${esc(name(c))}</a></h3>
       <div class="meta">${esc(specLine(c))}</div><div class="meta"><i class="fas fa-location-dot"></i> ${esc(c.city || '')}${c.regional_specs && c.kind !== 'yacht' && ['sale', 'rent'].includes(c.deal) ? ' · ' + esc(AR.specs[c.regional_specs] || '') : ''}${c.seller_type ? ' · ' + esc(AR.seller[c.seller_type] || '') : ''}</div></div></article>`;
   }
-  const CSS = '.cb{background:rgba(25,32,56,.85);color:#fff;font-size:11.5px;font-weight:900;padding:4px 9px;border-radius:999px}.cb.t{background:#00a896}.cb.g{background:#16a34a}.cb.s{background:#7c3aed}.cb.p{background:#ea580c}';
+  const CSS = '.cb{background:rgba(25,32,56,.85);color:#fff;font-size:11.5px;font-weight:900;padding:4px 9px;border-radius:999px}.cb.t{background:#00857a}.cb.g{background:#16a34a}.cb.s{background:#7c3aed}.cb.p{background:#ea580c}';
   // للتوافق مع الصفحات القديمة
   const MAKES = CAR_MAKES, MAKE_AR = L(CAR_MAKES), BODY = KINDS.car.body;
   window.AQCars = { esc, num, KINDS, kindOf, MAKES, MAKE_AR, BODY, FUEL, TRANS, SPECS, SELLER, PERIOD, FEATURES, FEAT_BY_KIND, AR, L, makeAr, subLabel, name, price, specLine, img, dealBadge, load, one, card, CSS };

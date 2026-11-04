@@ -52,7 +52,7 @@ for (const [name, , title, sub] of SHOTS) {
   await frame.setContent(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=440, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
   <style>html,body{margin:0;width:440px;height:956px;overflow:hidden}
-  body{background:linear-gradient(160deg,#00a896 0%,#007d70 60%,#0b3d39 100%);font-family:Tajawal,sans-serif;color:#fff;text-align:center}
+  body{background:linear-gradient(160deg,#00857a 0%,#007d70 60%,#0b3d39 100%);font-family:Tajawal,sans-serif;color:#fff;text-align:center}
   h1{font-size:33px;font-weight:900;margin:58px 22px 8px;line-height:1.3}p{font-size:19px;font-weight:700;margin:0 24px;opacity:.9}
   .ph{position:absolute;left:50%;top:205px;transform:translateX(-50%);width:356px;height:774px;border-radius:44px;overflow:hidden;border:9px solid #0f172a;box-shadow:0 30px 60px rgba(0,0,0,.35);background:#fff}
   .ph img{width:100%;display:block}</style></head><body><h1>${title}</h1><p>${sub}</p><div class="ph"><img src="${img}"></div></body></html>`, { waitUntil: 'networkidle' });

@@ -15,10 +15,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=116"></script>
+  <script src="supabase-client.js?v=117"></script>
   <script src="js/service-categories.js"></script>
   <style>
-    :root { --teal:#00a896; --teal-dark:#028090; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
+    :root { --teal:#00857a; --teal-dark:#006e64; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
             --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --card:#ffffff; }
     [data-theme="dark"] { --ink:#e2e8f0; --muted:#94a3b8; --line:#2b3654; --bg:#0f172a; --card:#162039; --teal-soft:#0f2e33; }
     * { box-sizing:border-box; }
@@ -155,6 +155,7 @@
     @media (max-width: 620px) { .grid { grid-template-columns:minmax(0, 1fr); } .row2 { grid-template-columns:1fr; } }
     @media (min-width: 700px) { .modal { align-items:center; } .sheet { border-radius:20px; } }
   </style>
+  <link rel="stylesheet" href="css/aq-polish.css?v=117">
 </head>
 <body>
   <header class="topbar">
@@ -266,7 +267,7 @@
     const toast = (msg, err) => {
       if (typeof window.showAnaAqarToast === 'function') return window.showAnaAqarToast(msg, err ? 'error' : 'success');
       const t = document.createElement('div'); t.textContent = msg;
-      t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;max-width:90vw;padding:12px 18px;border-radius:12px;font-weight:800;color:#fff;background:' + (err ? '#dc2626' : '#00a896');
+      t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;max-width:90vw;padding:12px 18px;border-radius:12px;font-weight:800;color:#fff;background:' + (err ? '#dc2626' : '#00857a');
       document.body.appendChild(t); setTimeout(() => t.remove(), 4000);
     };
 
@@ -528,8 +529,8 @@
   })();
   </script>
   <div style="max-width:1100px;margin:0 auto;padding:0 16px 90px"><div data-aq-ads="services" data-title="إعلانات"></div></div>
-  <script src="js/aq-ads.js?v=116" defer></script>
-  <script src="js/aq-engage.js?v=116" defer></script>
-  <script src="js/aq-back.js?v=116" defer></script>
+  <script src="js/aq-ads.js?v=117" defer></script>
+  <script src="js/aq-engage.js?v=117" defer></script>
+  <script src="js/aq-back.js?v=117" defer></script>
 </body>
 </html>

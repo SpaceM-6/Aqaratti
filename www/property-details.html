@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=116"></script>
+  <script src="supabase-client.js?v=117"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -69,8 +69,8 @@
 
   <style>
     :root {
-      --primary-turquoise: #00a896;
-      --primary-turquoise-hover: #008072;
+      --primary-turquoise: #00857a;
+      --primary-turquoise-hover: #006e64;
       --turquoise-light: #e6f7f5;
       --accent-gold: #d4af37;
       --dubizzle-navy: #192038;
@@ -267,7 +267,7 @@
       color: #16a34a;
       padding: 4px 10px;
       border-radius: 20px;
-      font-size: 10px;
+      font-size: 11.5px;
       font-weight: 900;
       display: flex;
       align-items: center;
@@ -318,7 +318,7 @@
     /* تخطيط الصفحة الرئيسي */
     .details-layout-grid {
       display: grid;
-      grid-template-columns: 1fr 320px;
+      grid-template-columns: minmax(0, 1fr) 320px;
       gap: 15px;
       align-items: start;
       width: 100%;
@@ -421,7 +421,7 @@
     }
 
     .amenity-item-bullet { display: flex; align-items: center; gap: 6px; }
-    .amenity-item-bullet i { color: var(--primary-turquoise); font-size: 10px; }
+    .amenity-item-bullet i { color: var(--primary-turquoise); font-size: 11.5px; }
 
     /* كارت الوسيط الجانبي */
     .trubroker-sidebar-card {
@@ -449,7 +449,7 @@
     .broker-name-heading { font-size: 15px; font-weight: 900; color: var(--dubizzle-navy); margin-bottom: 2px; }
     
     .broker-tags-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
-    .broker-tag { background: #e0f2fe; color: #0369a1; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+    .broker-tag { background: #e0f2fe; color: #0369a1; font-size: 11.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
 
     .broker-contact-buttons { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 
@@ -468,7 +468,7 @@
       text-decoration: none;
     }
 
-    .btn-whatsapp-bg { background: #25d366; color: white; }
+    .btn-whatsapp-bg { background: #15803d; color: white; }
     .btn-call-bg { background: var(--primary-turquoise); color: white; }
     .btn-email-bg { background: #f1f5f9; color: var(--dubizzle-navy); border: 1px solid #cbd5e1; }
     .btn-inspection-bg { background: var(--dubizzle-navy); color: white; }
@@ -533,14 +533,14 @@
     }
 
     .btn-mob-call { background: var(--primary-turquoise); }
-    .btn-mob-wa { background: #25d366; }
+    .btn-mob-wa { background: #15803d; }
 
     /* 📱📱 التكيف الجذري لشاشات الجوال الصغيرة والضيقة (من 300px لـ 900px) */
     @media (max-width: 900px) {
       .mobile-sticky-contact-bar { display: flex !important; }
       
       .details-layout-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: minmax(0, 1fr) !important;
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
@@ -556,6 +556,7 @@
       .property-sub-title { font-size: 14px !important; }
     }
   </style>
+  <link rel="stylesheet" href="css/aq-polish.css?v=117">
 </head>
 <body>
 
@@ -585,7 +586,7 @@
       <div class="main-image-viewer-container">
         <button class="nav-arrow-btn prev-btn" onclick="prevPropertyImage()"><i class="fas fa-chevron-right"></i></button>
         <div class="gallery-swipe-track" id="gallerySwipeTrack"></div>
-        <img id="mainPropImg" src="" style="display:none;" alt="صورة العقار">
+        <img id="mainPropImg" style="display:none;" alt="صورة العقار">
         <button class="nav-arrow-btn next-btn" onclick="nextPropertyImage()"><i class="fas fa-chevron-left"></i></button>
       </div>
 
@@ -637,7 +638,7 @@
         </div>
         <div id="trustPanel"></div>
 
-        <p style="margin:-6px 0 14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;"><a href="calculator.html" id="calcLink" hidden style="color:#00a896; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-calculator"></i> احسب القسط الشهري لهذا العقار</a><a href="report.html" id="reportListingLink" style="color:#94a3b8; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-flag"></i> إبلاغ عن هذا الإعلان</a></p>
+        <p style="margin:-6px 0 14px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;"><a href="calculator.html" id="calcLink" hidden style="color:#00857a; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-calculator"></i> احسب القسط الشهري لهذا العقار</a><a href="report.html" id="reportListingLink" style="color:#94a3b8; font-size:13px; font-weight:800; text-decoration:none;"><i class="fas fa-flag"></i> إبلاغ عن هذا الإعلان</a></p>
         <div class="info-section-card" id="secLocation">
           <div class="info-card-title">موقع العقار على الخريطة</div>
           <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:10px;">
@@ -682,7 +683,7 @@
           <div class="calculator-box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:4px;">
               <span style="font-size:16px; font-weight:900; color:var(--primary-turquoise);" id="calcResultText">2,653 درهم / شهرياً</span>
-              <span style="font-size:10px; font-weight:800; background:#e2e8f0; padding:2px 6px; border-radius:4px;">مقيم للإمارات</span>
+              <span style="font-size: 11.5px; font-weight:800; background:#e2e8f0; padding:2px 6px; border-radius:4px;">مقيم للإمارات</span>
             </div>
 
             <div class="calc-row-input">
@@ -799,7 +800,7 @@
         <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-bottom:12px;">يمكنك الاتصال المباشر مع الوسيط:</p>
 
         <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:8px; font-weight:900;">
-          <div style="font-size:10px; color:var(--text-muted);">رقم الهاتف:</div>
+          <div style="font-size: 11.5px; color:var(--text-muted);">رقم الهاتف:</div>
           <div style="font-size:18px; color:var(--primary-turquoise);" id="modalPhoneVal"></div>
         </div>
 
@@ -824,7 +825,7 @@
   <div class="royal-modal-overlay" id="emailModal">
     <div class="royal-modal-card">
       <h3 style="margin-bottom:4px; color:var(--dubizzle-navy); font-size:15px;">✉️ أرسل إيميل للوكيل</h3>
-      <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">يصل استفسارك إلى المعلن وإلى فريق أنا عقار (<span id="modalEmailTarget">info@anaaqar.com</span>):</p>
+      <p style="font-size: 11.5px; color:#64748b; font-weight:bold; margin-bottom:10px;">يصل استفسارك إلى المعلن وإلى فريق أنا عقار (<span id="modalEmailTarget">info@anaaqar.com</span>):</p>
 
       <form onsubmit="handleEmailSubmit(event)">
         <input type="text" id="emailLeadName" class="form-input-modal" required placeholder="الاسم الكريم">
@@ -850,7 +851,7 @@
   <div class="royal-modal-overlay" id="inspectorModal">
     <div class="royal-modal-card">
       <h3 style="margin-bottom:4px; color:var(--dubizzle-navy); font-size:15px;">👁️ حجز موعد معاينة ميدانية</h3>
-      <p style="font-size:10px; color:#64748b; font-weight:bold; margin-bottom:10px;">أدخل الموعد المناسب لربطك بالوسيط عبر الواتساب:</p>
+      <p style="font-size: 11.5px; color:#64748b; font-weight:bold; margin-bottom:10px;">أدخل الموعد المناسب لربطك بالوسيط عبر الواتساب:</p>
 
       <form onsubmit="handleInspectorSubmit(event)">
         <input type="text" id="inspectorBuyerName" class="form-input-modal" required placeholder="الاسم الكامل">
@@ -867,7 +868,7 @@
     <span class="lightbox-close-btn" onclick="closeLightboxModal()">&times;</span>
     <button class="nav-arrow-btn prev-btn" style="right:10px;" onclick="prevLightboxImage()"><i class="fas fa-chevron-right"></i></button>
     <div class="lightbox-img-box">
-      <img id="lightboxImgTarget" src="" alt="صورة مكبرة">
+      <img id="lightboxImgTarget" alt="صورة مكبرة">
     </div>
     <button class="nav-arrow-btn next-btn" style="left:10px;" onclick="nextLightboxImage()"><i class="fas fa-chevron-left"></i></button>
   </div>
@@ -1408,12 +1409,12 @@
       location.href = 'report.html?kind=listing&target=' + encodeURIComponent(t.trim().slice(0, 180)) + '&url=' + encodeURIComponent('property-details.html' + location.search);
     });
   </script>
-  <script src="js/aq-trust.js?v=116" defer></script>
-  <script src="js/aq-ads.js?v=116"></script>
-  <script src="js/aq-public.js?v=116" defer></script>
-  <script src="js/aq-filters.js?v=116" defer></script>
-  <script src="js/aq-ai.js?v=116" defer></script>
-  <script src="js/aq-engage.js?v=116" defer></script>
-  <script src="js/aq-back.js?v=116" defer></script>
+  <script src="js/aq-trust.js?v=117" defer></script>
+  <script src="js/aq-ads.js?v=117"></script>
+  <script src="js/aq-public.js?v=117" defer></script>
+  <script src="js/aq-filters.js?v=117" defer></script>
+  <script src="js/aq-ai.js?v=117" defer></script>
+  <script src="js/aq-engage.js?v=117" defer></script>
+  <script src="js/aq-back.js?v=117" defer></script>
 </body>
 </html>

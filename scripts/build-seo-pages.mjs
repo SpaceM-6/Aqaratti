@@ -79,7 +79,7 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
   <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
   <meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${SITE}/icons/icon-app-1024.png">
   <link rel="icon" type="image/png" href="/icons/app-icon-v4-512.png">
-  <meta name="theme-color" content="#00a896">
+  <meta name="theme-color" content="#00857a">
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -97,6 +97,7 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
     .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 14px}.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
   </style>
   ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
+  <link rel="stylesheet" href="/css/aq-polish.css?v=117">
 </head>
 <body>
   <header class="topbar"><div class="topbar-in"><a class="brand" href="/index.html"><img src="/icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a><a class="back" href="/areas.html">دليل المناطق ←</a></div></header>

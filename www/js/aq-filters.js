@@ -122,7 +122,7 @@
   .aqf-btn .n{background:#e11d48;color:#fff;border-radius:999px;font-size:12px;min-width:22px;height:22px;display:inline-grid;place-items:center;padding:0 6px}
   .aqf-btn .n:empty{display:none}
   .aqf-ov{position:fixed;inset:0;z-index:2147483000;background:rgba(2,8,23,.55);display:flex;align-items:flex-end;justify-content:center;font-family:Tajawal,sans-serif;direction:rtl}
-  .aqf-sheet{--c:#ffffff;--i:#0f172a;--m:#64748b;--l:#e2e8f0;--t:#00a896;--ts:#e6f7f5;background:var(--c);color:var(--i);width:min(720px,100%);max-height:92vh;border-radius:22px 22px 0 0;display:flex;flex-direction:column;animation:aqfUp .25s ease-out}
+  .aqf-sheet{--c:#ffffff;--i:#0f172a;--m:#64748b;--l:#e2e8f0;--t:#00857a;--ts:#e6f7f5;background:var(--c);color:var(--i);width:min(720px,100%);max-height:92vh;border-radius:22px 22px 0 0;display:flex;flex-direction:column;animation:aqfUp .25s ease-out}
   [data-theme="dark"] .aqf-sheet{--c:#0f172a;--i:#e2e8f0;--m:#94a3b8;--l:#2b3654;--ts:#0f2e33}
   @media(min-width:760px){.aqf-ov{align-items:center}.aqf-sheet{border-radius:22px;max-height:88vh}}
   @keyframes aqfUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
@@ -147,7 +147,7 @@
   .aqf-f{display:flex;gap:10px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--l)}
   .aqf-f button{border:0;border-radius:14px;padding:13px 16px;font:inherit;font-weight:900;font-size:15.5px;cursor:pointer}
   .aqf-clear{background:transparent;color:var(--i);text-decoration:underline}.aqf-go{flex:1;background:var(--t);color:#fff}
-  .aqf-tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}.aqf-tags button{border:0;background:#e6f7f5;color:#028090;border-radius:999px;padding:5px 12px;font:800 13px Tajawal,sans-serif;cursor:pointer}
+  .aqf-tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}.aqf-tags button{border:0;background:#e6f7f5;color:#006e64;border-radius:999px;padding:5px 12px;font:800 13px Tajawal,sans-serif;cursor:pointer}
   .aqf-hint{color:var(--m);font-size:12.5px;margin:8px 0 0}`;
 
   function chips(key, list, multi) {

@@ -195,7 +195,7 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
     const st = document.createElement('style');
     st.textContent = '#aqCk{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:2147483647;max-width:520px;margin:0 auto;background:#fff;color:#0f172a;border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 12px 40px rgba(2,8,23,.22);padding:14px 16px;font-family:Tajawal,sans-serif;direction:rtl}' +
       '#aqCk b{display:block;font-size:16px;font-weight:900;margin-bottom:4px}#aqCk p{margin:0 0 10px;font-size:13.5px;line-height:1.8;color:#475569;font-weight:600}#aqCk a{color:#0f766e;font-weight:800}' +
-      '#aqCk .r{display:flex;gap:8px}#aqCk button{flex:1;border:0;border-radius:12px;padding:10px 12px;font:800 14px Tajawal,sans-serif;cursor:pointer}#aqCk .y{background:#00a896;color:#fff}#aqCk .n{background:#f1f5f9;color:#0f172a}' +
+      '#aqCk .r{display:flex;gap:8px}#aqCk button{flex:1;border:0;border-radius:12px;padding:10px 12px;font:800 14px Tajawal,sans-serif;cursor:pointer}#aqCk .y{background:#00857a;color:#fff}#aqCk .n{background:#f1f5f9;color:#0f172a}' +
       '[data-theme="dark"] #aqCk{background:#0f172a;color:#e2e8f0;border-color:#2b3654}[data-theme="dark"] #aqCk p{color:#94a3b8}[data-theme="dark"] #aqCk .n{background:#1e293b;color:#e2e8f0}';
     document.head.appendChild(st);
     const d = document.createElement('div'); d.id = 'aqCk'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'ملفات تعريف الارتباط');
@@ -213,7 +213,7 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
 window.aqConsentBox = function (id) {
   id = id || 'aqTerms';
   return '<label for="' + id + '" style="display:flex;gap:8px;align-items:flex-start;margin:4px 0 10px;font-size:13px;line-height:1.8;font-weight:600;cursor:pointer;text-align:start">' +
-    '<input type="checkbox" id="' + id + '" style="margin-top:5px;width:17px;height:17px;flex:0 0 auto;accent-color:#00a896">' +
+    '<input type="checkbox" id="' + id + '" style="margin-top:5px;width:17px;height:17px;flex:0 0 auto;accent-color:#00857a">' +
     '<span>أوافق على <a href="/terms-of-service.html" target="_blank" style="color:#0f766e;font-weight:800">الشروط والأحكام</a> و<a href="/privacy-policy.html" target="_blank" style="color:#0f766e;font-weight:800">سياسة الخصوصية</a> و<a href="/ad-rules.html" target="_blank" style="color:#0f766e;font-weight:800">شروط الإعلانات</a>، بما فيها استخدام ملفات تعريف الارتباط للإحصاءات وتحسين الموقع.</span></label>';
 };
 window.aqConsentOk = function (id) { const el = document.getElementById(id || 'aqTerms'); return !el || el.checked; };

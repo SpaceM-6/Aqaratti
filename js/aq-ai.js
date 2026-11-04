@@ -57,7 +57,7 @@
   .aqi-mini img{width:100%;height:118px;object-fit:cover;display:block;background:#0f172a}
   .aqi-mini div{padding:8px 10px}.aqi-mini b{display:block;color:#00897b;font-size:15px}.aqi-mini span{display:block;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .aqi-mini small{color:#64748b;font-size:12px}
-  .aqi-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.aqi-chips span{background:#e6f7f5;color:#028090;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800}
+  .aqi-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.aqi-chips span{background:#e6f7f5;color:#006e64;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800}
   .aqi-head{max-width:1250px;margin:18px auto 0;padding:0 16px;font-family:Tajawal,sans-serif}
   .aqi-head h2{font-size:19px;font-weight:900;margin:0 0 8px;display:flex;align-items:center;gap:8px}
   .aqi-tag{font-size:11px;background:#ede9fe;color:#6d28d9;border-radius:999px;padding:2px 8px;font-weight:800}`;
@@ -139,7 +139,7 @@
     const f = fairness(self, pool);
     if (f) {
       const pos = Math.max(3, Math.min(97, 50 + (f.ratio - 1) * 100 * 1.6));
-      host.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiPrice"><h3><i class="fas fa-scale-balanced" style="color:#00a896"></i> هل السعر مناسب؟ <span class="aqi-tag">تحليل ذكي</span></h3>
+      host.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiPrice"><h3><i class="fas fa-scale-balanced" style="color:#00857a"></i> هل السعر مناسب؟ <span class="aqi-tag">تحليل ذكي</span></h3>
         <p><b style="color:${f.level === 'good' ? '#16a34a' : f.level === 'high' ? '#e11d48' : '#d97706'}">${f.label}</b> — سعر المتر هنا ${money(f.ppm)}، ومتوسط ${f.n} عقارًا مشابهًا ${self.city ? 'في ' + esc(self.city) : ''} ${money(f.med)}.</p>
         <div class="aqi-meter"><i style="left:${pos}%"></i></div><div class="aqi-sub" style="display:flex;justify-content:space-between;direction:ltr"><span>أقل من السوق</span><span>أعلى من السوق</span></div>
         <p class="aqi-sub">مقارنة بالإعلانات المعروضة على أنا عقار، وليست تقييمًا رسميًا.</p></div>`);
@@ -147,7 +147,7 @@
     // عقارات مشابهة
     const sim = similarTo(self, pool, 8);
     const after = document.getElementById('aqiPrice') || host;
-    if (sim.length) after.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiSimilar"><h3><i class="fas fa-clone" style="color:#00a896"></i> عقارات مشابهة</h3><div class="aqi-strip">${sim.map((x) => { const fx = fairness(x, pool); return mini(x, fx && fx.level === 'good' ? '<b style="display:inline;color:#16a34a;font-size:12px">سعر مناسب</b>' : ''); }).join('')}</div></div>`);
+    if (sim.length) after.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiSimilar"><h3><i class="fas fa-clone" style="color:#00857a"></i> عقارات مشابهة</h3><div class="aqi-strip">${sim.map((x) => { const fx = fairness(x, pool); return mini(x, fx && fx.level === 'good' ? '<b style="display:inline;color:#16a34a;font-size:12px">سعر مناسب</b>' : ''); }).join('')}</div></div>`);
     // نبذة المنطقة
     const an = areaName(self);
     if (!an) return;
@@ -156,7 +156,7 @@
     const rent = inArea.filter((x) => x.dealType === 'rent' && price(x)).map(price);
     const stats = [inArea.length ? `العقارات المعروضة هنا: ${inArea.length}` : '', sale.length >= 3 ? `متوسط سعر المتر للبيع ${money(median(sale))}` : '', rent.length >= 3 ? `متوسط الإيجار السنوي ${money(median(rent))}` : ''].filter(Boolean);
     const last = document.getElementById('aqiSimilar') || after;
-    last.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiArea"><h3><i class="fas fa-map-location-dot" style="color:#00a896"></i> عن منطقة ${esc(an)} <span class="aqi-tag">ذكاء اصطناعي</span></h3>
+    last.insertAdjacentHTML('afterend', `<div class="aqi-card" id="aqiArea"><h3><i class="fas fa-map-location-dot" style="color:#00857a"></i> عن منطقة ${esc(an)} <span class="aqi-tag">ذكاء اصطناعي</span></h3>
       ${stats.length ? `<div class="aqi-chips">${stats.map((s) => `<span>${esc(s)}</span>`).join('')}</div>` : ''}<a href="areas.html?a=${encodeURIComponent(an)}" style="display:inline-flex;gap:6px;align-items:center;margin:4px 0 8px;color:#00897b;font-weight:900;font-size:14px;text-decoration:none"><i class="fas fa-chart-line"></i> أسعار ${esc(an)} وصفقاتها المسجلة ←</a><div id="aqiAreaBody"><p class="aqi-sub"><i class="fas fa-spinner fa-spin"></i> جاري تجهيز النبذة...</p></div></div>`);
     try {
       const r = await call('area_summary', { area: an, city: self.city || '' });
@@ -253,7 +253,7 @@
     const ov = document.createElement('div'); ov.className = 'aqi-ov';
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:rgba(2,8,23,.55);display:flex;align-items:' + (innerWidth > 760 ? 'center' : 'flex-end') + ';justify-content:center;font-family:Tajawal,sans-serif;direction:rtl';
     ov.innerHTML = `<form class="aqi-card" style="width:min(560px,100%);max-height:92vh;overflow:auto;margin:0;border-radius:${innerWidth > 760 ? '20px' : '20px 20px 0 0'}" novalidate>
-      <h3><i class="fas fa-paper-plane" style="color:#00a896"></i> أرسل طلبك للوسطاء الموثّقين</h3>
+      <h3><i class="fas fa-paper-plane" style="color:#00857a"></i> أرسل طلبك للوسطاء الموثّقين</h3>
       <p class="aqi-sub" id="rqHint"><i class="fas fa-spinner fa-spin"></i> نلخّص طلبك من المحادثة...</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <label class="aqi-sub">النوع<select name="deal" style="width:100%"><option value="sale">شراء</option><option value="rent">إيجار</option></select></label>
@@ -267,7 +267,7 @@
       </div>
       <label class="aqi-sub" style="display:flex;gap:8px;align-items:flex-start;margin:10px 0"><input type="checkbox" name="consent" checked style="width:18px;height:18px;flex:0 0 auto"> أوافق على مشاركة رقمي مع الوسطاء والمطوّرين الموثّقين الذين لديهم عقارات مطابقة فقط.</label>
       <p class="aqi-sub" id="rqMsg" style="color:#e11d48"></p>
-      <div style="display:flex;gap:8px"><button type="submit" style="flex:1;border:0;border-radius:12px;padding:12px;background:#00a896;color:#fff;font:900 15px Tajawal,sans-serif;cursor:pointer">أرسل طلبي</button><button type="button" data-x style="border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 16px;background:transparent;font:800 14px Tajawal,sans-serif;cursor:pointer;color:inherit">إلغاء</button></div></form>`;
+      <div style="display:flex;gap:8px"><button type="submit" style="flex:1;border:0;border-radius:12px;padding:12px;background:#00857a;color:#fff;font:900 15px Tajawal,sans-serif;cursor:pointer">أرسل طلبي</button><button type="button" data-x style="border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 16px;background:transparent;font:800 14px Tajawal,sans-serif;cursor:pointer;color:inherit">إلغاء</button></div></form>`;
     ov.querySelectorAll('input:not([type=checkbox]),select,textarea').forEach((el) => { el.style.cssText += ';border:1.5px solid #e2e8f0;border-radius:10px;padding:9px;font:inherit;font-size:15px;margin-top:3px;background:inherit;color:inherit;box-sizing:border-box'; });
     document.body.appendChild(ov);
     const f = ov.querySelector('form'), close = () => ov.remove();
@@ -287,7 +287,7 @@
       try { const u = typeof getCurrentAnaAqarUser === 'function' ? await getCurrentAnaAqarUser() : null; if (u && u.id) row.user_id = u.id; } catch (er) {}
       const { error } = await supabaseClient.from('buyer_requests').insert(row);
       if (error) { document.getElementById('rqMsg').textContent = (typeof aqIsRateLimited === 'function' && aqIsRateLimited(error)) ? AQ_RATE_LIMIT_MSG : 'تعذّر الإرسال، حاول لاحقًا.'; return; }
-      f.innerHTML = '<div style="text-align:center;padding:18px 0"><i class="fas fa-circle-check" style="font-size:44px;color:#00a896"></i><h3 style="justify-content:center">وصل طلبك</h3><p>أرسلناه للوسطاء والمطوّرين الذين لديهم عقارات مطابقة، وسيتواصلون معك قريبًا.</p><button type="button" style="border:0;border-radius:12px;padding:10px 18px;background:#00a896;color:#fff;font:900 14px Tajawal,sans-serif;cursor:pointer">تم</button></div>';
+      f.innerHTML = '<div style="text-align:center;padding:18px 0"><i class="fas fa-circle-check" style="font-size:44px;color:#00857a"></i><h3 style="justify-content:center">وصل طلبك</h3><p>أرسلناه للوسطاء والمطوّرين الذين لديهم عقارات مطابقة، وسيتواصلون معك قريبًا.</p><button type="button" style="border:0;border-radius:12px;padding:10px 18px;background:#00857a;color:#fff;font:900 14px Tajawal,sans-serif;cursor:pointer">تم</button></div>';
       f.querySelector('button').onclick = close;
     };
   }

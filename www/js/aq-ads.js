@@ -26,7 +26,7 @@
     moto: { t: 'الدراجات النارية', s: 'رياضية وكروزر ودبابات للبيع والإيجار', b: 'موتورات', i: 'fa-motorcycle', g: ['#b91c1c', '#ef4444'], u: 'cars.html?kind=moto' },
     yachts: { t: 'رحلات اليخوت', s: 'استأجر يختًا بالساعة مع كابتن وطاقم', b: 'موتورات', i: 'fa-ship', g: ['#0369a1', '#22d3ee'], u: 'cars.html?kind=yacht&deal=rent' },
     yachtSale: { t: 'يخوت وقوارب للبيع', s: 'يخوت بمحرك وشراعية وقوارب صيد', b: 'موتورات', i: 'fa-anchor', g: ['#0c4a6e', '#0284c7'], u: 'cars.html?kind=yacht&deal=sale' },
-    listProp: { t: 'جاهز لعرض عقارك؟', s: 'أعلن عن عقارك ووصِّله للمشترين والمستأجرين', b: 'عقارات', i: 'fa-house-circle-check', g: ['#00a896', '#028090'], u: 'add-property.html' },
+    listProp: { t: 'جاهز لعرض عقارك؟', s: 'أعلن عن عقارك ووصِّله للمشترين والمستأجرين', b: 'عقارات', i: 'fa-house-circle-check', g: ['#00857a', '#006e64'], u: 'add-property.html' },
     offPlan: { t: 'مشاريع جديدة على الخارطة', s: 'إطلاقات المطوّرين بخطط سداد مرنة', b: 'مشاريع', i: 'fa-rocket', g: ['#7c3aed', '#c026d3'], u: 'listings.html?cat=off_plan' },
     golden: { t: 'عقارات الإقامة الذهبية', s: 'عقارات بقيمة تؤهّل للإقامة الذهبية', b: 'استثمار', i: 'fa-passport', g: ['#b45309', '#d4af37'], u: 'listings.html?cat=golden' },
     calc: { t: 'حاسبة التمويل العقاري', s: 'احسب القسط الشهري والدفعة الأولى', b: 'تمويل', i: 'fa-calculator', g: ['#15803d', '#22c55e'], u: 'calculator.html' },
@@ -35,7 +35,7 @@
     offers: { t: 'عروض وخصومات', s: 'عقارات عليها عروض وخطط سداد خاصة', b: 'عروض', i: 'fa-tags', g: ['#be123c', '#fb7185'], u: 'listings.html?cat=offers' },
     map: { t: 'العقارات على الخريطة', s: 'ابحث في الحي الذي تريده مباشرة', b: 'عقارات', i: 'fa-map-location-dot', g: ['#1d4ed8', '#60a5fa'], u: 'map.html' },
     compare: { t: 'قارن بين العقارات', s: 'السعر والمساحة وسعر المتر جنبًا إلى جنب', b: 'أدوات', i: 'fa-code-compare', g: ['#475569', '#94a3b8'], u: 'compare.html' },
-    brokers: { t: 'دليل الوسطاء والمكاتب', s: 'وسطاء مرخّصون في مدينتك', b: 'وسطاء', i: 'fa-user-tie', g: ['#00a896', '#0b5e63'], u: 'brokers-directory.html' },
+    brokers: { t: 'دليل الوسطاء والمكاتب', s: 'وسطاء مرخّصون في مدينتك', b: 'وسطاء', i: 'fa-user-tie', g: ['#00857a', '#0b5e63'], u: 'brokers-directory.html' },
     brokerage: { t: 'وسيط يبيع أو يؤجر عقارك', s: 'نرشّح لك وسيطًا مرخّصًا مناسبًا', b: 'خدمة', i: 'fa-handshake', g: ['#2563eb', '#0891b2'], u: 'sell-or-rent.html' },
     services: { t: 'خدمات بيتك في مكان واحد', s: 'صيانة، تنظيف، نقل أثاث، ديكور وغيرها', b: 'خدمات', i: 'fa-screwdriver-wrench', g: ['#db2777', '#f43f5e'], u: 'services-directory.html' },
     movers: { t: 'نقل الأثاث', s: 'شركات نقل موثوقة لبيتك الجديد', b: 'خدمات', i: 'fa-truck-moving', g: ['#a16207', '#f59e0b'], u: 'services-directory.html?cat=movers' },
@@ -84,7 +84,7 @@
       '.aqad-sp{position:absolute;bottom:8px;left:10px;z-index:1;color:#fff;font-size:10.5px;font-weight:800;opacity:.85;background:rgba(0,0,0,.25);padding:1px 7px;border-radius:6px}',
       '.aqad-c b{display:block;margin-top:8px;font-size:16px;font-weight:900;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
       '.aqad-c small{display:block;color:var(--muted,#64748b);font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-      '.aqad-dots{display:flex;justify-content:center;gap:5px;margin-top:2px}.aqad-dots i{width:6px;height:6px;border-radius:50%;background:var(--line,#cbd5e1)}.aqad-dots i.on{background:var(--teal,#00a896);width:16px;border-radius:4px}',
+      '.aqad-dots{display:flex;justify-content:center;gap:5px;margin-top:2px}.aqad-dots i{width:6px;height:6px;border-radius:50%;background:var(--line,#cbd5e1)}.aqad-dots i.on{background:var(--teal,#00857a);width:16px;border-radius:4px}',
       // شعارات الشركاء
       '.aqad-logo{flex:0 0 200px;scroll-snap-align:start;text-decoration:none;color:inherit;text-align:center}',
       '.aqad-logo div{height:84px;border-radius:14px;background:#fff center/contain no-repeat;border:1px solid var(--line,#e2e8f0);display:grid;place-items:center;font-weight:900;font-size:20px;color:#192038}',
@@ -104,7 +104,7 @@
       '.aqr-c .t1{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aqr-c .t2{color:var(--muted,#64748b);font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
       '.aqr-dark{background:#111827;border-radius:20px;padding:16px;color:#fff}.aqr-dark .aqad-h h2{color:#fff}.aqr-dark .aqr-c{background:#1f2937;border-color:#374151;color:#fff}.aqr-dark .aqr-c .pr{color:#fff}',
       '.aqr-s{flex:0 0 auto;scroll-snap-align:start;display:flex;align-items:center;gap:10px;background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:14px;padding:10px 12px;text-decoration:none;color:inherit;max-width:300px}',
-      '.aqr-s i{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#e6f7f5;color:#028090}.aqr-s b{display:block;font-size:14.5px}.aqr-s small{color:var(--muted,#64748b);font-weight:700;font-size:12.5px}',
+      '.aqr-s i{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#e6f7f5;color:#006e64}.aqr-s b{display:block;font-size:14.5px}.aqr-s small{color:var(--muted,#64748b);font-weight:700;font-size:12.5px}',
       '.aqr-bud{flex:0 0 auto;scroll-snap-align:start;padding:12px 18px;border-radius:14px;border:1.5px solid var(--line,#e2e8f0);background:var(--card,#fff);text-decoration:none;color:inherit;font-weight:900;font-size:15px}',
       '.aqr-bud small{display:block;color:var(--muted,#64748b);font-weight:700;font-size:12px}',
       // شريط التنقل السفلي في الجوال
@@ -130,7 +130,7 @@
       '.aqs-body{overflow:auto;overflow-x:hidden;flex:1;min-height:0;margin:0 -18px;padding:0 18px}',
       '@media(max-width:768px){.aqbnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:900;background:var(--card,#fff);border-top:1px solid var(--line,#e2e8f0);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));font-family:Tajawal,Tahoma,sans-serif;direction:rtl;box-shadow:0 -4px 16px rgba(15,23,42,.06)}',
       '.aqbnav a,.aqbnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted,#64748b);font:inherit;font-size:11.5px;font-weight:800;text-decoration:none;cursor:pointer;padding:2px 0;min-width:0}',
-      '.aqbnav i{font-size:19px}.aqbnav .on{color:var(--teal,#00a896)}',
+      '.aqbnav i{font-size:19px}.aqbnav .on{color:var(--teal,#00857a)}',
       '.aqbnav .add i{width:34px;height:34px;border-radius:50%;background:#e11d48;color:#fff;display:grid;place-items:center;font-size:17px;margin-top:-2px}',
       'body.aq-has-bnav{padding-bottom:64px}body.aq-has-bnav .aqe-fbtn{bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}}',
       // النوافذ السفلية المشتركة
@@ -143,7 +143,7 @@
       '.aqs-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.aqs-hd h3{margin:0;font-size:21px;font-weight:900}',
       '.aqs-x{width:38px;height:38px;border-radius:50%;border:0;background:#e2e8f0;color:#334155;font-size:17px;cursor:pointer;flex:0 0 auto}',
       '.aqs-opt{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line,#e2e8f0);text-decoration:none;color:inherit}',
-      '.aqs-opt i{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#e6f7f5;color:#028090;font-size:19px;flex:0 0 auto}',
+      '.aqs-opt i{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#e6f7f5;color:#006e64;font-size:19px;flex:0 0 auto}',
       '.aqs-opt b{display:block;font-size:16px}.aqs-opt small{color:var(--muted,#64748b);font-weight:600}'
     ].join('\n');
     document.head.appendChild(st);
@@ -183,7 +183,7 @@
       return '<a class="aqad-c" href="' + esc(a.u) + '"><div class="aqad-im" style="background:linear-gradient(135deg,' + a.g[0] + ',' + a.g[1] + ')">' +
         '<span class="aqad-b' + (a.b === 'جديد' ? ' new' : '') + '">' + esc(a.b) + '</span><i class="fas ' + a.i + ' big"></i></div><b>' + esc(a.t) + '</b><small>' + esc(a.s) + '</small></a>';
     }
-    var img = a.image_url ? ' img" style="background-image:url(\'' + esc(a.image_url) + '\')' : '" style="background:linear-gradient(135deg,#00a896,#192038)';
+    var img = a.image_url ? ' img" style="background-image:url(\'' + esc(a.image_url) + '\')' : '" style="background:linear-gradient(135deg,#00857a,#192038)';
     return '<a class="aqad-c" href="' + esc(a.link_url || '#') + '" data-ad="' + a.id + '"' + (/^https?:/.test(a.link_url || '') ? ' target="_blank" rel="noopener sponsored"' : '') + '>' +
       '<div class="aqad-im' + img + '">' + (a.badge ? '<span class="aqad-b' + (a.badge === 'جديد' ? ' new' : '') + '">' + esc(a.badge) + '</span>' : '') + (a.image_url ? '' : '<i class="fas fa-bullhorn big"></i>') +
       '<span class="aqad-sp">إعلان</span></div><b>' + esc(a.title) + '</b><small>' + esc(a.subtitle || '') + '</small></a>';
@@ -287,7 +287,7 @@
     el.hidden = false;
     var rowId = 'aqadr' + (++uid);
     el.classList.add('aqad'); if (opts.dark) el.classList.add('aqr-dark');
-    el.innerHTML = head(title, rowId).replace('</h2>', '</h2>' + (opts.more ? '<a href="' + esc(opts.more) + '" style="margin-inline-start:auto;color:var(--teal,#00a896);font-weight:900;text-decoration:none;font-size:14px">عرض الكل ←</a>' : '')) +
+    el.innerHTML = head(title, rowId).replace('</h2>', '</h2>' + (opts.more ? '<a href="' + esc(opts.more) + '" style="margin-inline-start:auto;color:var(--teal,#00857a);font-weight:900;text-decoration:none;font-size:14px">عرض الكل ←</a>' : '')) +
       '<div class="aqad-row" id="' + rowId + '">' + items.map(function (x) {
         if (opts.kind === 'search') return '<a class="aqr-s" href="' + esc(x.url) + '"><i class="fas ' + esc(x.icon || 'fa-magnifying-glass') + '"></i><span><b>' + esc(x.title) + '</b><small>' + esc(x.sub || '') + '</small></span></a>';
         if (opts.kind === 'budget') return '<a class="aqr-bud" href="' + esc(x.url) + '">' + esc(x.t1) + '<small>' + esc(x.t2 || '') + '</small></a>';

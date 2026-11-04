@@ -1,0 +1,73 @@
+/* أنا عقار — طبقة التشطيب المشتركة لكل الصفحات
+   تُحمَّل آخر <head> بعد أنماط الصفحة، ولا تغيّر التخطيط: تضبط التفاصيل التي يتركها المتصفح على افتراضه
+   (التحديد، المؤشر، حلقة التركيز، أشرطة التمرير، الأرقام) وتضيف استجابة اللمس للأزرار. */
+:root {
+  --aq-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --aq-brand: #00857a;
+  --aq-brand-ink: #006e64;
+  --aq-focus: #00857a;
+  --aq-select-bg: rgba(0, 133, 122, 0.18);
+}
+[data-theme="dark"] {
+  --aq-brand: #2dd4bf;
+  --aq-brand-ink: #5eead4;
+  --aq-focus: #5eead4;
+  --aq-select-bg: rgba(45, 212, 191, 0.28);
+}
+
+/* أسطح المتصفح */
+::selection { background: var(--aq-select-bg); color: inherit; }
+html { accent-color: var(--aq-brand); scrollbar-color: rgba(100, 116, 139, 0.45) transparent; -webkit-text-size-adjust: 100%; }
+input, textarea, [contenteditable="true"] { caret-color: var(--aq-brand); }
+a { text-underline-offset: 0.2em; }
+
+/* التركيز من لوحة المفاتيح فقط — لا تظهر الحلقة عند النقر بالفأرة أو اللمس */
+:where(a, button, [role="button"], [tabindex], summary, select, input, textarea):focus-visible {
+  outline: 2px solid var(--aq-focus);
+  outline-offset: 2px;
+}
+:where(input, textarea, select):focus-visible { outline-offset: 0; }
+
+/* العناوين متوازنة السطور، والفقرات بلا كلمة يتيمة */
+:where(h1, h2, h3) { text-wrap: balance; }
+:where(p, li) { text-wrap: pretty; }
+
+/* الأرقام في الأسعار والعدّادات بعرض ثابت حتى لا تقفز عند التغيّر */
+:where(.price, .prop-price, .card-price, .property-price, .cnt, .stat-num, [data-num], #cnt, .aq-count) { font-variant-numeric: tabular-nums; }
+
+/* استجابة الضغط: الزر يستجيب لحظيًا فيشعر المستخدم أن الواجهة سمعته */
+:where(button:not(:disabled), .btn, [role="button"], input[type="submit"], input[type="button"]) {
+  transition-property: transform, background-color, color, border-color, box-shadow, opacity;
+  transition-duration: 160ms;
+  transition-timing-function: var(--aq-ease);
+}
+:where(button:not(:disabled), .btn, [role="button"], input[type="submit"], input[type="button"]):active {
+  transform: scale(0.97);
+}
+:where(button, .btn):disabled { cursor: not-allowed; }
+
+/* اللمس: لا وميض رمادي عند النقر في iOS/Android */
+:where(a, button, [role="button"], label) { -webkit-tap-highlight-color: transparent; }
+:where(button, a, [role="button"], select, label) { touch-action: manipulation; }
+
+/* تقليل الحركة: نبقي تغيّر اللون والشفافية (يفيد الفهم) ونلغي الحركة والانزلاق */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  :where(button, .btn, [role="button"]):active { transform: none; }
+}
+
+@media print {
+  ::selection { background: transparent; }
+}
+
+/* أجهزة اللمس: لا رفع للبطاقات عند النقر (الـhover على اللمس يعلق بعد اللمسة) */
+@media (hover: none) {
+  .aq-tile:hover, .aq-mini:hover, .ad-banner-card:hover, .bayut-property-card:hover,
+  .pwa-install-btn:hover, .portal-card:hover, .tile:hover, .card:hover { transform: none; }
+}
+
+/* النوافذ المنبثقة تظهر من حجم قريب لا من الصفر، بمنحنى سريع البداية */
+@media (prefers-reduced-motion: reduce) {
+  .royal-modal-card, .aq-fab-menu.open { animation-name: aqFadeOnly !important; }
+}
+@keyframes aqFadeOnly { from { opacity: 0; } to { opacity: 1; } }

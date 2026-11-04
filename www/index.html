@@ -25,7 +25,7 @@
 
   <!-- 📱 إعدادات تطبيق الويب التقدمي (PWA) -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#00a896">
+  <meta name="theme-color" content="#00857a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=116"></script>
+  <script src="supabase-client.js?v=117"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -93,8 +93,8 @@
 
     /* ==================== BRANDING & COLOR PALETTE ==================== */
     :root {
-      --primary-turquoise: #00a896;         
-      --primary-turquoise-hover: #008072;   
+      --primary-turquoise: #00857a;         
+      --primary-turquoise-hover: #006e64;   
       --turquoise-light: #e6f7f5;          
       --accent-gold: #d4af37;              
       --accent-gold-hover: #b89528;
@@ -103,7 +103,7 @@
       --dubizzle-bg: #f7f9fc;
       --dubizzle-border: #e4e9f2;
       --text-dark: #222b45;
-      --text-muted: #8f9bb3;
+      --text-muted: #64748b;
       --accent-green: #16a34a;
       --card-bg: #ffffff;
       --input-bg: #ffffff;
@@ -275,7 +275,7 @@
 
     .btn-fav-nav {
       background: #fff1f2;
-      color: #e11d48 !important;
+      color: #be123c !important;
       border: 1px solid #fecdd3;
       padding: 6px 10px;
       border-radius: 6px;
@@ -295,7 +295,7 @@
     .fav-count-badge {
       background: #e11d48;
       color: white;
-      font-size: 10px;
+      font-size: 11.5px;
       padding: 1px 5px;
       border-radius: 10px;
       font-weight: 900;
@@ -381,7 +381,7 @@
 
     .instant-menu a:hover {
       background-color: var(--turquoise-light);
-      color: var(--primary-turquoise);
+      color: var(--primary-turquoise-hover);
     }
 
     .search-menu input {
@@ -485,7 +485,7 @@
       cursor: pointer;
       border-radius: 6px;
       white-space: nowrap;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s var(--aq-ease, ease-out), color 0.3s var(--aq-ease, ease-out), border-color 0.3s var(--aq-ease, ease-out), box-shadow 0.3s var(--aq-ease, ease-out), transform 0.3s var(--aq-ease, ease-out), opacity 0.3s var(--aq-ease, ease-out);
     }
 
     /* التبويب المختار: بارز في مكانه (لون ممتلئ + إطار فاتح + ظل خفيف) دون أن يرتفع فيُقصّ داخل الشريط */
@@ -511,7 +511,7 @@
       border: 1px solid #cbd5e1;
       padding: 8px 12px;
       border-radius: 6px;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s var(--aq-ease, ease-out), color 0.3s var(--aq-ease, ease-out), border-color 0.3s var(--aq-ease, ease-out), box-shadow 0.3s var(--aq-ease, ease-out), transform 0.3s var(--aq-ease, ease-out), opacity 0.3s var(--aq-ease, ease-out);
       position: relative;
     }
 
@@ -583,7 +583,7 @@
 
     .custom-country-item:hover {
       background: var(--turquoise-light);
-      color: var(--primary-turquoise);
+      color: var(--primary-turquoise-hover);
     }
 
     .flag-img {
@@ -620,7 +620,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s var(--aq-ease, ease-out), color 0.3s var(--aq-ease, ease-out), border-color 0.3s var(--aq-ease, ease-out), box-shadow 0.3s var(--aq-ease, ease-out), transform 0.3s var(--aq-ease, ease-out), opacity 0.3s var(--aq-ease, ease-out);
     }
 
     .btn-royal-search {
@@ -632,15 +632,17 @@
       font-size: 15px;
       font-weight: 900;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s var(--aq-ease, ease-out), color 0.3s var(--aq-ease, ease-out), border-color 0.3s var(--aq-ease, ease-out), box-shadow 0.3s var(--aq-ease, ease-out), transform 0.3s var(--aq-ease, ease-out), opacity 0.3s var(--aq-ease, ease-out);
       box-shadow: 0 4px 12px rgba(0, 168, 150, 0.3);
     }
 
-    .btn-royal-search:hover, .btn-royal-search:active {
-      background: #00c8b3 !important;
-      box-shadow: 0 0 25px rgba(0, 200, 179, 0.9), 0 0 40px rgba(0, 168, 150, 0.6);
-      transform: translateY(-2px);
+    @media (hover: hover) and (pointer: fine) {
+      .btn-royal-search:hover {
+        background: var(--primary-turquoise-hover) !important;
+        box-shadow: 0 8px 20px -6px rgba(0, 110, 100, 0.55);
+      }
     }
+    .btn-royal-search:active { transform: scale(0.97); transition-duration: 120ms; }
 
     /* PROPERTIES SECTION */
     .properties-section {
@@ -678,9 +680,9 @@
       border-radius: 14px;
       overflow: hidden;
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 360px minmax(0, 1fr);
       box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-      transition: all 0.25s ease;
+      transition: background-color 0.25s var(--aq-ease, ease-out), color 0.25s var(--aq-ease, ease-out), border-color 0.25s var(--aq-ease, ease-out), box-shadow 0.25s var(--aq-ease, ease-out), transform 0.25s var(--aq-ease, ease-out), opacity 0.25s var(--aq-ease, ease-out);
       position: relative;
     }
 
@@ -759,7 +761,7 @@
       cursor: pointer;
       z-index: 10;
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-      transition: all 0.2s ease;
+      transition: background-color 0.2s var(--aq-ease, ease-out), color 0.2s var(--aq-ease, ease-out), border-color 0.2s var(--aq-ease, ease-out), box-shadow 0.2s var(--aq-ease, ease-out), transform 0.2s var(--aq-ease, ease-out), opacity 0.2s var(--aq-ease, ease-out);
     }
 
     .card-img-arrow.prev { right: 8px; }
@@ -817,7 +819,7 @@
       justify-content: center;
       font-size: 16px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background-color 0.2s var(--aq-ease, ease-out), color 0.2s var(--aq-ease, ease-out), border-color 0.2s var(--aq-ease, ease-out), box-shadow 0.2s var(--aq-ease, ease-out), transform 0.2s var(--aq-ease, ease-out), opacity 0.2s var(--aq-ease, ease-out);
       z-index: 5;
     }
 
@@ -900,7 +902,7 @@
     }
 
     .broker-mini-name { font-size: 12px; font-weight: 900; color: var(--dubizzle-navy); }
-    .broker-mini-agency { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+    .broker-mini-agency { font-size: 11.5px; font-weight: 700; color: var(--text-muted); }
 
     /* 🎯 توحيد حجم وأبعاد أزرار كرت العقار وتكبير أيقونة الواتساب */
     .card-action-buttons { 
@@ -925,7 +927,7 @@
       gap: 6px !important;
       text-decoration: none !important;
       box-sizing: border-box !important;
-      transition: all 0.2s ease !important;
+      transition: background-color 0.2s var(--aq-ease, ease-out), color 0.2s var(--aq-ease, ease-out), border-color 0.2s var(--aq-ease, ease-out), box-shadow 0.2s var(--aq-ease, ease-out), transform 0.2s var(--aq-ease, ease-out), opacity 0.2s var(--aq-ease, ease-out) !important;
       white-space: nowrap !important;
     }
 
@@ -936,7 +938,7 @@
     .btn-cta-call:hover { background: var(--primary-turquoise-hover); }
 
     .btn-cta-whatsapp { 
-      background: #25d366; 
+      background: #15803d;
       color: white; 
       padding: 0 14px !important; 
     }
@@ -946,7 +948,7 @@
       line-height: 1 !important;
     }
 
-    .btn-cta-whatsapp:hover { background: #1eb954; }
+    .btn-cta-whatsapp:hover { background: #166534; }
 
     .btn-cta-share { background: var(--gold-bg-light); color: var(--dubizzle-navy); border: 1px solid var(--accent-gold) !important; }
 
@@ -1027,11 +1029,11 @@
       overflow: hidden;
       border: 1px solid var(--dubizzle-border);
       box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-      animation: modalFadeIn 0.25s ease-out;
+      animation: modalFadeIn 0.24s var(--aq-ease, ease-out);
     }
 
     @keyframes modalFadeIn {
-      from { transform: scale(0.9); opacity: 0; }
+      from { transform: scale(0.96); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
@@ -1274,7 +1276,7 @@
         min-width: 0 !important;
         justify-content: center !important;
         padding: 0 4px !important;
-        font-size: 10.5px !important;
+        font-size: 11.5px !important;
         gap: 3px !important;
         overflow: hidden !important;
       }
@@ -1419,7 +1421,7 @@
   .btn-card-cta {
     min-width: 0 !important;
     padding: 0 4px !important;
-    font-size: 10.5px !important;
+    font-size: 11.5px !important;
     gap: 3px !important;
     overflow: hidden !important;
   }
@@ -1431,11 +1433,11 @@
   .royal-title { font-size: 18px !important; }
   .property-price-tag { font-size: 18px !important; }
   .btn-add-nav, .btn-fav-nav {
-    font-size: 10.5px !important;
+    font-size: 11.5px !important;
     padding: 6px 6px !important;
   }
   .hero-badge-btn {
-    font-size: 10px !important;
+    font-size: 11.5px !important;
     padding: 8px 4px !important;
   }
   .card-media-box { height: 170px !important; }
@@ -1448,7 +1450,7 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  background: linear-gradient(120deg, #00c8b3, #00a896 45%, #d4af37);
+  background: linear-gradient(120deg, #00857a, #006e64 60%, #0b4f55);
   color: #ffffff;
   padding: 10px 18px;
   position: relative;
@@ -1517,7 +1519,7 @@
   align-items: center;
   gap: 6px;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s var(--aq-ease, ease-out), color 0.2s var(--aq-ease, ease-out), border-color 0.2s var(--aq-ease, ease-out), box-shadow 0.2s var(--aq-ease, ease-out), transform 0.2s var(--aq-ease, ease-out), opacity 0.2s var(--aq-ease, ease-out);
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
@@ -1634,7 +1636,7 @@
   font-weight: 800;
   color: var(--dubizzle-navy, #192038);
   box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-  border-right: 4px solid var(--primary-turquoise, #00a896);
+  border-right: 4px solid var(--primary-turquoise, #00857a);
   max-width: 420px;
   opacity: 0;
   transform: translateY(-16px);
@@ -1644,8 +1646,8 @@
 .anaaqar-toast i { font-size: 17px; flex-shrink: 0; }
 .anaaqar-toast-success { border-right-color: #16a34a; }
 .anaaqar-toast-success i { color: #16a34a; }
-.anaaqar-toast-info { border-right-color: var(--primary-turquoise, #00a896); }
-.anaaqar-toast-info i { color: var(--primary-turquoise, #00a896); }
+.anaaqar-toast-info { border-right-color: var(--primary-turquoise, #00857a); }
+.anaaqar-toast-info i { color: var(--primary-turquoise, #00857a); }
 .anaaqar-toast-error { border-right-color: #dc2626; }
 .anaaqar-toast-error i { color: #dc2626; }
 
@@ -1658,22 +1660,22 @@
   width: 56px; height: 56px;
   border-radius: 50%;
   background: #e6f7f5;
-  color: var(--primary-turquoise, #00a896);
+  color: var(--primary-turquoise, #00857a);
   display: flex; align-items: center; justify-content: center;
   font-size: 24px;
   margin: 0 auto 14px;
 }
 .auth-confirm-panel h3 { font-size: 16px; font-weight: 900; color: var(--dubizzle-navy, #192038); margin-bottom: 8px; }
 .auth-confirm-panel p { font-size: 13px; color: #64748b; font-weight: 700; line-height: 1.7; margin-bottom: 6px; }
-.auth-confirm-panel .auth-confirm-email { color: var(--primary-turquoise, #00a896); font-weight: 900; }
+.auth-confirm-panel .auth-confirm-email { color: var(--primary-turquoise, #00857a); font-weight: 900; }
 .auth-confirm-panel .auth-resend-link {
   display: inline-block; margin-top: 10px;
-  color: var(--primary-turquoise, #00a896); font-weight: 800; font-size: 12.5px;
+  color: var(--primary-turquoise, #00857a); font-weight: 800; font-size: 12.5px;
   cursor: pointer; text-decoration: underline; background: none; border: none;
 }
 .auth-confirm-panel .auth-confirm-ok-btn {
   width: 100%; margin-top: 16px;
-  background: var(--primary-turquoise, #00a896); color: white; border: none;
+  background: var(--primary-turquoise, #00857a); color: white; border: none;
   padding: 11px; border-radius: 8px; font-weight: 800; cursor: pointer;
 }
 
@@ -1714,12 +1716,12 @@
     .aq-submit:disabled { opacity:.6; cursor:wait; }
     /* 💬 الزر العائم */
     .aq-fab-wrap { position: fixed; left: 18px; bottom: 22px; z-index: 990; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
-    .aq-fab { display:flex; align-items:center; gap:8px; border:0; border-radius:999px; padding:12px 18px; background: linear-gradient(135deg, #00a896, #028090); color:#fff; font-family:inherit; font-weight:900; font-size:14px; box-shadow: 0 8px 24px rgba(0,128,128,.35); cursor:pointer; }
+    .aq-fab { display:flex; align-items:center; gap:8px; border:0; border-radius:999px; padding:12px 18px; background: linear-gradient(135deg, #00857a, #006e64); color:#fff; font-family:inherit; font-weight:900; font-size:14px; box-shadow: 0 8px 24px rgba(0,128,128,.35); cursor:pointer; }
     .aq-fab i { font-size: 18px; }
     .aq-fab-menu { display:none; flex-direction:column; background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow: 0 12px 30px rgba(25,32,56,.18); overflow:hidden; min-width: 250px; }
     .aq-fab-menu.open { display:flex; }
     .aq-fab-menu a, .aq-fab-menu button { display:flex; align-items:center; gap:10px; padding:12px 16px; border:0; background:none; text-align:right; font-family:inherit; font-size:14px; font-weight:800; color: var(--dubizzle-navy); text-decoration:none; cursor:pointer; border-bottom:1px solid #f1f5f9; }
-    .aq-fab-menu a:hover, .aq-fab-menu button:hover { background:#f0fdfa; }
+    .aq-fab-menu a:hover, .aq-fab-menu button:not(.aq-fm-search button):hover { background:#f0fdfa; }
     .aq-fab-menu i { color: var(--primary-turquoise); width: 18px; text-align:center; }
     @media (max-width: 768px) { .aq-fab-wrap { bottom: 84px; left: 12px; } .aq-fab span { display:none; } .aq-fab { padding: 14px; } }
     [data-theme="dark"] .aq-tile, [data-theme="dark"] .aq-fab-menu { background:#1e293b; border-color:#334155; }
@@ -1734,12 +1736,12 @@
     .pw-wrap { position: relative; margin-bottom: 10px; }
     .pw-wrap input { margin-bottom: 0 !important; padding-left: 44px !important; }
     .pw-toggle { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border: 0; background: transparent; color: #64748b; cursor: pointer; border-radius: 8px; font-size: 16px; display: grid; place-items: center; }
-    .pw-toggle:hover, .pw-toggle:focus-visible { color: var(--primary-turquoise); background: rgba(0,168,150,.08); outline: none; }
+    .pw-toggle:hover, .pw-toggle:focus-visible { color: var(--primary-turquoise); background: rgba(0,168,150,.08); }
   
     /* ==================== ✨ تحسينات تجربة المستخدم (القائمة الجانبية، زر التواصل، الهيرو، بطاقة العقار) ==================== */
     .aq-results-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
     .aq-results-head .section-title { margin-bottom: 0; }
-    .aq-save-search { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--primary-turquoise); background: #e6f7f5; color: #028090; border-radius: 999px; padding: 9px 16px; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; min-height: 42px; }
+    .aq-save-search { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--primary-turquoise); background: #e6f7f5; color: #006e64; border-radius: 999px; padding: 9px 16px; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; min-height: 42px; }
     .aq-save-search:hover { background: var(--primary-turquoise); color: #fff; }
     [data-theme="dark"] .aq-save-search { background: #0f2e33; color: #5eead4; }
     html.aq-noscroll, html.aq-noscroll body { overflow: hidden !important; }
@@ -1753,7 +1755,7 @@
     .aq-dr-head { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 10px; border-bottom: 1px solid #eef2f7; }
     .aq-dr-head img { height: 30px; width: auto; }
     .aq-dr-x { width: 40px; height: 40px; border-radius: 12px; border: 0; background: #f1f5f9; color: #0f172a; font-size: 18px; cursor: pointer; }
-    .aq-dr-auth { margin: 12px 12px 4px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; background: linear-gradient(135deg, #00a896, #028090); color: #fff !important; font-weight: 900; font-size: 14px; text-decoration: none; text-align: center; }
+    .aq-dr-auth { margin: 12px 12px 4px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; background: linear-gradient(135deg, #00857a, #006e64); color: #fff !important; font-weight: 900; font-size: 14px; text-decoration: none; text-align: center; }
     .aq-dr-body { flex: 1; overflow-y: auto; padding: 4px 8px 12px; overscroll-behavior: contain; }
     .aq-dr-label { font-size: 11px; font-weight: 900; color: #94a3b8; padding: 14px 10px 6px; }
     .aq-dr-body a, .aq-dr-body button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 10px; border: 0; background: none; border-radius: 12px; color: #0f172a; font-family: inherit; font-size: 14.5px; font-weight: 800; text-decoration: none; text-align: right; cursor: pointer; }
@@ -1775,15 +1777,15 @@
     .aq-fab-wrap { z-index: 99999990 !important; }
     .aq-fab-overlay { display: none; }
     .aq-fab-menu { display: none !important; width: 340px; min-width: 0 !important; padding: 6px 0 8px; border-radius: 20px !important; }
-    .aq-fab-menu.open { display: flex !important; animation: aqUp .22s ease-out; }
-    @keyframes aqUp { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .aq-fab-menu.open { display: flex !important; animation: aqUp .2s var(--aq-ease, ease-out); transform-origin: bottom left; }
+    @keyframes aqUp { from { transform: translateY(8px) scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
     .aq-fm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 12px 16px 10px; }
     .aq-fm-head b { display: block; font-size: 17px; font-weight: 900; color: var(--dubizzle-navy); }
     .aq-fm-search { display:flex; align-items:center; gap:8px; margin:0 16px 10px; border:1.5px solid #e2e8f0; border-radius:14px; padding:4px 4px 4px 0; padding-inline-start:12px; background:#f8fafc; }
-    .aq-fm-search:focus-within { border-color:#00a896; background:#fff; }
+    .aq-fm-search:focus-within { border-color:#00857a; background:#fff; }
     .aq-fm-search > i { color:#94a3b8; }
     .aq-fm-search input { flex:1 1 auto; min-width:0; border:0; background:transparent; font-family:inherit; font-size:15px; padding:8px 0; outline:none; color:inherit; }
-    .aq-fm-search button { border:0; background:#00a896; color:#fff; font-family:inherit; font-weight:900; border-radius:10px; padding:8px 14px; cursor:pointer; }
+    .aq-fm-search button { border:0; background:#00857a; color:#fff; font-family:inherit; font-weight:900; border-radius:10px; padding:8px 14px; cursor:pointer; }
     [data-theme="dark"] .aq-fm-search { background:#0f172a; border-color:#334155; }
     .aq-fm-head small { display: block; font-size: 12px; color: #64748b; font-weight: 700; margin-top: 2px; }
     .aq-fab-menu .aq-fm-x { width: 34px; height: 34px; padding: 0; border-radius: 10px; background: #f1f5f9; border: 0; justify-content: center; flex-shrink: 0; }
@@ -1826,7 +1828,7 @@
     .aq-pcard { border-radius: 18px !important; border-color: #e8edf3 !important; box-shadow: 0 4px 18px rgba(15,23,42,.06) !important; }
     .aq-pcard .card-media-box { max-height: none; }
     .aq-pc-tags { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; flex-wrap: wrap; z-index: 6; pointer-events: none; }
-    .aq-pc-deal, .aq-pc-ok { font-size: 11.5px; font-weight: 900; padding: 5px 10px; border-radius: 999px; background: #00a896; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    .aq-pc-deal, .aq-pc-ok { font-size: 11.5px; font-weight: 900; padding: 5px 10px; border-radius: 999px; background: #00857a; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
     .aq-pc-deal.rent { background: #2563eb; }
     .aq-pc-ok { background: rgba(255,255,255,.95); color: #166534; }
     .aq-pc-count { position: absolute; bottom: 12px; right: 12px; z-index: 6; background: rgba(2,8,23,.65); color: #fff; font-size: 11.5px; font-weight: 800; padding: 4px 9px; border-radius: 999px; display: flex; gap: 5px; align-items: center; pointer-events: none; }
@@ -1886,6 +1888,7 @@
     }
   }
   </script>
+  <link rel="stylesheet" href="css/aq-polish.css?v=117">
 </head>
 <body>
 
@@ -2174,7 +2177,7 @@
 
       <h2 class="aq-block-title" style="margin-top:34px;"><i class="fas fa-briefcase"></i> خدمات أنا عقار</h2>
       <div class="aq-grid">
-        <a class="aq-tile" href="brokers-directory.html"><span class="aq-ico" style="--c:#00a896"><i class="fas fa-user-tie"></i></span><b>الوسطاء العقاريون</b><small>دليل الوسطاء والمكاتب المسجّلين</small></a>
+        <a class="aq-tile" href="brokers-directory.html"><span class="aq-ico" style="--c:#00857a"><i class="fas fa-user-tie"></i></span><b>الوسطاء العقاريون</b><small>دليل الوسطاء والمكاتب المسجّلين</small></a>
         <a class="aq-tile" href="sell-or-rent.html"><span class="aq-ico" style="--c:#2563eb"><i class="fas fa-handshake"></i></span><b>خدمات الوساطة العقارية</b><small>بيع أو تأجير عقارك عبر وسيط</small></a>
         <a class="aq-tile" href="services-directory.html?cat=residency"><span class="aq-ico" style="--c:#9333ea"><i class="fas fa-id-card"></i></span><b>الإقامة وتأسيس الشركات</b><small>إجراءات الإقامة والرخص التجارية</small></a>
         <a class="aq-tile" href="services-directory.html?cat=legal"><span class="aq-ico" style="--c:#475569"><i class="fas fa-scale-balanced"></i></span><b>الاستشارات القانونية</b><small>عقود ونزاعات وتوثيق</small></a>
@@ -2233,12 +2236,12 @@
 
       <!-- 📢 العمود الأيسر: الشريط الجانبي للإعلانات المميزة والرعايات الحصرية (قابل للتمرير والنزول) -->
       <div class="bayut-sidebar-ads">
-        <div class="ad-banner-card" style="background: linear-gradient(135deg, #00a896, #028090); color: white;">
+        <div class="ad-banner-card" style="background: linear-gradient(135deg, #00857a, #006e64); color: white;">
           <div class="ad-banner-body" style="color:white;">
             <i class="fas fa-bullhorn" style="font-size: 28px; margin-bottom: 8px;"></i>
             <div class="ad-title" style="color:white;">أعلن عن عقارك</div>
             <div class="ad-subtitle" style="color:#e0f2f1;">وصّل عقارك للمشترين والمستأجرين — للوسطاء والمكاتب والمطوّرين.</div>
-            <a href="sell-or-rent.html" class="btn-ad-action" style="background:#fff; color:#028090;">أضف عقارك ❯</a>
+            <a href="sell-or-rent.html" class="btn-ad-action" style="background:#fff; color:#006e64;">أضف عقارك ❯</a>
           </div>
         </div>
         <div class="ad-banner-card" style="background: linear-gradient(135deg, #192038, #0f172a); color: white;">
@@ -2341,8 +2344,8 @@
           <label class="aq-label">اكتب طلبك بالتفصيل</label>
           <textarea class="aq-input" id="srDetails" rows="3" maxlength="2000" placeholder="كلما كان الوصف أوضح، كان الرد أسرع وأدق"></textarea>
           <label style="display:flex; gap:8px; align-items:flex-start; font-size:12px; color:#475569; margin-top:10px;">
-            <input type="checkbox" id="srConsent" required style="margin-top:3px; accent-color:#00a896;">
-            <span>أوافق على أن تتواصل معي «أنا عقار» أو مقدّم الخدمة المناسب بخصوص هذا الطلب، وفق <a href="privacy-policy.html" target="_blank" style="color:#00a896;">سياسة الخصوصية</a>.</span>
+            <input type="checkbox" id="srConsent" required style="margin-top:3px; accent-color:#00857a;">
+            <span>أوافق على أن تتواصل معي «أنا عقار» أو مقدّم الخدمة المناسب بخصوص هذا الطلب، وفق <a href="privacy-policy.html" target="_blank" style="color:#00857a;">سياسة الخصوصية</a>.</span>
           </label>
           <button type="submit" id="srSubmit" class="aq-submit"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
         </form>
@@ -2368,7 +2371,7 @@
         <i class="fas fa-magnifying-glass"></i><input name="q" type="search" placeholder="ابحث: منطقة، عقار، وسيط…" aria-label="ابحث في الموقع" enterkeyhint="search" autocomplete="off"><button aria-label="بحث">بحث</button>
       </form>
       <button class="aq-fm-item" onclick="toggleAqFab(false); openServiceRequest('general')">
-        <span class="aq-fm-ic" style="background:#e6f7f5;color:#028090"><i class="fas fa-headset"></i></span>
+        <span class="aq-fm-ic" style="background:#e6f7f5;color:#006e64"><i class="fas fa-headset"></i></span>
         <span class="aq-fm-tx"><b>تواصل مع الفريق</b><small>سؤال، اقتراح، أو مشكلة في الموقع</small></span><i class="fas fa-chevron-left aq-fm-go"></i>
       </button>
       <button class="aq-fm-item" onclick="toggleAqFab(false); openServiceRequest('brokerage')">
@@ -2470,7 +2473,7 @@
       <div class="royal-modal-header" style="background: linear-gradient(135deg, var(--dubizzle-navy), #2d3860);"><i class="fas fa-code-compare" style="color:#93c5fd;"></i><div class="royal-modal-title">مقارنة العقارات</div></div>
       <div class="royal-modal-body">
         <div id="compareTableContainer" style="overflow-x:auto;"></div>
-        <a href="compare.html" style="display:block;text-align:center;margin-top:12px;padding:10px;background:#e6f7f5;color:#028090;border-radius:8px;font-weight:800;text-decoration:none"><i class="fas fa-file-pdf"></i> فتح صفحة المقارنة للحفظ PDF أو المشاركة</a>
+        <a href="compare.html" style="display:block;text-align:center;margin-top:12px;padding:10px;background:#e6f7f5;color:#006e64;border-radius:8px;font-weight:800;text-decoration:none"><i class="fas fa-file-pdf"></i> فتح صفحة المقارنة للحفظ PDF أو المشاركة</a>
         <button style="width:100%; margin-top:15px; padding:10px; background:#f1f5f9; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('compareModal')">إغلاق</button>
       </div>
     </div>
@@ -2487,7 +2490,7 @@
           <span id="voiceStatusText">اضغط هنا للتحدث بالصوت 🎙️</span>
         </button>
 
-        <button style="width:100%; background:linear-gradient(135deg, #8b5cf6, #d946ef); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث فوراً</button>
+        <button style="width:100%; background:linear-gradient(135deg, #00857a, #006e64); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer;" onclick="executeAISearch()"><i class="fas fa-magic"></i> تحليل وتطبيق البحث فوراً</button>
         <p id="aiSearchStatus" style="margin:8px 0 0;color:#64748b;font-size:13px;text-align:center;min-height:18px"></p>
         <button style="width:100%; margin-top:10px; padding:8px; background:transparent; color:#94a3b8; border:none; font-weight:bold; cursor:pointer;" onclick="closeRoyalModal('aiSearchModal')">إلغاء</button>
       </div>
@@ -2514,7 +2517,7 @@
           <input type="tel" id="registerPhoneInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="رقم الهاتف (مثال: 971501234567)">
           <input type="password" id="registerPasswordInput" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid #cbd5e1;" placeholder="كلمة المرور (6 أحرف على الأقل)">
           <div id="registerConsentWrap"></div>
-          <button id="registerSubmitBtn" style="width:100%; background:linear-gradient(135deg, #00a896, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="handleAnaAqarRegister()">إنشاء الحساب الآن</button>
+          <button id="registerSubmitBtn" style="width:100%; background:linear-gradient(135deg, #00857a, #008072); color:white; border:none; padding:11px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="handleAnaAqarRegister()">إنشاء الحساب الآن</button>
         </div>
 
         <!-- ✉️ تظهر بدل نموذج التسجيل عند الحاجة لتأكيد البريد الإلكتروني (بدل alert() قديم) -->
@@ -3975,15 +3978,15 @@ function renderPropertiesList(list) {
     <a href="#" onclick="window.aqPrivacyPrefs&&window.aqPrivacyPrefs();return false;" style="color:#9ca3af; font-weight:900;">تفضيلات الخصوصية</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=116" defer></script>
-  <script src="js/aq-areas.js?v=116" defer></script>
+  <script src="js/aq-filters.js?v=117" defer></script>
+  <script src="js/aq-areas.js?v=117" defer></script>
   <script src="js/service-categories.js?v=111" defer></script>
-  <script src="js/aq-ai.js?v=116" defer></script>
-  <script src="js/aq-engage.js?v=116" defer></script>
-  <script src="js/aq-back.js?v=116" defer></script>
-  <script src="js/aq-stay.js?v=116" defer></script>
-  <script src="js/aq-cars.js?v=116" defer></script>
-  <script src="js/aq-ads.js?v=116" defer></script>
-  <script src="js/aq-home.js?v=116" defer></script>
+  <script src="js/aq-ai.js?v=117" defer></script>
+  <script src="js/aq-engage.js?v=117" defer></script>
+  <script src="js/aq-back.js?v=117" defer></script>
+  <script src="js/aq-stay.js?v=117" defer></script>
+  <script src="js/aq-cars.js?v=117" defer></script>
+  <script src="js/aq-ads.js?v=117" defer></script>
+  <script src="js/aq-home.js?v=117" defer></script>
 </body>
 </html>

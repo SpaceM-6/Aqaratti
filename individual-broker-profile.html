@@ -12,11 +12,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=116"></script>
+  <script src="supabase-client.js?v=117"></script>
 
   <style>
     :root {
-      --primary-turquoise: #00a896;
+      --primary-turquoise: #00857a;
       --turquoise-light: #e6f7f5;
       --dubizzle-navy: #192038;
       --dubizzle-bg: #f4f6f9;
@@ -161,6 +161,7 @@
       .profile-header-names { text-align: center; }
     }
   </style>
+  <link rel="stylesheet" href="css/aq-polish.css?v=117">
 </head>
 <body>
 
@@ -244,7 +245,7 @@
             </div>
 
             ${!isActive ? `
-            <a href="claim-profile.html?dld=${encodeURIComponent(b.dld_broker_number)}" style="display:block;text-align:center;margin:14px 0 4px;padding:12px;border-radius:12px;border:1.5px dashed #00a896;color:#00a896;font-weight:900;text-decoration:none;">
+            <a href="claim-profile.html?dld=${encodeURIComponent(b.dld_broker_number)}" style="display:block;text-align:center;margin:14px 0 4px;padding:12px;border-radius:12px;border:1.5px dashed #00857a;color:#00857a;font-weight:900;text-decoration:none;">
               <i class="fas fa-user-check"></i> هل هذا ملفك؟ فعّله الآن لتظهر بيانات تواصلك للعملاء
             </a>` : ''}
             <div class="action-buttons">
@@ -284,7 +285,7 @@
     });
   </script>
 
-  <script src="js/aq-ads.js?v=116" defer></script>
-  <script src="js/aq-back.js?v=116" defer></script>
+  <script src="js/aq-ads.js?v=117" defer></script>
+  <script src="js/aq-back.js?v=117" defer></script>
 </body>
 </html>
