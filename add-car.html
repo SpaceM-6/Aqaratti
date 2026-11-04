@@ -13,10 +13,10 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=113">
+  <link rel="stylesheet" href="css/aq-pages.css?v=114">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=113"></script>
-  <script src="js/aq-cars.js?v=113"></script>
+  <script src="supabase-client.js?v=114"></script>
+  <script src="js/aq-cars.js?v=114"></script>
   <style>
     .form { max-width:760px; margin:0 auto; }
     .seg { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:10px; } .seg.d4 { grid-template-columns:repeat(4, minmax(0, 1fr)); }
@@ -56,6 +56,7 @@
         ${mode === 'login' ? '' : '<div class="fg"><label>الاسم</label><input id="aName" autocomplete="name"></div>'}
         <div class="fg"><label>البريد الإلكتروني</label><input id="aEmail" type="email" autocomplete="email" dir="ltr"></div>
         <div class="fg"><label>كلمة المرور</label><input id="aPass" type="password" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" dir="ltr"></div>
+        ${mode === 'login' || !window.aqConsentBox ? '' : aqConsentBox('carTerms')}
         <button class="btn btn-teal" style="width:100%">${mode === 'login' ? 'دخول' : 'إنشاء الحساب'}</button>
         <p class="hint" id="aMsg" style="margin:10px 0 0"></p>
         <p style="text-align:center;margin:12px 0 0"><button type="button" class="btn btn-ghost sm" id="sw">${mode === 'login' ? 'ليس لديك حساب؟ أنشئ حسابًا' : 'لديك حساب؟ سجّل الدخول'}</button></p></form>`;
@@ -64,7 +65,9 @@
         e.preventDefault(); const email = $('aEmail').value.trim(), password = $('aPass').value, m = $('aMsg');
         if (!email || password.length < 6) return (m.textContent = 'اكتب البريد وكلمة مرور من 6 أحرف على الأقل.');
         if (mode === 'login') { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) return (m.textContent = 'البريد أو كلمة المرور غير صحيحة.'); return boot(); }
-        const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname, data: { full_name: ($('aName').value || '').trim() } } });
+        if (window.aqConsentOk && !aqConsentOk('carTerms')) return (m.textContent = 'يرجى الموافقة على الشروط وسياسة الخصوصية لإنشاء الحساب.');
+        const consent = window.aqConsentAccepted ? aqConsentAccepted() : {};
+        const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname, data: { full_name: ($('aName').value || '').trim(), ...consent } } });
         if (error) return (m.textContent = /already/.test(error.message) ? 'هذا البريد مسجّل مسبقًا، سجّل الدخول.' : 'تعذّر إنشاء الحساب.');
         if (data.session) return boot();
         m.textContent = 'أرسلنا رابط التفعيل إلى بريدك. افتحه ثم ارجع لهذه الصفحة.';
@@ -219,7 +222,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=113" defer></script>
-  <script src="js/aq-back.js?v=113" defer></script>
+  <script src="js/aq-engage.js?v=114" defer></script>
+  <script src="js/aq-back.js?v=114" defer></script>
 </body>
 </html>

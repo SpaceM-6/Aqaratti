@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=113">
+  <link rel="stylesheet" href="css/aq-pages.css?v=114">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=113"></script>
+  <script src="supabase-client.js?v=114"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=113"></script>
+  <script src="js/aq-ai.js?v=114"></script>
   <script>
   (function () {
     'use strict';
@@ -154,6 +154,7 @@
             <div class="fg"><label id="licLbl">رقم ترخيص الوسيط (BRN)</label><input id="aLic" dir="ltr"></div></div>` : ''}
           <div class="fg"><label>البريد الإلكتروني</label><input id="aEmail" type="email" dir="ltr" autocomplete="username" required></div>
           <div class="fg"><label>كلمة المرور</label><input id="aPass" type="password" dir="ltr" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" required></div>
+          ${mode === 'signup' && window.aqConsentBox ? aqConsentBox('proTerms') : ''}
           <p class="mut" id="aMsg"></p>
           <button class="btn btn-teal" style="width:100%" type="submit">${mode === 'login' ? 'دخول' : 'إنشاء الحساب'}</button>
           ${mode === 'login' ? '<button class="btn btn-ghost sm" type="button" id="forgot" style="margin-top:8px">نسيت كلمة المرور؟</button>' : '<p class="mut" style="margin-top:8px">يُراجع فريق أنا عقار رقم الترخيص ويوثّق حسابك، فتظهر علامة «موثّق» على ملفك وإعلاناتك.</p>'}
@@ -179,8 +180,10 @@
           return boot();
         }
         const name = $('aName').value.trim(); if (name.length < 2) return ($('aMsg').textContent = 'اكتب اسمك.');
+        if (window.aqConsentOk && !aqConsentOk('proTerms')) return ($('aMsg').textContent = 'يرجى الموافقة على الشروط وسياسة الخصوصية لإنشاء الحساب.');
+        const consent = window.aqConsentAccepted ? aqConsentAccepted() : {};
         const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname,
-          data: { full_name: name, phone: $('aPhone').value.trim(), account_type: type, company_name: ($('aCo').value || '').trim(), license_no: $('aLic').value.trim() } } });
+          data: { full_name: name, phone: $('aPhone').value.trim(), account_type: type, company_name: ($('aCo').value || '').trim(), license_no: $('aLic').value.trim(), ...consent } } });
         if (error) return ($('aMsg').textContent = /already/.test(error.message) ? 'هذا البريد مسجّل مسبقًا، سجّل الدخول.' : 'تعذّر إنشاء الحساب: ' + error.message);
         if (data.session) return boot();
         $('root').innerHTML = `<div class="auth"><div class="panel ok"><i class="fas fa-envelope-circle-check" style="font-size:44px;color:var(--teal)"></i><h2>أكّد بريدك الإلكتروني</h2><p class="mut">أرسلنا رابط التفعيل إلى ${esc(email)}. افتحه ثم ادخل إلى البوابة.</p></div></div>`;
@@ -839,7 +842,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=113" defer></script>
-  <script src="js/aq-back.js?v=113" defer></script>
+  <script src="js/aq-engage.js?v=114" defer></script>
+  <script src="js/aq-back.js?v=114" defer></script>
 </body>
 </html>

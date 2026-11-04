@@ -206,6 +206,22 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
   window.aqPrivacyPrefs = show;
 })();
 
+// ==================== ✅ الموافقة عند إنشاء الحساب ====================
+// خانة واحدة في كل نماذج التسجيل: الشروط وسياسة الخصوصية وشروط الإعلانات، بما فيها ملفات الإحصاءات.
+// بعد الموافقة تُفعَّل الإحصاءات لهذا المستخدم، ويستطيع تغييرها لاحقًا من «تفضيلات الخصوصية».
+window.aqConsentBox = function (id) {
+  id = id || 'aqTerms';
+  return '<label for="' + id + '" style="display:flex;gap:8px;align-items:flex-start;margin:4px 0 10px;font-size:13px;line-height:1.8;font-weight:600;cursor:pointer;text-align:start">' +
+    '<input type="checkbox" id="' + id + '" style="margin-top:5px;width:17px;height:17px;flex:0 0 auto;accent-color:#00a896">' +
+    '<span>أوافق على <a href="/terms-of-service.html" target="_blank" style="color:#0f766e;font-weight:800">الشروط والأحكام</a> و<a href="/privacy-policy.html" target="_blank" style="color:#0f766e;font-weight:800">سياسة الخصوصية</a> و<a href="/ad-rules.html" target="_blank" style="color:#0f766e;font-weight:800">شروط الإعلانات</a>، بما فيها استخدام ملفات تعريف الارتباط للإحصاءات وتحسين الموقع.</span></label>';
+};
+window.aqConsentOk = function (id) { const el = document.getElementById(id || 'aqTerms'); return !el || el.checked; };
+window.aqConsentAccepted = function () {
+  try { localStorage.setItem('aq_cookie_consent', 'all'); localStorage.setItem('aq_terms_accepted_at', new Date().toISOString()); } catch (e) {}
+  if (window.gtag) window.gtag('consent', 'update', { analytics_storage: 'granted' });
+  return { terms_accepted_at: new Date().toISOString(), terms_version: '2026-11' };
+};
+
 // ==================== 📲 Service Worker: تسجيل + تحديث تلقائي ====================
 // هذا الملف يُحمَّل في كل صفحة بالموقع (خلافاً لتسجيل sw.js السابق الذي كان
 // فقط داخل index.html) - كانت أي صفحة أخرى غير index.html، بمافيها صفحات
