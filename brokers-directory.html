@@ -184,6 +184,7 @@
     .filter-pill[data-rank="BRONZE"].active { border-color: var(--bronze); color: var(--bronze); background: #fef3e2; }
     .filter-pill[data-rank="GENERAL"].active { border-color: var(--text-muted); color: var(--text-dark); background: #f1f5f9; }
 
+    .alt-view { display:inline-flex; align-items:center; gap:6px; background:#e6f7f5; color:#0f766e; border:1px solid #99f6e4; border-radius:999px; padding:5px 12px; font-weight:800; font-size:13px; text-decoration:none; white-space:nowrap; }
     .results-meta {
       max-width: 1200px;
       margin: 18px auto 0;
@@ -387,7 +388,6 @@
   <div class="page-hero">
     <h1><i class="fas fa-building-user"></i> <span id="heroTitle">بوابة الوسطاء</span></h1>
     <p id="heroSubtitle">اختر القسم الذي تبحث عنه</p>
-    <a href="agents.html" style="display:inline-flex;gap:6px;align-items:center;margin-top:10px;margin-inline-end:6px;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;text-decoration:none"><i class="fas fa-list"></i> طريقة عرض جديدة</a>
     <a href="top-brokers.html" style="display:inline-flex;gap:6px;align-items:center;margin-top:10px;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;text-decoration:none"><i class="fas fa-trophy"></i> أفضل الوسطاء حسب الأداء</a>
   </div>
 
@@ -456,6 +456,7 @@
 
       <div class="results-meta">
         <span id="fullResultsCountText"></span>
+        <a class="alt-view" data-aq-new="" href="agents.html?tab=offices"><i class="fas fa-list"></i> طريقة عرض أخرى</a>
       </div>
 
       <div class="brokers-grid" id="fullBrokersGrid"></div>
@@ -485,6 +486,7 @@
 
       <div class="results-meta">
         <span id="verifiedResultsCountText"></span>
+        <a class="alt-view" data-aq-new="" href="agents.html?tab=offices"><i class="fas fa-list"></i> طريقة عرض أخرى</a>
         <a id="joinDirectoryLink" href="broker-registration.html" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت مكتب عقاري؟ انضم للدليل الآن</a>
       </div>
 
@@ -533,6 +535,7 @@
 
       <div class="results-meta">
         <span id="individualResultsCountText"></span>
+        <a class="alt-view" data-aq-new="" href="agents.html"><i class="fas fa-list"></i> طريقة عرض أخرى</a>
       </div>
 
       <div class="brokers-grid" id="individualBrokersGrid"></div>
@@ -562,6 +565,7 @@
 
       <div class="results-meta">
         <span id="individualVerifiedResultsCountText"></span>
+        <a class="alt-view" data-aq-new="" href="agents.html"><i class="fas fa-list"></i> طريقة عرض أخرى</a>
         <a id="joinIndividualDirectoryLink" href="broker-registration.html?type=individual" style="color:var(--primary-turquoise); font-weight:900; text-decoration:none; font-size:13px;"><i class="fas fa-plus-circle"></i> هل أنت وسيط عقاري؟ انضم للدليل الآن</a>
       </div>
 
