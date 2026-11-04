@@ -242,6 +242,7 @@
             </div>
 
             <div class="action-buttons">
+              ${!phone && isActive && window.__aqAnon && window.aqUnlockContactHTML ? aqUnlockContactHTML('سجّل الدخول لإظهار رقم المطوّر') : ''}
               ${phone ? `<a href="tel:${phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
               ${phone ? `<a href="https://wa.me/${waNumber(phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
               ${d.email ? `<a href="mailto:${d.email}" class="act-email"><i class="fas fa-envelope"></i> إرسال بريد</a>` : ''}
@@ -262,7 +263,7 @@
 
       const { data: developer, error } = await supabaseClient
         .from('developers')
-        .select('*')
+        .select((window.aqIsSignedIn && !(await aqIsSignedIn())) ? 'id,dld_developer_number,name_ar,name_en,logo_url,rating,is_active,activated_at,country,source,created_at' : '*')
         .eq('id', id)
         .single();
 
@@ -273,6 +274,20 @@
 
       document.title = `${developer.name_ar || 'مطوّر عقاري'} | AnaAqar`;
       renderProfile(developer);
+      // مشاريع المطوّر المسجلة لدى دائرة الأراضي والأملاك
+      try {
+        const pr = await supabaseClient.from('dld_projects').select('name_en,area_en,status,percent_completed,end_date,cnt_unit').eq('developer_number', developer.dld_developer_number).order('cnt_unit', { ascending: false }).limit(60);
+        const list = pr.data || [], T = (s) => window.AQAreas ? AQAreas.title(s) : (s || '');
+        const E = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const ST = { ACTIVE: 'قيد الإنشاء', FINISHED: 'مكتمل', PENDING: 'لم يبدأ بعد', 'NOT STARTED': 'لم يبدأ بعد', CANCELLED: 'ملغى', CONDITIONAL_ACTIVATING: 'قيد التفعيل' };
+        const box = document.createElement('div'); box.className = 'profile-card'; box.style.marginTop = '16px';
+        box.innerHTML = `<div style="padding:18px"><h2 style="margin:0 0 4px;font-size:19px;font-weight:900">مشاريع المطوّر المسجلة لدى الدائرة <span style="color:#64748b;font-size:14px">(${list.length})</span></h2>
+          <p style="margin:0 0 12px;color:#64748b;font-size:13px;font-weight:600">المطوّر لا يعمل بوسطاء خاصين به في سجل الدائرة؛ وهذه مشاريعه المسجلة رسميًا.</p>` +
+          (list.length ? `<div style="display:grid;gap:8px">${list.map((p) => `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px"><b style="font-size:15px">${E(T(p.name_en))}</b>
+            <div style="color:#64748b;font-size:12.5px;font-weight:700;margin-top:3px">${E(T(p.area_en))} · ${E(ST[p.status] || p.status || '')} · الإنجاز ${Number(p.percent_completed) || 0}%${p.end_date ? ' · التسليم ' + E(String(p.end_date).slice(0, 7)) : ''}${p.cnt_unit ? ' · ' + Number(p.cnt_unit).toLocaleString('en-US') + ' وحدة' : ''}</div></div>`).join('')}</div>`
+          : '<p style="margin:0;color:#64748b;font-weight:700">لا توجد مشاريع مسجلة لهذا المطوّر في البيانات المفتوحة حاليًا.</p>') + '</div>';
+        document.getElementById('profileWrap').after(box);
+      } catch (e) {}
     });
   </script>
 

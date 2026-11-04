@@ -29,7 +29,8 @@
   }
 
   async function fetchPage(off) {
-    let query = supabaseClient.from('developers').select('*', { count: 'exact' }).eq('country', COUNTRY);
+    const signed = typeof aqIsSignedIn === 'function' ? await aqIsSignedIn() : true;
+    let query = supabaseClient.from('developers').select(signed ? '*' : 'id,dld_developer_number,name_ar,name_en,logo_url,rating,is_active,activated_at,country,source,created_at', { count: 'exact' }).eq('country', COUNTRY);
 
     const q = searchTerm.trim();
     if (q) {

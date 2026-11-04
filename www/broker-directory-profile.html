@@ -235,6 +235,7 @@
             <div class="profile-header-names">
               <div class="profile-name-ar">${b.name_ar || '-'}</div>
               <div class="profile-name-en">${b.name_en || ''}</div>
+              ${b.name_en || b.name_ar ? `<a href="agents.html?q=${encodeURIComponent(String(b.name_en || b.name_ar).replace(/\s*(L\.?\s?L\.?\s?C\.?|\(.*?\))\s*$/i, '').trim())}" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:#e6f7f5;color:#0f766e;border-radius:999px;padding:5px 12px;font-weight:800;font-size:13px;text-decoration:none"><i class="fas fa-users"></i> وسطاء هذا المكتب</a>` : ''}
               <span class="rank-badge ${b.classification}"><i class="fas fa-star"></i> ${RANK_LABELS[b.classification] || b.classification || 'عام'}</span>
             </div>
           </div>
