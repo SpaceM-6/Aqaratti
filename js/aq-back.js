@@ -20,7 +20,7 @@
   // داخل التطبيق (آيفون/أندرويد): تحميل خصائص الجهاز (المشاركة بالصور، الإشعارات، الاهتزاز)
   try {
     if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() && !document.querySelector('script[src*="aq-native.js"]')) {
-      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=115'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
+      var ns = document.createElement('script'); ns.src = '/js/aq-native.js?v=116'; ns.defer = true; (document.head || document.documentElement).appendChild(ns);
     }
   } catch (e) {}
   // منع اهتزاز الصفحة يمينًا ويسارًا في الجوال: لا شيء يتجاوز عرض الشاشة
@@ -83,7 +83,7 @@
   'use strict';
   var NEW = [ // [بداية الرابط، آخر يوم تظهر فيه الشارة]
     ['area/', '2026-12-01'], ['areas.html', '2026-12-01'], ['lands.html', '2026-12-01'],
-    ['top-brokers.html', '2026-12-01'], ['find.html', '2026-12-01'], ['join.html', '2026-12-01'], ['schools.html', '2026-12-01'], ['transport.html', '2026-12-01']
+    ['top-brokers.html', '2026-12-01'], ['find.html', '2026-12-01'], ['join.html', '2026-12-01'], ['agents.html', '2026-12-04'], ['schools.html', '2026-12-01'], ['transport.html', '2026-12-01']
   ];
   var today = new Date().toISOString().slice(0, 10);
   NEW = NEW.filter(function (x) { return today <= x[1]; });

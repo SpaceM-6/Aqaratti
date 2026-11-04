@@ -14,9 +14,9 @@
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/aq-pages.css?v=115">
+  <link rel="stylesheet" href="css/aq-pages.css?v=116">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=115"></script>
+  <script src="supabase-client.js?v=116"></script>
   <style>
     .shell { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:230px minmax(0,1fr); gap:18px; padding:18px 16px 100px; }
     .side { position:sticky; top:70px; align-self:start; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:10px; }
@@ -98,7 +98,7 @@
   <div id="root"><div class="shell" style="display:block"><div class="skel"></div></div></div>
 
   <script src="currency.js"></script>
-  <script src="js/aq-ai.js?v=115"></script>
+  <script src="js/aq-ai.js?v=116"></script>
   <script>
   (function () {
     'use strict';
@@ -827,6 +827,20 @@
           <label class="chk"><input type="checkbox" id="fOpt" ${me.email_opt_out ? '' : 'checked'}> أرغب باستلام رسائل أنا عقار البريدية (عروض وأخبار للمهنيين)</label>
           <p class="mut">نوع الحساب: ${TYPES[me.account_type][0]} · ${me.verified ? '<b style="color:var(--teal)">موثّق</b>' : 'قيد التوثيق'}</p>
           <button class="btn btn-teal">حفظ</button></form></div>`;
+      // بطاقتي في «ابحث عن وسيط»: المسمى والجنسية واللغات (لملف الوسيط المفعّل من سجل الدائرة)
+      if (me.account_type === 'broker') m.insertAdjacentHTML('beforeend', `<div class="panel"><h2 style="margin-top:0">بطاقتي في «ابحث عن وسيط»</h2>
+        <p class="mut">تظهر في صفحة البحث عن الوسطاء، ويستعملها العملاء لاختيار وسيط يتحدث لغتهم. تعمل بعد تفعيل ملفك في دليل الوسطاء.</p>
+        <form id="cardF"><div class="gridf"><div class="fg"><label>المسمى الوظيفي</label><input id="cT" maxlength="60" placeholder="مثال: مستشار عقاري"></div>
+        <div class="fg"><label>الجنسية</label><input id="cN" maxlength="40" placeholder="مثال: مصر"></div></div>
+        <div class="fg"><label>اللغات (افصل بينها بفاصلة)</label><input id="cL" placeholder="العربية، English، Hindi"></div>
+        <button class="btn btn-soft">حفظ البطاقة</button> <a class="btn btn-ghost sm" href="agents.html" target="_blank">شاهد صفحة الوسطاء</a></form></div>`);
+      const cf = $('cardF'); if (cf) cf.onsubmit = async (e) => {
+        e.preventDefault();
+        const langs = $('cL').value.split(/[،,]/).map((x) => x.trim()).filter(Boolean);
+        const { data, error } = await sb.rpc('update_my_broker_card', { p_title: $('cT').value, p_nationality: $('cN').value, p_languages: langs, p_photo_url: me.avatar_url || me.logo_url || null });
+        if (error) return toast(/function|does not exist/.test(error.message || '') ? 'هذه الميزة تحتاج تشغيل ملف supabase/directory_v2.sql' : error.message, true);
+        toast(data ? 'حُفظت بطاقتك ✅' : 'فعّل ملفك في دليل الوسطاء أولًا لتظهر بطاقتك', !data);
+      };
       m.querySelectorAll('[data-acc],[data-dec]').forEach((b) => b.onclick = async () => { const { error } = await sb.rpc('respond_office_invite', { p_invite: b.dataset.acc || b.dataset.dec, p_accept: !!b.dataset.acc }); if (error) return toast(setupErr(error), true); toast(b.dataset.acc ? 'انضممت إلى الفريق' : 'رُفضت الدعوة'); boot(); });
       $('prF').onsubmit = async (e) => {
         e.preventDefault();
@@ -842,7 +856,7 @@
     boot();
   })();
   </script>
-  <script src="js/aq-engage.js?v=115" defer></script>
-  <script src="js/aq-back.js?v=115" defer></script>
+  <script src="js/aq-engage.js?v=116" defer></script>
+  <script src="js/aq-back.js?v=116" defer></script>
 </body>
 </html>

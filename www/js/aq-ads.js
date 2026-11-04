@@ -333,7 +333,7 @@
         ['find.html', 'fa-magnifying-glass', 'البحث في الموقع', 'عقار، منطقة، وسيط، مشروع، خدمة'], ['area/', 'fa-chart-line', 'أسعار المناطق', 'سعر المتر والإيجارات والصفقات'],
         ['index.html#search', 'fa-building', 'العقارات', 'شراء وإيجار سنوي'], ['stays.html', 'fa-umbrella-beach', 'الإقامات القصيرة', 'إيجار يومي وشهري'],
         ['cars.html', 'fa-car-side', 'موتورات', 'سيارات، دراجات نارية، يخوت'], ['projects.html', 'fa-city', 'مشاريع على الخارطة', 'خطط سداد المطوّرين'],
-        ['services-directory.html', 'fa-screwdriver-wrench', 'خدمات بيتك', 'صيانة، نقل، تنظيف، ديكور'], ['brokers-directory.html', 'fa-user-tie', 'الوسطاء والمكاتب', 'دليل الوسطاء المرخّصين'], ['top-brokers.html', 'fa-trophy', 'أفضل الوسطاء', 'حسب الأداء الفعلي'], ['lands.html', 'fa-map', 'الأراضي والتملّك الحر', 'أين يحق لغير المواطنين التملّك'],
+        ['services-directory.html', 'fa-screwdriver-wrench', 'خدمات بيتك', 'صيانة، نقل، تنظيف، ديكور'], ['brokers-directory.html', 'fa-user-tie', 'الوسطاء والمكاتب', 'دليل الوسطاء المرخّصين'], ['agents.html', 'fa-magnifying-glass', 'ابحث عن وسيط', 'الوسطاء والمكاتب المرخّصون'], ['top-brokers.html', 'fa-trophy', 'أفضل الوسطاء', 'حسب الأداء الفعلي'], ['lands.html', 'fa-map', 'الأراضي والتملّك الحر', 'أين يحق لغير المواطنين التملّك'],
         ['map.html', 'fa-map-location-dot', 'الخريطة', 'العقارات حولك'], ['valuation.html', 'fa-chart-line', 'كم يساوي عقاري؟', 'تقدير السعر'], ['request.html', 'fa-paper-plane', 'اطلب عقارك', 'نرسل طلبك للوسطاء']]);
     };
     n.querySelector('[data-add]').onclick = openAdd;

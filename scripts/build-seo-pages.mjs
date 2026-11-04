@@ -207,7 +207,7 @@ console.log('property pages:', propUrls.length);
 const STATIC = [
   ['', 'daily', '1.0'], ['listings.html', 'daily', '0.9'], ['stays.html', 'daily', '0.9'], ['cars.html', 'daily', '0.8'], ['projects.html', 'daily', '0.8'],
   ['area/', 'weekly', '0.8'], ['areas.html', 'weekly', '0.6'], ['lands.html', 'weekly', '0.7'], ['valuation.html', 'monthly', '0.7'], ['map.html', 'daily', '0.6'], ['offers.html', 'weekly', '0.6'],
-  ['brokers-directory.html', 'weekly', '0.7'], ['top-brokers.html', 'weekly', '0.6'], ['join.html', 'monthly', '0.6'], ['schools.html', 'weekly', '0.7'], ['transport.html', 'monthly', '0.6'], ['services-directory.html', 'weekly', '0.7'], ['sell-or-rent.html', 'monthly', '0.6'], ['request.html', 'monthly', '0.5'],
+  ['brokers-directory.html', 'weekly', '0.7'], ['top-brokers.html', 'weekly', '0.6'], ['agents.html', 'weekly', '0.7'], ['join.html', 'monthly', '0.6'], ['schools.html', 'weekly', '0.7'], ['transport.html', 'monthly', '0.6'], ['services-directory.html', 'weekly', '0.7'], ['sell-or-rent.html', 'monthly', '0.6'], ['request.html', 'monthly', '0.5'],
   ['calculator.html', 'monthly', '0.5'], ['broker-registration.html', 'monthly', '0.4'], ['about.html', 'yearly', '0.4'], ['ad-rules.html', 'yearly', '0.3'], ['privacy-policy.html', 'yearly', '0.2'], ['terms-of-service.html', 'yearly', '0.2'], ['account-deletion.html', 'yearly', '0.2']
 ];
 const urls = STATIC.map(([u, f, p]) => ({ loc: `${SITE}/${u}`, f, p }));

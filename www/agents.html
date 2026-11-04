@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ابحث عن وسيط أو مكتب عقاري | أنا عقار AnaAqar</title>
+  <meta name="description" content="ابحث عن وسيط عقاري مرخّص أو مكتب عقاري في دبي: رقم الوسيط وحالة الرخصة والمكتب وعدد الإعلانات للبيع والإيجار.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anaaqar.com/agents.html">
+  <meta property="og:title" content="ابحث عن وسيط أو مكتب عقاري">
+  <meta property="og:description" content="للوسطاء والمكاتب والمطورين وشركات الخدمات في الإمارات.">
+  <meta property="og:image" content="https://anaaqar.com/icons/icon-app-1024.png">
+  <link rel="icon" type="image/png" href="icons/app-icon-v4-512.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00a896">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/aq-pages.css?v=116">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=116"></script>
+  <script src="js/aq-public.js?v=116"></script>
+  <style>
+    .seg { display:inline-flex; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:3px; gap:3px; margin:0 0 10px; }
+    .seg button { border:0; background:transparent; padding:8px 18px; border-radius:9px; font:800 14.5px 'Tajawal', sans-serif; color:var(--muted); cursor:pointer; }
+    .seg button.on { background:#e6f7f5; color:#0f766e; }
+    .srch { display:flex; gap:8px; margin:0 0 10px; }
+    .srch input { flex:1 1 auto; min-width:0; border:1.5px solid var(--line); border-radius:12px; padding:11px 14px; font:600 15px 'Tajawal', sans-serif; background:var(--card); color:var(--ink); }
+    .srch button { border:0; border-radius:12px; padding:0 20px; background:#00a896; color:#fff; font:900 15px 'Tajawal', sans-serif; cursor:pointer; }
+    .flt { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; margin:0 0 10px; }
+    @media (max-width:760px) { .flt { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    .flt select { min-width:0; border:1.5px solid var(--line); border-radius:10px; padding:9px 10px; font:700 14px 'Tajawal', sans-serif; background:var(--card); color:var(--ink); }
+    .bar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:6px 0 12px; flex-wrap:wrap; }
+    .bar h2 { margin:0; font-size:19px; font-weight:900; } .bar small { display:block; color:var(--muted); font-weight:700; font-size:12.5px; }
+    .bar .r { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .tgl { display:flex; align-items:center; gap:6px; font-weight:800; font-size:13.5px; cursor:pointer; }
+    .tgl input { width:18px; height:18px; accent-color:#0f766e; }
+    .bar select { border:1.5px solid var(--line); border-radius:10px; padding:7px 10px; font:700 13.5px 'Tajawal', sans-serif; background:var(--card); color:var(--ink); }
+    .list { display:grid; gap:12px; }
+    .ag { display:grid; grid-template-columns:130px minmax(0, 1fr); background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; text-decoration:none; color:inherit; position:relative; min-height:150px; }
+    @media (max-width:420px) { .ag { grid-template-columns:108px minmax(0, 1fr); } }
+    .ag .ph { background:#eef2f7 center/cover no-repeat; min-height:150px; }
+    .ag .ph.off { background:#0f172a; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:24px; text-align:center; padding:10px; line-height:1.3; overflow-wrap:anywhere; }
+    .ag .bd { padding:12px 14px 10px; min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .ag b { font-size:17px; font-weight:800; line-height:1.4; padding-inline-end:46px; overflow-wrap:anywhere; }
+    .ag .t { color:var(--muted); font-size:13px; font-weight:600; }
+    .tags { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:2px 0; }
+    .tag { display:inline-flex; align-items:center; gap:4px; border-radius:5px; padding:1px 7px; font-size:11px; font-weight:900; }
+    .tag.v { background:#312e81; color:#fff; } .tag.l { background:#dcfce7; color:#15803d; } .tag.x { background:#fee2e2; color:#b91c1c; }
+    .ag .meta { color:var(--muted); font-size:12.5px; font-weight:600; line-height:1.7; } .ag .meta span { color:var(--ink); font-weight:700; }
+    .ag .cnt { margin-top:auto; display:flex; gap:8px; flex-wrap:wrap; padding-top:6px; }
+    .ag .cnt span { background:#f1f5f9; color:#334155; border-radius:6px; padding:3px 9px; font-size:12.5px; font-weight:800; }
+    [data-theme="dark"] .ag .cnt span { background:#1e293b; color:#cbd5e1; }
+    .ag .lg { position:absolute; top:10px; inset-inline-end:10px; width:40px; height:40px; border-radius:8px; object-fit:contain; background:#fff; border:1px solid var(--line); }
+    .more { text-align:center; margin:14px 0; }
+    .empty { text-align:center; padding:30px 16px; background:var(--card); border:1px solid var(--line); border-radius:16px; color:var(--muted); font-weight:700; line-height:1.9; }
+    .oh { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin:0 0 14px; display:flex; gap:14px; align-items:center; }
+    .oh .lgx { width:84px; height:84px; border-radius:12px; background:#0f172a center/contain no-repeat; flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:30px; }
+    .oh h1 { margin:0 0 4px; font-size:21px; font-weight:900; } .oh p { margin:0; color:var(--muted); font-weight:700; font-size:13.5px; line-height:1.8; }
+    .crumb { font-size:13px; font-weight:700; color:var(--muted); margin:0 0 10px; } .crumb a { color:#0f766e; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-in"><a class="brand" href="index.html"><img src="icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a><a class="back" href="brokers-directory.html">الدليل الكلاسيكي ←</a></div></header>
+  <main>
+    <div class="crumb"><a href="index.html">الرئيسية</a> › <a href="agents.html">ابحث عن وسيط</a><span id="crOff"></span></div>
+    <div id="officeHead"></div>
+    <div class="seg" id="seg"><button data-m="agents" class="on">الوسطاء</button><button data-m="offices">المكاتب والشركات</button></div>
+    <form class="srch" id="sf"><input id="q" type="search" placeholder="ابحث باسم الوسيط أو المكتب أو رقم الوسيط" autocomplete="off" enterkeyhint="search"><button>بحث</button></form>
+    <div class="flt" id="flt"></div>
+    <div class="bar"><div><h2 id="ttl">الوسطاء</h2><small id="cnt"></small></div>
+      <div class="r"><label class="tgl" id="vWrap"><input type="checkbox" id="ver"> موثّق فقط</label><select id="sort" aria-label="الترتيب"></select></div></div>
+    <div class="list" id="list"></div>
+    <div class="more" id="more"></div>
+    <p style="color:var(--muted);font-size:12px;font-weight:600;margin:10px 0 0">الأسماء وأرقام الوسطاء والمكاتب من السجل الرسمي لدائرة الأراضي والأملاك. بيانات التواصل تظهر للأعضاء المسجّلين في ملف الوسيط المفعّل.</p>
+  </main>
+  <script src="js/aq-agents.js?v=116" defer></script>
+  <script src="js/aq-engage.js?v=116" defer></script>
+  <script src="js/aq-back.js?v=116" defer></script>
+  <script src="js/aq-ads.js?v=116" defer></script>
+</body>
+</html>
