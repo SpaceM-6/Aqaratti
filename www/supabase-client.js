@@ -121,6 +121,7 @@ async function aqBrokerColumns(table) {
   return _aqColsCache[table];
 }
 async function aqAttachBrokerContacts(table, rows) {
+  await aqIsSignedIn();
   const list = Array.isArray(rows) ? rows : (rows ? [rows] : []);
   const ids = list.map(r => r && r.id).filter(v => v != null);
   if (!ids.length) return rows;
@@ -344,16 +345,33 @@ function mapSupabasePropertyToAnaAqar(row) {
   };
 }
 
+// 🔒 أرقام المعلنين للأعضاء المسجّلين فقط (supabase/contacts_members_only.sql)
+let _aqSignedIn = null;
+async function aqIsSignedIn() {
+  if (_aqSignedIn !== null) return _aqSignedIn;
+  try { const { data } = await supabaseClient.auth.getSession(); _aqSignedIn = !!(data && data.session); } catch (e) { _aqSignedIn = false; }
+  window.__aqAnon = !_aqSignedIn;
+  return _aqSignedIn;
+}
+try { supabaseClient.auth.onAuthStateChange((ev, session) => { _aqSignedIn = !!session; }); } catch (e) {}
+async function aqProfileCols() { return (await aqIsSignedIn()) ? 'full_name, agency, phone, whatsapp, avatar_url' : 'full_name, agency, avatar_url'; }
+function aqMarkLocked(list) { if (_aqSignedIn === false) list.forEach((p) => { if (p && p.broker) p.broker.locked = true; }); return list; }
+// زر «سجّل لإظهار الرقم»: يفتح التسجيل في الرئيسية ثم يعيد الزائر لنفس الصفحة
+window.aqUnlockContactHTML = function (label) {
+  return '<a href="/index.html#join" onclick="try{sessionStorage.setItem(\'aq_after_login\', location.href)}catch(e){}" class="aq-unlock" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#0f766e;color:#fff;border-radius:12px;padding:11px 14px;font-weight:800;font-size:14.5px;text-decoration:none;width:100%;box-sizing:border-box"><i class="fas fa-lock"></i> ' + (label || 'سجّل الدخول لإظهار رقم المعلن') + '</a>';
+};
+window.aqIsSignedIn = aqIsSignedIn;
+
 // 📡 يجلب عقارات الوسطاء الحقيقيين المعتمدة فقط (status = approved) من Supabase
 async function fetchApprovedSupabaseProperties() {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
-      .select('*, profiles(full_name, agency, phone, whatsapp, avatar_url)')
+      .select('*, profiles(' + (await aqProfileCols()) + ')')
       .eq('status', 'approved');
     if (error || !data) return [];
     // الإقامات القصيرة (السعر بالليلة) لها صفحتها stays.html ولا تختلط بأسعار البيع والإيجار السنوي
-    return data.map(mapSupabasePropertyToAnaAqar).filter((p) => p.rentPeriod !== 'daily');
+    return aqMarkLocked(data.map(mapSupabasePropertyToAnaAqar)).filter((p) => p.rentPeriod !== 'daily');
   } catch (e) {
     return [];
   }
@@ -364,10 +382,10 @@ async function fetchApprovedStays() {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
-      .select('*, profiles(full_name, agency, phone, whatsapp, avatar_url)')
+      .select('*, profiles(' + (await aqProfileCols()) + ')')
       .eq('status', 'approved').eq('rent_period', 'daily').limit(500);
     if (error || !data) return [];
-    return data.map(mapSupabasePropertyToAnaAqar);
+    return aqMarkLocked(data.map(mapSupabasePropertyToAnaAqar));
   } catch (e) {
     return [];
   }
@@ -378,12 +396,12 @@ async function fetchOneApprovedSupabaseProperty(rawId) {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
-      .select('*, profiles(full_name, agency, phone, whatsapp, avatar_url)')
+      .select('*, profiles(' + (await aqProfileCols()) + ')')
       .eq('id', rawId)
       .eq('status', 'approved')
       .single();
     if (error || !data) return null;
-    return mapSupabasePropertyToAnaAqar(data);
+    return aqMarkLocked([mapSupabasePropertyToAnaAqar(data)])[0];
   } catch (e) {
     return null;
   }

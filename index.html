@@ -37,7 +37,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=114"></script>
+  <script src="supabase-client.js?v=115"></script>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -2798,9 +2798,18 @@
       closeRoyalModal('loginModal');
       await refreshAnaAqarAuthUI();
       showAnaAqarToast('تم تسجيل الدخول بنجاح، أهلاً بعودتك!', 'success');
+      aqReturnAfterLogin();
     }
 
     document.addEventListener('DOMContentLoaded', () => { const w = document.getElementById('registerConsentWrap'); if (w && window.aqConsentBox) w.innerHTML = aqConsentBox('regTerms'); });
+    // بعد الدخول: الرجوع للصفحة التي طلب منها الزائر إظهار رقم المعلن، وإظهار الأرقام في الصفحة الحالية
+    function aqReturnAfterLogin() {
+      let back = null; try { back = sessionStorage.getItem('aq_after_login'); sessionStorage.removeItem('aq_after_login'); } catch (e) {}
+      if (back && back.split('#')[0] !== location.href.split('#')[0]) { location.href = back; return; }
+      setTimeout(() => location.reload(), 900);
+    }
+    // رابط /index.html#join يفتح نافذة إنشاء الحساب مباشرة
+    window.addEventListener('load', () => { if (location.hash === '#join' || location.hash === '#login') { setTimeout(() => { try { openLoginModal(); switchAuthTab(location.hash === '#join' ? 'register' : 'login'); } catch (e) {} }, 400); } });
     async function handleAnaAqarRegister() {
       const fullName = document.getElementById('registerNameInput').value.trim();
       const email = document.getElementById('registerEmailInput').value.trim();
@@ -2836,6 +2845,7 @@
         closeRoyalModal('loginModal');
         await refreshAnaAqarAuthUI();
         showAnaAqarToast('🎉 تم إنشاء حسابك وتسجيل الدخول بنجاح!', 'success');
+        aqReturnAfterLogin();
       } else {
         // تأكيد البريد مفعّل: لا توجد جلسة بعد - نوضح للمستخدم الخطوة التالية بدل الإيحاء بنجاح فوري
         showAuthConfirmPanel(email);
@@ -3369,7 +3379,7 @@ function renderPropertiesList(list) {
               <div class="card-action-buttons aq-pc-actions">
                 <button class="btn-card-cta btn-cta-share aq-icon-only" aria-label="مشاركة" title="مشاركة" onclick="openAffiliateModal('${pid}')"><i class="fas fa-share-nodes"></i></button>
                 ${brokerInfo.phone ? `<button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${E(String(brokerInfo.name).replace(/'/g, ''))}', '${E(String(brokerInfo.phone).replace(/[^\d+]/g, ''))}')"><i class="fas fa-phone-alt"></i> اتصال</button>
-                <a href="https://api.whatsapp.com/send?phone=${String(brokerInfo.phone).replace(/\D/g, '').replace(/^0/, '971')}" target="_blank" rel="noopener noreferrer" class="btn-card-cta btn-cta-whatsapp" aria-label="واتساب"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+                <a href="https://api.whatsapp.com/send?phone=${String(brokerInfo.phone).replace(/\D/g, '').replace(/^0/, '971')}" target="_blank" rel="noopener noreferrer" class="btn-card-cta btn-cta-whatsapp" aria-label="واتساب"><i class="fab fa-whatsapp"></i> واتساب</a>` : (brokerInfo.locked ? `<button class="btn-card-cta btn-cta-call" onclick="try{sessionStorage.setItem('aq_after_login', location.href)}catch(e){};openLoginModal();switchAuthTab('register')"><i class="fas fa-lock"></i> إظهار الرقم</button>` : '')}
                 <a href="javascript:void(0)" onclick="goToPropertyDetails('${pid}')" class="btn-card-cta btn-cta-view aq-pc-view">التفاصيل <i class="fas fa-arrow-left"></i></a>
               </div>
             </div>
@@ -3964,15 +3974,15 @@ function renderPropertiesList(list) {
     <a href="#" onclick="window.aqPrivacyPrefs&&window.aqPrivacyPrefs();return false;" style="color:#9ca3af; font-weight:900;">تفضيلات الخصوصية</a>
   </footer>
 
-  <script src="js/aq-filters.js?v=114" defer></script>
-  <script src="js/aq-areas.js?v=114" defer></script>
+  <script src="js/aq-filters.js?v=115" defer></script>
+  <script src="js/aq-areas.js?v=115" defer></script>
   <script src="js/service-categories.js?v=111" defer></script>
-  <script src="js/aq-ai.js?v=114" defer></script>
-  <script src="js/aq-engage.js?v=114" defer></script>
-  <script src="js/aq-back.js?v=114" defer></script>
-  <script src="js/aq-stay.js?v=114" defer></script>
-  <script src="js/aq-cars.js?v=114" defer></script>
-  <script src="js/aq-ads.js?v=114" defer></script>
-  <script src="js/aq-home.js?v=114" defer></script>
+  <script src="js/aq-ai.js?v=115" defer></script>
+  <script src="js/aq-engage.js?v=115" defer></script>
+  <script src="js/aq-back.js?v=115" defer></script>
+  <script src="js/aq-stay.js?v=115" defer></script>
+  <script src="js/aq-cars.js?v=115" defer></script>
+  <script src="js/aq-ads.js?v=115" defer></script>
+  <script src="js/aq-home.js?v=115" defer></script>
 </body>
 </html>

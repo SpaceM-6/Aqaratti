@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=114"></script>
+  <script src="supabase-client.js?v=115"></script>
 
   <style>
     :root {
@@ -279,6 +279,7 @@
             </div>` : ''}
 
             <div class="action-buttons">
+              ${!b.phone && b.is_active && window.__aqAnon && window.aqUnlockContactHTML ? aqUnlockContactHTML('سجّل الدخول لإظهار رقم الوسيط') : ''}
               ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
               ${b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
               ${website ? `<a href="${website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع الإلكتروني</a>` : ''}
@@ -323,7 +324,7 @@
     });
   </script>
 
-  <script src="js/aq-ads.js?v=114" defer></script>
-  <script src="js/aq-back.js?v=114" defer></script>
+  <script src="js/aq-ads.js?v=115" defer></script>
+  <script src="js/aq-back.js?v=115" defer></script>
 </body>
 </html>

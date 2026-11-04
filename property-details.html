@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=114"></script>
+  <script src="supabase-client.js?v=115"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -1221,7 +1221,19 @@
       } else {
         document.querySelectorAll('.broker-contact-buttons .btn-whatsapp-bg, .broker-contact-buttons .btn-call-bg, .mobile-sticky-contact-bar').forEach(el => { el.style.display = 'none'; });
         const box = document.querySelector('.broker-contact-buttons');
-        if (box && !document.getElementById('noPhoneNote')) box.insertAdjacentHTML('afterbegin', '<p id="noPhoneNote" style="font-size:12px; color:#64748b; font-weight:700; margin:0 0 8px;">لم يضف المعلن رقم هاتف. أرسل استفسارك عبر البريد وسيصله مباشرة.</p>');
+        const locked = property && property.broker && property.broker.locked;
+        const bar = document.querySelector('.mobile-sticky-contact-bar');
+        if (locked && mobCall) {
+          // الزائر غير المسجّل: زر الشريط السفلي يفتح التسجيل ثم يعيده هنا
+          mobCall.href = '/index.html#join'; mobCall.removeAttribute('target');
+          mobCall.onclick = () => { try { sessionStorage.setItem('aq_after_login', location.href); } catch (e) {} };
+          mobCall.innerHTML = '<i class="fas fa-lock"></i> سجّل الدخول لإظهار رقم المعلن';
+          mobCall.style.setProperty('display', 'flex', 'important'); mobCall.style.flex = '1';
+          if (mobWa) mobWa.style.setProperty('display', 'none', 'important');
+        } else if (bar) bar.style.setProperty('display', 'none', 'important');
+        if (box && !document.getElementById('noPhoneNote')) box.insertAdjacentHTML('afterbegin', locked && window.aqUnlockContactHTML
+          ? '<div id="noPhoneNote" style="margin:0 0 8px">' + aqUnlockContactHTML() + '<p style="font-size:12px;color:#64748b;font-weight:700;margin:6px 0 0">أو أرسل استفسارك الآن وسيصل للمعلن مباشرة.</p></div>'
+          : '<p id="noPhoneNote" style="font-size:12px; color:#64748b; font-weight:700; margin:0 0 8px;">لم يضف المعلن رقم هاتف. أرسل استفسارك عبر البريد وسيصله مباشرة.</p>');
       }
 
       calculateMortgage();
@@ -1396,12 +1408,12 @@
       location.href = 'report.html?kind=listing&target=' + encodeURIComponent(t.trim().slice(0, 180)) + '&url=' + encodeURIComponent('property-details.html' + location.search);
     });
   </script>
-  <script src="js/aq-trust.js?v=114" defer></script>
-  <script src="js/aq-ads.js?v=114"></script>
-  <script src="js/aq-public.js?v=114" defer></script>
-  <script src="js/aq-filters.js?v=114" defer></script>
-  <script src="js/aq-ai.js?v=114" defer></script>
-  <script src="js/aq-engage.js?v=114" defer></script>
-  <script src="js/aq-back.js?v=114" defer></script>
+  <script src="js/aq-trust.js?v=115" defer></script>
+  <script src="js/aq-ads.js?v=115"></script>
+  <script src="js/aq-public.js?v=115" defer></script>
+  <script src="js/aq-filters.js?v=115" defer></script>
+  <script src="js/aq-ai.js?v=115" defer></script>
+  <script src="js/aq-engage.js?v=115" defer></script>
+  <script src="js/aq-back.js?v=115" defer></script>
 </body>
 </html>

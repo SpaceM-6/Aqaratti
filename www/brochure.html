@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="icons/app-icon-v4-512.png">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=114"></script>
+  <script src="supabase-client.js?v=115"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root { --teal:#00a896; --navy:#192038; --muted:#64748b; --line:#e2e8f0; }
@@ -52,7 +52,7 @@
       const r = await supabaseClient.from('properties').select('*').eq('id', id).maybeSingle();
       const p = r.data;
       if (!p) { root.innerHTML = '<div class="msg">الإعلان غير متاح.</div>'; return; }
-      let ag = {}; if (p.broker_id) { const a = await supabaseClient.from('profiles').select('full_name,company_name,phone,whatsapp,license_no,logo_url').eq('id', p.broker_id).maybeSingle(); ag = a.data || {}; }
+      let ag = {}; if (p.broker_id) { const a = await supabaseClient.from('profiles').select((window.aqIsSignedIn && !(await aqIsSignedIn())) ? 'full_name,company_name,license_no,logo_url' : 'full_name,company_name,phone,whatsapp,license_no,logo_url').eq('id', p.broker_id).maybeSingle(); ag = a.data || {}; }
       const imgs = p.image_urls || [], daily = p.rent_period === 'daily';
       const deal = daily ? 'إقامة قصيرة' : p.deal_type === 'rent' ? 'للإيجار' : 'للبيع';
       const price = daily ? `${num(p.nightly_price || p.price_aed)} درهم / الليلة` : `${num(p.price_aed)} درهم${p.deal_type === 'rent' ? (p.rent_period === 'monthly' ? ' شهريًا' : ' سنويًا') : ''}`;
