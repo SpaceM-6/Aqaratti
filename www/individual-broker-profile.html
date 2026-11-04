@@ -217,7 +217,7 @@
             <div class="profile-header-names">
               <div class="profile-name-ar">${esc(b.name_ar || b.name_en || '-')}</div>
               ${b.name_ar && b.name_en ? `<div class="profile-office" dir="ltr" style="text-align:right">${esc(b.name_en)}</div>` : ''}
-              ${b.office_name || b.office_name_en ? `<div class="profile-office"><i class="fas fa-building"></i> ${esc(b.office_name || b.office_name_en)}</div>` : ''}
+              ${b.office_name || b.office_name_en ? `<div class="profile-office"><i class="fas fa-building"></i> ${esc(b.office_name || b.office_name_en)}</div>${b.office_number ? `<a href="agents.html?office=${encodeURIComponent(b.office_number)}" style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;background:#e6f7f5;color:#0f766e;border-radius:999px;padding:5px 12px;font-weight:800;font-size:13px;text-decoration:none"><i class="fas fa-users"></i> كل وسطاء هذا المكتب</a>` : ''}` : ''}
             </div>
           </div>
 
