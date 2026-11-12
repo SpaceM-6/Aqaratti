@@ -136,9 +136,12 @@
     @keyframes sk { to { background-position:-200% 0; } }
 
     /* نوافذ */
-    .modal { position:fixed; inset:0; background:rgba(2,8,23,.6); z-index:50; display:none; align-items:flex-end; justify-content:center; padding:0; }
+    .modal { position:fixed; inset:0; background:rgba(2,8,23,.6); z-index:2147483300; display:none; align-items:flex-end; justify-content:center; padding:0; }
     .modal.open { display:flex; }
-    .sheet { background:var(--card); color:var(--ink); width:100%; max-width:520px; max-height:92vh; overflow:auto; border-radius:20px 20px 0 0; padding:18px; }
+    .sheet { background:var(--card); color:var(--ink); width:100%; max-width:520px; max-height:92vh; max-height:92dvh; overflow:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; border-radius:20px 20px 0 0; padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px)); }
+    .sheet form > .btn[type=submit] { position:sticky; bottom:0; z-index:2; margin-top:12px; box-shadow:0 -10px 18px var(--card); }
+    body.sd-modal-open { overflow:hidden; }
+    body.sd-modal-open .aqbnav, body.sd-modal-open .aqe-fbtn, body.sd-modal-open .aqsh-fab { display:none !important; }
     .sheet h3 { margin:0 0 4px; font-size:19px; }
     .sheet .sub { color:var(--muted); margin:0 0 12px; font-size:13px; }
     .fg { margin-bottom:10px; }
@@ -463,8 +466,9 @@
     });
 
     // نوافذ
-    const open = id => { $(id).classList.add('open'); };
-    document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('open'); }));
+    const syncLock = () => document.body.classList.toggle('sd-modal-open', !!document.querySelector('.modal.open'));
+    const open = id => { $(id).classList.add('open'); syncLock(); };
+    document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) { m.classList.remove('open'); syncLock(); } }));
     $('reqBtn').addEventListener('click', () => { $('reqForm').hidden = false; $('reqOk').hidden = true; open('reqModal'); });
     $('joinBtn').addEventListener('click', () => { $('jCat').value = cat; $('joinForm').hidden = false; $('joinOk').hidden = true; open('joinModal'); });
     if (new URLSearchParams(location.search).get('join')) setTimeout(() => $('joinBtn').click(), 300);
