@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=117"></script>
+  <script src="supabase-client.js?v=118"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -499,8 +499,8 @@
       justify-content: center; align-items: center;
     }
 
-    .lightbox-img-box { position: relative; max-width: 95vw; max-height: 80vh; }
-    .lightbox-img-box img { max-width: 100%; max-height: 80vh; object-fit: contain; }
+    .lightbox-img-box { position: relative; max-width: 95vw; max-height: 80vh;max-height:80dvh; }
+    .lightbox-img-box img { max-width: 100%; max-height: 80vh;max-height:80dvh; object-fit: contain; }
     .lightbox-close-btn { position: absolute; top: 12px; right: 15px; color: white; font-size: 24px; cursor: pointer; }
 
     /* 📱📱 الشريط السفلي المباشر للتواصل بالجوال */
@@ -556,7 +556,7 @@
       .property-sub-title { font-size: 14px !important; }
     }
   </style>
-  <link rel="stylesheet" href="css/aq-polish.css?v=117">
+  <link rel="stylesheet" href="css/aq-polish.css?v=118">
 </head>
 <body>
 
@@ -564,7 +564,7 @@
 
   <!-- الهيدر -->
   <nav class="navbar">
-    <a href="index.html" class="brand-logo">أنا عقار │ AnaAqar</a>
+    <a href="index.html" class="brand-logo aq-brand"><img src="icons/logo.svg" alt="" width="98" height="30"><span>أنا عقار</span></a>
     <a href="index.html" class="nav-back-link"><i class="fas fa-arrow-right"></i> العودة للبحث</a>
   </nav>
 
@@ -1409,12 +1409,12 @@
       location.href = 'report.html?kind=listing&target=' + encodeURIComponent(t.trim().slice(0, 180)) + '&url=' + encodeURIComponent('property-details.html' + location.search);
     });
   </script>
-  <script src="js/aq-trust.js?v=117" defer></script>
-  <script src="js/aq-ads.js?v=117"></script>
-  <script src="js/aq-public.js?v=117" defer></script>
-  <script src="js/aq-filters.js?v=117" defer></script>
-  <script src="js/aq-ai.js?v=117" defer></script>
-  <script src="js/aq-engage.js?v=117" defer></script>
-  <script src="js/aq-back.js?v=117" defer></script>
+  <script src="js/aq-trust.js?v=118" defer></script>
+  <script src="js/aq-ads.js?v=118"></script>
+  <script src="js/aq-public.js?v=118" defer></script>
+  <script src="js/aq-filters.js?v=118" defer></script>
+  <script src="js/aq-ai.js?v=118" defer></script>
+  <script src="js/aq-engage.js?v=118" defer></script>
+  <script src="js/aq-back.js?v=118" defer></script>
 </body>
 </html>

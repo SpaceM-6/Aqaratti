@@ -97,7 +97,7 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
     .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 14px}.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
   </style>
   ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : ''}
-  <link rel="stylesheet" href="/css/aq-polish.css?v=117">
+  <link rel="stylesheet" href="/css/aq-polish.css?v=118">
 </head>
 <body>
   <header class="topbar"><div class="topbar-in"><a class="brand" href="/index.html"><img src="/icons/logo.svg" alt="" width="98" height="30"><b>أنا عقار</b></a><a class="back" href="/areas.html">دليل المناطق ←</a></div></header>

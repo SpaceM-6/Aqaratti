@@ -252,7 +252,7 @@
     let draft = { deal: fallbackDeal === 'rent' ? 'rent' : 'sale', city: '', property_type: '', min_bedrooms: null, max_budget: null, notes: (history || []).filter((h) => h.role === 'user').map((h) => h.content).join(' — ').slice(0, 1400) };
     const ov = document.createElement('div'); ov.className = 'aqi-ov';
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:rgba(2,8,23,.55);display:flex;align-items:' + (innerWidth > 760 ? 'center' : 'flex-end') + ';justify-content:center;font-family:Tajawal,sans-serif;direction:rtl';
-    ov.innerHTML = `<form class="aqi-card" style="width:min(560px,100%);max-height:92vh;overflow:auto;margin:0;border-radius:${innerWidth > 760 ? '20px' : '20px 20px 0 0'}" novalidate>
+    ov.innerHTML = `<form class="aqi-card" style="width:min(560px,100%);max-height:92vh;max-height:92dvh;overflow:auto;margin:0;border-radius:${innerWidth > 760 ? '20px' : '20px 20px 0 0'}" novalidate>
       <h3><i class="fas fa-paper-plane" style="color:#00857a"></i> أرسل طلبك للوسطاء الموثّقين</h3>
       <p class="aqi-sub" id="rqHint"><i class="fas fa-spinner fa-spin"></i> نلخّص طلبك من المحادثة...</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">

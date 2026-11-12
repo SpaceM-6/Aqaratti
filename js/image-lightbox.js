@@ -21,7 +21,7 @@
     ].join(';');
 
     imgEl = document.createElement('img');
-    imgEl.style.cssText = 'max-width:92vw; max-height:92vh; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default;';
+    imgEl.style.cssText = 'max-width:92vw; max-height:92vh;max-height:92dvh; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default;';
     overlay.appendChild(imgEl);
 
     const closeBtn = document.createElement('button');

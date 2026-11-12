@@ -71,3 +71,24 @@ a { text-underline-offset: 0.2em; }
   .royal-modal-card, .aq-fab-menu.open { animation-name: aqFadeOnly !important; }
 }
 @keyframes aqFadeOnly { from { opacity: 0; } to { opacity: 1; } }
+
+/* منع التكبير التلقائي في iPhone عند لمس حقول الإدخال (يحدث إذا كان الخط أصغر من 16px) */
+@media (max-width: 768px) {
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=submit]):not([type=button]), select, textarea { font-size: 16px !important; }
+}
+
+/* لوحة التحكم: شريط البحث والأزرار لا يخرجان عن الشاشة في الجوالات الضيقة */
+@media (max-width: 600px) {
+  .crm-actions { flex-wrap: wrap; width: 100%; min-width: 0; }
+  .crm-actions .crm-search { flex: 1 1 160px; min-width: 0; width: 100%; }
+}
+
+/* توحيد شعار الصفحات القديمة مع بقية الموقع */
+.brand-logo.aq-brand { display:inline-flex; align-items:center; gap:8px; text-decoration:none; white-space:nowrap; }
+.brand-logo.aq-brand img { height:30px; width:auto; display:block; }
+.navbar > a { white-space:nowrap; }
+@media (max-width: 420px) { .brand-logo.aq-brand img { height:26px; } .brand-logo.aq-brand span { font-size:19px; } }
+@media (max-width: 600px) {
+  nav.navbar { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  nav.navbar > a:not(.brand-logo) { font-size:14px !important; }
+}

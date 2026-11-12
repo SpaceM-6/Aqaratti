@@ -132,11 +132,12 @@
       '.aqbnav a,.aqbnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted,#64748b);font:inherit;font-size:11.5px;font-weight:800;text-decoration:none;cursor:pointer;padding:2px 0;min-width:0}',
       '.aqbnav i{font-size:19px}.aqbnav .on{color:var(--teal,#00857a)}',
       '.aqbnav .add i{width:34px;height:34px;border-radius:50%;background:#e11d48;color:#fff;display:grid;place-items:center;font-size:17px;margin-top:-2px}',
-      'body.aq-has-bnav{padding-bottom:64px}body.aq-has-bnav .aqe-fbtn{bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}}',
+      'body.aq-ov-open .aqbnav,body.aq-ov-open .aqe-fbtn,body.aq-ov-open .aqsh-fab{display:none!important}',
+      'body.aq-has-bnav{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}body.aq-has-bnav .aqe-fbtn{bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}}',
       // النوافذ السفلية المشتركة
       '.aqs-ov{position:fixed;inset:0;z-index:2147483400;background:rgba(2,8,23,.5);display:flex;align-items:flex-end;justify-content:center;font-family:Tajawal,Tahoma,sans-serif;direction:rtl}',
       '@media(min-width:760px){.aqs-ov{align-items:center}}',
-      '.aqs-sheet{background:var(--card,#fff);color:var(--ink,#0f172a);width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;border-radius:22px 22px 0 0;padding:8px 18px calc(14px + env(safe-area-inset-bottom,0px));animation:aqsUp .22s ease-out;overflow:hidden}',
+      '.aqs-sheet{background:var(--card,#fff);color:var(--ink,#0f172a);width:100%;max-width:560px;max-height:90vh;max-height:90dvh;display:flex;flex-direction:column;border-radius:22px 22px 0 0;padding:8px 18px calc(14px + env(safe-area-inset-bottom,0px));animation:aqsUp .22s ease-out;overflow:hidden}',
       '@media(min-width:760px){.aqs-sheet{border-radius:22px}}',
       '@keyframes aqsUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}',
       '.aqs-sheet:before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:2px auto 10px}',
@@ -328,6 +329,25 @@
       it('fav', 'my.html', 'fa-heart', 'المفضلة') +
       '<button type="button" data-me><i class="fas fa-user"></i>حسابي</button>';
     document.body.appendChild(n); document.body.classList.add('aq-has-bnav');
+    // إخفاء الشريط السفلي وأزرار الطفو تلقائيًا ما دامت أي نافذة أو قائمة منبثقة مفتوحة
+    var ovPending = false;
+    var ovCheck = function () {
+      ovPending = false; var on = false;
+      try {
+        var st = document.elementsFromPoint(innerWidth / 2, innerHeight / 2);
+        for (var i = 0; i < st.length; i++) {
+          var el = st[i]; if (el === document.body || el === document.documentElement) break;
+          var cs = getComputedStyle(el);
+          if (cs.position !== 'fixed' || !(parseInt(cs.zIndex, 10) >= 10) || cs.visibility === 'hidden' || +cs.opacity < 0.1) continue;
+          var r = el.getBoundingClientRect();
+          if (r.width >= innerWidth * 0.9 && r.height >= innerHeight * 0.75) { on = true; break; }
+        }
+      } catch (e) {}
+      document.body.classList.toggle('aq-ov-open', on);
+    };
+    var ovQueue = function () { if (!ovPending) { ovPending = true; requestAnimationFrame(ovCheck); } };
+    try { new MutationObserver(ovQueue).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden', 'open'] }); } catch (e) {}
+    addEventListener('resize', ovQueue); ovQueue();
     n.querySelector('[data-sec]').onclick = function () {
       sheetOpts('الأقسام', [
         ['find.html', 'fa-magnifying-glass', 'البحث في الموقع', 'عقار، منطقة، وسيط، مشروع، خدمة'], ['area/', 'fa-chart-line', 'أسعار المناطق', 'سعر المتر والإيجارات والصفقات'],
