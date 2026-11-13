@@ -77,8 +77,8 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
   <link rel="canonical" href="${esc(canonical)}">
   <meta property="og:type" content="website"><meta property="og:site_name" content="أنا عقار AnaAqar">
   <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
-  <meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${SITE}/icons/icon-app-1024.png">
-  <link rel="icon" type="image/png" href="/icons/app-icon-v4-512.png">
+  <meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${SITE}/icons/anaaqar-logo-v5-1024.png">
+  <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="/icons/anaaqar-logo-v5-192.png">
   <meta name="theme-color" content="#00857a">
   <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">

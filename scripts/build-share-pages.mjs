@@ -14,7 +14,7 @@ const SB_KEY = (src.match(/SUPABASE_ANON_KEY\s*=\s*'([^']+)'/) || [])[1];
 
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const num = (n) => Number(n || 0).toLocaleString('en-US');
-const abs = (u) => !u ? `${SITE}/icons/icon-app-1024.png` : /^https?:/.test(u) ? u : `${SITE}/${String(u).replace(/^\.?\//, '')}`;
+const abs = (u) => !u ? `${SITE}/icons/anaaqar-logo-v5-1024.png` : /^https?:/.test(u) ? u : `${SITE}/${String(u).replace(/^\.?\//, '')}`;
 // صور Unsplash نطلبها بحجم مناسب للمعاينة
 const ogImg = (u) => /images\.unsplash\.com/.test(u || '') ? String(u).replace(/[?&]w=\d+/, '').replace(/\?.*$/, '') + '?q=75&w=1200&h=630&fit=crop' : abs(u);
 
