@@ -108,6 +108,7 @@ const page = ({ title, desc, canonical, h1, sub, body, jsonld, crumbs }) => `<!D
   </main>
   <script src="/js/aq-back.js?v=${V}" defer></script>
   <script src="/js/aq-ads.js?v=${V}" defer></script>
+  <script src="/js/aq-track.js?v=1" defer></script>
 </body>
 </html>
 `;

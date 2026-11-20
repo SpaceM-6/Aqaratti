@@ -26,6 +26,14 @@
   }
 })();
 
+// ==================== 📊 إحصاء الزيارات (js/aq-track.js) ====================
+(function aqLoadTrack() {
+  try {
+    if (window.__aqTrack || document.querySelector('script[src*="aq-track.js"]')) return;
+    const s = document.createElement('script'); s.src = '/js/aq-track.js?v=1'; s.defer = true; document.head.appendChild(s);
+  } catch (e) {}
+})();
+
 // ==================== 📱 التطبيق بعرض جوال ثابت ====================
 // إذا فعّل المستخدم «عرض موقع الكمبيوتر» في كروم، يفتح التطبيق المثبّت (PWA) بعرض كمبيوتر مصغّر
 // لأن كروم يتجاهل إعداد العرض في الصفحة. هنا نعيد للتطبيق تخطيط الجوال دائمًا:

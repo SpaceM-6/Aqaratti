@@ -108,6 +108,8 @@
       <p class="sub">كل ما يحتاج متابعتك في مكان واحد. الأرقام الحمراء تعني أن هناك ما ينتظرك.</p>
       <div class="stats" id="stats"></div>
 
+      <a class="tile" href="#s-visits" style="margin-bottom:14px"><span class="ic" style="background:#e6f7f5;color:#006e64"><i class="fas fa-chart-column"></i></span><span class="tx"><b>الزيارات والإحصاءات</b><small>الزوار والدول ومصادر الزيارة، والصفحات والإعلانات الأكثر مشاهدة، ونقرات التواصل، ومدة البقاء، ومستخدمو التطبيق</small></span><span class="tn" id="tnVis" style="background:var(--teal)"></span></a>
+
       <div class="group">يحتاج متابعتك</div>
       <div class="tiles">
         <a class="tile" href="properties.html"><span class="ic" style="background:#e6f7f5;color:#006e64"><i class="fas fa-house-circle-check"></i></span><span class="tx"><b>مراجعة العقارات</b><small>اعتماد أو رفض الإعلانات الجديدة</small></span><span class="tn" id="tnProps"></span></a>
@@ -315,6 +317,16 @@
     <section data-sec="market"><div id="marketBox"></div></section>
     <section data-sec="registry"><div id="registryBox"></div></section>
 
+    <!-- ===== الزيارات والإحصاءات ===== -->
+    <section data-sec="visits">
+      <div class="card" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <select id="vsDays" class="pill" style="padding:8px 14px"><option value="1">آخر ٢٤ ساعة</option><option value="7" selected>آخر ٧ أيام</option><option value="30">آخر ٣٠ يومًا</option><option value="90">آخر ٩٠ يومًا</option><option value="365">آخر سنة</option></select>
+        <button class="btn soft sm" type="button" id="vsReload"><i class="fas fa-rotate"></i> تحديث</button>
+        <small style="color:var(--muted);flex-basis:100%">لا تُحتسب زيارات أجهزة الإدارة (أي جهاز فتح لوحة التحكم) ولا محركات البحث. الدولة تُعرف من المنطقة الزمنية للجهاز، والأوقات بتوقيت دبي.</small>
+      </div>
+      <div id="vsBody"><div class="empty">جاري التحميل...</div></div>
+    </section>
+
     <!-- ===== المساعد الذكي ===== -->
     <section data-sec="ai">
       <div class="card" id="aiBox"></div>
@@ -342,7 +354,7 @@
         return;
       }
       $('root').innerHTML = ''; $('root').appendChild($('tplApp').content.cloneNode(true));
-      wire(); route(); loadStats(); loadCarCount();
+      wire(); route(); loadStats(); loadCarCount(); visitsToday();
       setInterval(() => { if (!document.hidden) loadStats(); }, 30000);
     }
     function loginForm() {
@@ -360,8 +372,8 @@
     $('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
     // ===== التنقل بين الأقسام =====
-    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات', quality: 'جودة الإعلانات والتحقق', market: 'بيانات السوق', registry: 'سجلات دائرة الأراضي' };
-    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings(), quality: () => AQAdminExtra.loadQuality($('qualityBox')), market: () => AQAdminExtra.loadMarket($('marketBox')), registry: () => AQAdminExtra.loadRegistry($('registryBox')) };
+    const TITLES = { chat: 'الدردشة المباشرة', reports: 'البلاغات والشكاوى', news: 'شريط الجديد', offers: 'العروض', tips: 'التنبيهات اليومية', broadcast: 'إشعار للمستخدمين', searches: 'البحوث المحفوظة', accounts: 'الحسابات المهنية', projects: 'مراجعة المشاريع', buyers: 'طلبات المشترين', campaigns: 'الحملات البريدية', ai: 'المساعد الذكي', ads: 'شريط الإعلانات', cars: 'مراجعة المركبات', bookings: 'الحجوزات', quality: 'جودة الإعلانات والتحقق', market: 'بيانات السوق', registry: 'سجلات دائرة الأراضي', visits: 'الزيارات والإحصاءات' };
+    const LOADERS = { chat: () => loadThreads(), reports: () => loadReports(), news: () => loadList('news'), offers: () => loadList('offers'), tips: () => loadList('tips'), searches: () => loadSearches(), accounts: () => loadAccounts(), projects: () => loadProjects(), buyers: () => loadBuyers(), campaigns: () => loadCampaigns(), ai: () => loadAi(), ads: () => loadAds(), cars: () => loadCars(), bookings: () => loadBookings(), quality: () => AQAdminExtra.loadQuality($('qualityBox')), market: () => AQAdminExtra.loadMarket($('marketBox')), registry: () => AQAdminExtra.loadRegistry($('registryBox')), visits: () => loadVisits() };
     let current = '';
     function route() {
       const m = /^#s-(\w+)/.exec(location.hash); const k = m && TITLES[m[1]] ? m[1] : '';
@@ -749,6 +761,70 @@
         <p><b>آخر 30 يومًا:</b> ${month} طلبًا</p>
         <p class="sub">الحد اليومي للموقع كله 300 طلب حتى يكفي الرصيد الشهري؛ عند بلوغه تتوقف الأدوات حتى منتصف الليل (بتوقيت غرينتش) ويعود البحث العادي. ملخصات المناطق المحفوظة لا تُحسب.
         لتغيير الحد أضيفي في Supabase ← Edge Functions ← Secrets سرًّا باسم AI_DAILY_LIMIT وقيمته الرقم الجديد. وراجعي الاستهلاك الفعلي بالدولار من صفحة Usage في Claude Console.</p>`;
+    }
+
+    // ===== الزيارات والإحصاءات (supabase/analytics.sql + js/aq-track.js) =====
+    const vAR = (n) => Number(n || 0).toLocaleString('ar-EG');
+    const vPct = (a, b) => vAR(b ? Math.round(a / b * 100) : 0) + '٪';
+    const vCountry = (c) => { if (!c || c === '??') return '🌐 غير معروفة'; let nm = c; try { nm = new Intl.DisplayNames(['ar'], { type: 'region' }).of(c); } catch (e) {} return String.fromCodePoint(...[...c].map((x) => 127397 + x.charCodeAt(0))) + ' ' + nm; };
+    const vDur = (s) => { s = Math.round(s || 0); if (s < 60) return vAR(s) + ' ثانية'; const m = Math.floor(s / 60), r = s % 60; return vAR(m) + ' د' + (r ? ' و' + vAR(r) + ' ث' : ''); };
+    const vSrc = (s) => {
+      if (!s) return '🔗 مباشر (رابط محفوظ أو كتابة العنوان)';
+      if (/google/.test(s)) return '🔎 Google'; if (/bing/.test(s)) return '🔎 Bing'; if (/yahoo|duckduckgo|yandex/.test(s)) return '🔎 ' + s;
+      if (/facebook|fb\b/.test(s)) return '📘 Facebook'; if (/instagram/.test(s)) return '📸 Instagram'; if (/t\.co$|twitter|x\.com/.test(s)) return '𝕏 X (تويتر)';
+      if (/linkedin/.test(s)) return '💼 LinkedIn'; if (/tiktok/.test(s)) return '🎵 TikTok'; if (/youtube/.test(s)) return '▶️ YouTube'; if (/whatsapp/.test(s)) return '💬 WhatsApp'; if (/telegram|t\.me/.test(s)) return '✈️ Telegram';
+      if (/snapchat/.test(s)) return '👻 Snapchat'; if (/chatgpt|openai|perplexity|claude|gemini|copilot/.test(s)) return '🤖 ' + s;
+      return '🌐 ' + esc(s);
+    };
+    const PLAT = { web: 'المتصفح', pwa: 'الموقع المثبّت على الشاشة', android: 'تطبيق أندرويد', ios: 'تطبيق آيفون', app: 'التطبيق' };
+    function vBars(rows, col) {
+      if (!rows.length) return '<p class="sub" style="margin:0">لا بيانات بعد في هذه المدة.</p>';
+      const mx = Math.max(...rows.map((r) => r.n), 1);
+      return '<div style="display:grid;gap:8px">' + rows.map((r) => `<div><div style="display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:700"><span style="min-width:0;overflow-wrap:anywhere">${r.l}</span><span style="white-space:nowrap">${vAR(r.n)}${r.x ? ` <small style="color:var(--muted);font-weight:600">${r.x}</small>` : ''}</span></div><div style="height:7px;background:#eef2f7;border-radius:9px;overflow:hidden;margin-top:3px"><div style="height:100%;width:${Math.max(3, r.n / mx * 100)}%;background:${col || 'var(--teal)'};border-radius:9px"></div></div></div>`).join('') + '</div>';
+    }
+    async function visitsToday() {
+      try { const { data } = await sb.rpc('aq_analytics_report', { p_days: 1 }); const el = $('tnVis'); if (el && data) el.textContent = data.visitors ? vAR(data.visitors) + ' زائر اليوم' : ''; } catch (e) {}
+    }
+    let vsBusy = false;
+    async function loadVisits() {
+      if (vsBusy) return; vsBusy = true;
+      const body = $('vsBody'); if (!$('vsDays').dataset.on) { $('vsDays').dataset.on = 1; $('vsDays').onchange = loadVisits; $('vsReload').onclick = loadVisits; }
+      body.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>';
+      try {
+        const { data: d, error } = await sb.rpc('aq_analytics_report', { p_days: +$('vsDays').value });
+        if (error) throw error;
+        const ct = d.contacts || {}, cTot = (ct.call || 0) + (ct.whatsapp || 0) + (ct.email || 0);
+        const kpi = (n, l, sub) => `<div class="stat"><b>${n}</b><span>${l}</span>${sub ? `<small style="display:block;color:var(--muted);font-size:12px;font-weight:600;line-height:1.5">${sub}</small>` : ''}</div>`;
+        let h = '<div class="stats">' +
+          kpi(vAR(d.visitors), 'زائر', `جديد ${vAR(d.new_visitors)} · عائد ${vAR(Math.max(0, d.visitors - d.new_visitors))}`) +
+          kpi(vAR(d.sessions), 'زيارة', vAR(d.views) + ' صفحة مشاهدة') +
+          kpi(vDur(d.avg_secs), 'متوسط مدة الزيارة') +
+          kpi(vPct(d.bounce, d.sessions), 'نسبة المغادرة السريعة', 'صفحة واحدة وأقل من ٣٠ ثانية') +
+          kpi(vAR(d.items_total), 'مشاهدة إعلان', 'عقارات ومشاريع وإقامات ومركبات وملفات') +
+          kpi(vAR(cTot), 'نقرة تواصل', `اتصال ${vAR(ct.call)} · واتساب ${vAR(ct.whatsapp)} · بريد ${vAR(ct.email)}`) +
+          kpi(vAR(d.signed_in), 'زائر مسجّل الدخول') +
+          kpi(vAR(d.app_sessions), 'فتح للتطبيق', 'أجهزة جديدة: ' + vAR(d.app_new)) +
+          kpi(vAR(d.app_devices), 'جهاز ثبّت التطبيق', 'منذ البداية') +
+          kpi(vPct(d.mobile, d.sessions), 'من الجوال', vAR(d.mobile) + ' زيارة') + '</div>';
+        const sec = (t, x) => `<div class="card"><h2>${t}</h2>${x}</div>`;
+        h += sec('🌍 الدول', vBars((d.countries || []).map((c) => ({ l: vCountry(c[0]), n: c[1], x: vAR(c[2]) + ' زائر · ' + vDur(c[3]) }))));
+        h += sec('🧭 من أين جاء الزوار', vBars((d.sources || []).map((r) => ({ l: vSrc(r[0]), n: r[1] })), '#2563eb'));
+        h += sec('🏠 أكثر الإعلانات مشاهدة', vBars((d.items || []).map((r) => ({ l: esc(r[0]), n: r[1], x: r[2] ? '· ' + vAR(r[2]) + ' تواصل' : '' })), '#d4af37'));
+        h += sec('📞 نقرات التواصل', vBars([['📱 اتصال هاتفي', ct.call], ['💬 واتساب', ct.whatsapp], ['✉️ بريد إلكتروني', ct.email]].filter((r) => r[1]).map((r) => ({ l: r[0], n: r[1] })), '#16a34a'));
+        h += sec('📑 أكثر الصفحات تصفحًا', vBars((d.pages || []).map((r) => ({ l: esc(r[0]), n: r[1] }))));
+        h += sec('📱 طريقة الدخول', vBars(Object.entries(d.platforms || {}).sort((a, b) => b[1] - a[1]).map(([k, n]) => ({ l: PLAT[k] || k, n })), '#7c3aed'));
+        const du = d.durations || [0, 0, 0, 0];
+        h += sec('⏱ مدة الزيارة', vBars([['أقل من ٣٠ ثانية', du[0]], ['من ٣٠ ثانية إلى ٣ دقائق', du[1]], ['من ٣ إلى ١٠ دقائق', du[2]], ['أكثر من ١٠ دقائق', du[3]]].map((r) => ({ l: r[0], n: r[1] })), '#0e7490'));
+        const hrs = d.hours || [];
+        h += sec('🕐 أوقات الزيارة (بتوقيت دبي)', hrs.length ? (() => { const mx = Math.max(...hrs.map((x) => x[1]), 1), m = {}; hrs.forEach((x) => { m[x[0]] = x[1]; });
+          return '<div style="display:grid;grid-template-columns:repeat(24,1fr);gap:3px;align-items:end;height:120px;direction:ltr">' + Array.from({ length: 24 }, (_, i) => `<div title="${i}:00 · ${vAR(m[i])} زيارة" style="height:${Math.max(3, (m[i] || 0) / mx * 100)}%;background:${m[i] ? 'var(--teal)' : 'var(--line)'};border-radius:4px 4px 0 0"></div>`).join('') + '</div><div style="display:grid;grid-template-columns:repeat(4,1fr);direction:ltr;color:var(--muted);font-size:12px;font-weight:700;margin-top:4px"><span>١٢ ص</span><span>٦ ص</span><span>١٢ م</span><span>٦ م</span></div>'; })() : '<p class="sub" style="margin:0">لا بيانات بعد في هذه المدة.</p>');
+        h += sec('📅 الزيارات يومًا بيوم', vBars((d.daily || []).slice().reverse().map((r) => ({ l: new Date(r[0] + 'T12:00:00').toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }), n: r[1], x: vAR(r[2]) + ' زائر' })), '#16a34a'));
+        body.innerHTML = h;
+      } catch (e) {
+        body.innerHTML = /aq_analytics_report|function|schema cache/.test(String(e && e.message))
+          ? '<div class="empty">قسم الإحصاء يحتاج تشغيل ملف <code>supabase/analytics.sql</code> مرة واحدة في Supabase ← SQL Editor، ثم اضغطي «تحديث». تبدأ الأرقام بالظهور مع أول زيارة بعدها.</div>'
+          : `<div class="empty">تعذّر التحميل: ${esc(e && e.message)}</div>`;
+      } finally { vsBusy = false; }
     }
 
     boot();
