@@ -623,7 +623,7 @@
         <div class="property-header-box" id="secDetails">
           <div class="main-price-text" id="propPrice" data-price-aed="645000">AED 645,000</div>
           <h1 class="property-sub-title" id="propTitle">جاري تحميل بيانات العقار...</h1>
-          <p style="color:var(--primary-turquoise); font-weight:800; font-size:12px;">استوديو سكاي لاين │ إطلالة على المسبح والمنتزه</p>
+          <p id="propSubline" style="color:var(--primary-turquoise); font-weight:800; font-size:12px;" hidden></p>
         </div>
 
         <div class="quick-specs-bar">
@@ -1222,6 +1222,12 @@
           document.getElementById('refText').innerText = ref; const rc = document.getElementById('refCodeText'); if (rc) rc.innerText = ref.replace('AnaAqar-', '');
           if (property.createdAt) { document.getElementById('addedRow').hidden = false; document.getElementById('addedText').innerText = new Date(property.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); }
           if (DONE[property.completionStatus]) { document.getElementById('buildRow').hidden = false; document.getElementById('buildText').innerText = DONE[property.completionStatus]; }
+          // سطر تحت العنوان: نوع الوحدة │ المنطقة، المدينة — من بيانات الإعلان نفسه فقط
+          const UNIT = { apartment: 'شقة', studio: 'استوديو', villa: 'فيلا', townhouse: 'تاون هاوس', penthouse: 'بنتهاوس', duplex: 'دوبلكس', chalet: 'شاليه', hotel_apt: 'شقة فندقية', office: 'مكتب', shop: 'محل تجاري', warehouse: 'مستودع', showroom: 'معرض', land: 'أرض', building: 'مبنى كامل' };
+          const unitTx = UNIT[property.unitType] || (property.bedrooms === 0 ? 'استوديو' : '') || property.propertyType || '';
+          const placeTx = [property.area, property.city].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join('، ');
+          const sub = [unitTx, placeTx].filter(Boolean).join(' │ ');
+          if (sub) { const se = document.getElementById('propSubline'); se.textContent = sub; se.hidden = false; }
           if (property.developerName) { document.getElementById('devRow').hidden = false; document.getElementById('devText').innerText = property.developerName; }
           aqRenderPlans(property);
           if (window.AQTrust) AQTrust.panel(document.getElementById('trustPanel'), property);

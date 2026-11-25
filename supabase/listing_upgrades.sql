@@ -40,3 +40,14 @@ alter table public.properties drop constraint if exists properties_floor_plans_c
 alter table public.properties add constraint properties_floor_plans_check check (public.aq_valid_plan_urls(floor_plan_urls));
 
 create index if not exists properties_developer_name_idx on public.properties (lower(developer_name)) where developer_name is not null;
+
+-- صور الإعلان: 3 صور على الأقل وحتى 30، وكلها مرفوعة على مخزن صور المنصة (لا روابط خارجية ولا صور عامة)
+-- NOT VALID: يُطبَّق على كل إعلان جديد أو معدَّل، ولا يفحص الصفوف القديمة.
+create or replace function public.aq_valid_listing_images(p text[])
+returns boolean language sql immutable set search_path = pg_catalog as $$
+  select coalesce(cardinality(p), 0) between 3 and 30 and not exists (
+    select 1 from unnest(coalesce(p, '{}')) u
+    where u !~ '^https://mejkpckkdbmczzypzkkr\.supabase\.co/storage/v1/object/public/property-images/[A-Za-z0-9._/%-]+$');
+$$;
+alter table public.properties drop constraint if exists properties_min_images_check;
+alter table public.properties add constraint properties_min_images_check check (public.aq_valid_listing_images(image_urls)) not valid;
