@@ -21,7 +21,7 @@
     <!-- خط كايرو الفخم -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script src="supabase-client.js?v=118"></script>
+    <script src="supabase-client.js?v=119"></script>
 
     <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
     <script type="text/javascript">
@@ -375,18 +375,22 @@
             const countryFilter = document.getElementById('dirCountryFilter').value;
             const q = document.getElementById('dirSearchInput').value.trim();
 
-            let query = supabaseClient.from('directory_brokers').select('*', { count: 'exact' });
+            // الهاتف والبريد محجوبان عن القراءة المباشرة، ويُجلبان للمدير عبر دالة محمية (supabase/reveal_contacts.sql)
+            let query = supabaseClient.from('directory_brokers').select('id, license, name_ar, name_en, website, logo, rank, contact_name, activities, social, is_active, activated_at, created_at, country, broker_type, has_contact', { count: 'exact' });
             if (statusFilter === 'active') query = query.eq('is_active', true);
             else if (statusFilter === 'inactive') query = query.eq('is_active', false);
             if (countryFilter !== 'all') query = query.eq('country', countryFilter);
 
             if (q) {
                 const safeQ = q.replace(/[%_,]/g, '');
-                query = query.or(`name_ar.ilike.%${safeQ}%,name_en.ilike.%${safeQ}%,license.ilike.%${safeQ}%,phone.ilike.%${safeQ}%`);
+                let byContact = [];
+                if (/\d{3,}|@/.test(safeQ)) { const r = await supabaseClient.rpc('admin_directory_broker_ids_by_contact', { p_q: safeQ }); byContact = (r.data || []).filter(v => /^[0-9a-f-]{36}$/i.test(v)); }
+                query = query.or(`name_ar.ilike.%${safeQ}%,name_en.ilike.%${safeQ}%,license.ilike.%${safeQ}%` + (byContact.length ? `,id.in.(${byContact.join(',')})` : ''));
             }
 
             query = query.order('created_at', { ascending: false }).range(offset, offset + DIR_PAGE_SIZE - 1);
             const { data, error, count } = await query;
+            if (!error) await aqAdminAttachContacts('directory', data || []);
             return { data: data || [], count: count || 0, error };
         }
 

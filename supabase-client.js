@@ -370,6 +370,53 @@ window.aqUnlockContactHTML = function (label) {
 };
 window.aqIsSignedIn = aqIsSignedIn;
 
+// 🔒 أرقام شركات الخدمات والدليل متعدد الدول (supabase/reveal_contacts.sql):
+// الزائر يرى زر التسجيل، والعضو يضغط «إظهار الرقم» فيُجلب رقم هذه الجهة وحدها.
+// كل صفحة تعرّف window.aqRevealRender(kind, contact, row) لترسم أزرار الاتصال بتنسيقها.
+const _aqRevealCache = {};
+window.aqRevealContact = async function (kind, id) {
+  const key = kind + ':' + id;
+  if (_aqRevealCache[key]) return _aqRevealCache[key];
+  const fn = kind === 'service' ? 'get_service_provider_contacts' : 'get_directory_broker_contacts';
+  const { data, error } = await supabaseClient.rpc(fn, { p_ids: [kind === 'service' ? Number(id) : String(id)] });
+  if (error) throw error;
+  return (_aqRevealCache[key] = (data && data[0]) || {});
+};
+// يجلب بيانات تواصل عدة جهات دفعة واحدة — للمديرين في لوحة الإدارة فقط (قاعدة البيانات ترفض غيرهم)
+window.aqAdminAttachContacts = async function (kind, rows) {
+  const ids = (rows || []).map(r => r && r.id).filter(v => v != null);
+  if (!ids.length) return rows;
+  const fn = kind === 'service' ? 'get_service_provider_contacts' : 'get_directory_broker_contacts';
+  const { data, error } = await supabaseClient.rpc(fn, { p_ids: ids });
+  if (error) return rows;
+  const byId = new Map((data || []).map(c => [String(c.id), c]));
+  rows.forEach(r => { const c = byId.get(String(r.id)); if (c) Object.assign(r, { phone: c.phone || null, whatsapp: c.whatsapp || null, email: c.email || null }); });
+  return rows;
+};
+// زر الإظهار: للزائر زر تسجيل الدخول، وللعضو زر «إظهار الرقم» (لا يظهر شيء إن لم يكن للجهة رقم)
+window.aqRevealButtonHTML = function (kind, row, cls) {
+  if (!row || !row.has_contact) return '';
+  if (_aqSignedIn === false) return window.aqUnlockContactHTML('سجّل الدخول لإظهار الرقم');
+  return '<button type="button" class="aq-reveal ' + (cls || '') + '" data-aq-reveal="' + kind + '" data-aq-id="' + String(row.id).replace(/[^\w-]/g, '') + '"><i class="fas fa-phone"></i> إظهار الرقم</button>';
+};
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest && e.target.closest('[data-aq-reveal]');
+  if (!b || b.disabled) return;
+  e.preventDefault(); e.stopPropagation();
+  const kind = b.dataset.aqReveal, id = b.dataset.aqId;
+  if (!(await aqIsSignedIn())) { try { sessionStorage.setItem('aq_after_login', location.href); } catch (er) {} location.href = '/index.html#join'; return; }
+  const old = b.innerHTML; b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  try {
+    const c = await window.aqRevealContact(kind, id);
+    const html = typeof window.aqRevealRender === 'function' ? window.aqRevealRender(kind, c, b) : '';
+    if (html) { const box = document.createElement('span'); box.className = 'aq-revealed'; box.style.display = 'contents'; box.innerHTML = html; b.replaceWith(box); }
+    else { b.innerHTML = 'لا يوجد رقم مسجّل'; }
+  } catch (err) {
+    b.disabled = false; b.innerHTML = old;
+    alert(aqIsRateLimited(err) ? 'وصلت إلى الحد المسموح لإظهار الأرقام في هذا الوقت. حاول مجددًا بعد ساعة.' : 'تعذّر إظهار الرقم الآن. حاول مجددًا بعد قليل.');
+  }
+}, true);
+
 // 📡 يجلب عقارات الوسطاء الحقيقيين المعتمدة فقط (status = approved) من Supabase
 async function fetchApprovedSupabaseProperties() {
   try {

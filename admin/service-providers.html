@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../supabase-client.js?v=118"></script>
+  <script src="../supabase-client.js?v=119"></script>
   <script src="../js/service-categories.js"></script>
   <style>
     :root { --teal:#00857a; --navy:#192038; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; }
@@ -149,12 +149,14 @@
     }
 
     async function load() {
-      let q = supabaseClient.from('service_providers').select('*').order('created_at', { ascending: false }).limit(500);
+      // الهاتف والواتساب والبريد محجوبة عن القراءة المباشرة، وتُجلب للمدير عبر دالة محمية (supabase/reveal_contacts.sql)
+      let q = supabaseClient.from('service_providers').select('id, category, name_ar, name_en, logo_url, emirate, area, description, website, license_number, is_active, is_verified, is_featured, sort_order, submitted_by_public, created_at, updated_at, founded_year, source_url, about, address, map_url, portfolio, team_info').order('created_at', { ascending: false }).limit(500);
       if (cat !== 'all') q = q.eq('category', cat);
       if (status === 'active') q = q.eq('is_active', true);
       if (status === 'inactive') q = q.eq('is_active', false);
       if (status === 'pending') q = q.eq('is_active', false).eq('submitted_by_public', true);
       const { data, error } = await q;
+      if (!error) await aqAdminAttachContacts('service', data || []);
       if (error) { $('list').innerHTML = `<div class="empty">تعذّر التحميل. تأكدي من تشغيل ملف supabase/service_providers.sql.<br><small>${esc(error.message)}</small></div>`; return; }
       rows = data;
       $('list').innerHTML = rows.length ? rows.map(r => `<div class="row">

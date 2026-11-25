@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=118"></script>
+  <script src="supabase-client.js?v=119"></script>
   <script src="js/service-categories.js"></script>
   <style>
     :root { --teal:#00857a; --teal-dark:#006e64; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
@@ -118,6 +118,11 @@
     .co-actions { display:flex; gap:6px; margin-top:auto; flex-wrap:wrap; }
     .co-actions a { flex:1 1 0; min-width:0; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; white-space:nowrap; text-decoration:none; text-align:center; border-radius:10px; padding:8px 6px; font-weight:900; font-size:13px; }
     .co-actions a.a-more { flex-basis:100%; }
+    .co-actions button.aq-reveal { flex:1 1 0; min-width:0; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; white-space:nowrap; border:0; cursor:pointer; font:inherit; border-radius:10px; padding:8px 6px; font-weight:900; font-size:13px; }
+    .co-actions a.aq-unlock { flex-basis:100%; font-size:13px !important; min-height:42px; }
+    .pf-contacts button.pf-reveal { display:flex; gap:10px; align-items:center; justify-content:center; font:inherit; font-weight:800; font-size:14px; color:#fff; background:var(--teal); border:0; border-radius:12px; padding:11px 12px; cursor:pointer; }
+    .pf-contacts button.pf-reveal i { color:#fff; }
+    .aq-reveal:focus-visible { outline:3px solid var(--teal); outline-offset:2px; }
     .a-call { background:var(--navy); color:#fff; }
     [data-theme="dark"] .a-call { background:#2b3a66; }
     .a-wa { background:#16a34a; color:#fff; }
@@ -296,7 +301,8 @@
       emirate = ''; query = ''; $('q').value = ''; page = 1; renderHead(); load();
     });
 
-    const COLS = 'id, category, name_ar, name_en, logo_url, emirate, area, description, phone, whatsapp, email, website, is_verified, is_featured, sort_order';
+    // أرقام الشركات لا تُقرأ هنا: تُجلب بضغطة «إظهار الرقم» للأعضاء المسجّلين فقط (supabase/reveal_contacts.sql)
+    const COLS = 'id, category, name_ar, name_en, logo_url, emirate, area, description, website, is_verified, is_featured, sort_order, has_contact';
     const EXTRA = ', founded_year, about, address, map_url, portfolio, team_info, source_url';
     let sortMode = 'top';
     $('sort').addEventListener('change', () => { sortMode = $('sort').value; page = 1; render(); });
@@ -314,6 +320,7 @@
     async function load() {
       $('grid').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
       $('pager').innerHTML = ''; $('count').textContent = '';
+      await aqIsSignedIn();
       const { data, error } = await supabaseClient.from('service_providers')
         .select(COLS + EXTRA)
         .eq('category', cat).eq('is_active', true).limit(1000);
@@ -357,7 +364,6 @@
       const initials = esc((r.name_ar || '؟').trim().charAt(0));
       const logo = logoBox(r, initials, true);
       const loc = [r.emirate, r.area].filter(Boolean).map(esc).join('، ');
-      const wa = digits(r.whatsapp || r.phone);
       const web = safeUrl(r.website);
       return `<article class="co ${r.is_featured ? 'feat' : ''}">
         <div class="co-top">${logo}
@@ -368,10 +374,8 @@
         ${r.founded_year ? `<div class="est"><i class="fas fa-calendar"></i> تأسست عام ${esc(r.founded_year)}</div>` : ''}
         ${r.description ? `<p class="desc">${esc(r.description)}</p>` : ''}
         <div class="co-actions">
-          ${r.phone ? `<a class="a-call" href="tel:${esc(r.phone)}"><i class="fas fa-phone"></i> اتصال</a>` : ''}
-          ${wa.length >= 7 ? `<a class="a-wa" href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
-          ${web ? `<a class="a-web" href="${esc(web)}" target="_blank" rel="noopener nofollow"><i class="fas fa-globe"></i> الموقع</a>`
-                : (r.email ? `<a class="a-web" href="mailto:${esc(r.email)}"><i class="fas fa-envelope"></i> بريد</a>` : '')}
+          ${aqRevealButtonHTML('service', r, 'a-call')}
+          ${web ? `<a class="a-web" href="${esc(web)}" target="_blank" rel="noopener nofollow"><i class="fas fa-globe"></i> الموقع</a>` : ''}
           <a class="a-more" href="javascript:void(0)" data-pf="${r.id}"><i class="fas fa-circle-info"></i> الملف الكامل</a>
         </div>
       </article>`;
@@ -428,12 +432,24 @@
       const q = [r.name_en || r.name_ar, r.address || r.area, r.emirate, 'الإمارات'].filter(Boolean).join(' ');
       return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
     }
+    // بعد «إظهار الرقم»: في البطاقة أزرار اتصال وواتساب، وفي الملف الكامل الرقم والبريد ظاهران
+    window.aqRevealRender = function (kind, c, btn) {
+      const wa = digits(c.whatsapp || c.phone);
+      if (btn.classList.contains('pf-reveal')) return [
+        c.phone ? `<a href="tel:${esc(c.phone)}"><i class="fas fa-phone"></i><span dir="ltr">${esc(c.phone)}</span></a>` : '',
+        wa.length >= 7 ? `<a href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : '',
+        c.email ? `<a href="mailto:${esc(c.email)}"><i class="fas fa-envelope"></i><span dir="ltr">${esc(c.email)}</span></a>` : ''].join('');
+      return [
+        c.phone ? `<a class="a-call" href="tel:${esc(c.phone)}"><i class="fas fa-phone"></i> <span dir="ltr">${esc(c.phone)}</span></a>` : '',
+        wa.length >= 7 ? `<a class="a-wa" href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : '',
+        !c.phone && c.email ? `<a class="a-web" href="mailto:${esc(c.email)}"><i class="fas fa-envelope"></i> بريد</a>` : ''].join('');
+    };
     function openProfile(id) {
       const r = all.find(x => x.id === id); if (!r) return;
       const initials = esc(nameOf(r).charAt(0));
       const logo = logoBox(r, initials, false);
       const port = Array.isArray(r.portfolio) ? r.portfolio.filter(Boolean) : [];
-      const web = safeUrl(r.website), wa = digits(r.whatsapp || r.phone);
+      const web = safeUrl(r.website);
       $('pfBody').innerHTML = `<button class="x" data-close>&times;</button>
         <div class="pf-top">${logo}<div class="co-name"><b dir="auto" style="font-size:19px;-webkit-line-clamp:4">${esc(r.name_ar)}</b>${enSub(r)}
           <div class="loc" style="margin-top:4px">${CATS[r.category] ? CATS[r.category].t : ''}${r.founded_year ? ` · تأسست عام ${esc(r.founded_year)}` : ''}</div></div></div>
@@ -442,9 +458,7 @@
         ${port.length ? `<div class="pf-sec"><h4><i class="fas fa-briefcase"></i> سابقة الأعمال</h4><ul>${port.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
         ${r.team_info ? `<div class="pf-sec"><h4><i class="fas fa-users"></i> فريق العمل</h4><p>${esc(r.team_info)}</p></div>` : ''}
         <div class="pf-sec"><h4><i class="fas fa-address-card"></i> التواصل والموقع</h4><div class="pf-contacts">
-          ${r.phone ? `<a href="tel:${esc(r.phone)}"><i class="fas fa-phone"></i><span dir="ltr">${esc(r.phone)}</span></a>` : ''}
-          ${wa.length >= 7 ? `<a href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
-          ${r.email ? `<a href="mailto:${esc(r.email)}"><i class="fas fa-envelope"></i><span dir="ltr">${esc(r.email)}</span></a>` : ''}
+          ${aqRevealButtonHTML('service', r, 'pf-reveal')}
           ${web ? `<a href="${esc(web)}" target="_blank" rel="noopener nofollow"><i class="fas fa-globe"></i><span dir="ltr">${esc(web.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</span></a>` : ''}
           ${(r.address || r.area) ? `<div><i class="fas fa-location-dot"></i>${esc([r.address || r.area, r.address ? '' : r.emirate].filter(Boolean).join('، '))}</div>` : ''}
           <a href="${esc(mapLink(r))}" target="_blank" rel="noopener"><i class="fas fa-map-location-dot"></i> عرض الموقع على الخريطة</a>

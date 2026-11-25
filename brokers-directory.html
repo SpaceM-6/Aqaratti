@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=118"></script>
+  <script src="supabase-client.js?v=119"></script>
 
   <style>
     :root {
@@ -342,6 +342,9 @@
       text-decoration: none;
       color: white;
     }
+    .broker-actions:has(.aq-unlock) { flex-wrap: wrap; }
+    .broker-actions button.aq-reveal { flex: 1; font: inherit; font-size: 12px; font-weight: 800; padding: 8px; border-radius: 8px; border: 0; color: white; cursor: pointer; }
+    .broker-actions a.aq-unlock { flex-basis: 100%; font-size: 12.5px !important; padding: 9px !important; border-radius: 8px !important; }
     .act-call { background: var(--dubizzle-navy); }
     .act-whatsapp { background: #16a34a; }
     .act-site { background: var(--primary-turquoise); }
@@ -730,6 +733,13 @@
     // مرتين (مكاتب wa وسطاء أفراد) بفارق broker_type فقط بدل تكرار الكود.
     // بفضل RLS، الزوار العاديون لا يستلمون إلا السجلات المفعّلة (is_active=true).
     // ---------------------------------------------------------------
+    // بعد «إظهار الرقم» في الدليل متعدد الدول: زر اتصال بالرقم وزر واتساب
+    window.aqRevealRender = function (kind, c) {
+      const ph = String(c.phone || '').replace(/[^\d+]/g, '');
+      if (!ph) return c.email ? `<a href="mailto:${String(c.email).replace(/[<>"']/g, '')}" class="act-site"><i class="fas fa-envelope"></i> بريد</a>` : '';
+      return `<a href="tel:${ph}" class="act-call"><i class="fas fa-phone-alt"></i> <span dir="ltr">${ph}</span></a>`
+        + `<a href="https://wa.me/${waNumber(ph)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>`;
+    };
     function initVerifiedDirectory({ brokerType, gridId, searchInputId, rankFiltersId, resultsCountId, loadMoreBtnId, tabBtnId }) {
       let activeRank = 'ALL';
       let searchTerm = '';
@@ -741,7 +751,8 @@
       async function fetchBrokersPage(offset) {
         let query = supabaseClient
           .from('directory_brokers')
-          .select('*', { count: 'exact' })
+          // الهاتف والبريد لا يُقرآن هنا: يُجلبان بضغطة «إظهار الرقم» للأعضاء فقط (supabase/reveal_contacts.sql)
+          .select('id, license, name_ar, name_en, website, logo, rank, contact_name, activities, social, is_active, activated_at, created_at, country, broker_type, has_contact', { count: 'exact' })
           .eq('is_active', true)
           .eq('country', COUNTRY)
           .eq('broker_type', brokerType);
@@ -791,8 +802,7 @@
             </div>` : ''}
 
             <div class="broker-actions">
-              ${b.phone ? `<a href="tel:${b.phone}" class="act-call"><i class="fas fa-phone-alt"></i> اتصال</a>` : ''}
-              ${b.phone ? `<a href="https://wa.me/${waNumber(b.phone)}" target="_blank" rel="noopener noreferrer" class="act-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>` : ''}
+              ${aqRevealButtonHTML('directory', b, 'act-call')}
               ${b.website ? `<a href="${b.website}" target="_blank" rel="noopener noreferrer" class="act-site"><i class="fas fa-globe"></i> الموقع</a>` : ''}
             </div>
 
@@ -821,6 +831,7 @@
       async function loadFirstPage() {
         currentOffset = 0;
         document.getElementById(gridId).innerHTML = `<div class="no-results"><i class="fas fa-spinner fa-spin" style="font-size:24px; display:block; margin-bottom:10px;"></i> جاري التحميل...</div>`;
+        await aqIsSignedIn();
         const { data, count } = await fetchBrokersPage(0);
         loadedBrokers = data;
         totalCount = count;
