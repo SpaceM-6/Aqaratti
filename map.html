@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/aq-pages.css?v=118">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=119"></script>
+  <script src="supabase-client.js?v=120"></script>
   <script src="js/aq-public.js?v=118"></script>
   <link rel="stylesheet" href="css/aq-polish.css?v=118">
 </head>
@@ -40,6 +40,41 @@
     .pp small { color:#64748b; display:block; }
     .pin { background:#00857a; color:#fff; border:2px solid #fff; border-radius:10px; font:800 11px Tajawal,sans-serif; padding:2px 6px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,.3); transform:translate(-50%,-100%); display:inline-block; }
     .pin.rent { background:#192038; } .pin.prj { background:#d4af37; color:#192038; }
+    .pin.hot { background:#e11d48; color:#fff; z-index:1000; transform:translate(-50%,-100%) scale(1.15); }
+    /* قائمة النتائج بجانب الخريطة (حاسوب) أو فوقها (جوال) */
+    .mlist { position:fixed; top:57px; bottom:0; right:0; width:400px; z-index:600; background:var(--bg, #f8fafc); border-left:1px solid var(--line, #e2e8f0); display:flex; flex-direction:column; }
+    .mlist-h { padding:12px 14px; border-bottom:1px solid var(--line, #e2e8f0); background:var(--card, #fff); display:flex; flex-direction:column; gap:6px; }
+    .mlist-h b { font-size:15px; color:var(--ink, #0f172a); }
+    .mlist-h label { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--muted, #64748b); cursor:pointer; }
+    .mlist-h input { width:18px; height:18px; accent-color:#00857a; margin:0; }
+    .mlist-b { overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:10px; flex:1; min-height:0; overscroll-behavior:contain; }
+    .mcard { flex:0 0 auto; min-height:96px; display:grid; grid-template-columns:118px 1fr; gap:10px; background:var(--card, #fff); border:1.5px solid var(--line, #e2e8f0); border-radius:12px; overflow:hidden; text-decoration:none; color:var(--ink, #0f172a); transition:border-color .15s; }
+    .mcard:hover, .mcard.hot { border-color:#00857a; }
+    .mcard img, .mcard .ph { width:118px; height:96px; object-fit:cover; background:#e2e8f0; display:grid; place-items:center; color:#94a3b8; }
+    .mcard div { padding:8px 0 8px 10px; min-width:0; display:flex; flex-direction:column; gap:3px; }
+    .mcard .pr { color:#00857a; font-weight:900; font-size:15px; }
+    .mcard .tt { font-weight:800; font-size:13px; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .mcard small { color:var(--muted, #64748b); font-size:11.5px; font-weight:700; }
+    .mlist-empty { text-align:center; color:var(--muted, #64748b); font-weight:700; padding:30px 10px; font-size:14px; }
+    .here-btn { position:fixed; top:118px; left:50%; transform:translateX(-50%); z-index:650; display:none; align-items:center; gap:8px; min-height:42px; padding:9px 18px; border-radius:999px; border:0; background:#192038; color:#fff; font:800 14px Tajawal,sans-serif; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.25); }
+    .here-btn.show { display:inline-flex; }
+    .here-btn:focus-visible, .view-btn:focus-visible, .mcard:focus-visible { outline:3px solid #00857a; outline-offset:2px; }
+    .view-btn { display:none; }
+    @media (min-width:1024px) {
+      #map { left:0; right:400px; }
+      .mbar { right:412px; }
+      .cnt { right:412px; }
+      .here-btn { left:calc((100% - 400px) / 2); }
+    }
+    @media (max-width:1023.98px) {
+      .mlist { width:auto; left:0; display:none; }
+      body.show-list .mlist { display:flex; }
+      body.show-list .mbar, body.show-list .cnt, body.show-list .here-btn { display:none; }
+      .mlist-h label { display:none; }
+      .view-btn { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:700; display:inline-flex; align-items:center; gap:8px; min-height:46px; padding:10px 20px; border-radius:999px; border:0; background:#00857a; color:#fff; font:800 15px Tajawal,sans-serif; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.25); }
+      .cnt { bottom:72px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .mcard { transition:none; } }
   </style>
   <div id="map" role="region" aria-label="خريطة العقارات"></div>
   <div class="mbar">
@@ -47,6 +82,13 @@
     <button class="tab" id="near"><i class="fas fa-location-crosshairs"></i> قربي</button>
   </div>
   <div class="cnt" id="cnt">جاري التحميل...</div>
+  <button type="button" class="here-btn" id="hereBtn"><i class="fas fa-rotate"></i> ابحث في هذه المنطقة</button>
+  <aside class="mlist" id="mlist" aria-label="العقارات في هذه المنطقة">
+    <div class="mlist-h"><b id="mlistTitle">العقارات في هذه المنطقة</b>
+      <label><input type="checkbox" id="autoMove" checked> حدّث النتائج عند تحريك الخريطة</label></div>
+    <div class="mlist-b" id="mlistBody"></div>
+  </aside>
+  <button type="button" class="view-btn" id="viewBtn" aria-controls="mlist" aria-expanded="false"><i class="fas fa-list"></i> <span>عرض القائمة</span></button>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
   (function () {
@@ -59,13 +101,56 @@
     const short = (n) => !n ? '' : n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : n;
     let points = [], layer = L.layerGroup().addTo(map), mode = qs.get('layer') || 'all';
     function icon(p) { return L.divIcon({ className: '', html: `<span class="pin ${p.kind === 'project' ? 'prj' : p.deal === 'rent' ? 'rent' : ''}">${p.kind === 'project' ? '<i class="fas fa-city"></i> ' : ''}${short(p.price)}</span>`, iconSize: null }); }
+    let listBounds = null;
+    const isDesk = () => matchMedia('(min-width:1024px)').matches;
     function draw() {
       layer.clearLayers();
       const shown = points.filter((p) => mode === 'all' || (mode === 'projects' ? p.kind === 'project' : p.kind === 'property' && p.deal === mode));
-      shown.forEach((p) => L.marker([p.lat, p.lng], { icon: icon(p) }).bindPopup(`<div class="pp">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}<b>${esc(p.title)}</b><span class="pr">${p.kind === 'project' ? 'يبدأ من ' : ''}${money(p.price)}</span>${p.approx ? '<small>الموقع تقريبي حسب المنطقة</small>' : ''}<a href="${p.url}">عرض التفاصيل ←</a><button type="button" data-share-url="${p.url}" data-share-title="${esc(p.title)}" style="margin-top:6px;border:1.5px solid #e2e8f0;background:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-weight:800;cursor:pointer"><i class="fas fa-share-nodes"></i> مشاركة</button></div>`).addTo(layer));
+      shown.forEach((p) => p.marker = L.marker([p.lat, p.lng], { icon: icon(p), keyboard: true, title: p.title }).on('click', () => hotCard(p)).bindPopup(`<div class="pp">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}<b>${esc(p.title)}</b><span class="pr">${p.kind === 'project' ? 'يبدأ من ' : ''}${money(p.price)}</span>${p.approx ? '<small>الموقع تقريبي حسب المنطقة</small>' : ''}<a href="${p.url}">عرض التفاصيل ←</a><button type="button" data-share-url="${p.url}" data-share-title="${esc(p.title)}" style="margin-top:6px;border:1.5px solid #e2e8f0;background:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-weight:800;cursor:pointer"><i class="fas fa-share-nodes"></i> مشاركة</button></div>`).addTo(layer));
       document.getElementById('cnt').textContent = shown.length + (mode === 'projects' ? ' مشروع' : ' عقار') + ' على الخريطة';
       document.querySelectorAll('.mbar [data-l]').forEach((b) => b.classList.toggle('on', b.dataset.l === mode));
+      listBounds = map.getBounds(); renderList(shown);
     }
+    // ===== قائمة النتائج داخل حدود الخريطة الحالية =====
+    let lastShown = [];
+    function renderList(shown) {
+      if (shown) lastShown = shown;
+      const all = lastShown.filter((p) => !listBounds || listBounds.contains([p.lat, p.lng]))
+        .sort((a, b) => (a.approx - b.approx) || ((b.price || 0) - (a.price || 0)));
+      const inView = all.slice(0, 120);
+      const unit = mode === 'projects' ? 'مشروع' : 'عقار';
+      document.getElementById('mlistTitle').innerHTML = `${all.length.toLocaleString('en-US')} ${unit} في هذه المنطقة` + (all.length > inView.length ? `<small style="display:block;font-size:12px;font-weight:700;color:var(--muted,#64748b);margin-top:2px">يظهر أول ${inView.length}، قرّب الخريطة لترى غيرها</small>` : '');
+      document.getElementById('mlistBody').innerHTML = inView.length ? inView.map((p, i) => `<a class="mcard" href="${p.url}" data-i="${lastShown.indexOf(p)}">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : '<span class="ph"><i class="fas fa-image"></i></span>'}<div><span class="pr">${p.kind === 'project' ? 'يبدأ من ' : ''}${money(p.price)}</span><span class="tt">${esc(p.title)}</span>${p.approx ? '<small>الموقع تقريبي حسب المنطقة</small>' : ''}</div></a>`).join('')
+        : '<div class="mlist-empty"><i class="fas fa-map-location-dot" style="font-size:26px;display:block;margin-bottom:8px"></i>لا عقارات في هذه المنطقة. حرّك الخريطة أو صغّرها لرؤية المزيد.</div>';
+      document.getElementById('hereBtn').classList.remove('show');
+    }
+    function pinEl(p) { return p && p.marker && p.marker.getElement() && p.marker.getElement().querySelector('.pin'); }
+    function hotCard(p) {
+      document.querySelectorAll('.mcard.hot').forEach((c) => c.classList.remove('hot'));
+      const c = document.querySelector(`.mcard[data-i="${lastShown.indexOf(p)}"]`);
+      if (c) { c.classList.add('hot'); if (isDesk()) c.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+    }
+    const body = document.getElementById('mlistBody');
+    body.addEventListener('mouseover', (e) => { const c = e.target.closest('.mcard'); document.querySelectorAll('.pin.hot').forEach((x) => x.classList.remove('hot')); if (c) { const el = pinEl(lastShown[+c.dataset.i]); if (el) el.classList.add('hot'); } });
+    body.addEventListener('mouseleave', () => document.querySelectorAll('.pin.hot').forEach((x) => x.classList.remove('hot')));
+    // تحريك الخريطة: تحديث تلقائي على الحاسوب (إن كان مفعّلًا)، وإلا زر «ابحث في هذه المنطقة»
+    map.on('moveend', () => {
+      if (!lastShown.length && !points.length) return;
+      if (isDesk() && document.getElementById('autoMove').checked) { listBounds = map.getBounds(); renderList(); }
+      else document.getElementById('hereBtn').classList.add('show');
+    });
+    document.getElementById('hereBtn').onclick = () => { listBounds = map.getBounds(); renderList(); if (!isDesk()) toggleList(true); };
+    document.getElementById('autoMove').onchange = (e) => { if (e.target.checked) { listBounds = map.getBounds(); renderList(); } };
+    function toggleList(show) {
+      const on = show == null ? !document.body.classList.contains('show-list') : show;
+      if (on) { listBounds = map.getBounds(); renderList(); }
+      document.body.classList.toggle('show-list', on);
+      const vb = document.getElementById('viewBtn');
+      vb.setAttribute('aria-expanded', String(on));
+      vb.innerHTML = on ? '<i class="fas fa-map"></i> <span>عرض الخريطة</span>' : '<i class="fas fa-list"></i> <span>عرض القائمة</span>';
+      if (!on) setTimeout(() => map.invalidateSize(), 50);
+    }
+    document.getElementById('viewBtn').onclick = () => toggleList();
     document.querySelectorAll('.mbar [data-l]').forEach((b) => b.onclick = () => { mode = b.dataset.l; draw(); });
     document.getElementById('near').onclick = () => navigator.geolocation && navigator.geolocation.getCurrentPosition((pos) => { map.setView([pos.coords.latitude, pos.coords.longitude], 14); L.circleMarker([pos.coords.latitude, pos.coords.longitude], { radius: 8, color: '#2563eb', fillOpacity: .8 }).addTo(map); }, () => AQPublic.toast('لم نتمكن من تحديد موقعك'));
     Promise.all([AQPublic.loadListings(), AQPublic.loadProjects()]).then(([props, projs]) => {

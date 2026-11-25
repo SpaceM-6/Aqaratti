@@ -28,13 +28,14 @@
     park: ['دبي هيلز', 'المرابع العربية', 'الخليج التجاري', 'مردف', 'قرية جميرا الدائرية', 'JVC', 'الصفوح']
   };
   const NEAR_WORDS = { beach: /بحر|شاطئ|بيتش/, metro: /مترو/, mall: /مول|مركز تسوق/, school: /مدرس/, university: /جامع(ة|ات)|كلية/, hospital: /مستشفى|مستشفيات/, mosque: /مسجد|جامع /, park: /حديقة|منتزه|بارك/, supermarket: /سوبر ?ماركت|هايبر/, airport: /مطار/ };
+  const normAr = (v) => String(v || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652\u0640]/g, '').replace(/\s+/g, ' ').trim();
   const inArea = (t, k) => AREA[k].some((a) => t.toLowerCase().includes(a.toLowerCase()));
 
   // ---------- استنتاج صفات العقار ----------
   const cache = new WeakMap();
   function attrs(p) {
     if (cache.has(p)) return cache.get(p);
-    const t = `${p.title || ''} ${p.description || ''} ${p.propertyType || ''} ${p.city || ''}`;
+    const t = `${p.title || ''} ${p.description || ''} ${p.propertyType || ''} ${p.area || ''} ${p.city || ''}`;
     const tl = t.toLowerCase();
     const commercial = /تجاري|مكتب|محل|مستودع|ورشة|معرض|مصنع/.test(p.propertyType || '') || /^(office|shop|warehouse|showroom|land|building)$/.test(p.unitType || '');
     let unit = p.unitType || '';
@@ -67,7 +68,7 @@
   }
 
   // ---------- حالة الفلاتر ----------
-  const blank = () => ({ pmin: '', pmax: '', amin: '', amax: '', aunit: 'm2', cat: '', units: [], beds: [], baths: [], furn: '', luxury: false, sea: '', near: [], amen: [], status: '', noComm: false, verified: false, tour: false, offer: false });
+  const blank = () => ({ pmin: '', pmax: '', amin: '', amax: '', aunit: 'm2', cat: '', units: [], beds: [], baths: [], furn: '', luxury: false, sea: '', near: [], amen: [], status: '', dev: '', noComm: false, verified: false, tour: false, offer: false });
   let S = blank();
   const save = () => { try { sessionStorage.setItem('aq_filters', JSON.stringify(S)); } catch (e) {} };
 
@@ -91,6 +92,8 @@
     if (S.near.length && !S.near.every((x) => a.near.has(x))) return false;
     if (S.amen.length && !S.amen.every((x) => a.amen.has(x))) return false;
     if (S.status && (p.completionStatus || 'ready') !== S.status) return false;
+    // المطوّر: ما حدده المعلن، وإلا يُبحث عن اسمه في عنوان الإعلان ووصفه
+    if (S.dev) { const d = normAr(S.dev); if (!normAr(`${p.developerName || ''} ${p.title || ''} ${p.description || ''}`).includes(d)) return false; }
     if (S.noComm && !(p.noCommission === true || /^\s*0+(\.0+)?\s*%?\s*$/.test(String(p.commission ?? 'x')))) return false;
     if (S.verified && !p.isVerified) return false;
     if (S.tour && !p.has3DTour) return false;
@@ -100,7 +103,7 @@
   function activeCount() {
     let n = 0;
     if (S.pmin !== '' || S.pmax !== '') n++; if (S.amin !== '' || S.amax !== '') n++;
-    ['cat', 'furn', 'sea', 'status'].forEach((k) => { if (S[k]) n++; });
+    ['cat', 'furn', 'sea', 'status', 'dev'].forEach((k) => { if (S[k]) n++; });
     ['units', 'beds', 'baths', 'near', 'amen'].forEach((k) => { if (S[k].length) n++; });
     ['luxury', 'noComm', 'verified', 'tour', 'offer'].forEach((k) => { if (S[k]) n++; });
     return n;
@@ -134,6 +137,7 @@
   .aqf-s>h4 small{color:var(--m);font-weight:700;font-size:12.5px}
   .aqf-rg{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
   .aqf-rg input{width:100%;min-width:0;border:1.5px solid var(--l);background:var(--c);color:var(--i);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;outline:none}
+  .aqf-dev{width:100%;border:1.5px solid var(--l);background:var(--c);color:var(--i);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;outline:none}.aqf-dev:focus{border-color:var(--t)}
   .aqf-rg input:focus{border-color:var(--t)}.aqf-rg span{color:var(--m);font-weight:800}
   .aqf-ch{display:flex;flex-wrap:wrap;gap:8px}
   .aqf-ch button{border:1.5px solid var(--l);background:var(--c);color:var(--i);border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;min-height:40px}
@@ -156,11 +160,23 @@
   function sw(key, title, sub) { return `<label class="aqf-sw"><span>${title}${sub ? `<small>${sub}</small>` : ''}</span><input type="checkbox" data-sw="${key}" ${S[key] ? 'checked' : ''}></label>`; }
 
   let ov = null;
+  // أسماء المطوّرين لاقتراحات فلتر «المطوّر» (تُجلب مرة واحدة)
+  let devNames = [];
+  function loadDevNames() {
+    if (devNames.length || typeof supabaseClient === 'undefined') return;
+    supabaseClient.from('developers').select('name_ar,name_en').eq('is_active', true).limit(1000).then(({ data }) => {
+      const set = new Set(); (data || []).forEach((d) => { if (d.name_ar) set.add(d.name_ar.trim()); if (d.name_en) set.add(d.name_en.trim()); });
+      devNames = [...set].sort((a, b) => a.localeCompare(b, 'ar'));
+      const dl = document.getElementById('aqfDevList'); if (dl) dl.innerHTML = devNames.map((n) => `<option value="${esc(n)}"></option>`).join('');
+    }, () => {});
+  }
   function open() {
+    loadDevNames();
     if (!document.getElementById('aqfCss')) { const st = document.createElement('style'); st.id = 'aqfCss'; st.textContent = css; document.head.appendChild(st); }
     // السعر الأقصى المكتوب في خانة البحث الرئيسية يظهر هنا
     const mp = document.getElementById('maxPriceInput'); if (mp) S.pmax = mp.value.trim(); const np = document.getElementById('minPriceInput'); if (np) S.pmin = np.value.trim();
     ov = document.createElement('div'); ov.className = 'aqf-ov';
+    const devOptions = devNames.map((n) => `<option value="${esc(n)}"></option>`).join('');
     const unitList = S.cat === 'commercial' ? UNITS.commercial : S.cat === 'residential' ? UNITS.residential : UNITS.residential.concat(UNITS.commercial);
     ov.innerHTML = `<div class="aqf-sheet" role="dialog" aria-modal="true" aria-label="الفلاتر">
       <div class="aqf-h"><b>الفلاتر</b><button type="button" data-x aria-label="إغلاق">×</button></div>
@@ -176,6 +192,7 @@
         <div class="aqf-s">${sw('luxury', '✨ عقارات فاخرة (Luxury)', 'عقارات راقية بتشطيبات ومواقع مميزة')}</div>
         <div class="aqf-s"><h4>قريب من</h4>${chips('near', NEAR, true)}</div>
         <div class="aqf-s"><h4>المزايا</h4>${chips('amen', AMEN, true)}</div>
+        <div class="aqf-s"><h4>المطوّر العقاري</h4><input data-in="dev" class="aqf-dev" type="text" list="aqfDevList" autocomplete="off" placeholder="مثال: إعمار، داماك، نخيل" value="${esc(S.dev)}"><datalist id="aqfDevList">${devOptions}</datalist></div>
         <div class="aqf-s"><h4>حالة العقار</h4>${chips('status', [['', 'الكل'], ['ready', 'جاهز'], ['off_plan', 'على الخارطة'], ['under_construction', 'تحت الإنشاء']], false)}</div>
         <div class="aqf-s">${sw('noComm', 'بدون عمولة')}${sw('verified', 'إعلانات موثّقة')}${sw('tour', 'فيها جولة افتراضية 3D')}${sw('offer', 'عليها عرض أو خصم')}
           <p class="aqf-hint">بعض الصفات تُستنتج من وصف الإعلان ومنطقته إذا لم يحددها المعلن.</p></div>
@@ -235,6 +252,7 @@
     ['units', 'beds', 'baths', 'near', 'amen'].forEach((k) => S[k].forEach((v) => t.push([k + ':' + v, LABEL(k, v)])));
     if (S.furn) t.push(['furn', { furnished: 'مفروش', unfurnished: 'غير مفروش', partly: 'مفروش جزئيًا' }[S.furn]]);
     if (S.sea) t.push(['sea', { beachfront: 'على البحر مباشرة', sea_view: 'إطلالة بحرية', near_sea: 'قريب من البحر' }[S.sea]]);
+    if (S.dev) t.push(['dev', 'المطوّر: ' + S.dev]);
     if (S.status) t.push(['status', { ready: 'جاهز', off_plan: 'على الخارطة', under_construction: 'تحت الإنشاء' }[S.status]]);
     [['luxury', 'فاخر'], ['noComm', 'بدون عمولة'], ['verified', 'موثّق'], ['tour', 'جولة 3D'], ['offer', 'عليه عرض']].forEach(([k, l]) => { if (S[k]) t.push([k, l]); });
     box.innerHTML = t.map(([k, l]) => `<button type="button" data-rm="${esc(k)}" aria-label="إزالة ${esc(l)}">${esc(l)} ×</button>`).join('');

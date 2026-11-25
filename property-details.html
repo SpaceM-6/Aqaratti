@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=119"></script>
+  <script src="supabase-client.js?v=120"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -555,6 +555,19 @@
       .main-price-text { font-size: 22px !important; }
       .property-sub-title { font-size: 14px !important; }
     }
+    .plan-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; }
+    .plan-grid:empty { display:none; }
+    .plan-img { width:100%; aspect-ratio:4/3; object-fit:contain; background:#f8fafc; border:1px solid var(--dubizzle-border); border-radius:10px; cursor:zoom-in; }
+    .tour-btn { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:12px; min-height:46px; border-radius:10px; background:var(--dubizzle-navy, #192038); color:#fff; font-weight:900; font-size:14px; text-decoration:none; }
+    .tour-btn:hover { filter:brightness(1.15); }
+    .near-chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .near-chips button { display:inline-flex; align-items:center; gap:6px; min-height:40px; padding:8px 13px; border-radius:999px; border:1.5px solid var(--dubizzle-border, #e2e8f0); background:#fff; color:#334155; font:inherit; font-weight:800; font-size:13px; cursor:pointer; transition:background .15s, border-color .15s; }
+    .near-chips button i { color:var(--primary-turquoise); }
+    .near-chips button.on { background:var(--primary-turquoise); border-color:var(--primary-turquoise); color:#fff; }
+    .near-chips button.on i { color:#fff; }
+    .near-chips button:focus-visible, .tour-btn:focus-visible { outline:3px solid var(--primary-turquoise); outline-offset:2px; }
+    [data-theme="dark"] .near-chips button { background:#162039; color:#e2e8f0; }
+    [data-theme="dark"] .plan-img { background:#0f172a; }
   </style>
   <link rel="stylesheet" href="css/aq-polish.css?v=118">
 </head>
@@ -633,6 +646,7 @@
             <div class="table-row-item"><span class="table-label">حالة التوثيق:</span> <span class="table-value" id="verificationStatusText" style="color:#d97706;">لم يتم التحقق من الرخصة بعد</span></div>
             <div class="table-row-item"><span class="table-label">الرقم المرجعي:</span> <span class="table-value" id="refText" dir="ltr">—</span></div>
             <div class="table-row-item" id="addedRow" hidden><span class="table-label">تاريخ الإضافة:</span> <span class="table-value" id="addedText"></span></div>
+            <div class="table-row-item" id="devRow" hidden><span class="table-label">المطوّر:</span> <span class="table-value" id="devText"></span></div>
             <div class="table-row-item" id="buildRow" hidden><span class="table-label">حالة البناء:</span> <span class="table-value" id="buildText"></span></div>
           </div>
         </div>
@@ -647,6 +661,22 @@
           <div style="border-radius:12px; overflow:hidden; border:1px solid var(--dubizzle-border);">
             <iframe id="propertyMapFrame" width="100%" height="280" style="border:0; display:block;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
+        </div>
+
+        <div class="info-section-card" id="secNearby">
+          <div class="info-card-title">الخدمات القريبة</div>
+          <p style="font-size:12px; color:var(--text-muted); font-weight:700; margin:-4px 0 10px;">اختر نوع الخدمة فتظهر أقربها حول العقار على الخريطة أعلاه.</p>
+          <div class="near-chips" id="nearChips" role="group" aria-label="الخدمات القريبة">
+            <button type="button" data-near="مدارس" data-near-en="schools"><i class="fas fa-school"></i> مدارس</button>
+            <button type="button" data-near="مستشفيات وعيادات" data-near-en="hospitals"><i class="fas fa-hospital"></i> مستشفيات</button>
+            <button type="button" data-near="محطات مترو" data-near-en="metro station"><i class="fas fa-train-subway"></i> مترو</button>
+            <button type="button" data-near="مساجد" data-near-en="mosques"><i class="fas fa-mosque"></i> مساجد</button>
+            <button type="button" data-near="سوبرماركت" data-near-en="supermarkets"><i class="fas fa-basket-shopping"></i> سوبرماركت</button>
+            <button type="button" data-near="صيدليات" data-near-en="pharmacies"><i class="fas fa-prescription-bottle-medical"></i> صيدليات</button>
+            <button type="button" data-near="حدائق" data-near-en="parks"><i class="fas fa-tree"></i> حدائق</button>
+            <button type="button" data-near="مراكز تسوق" data-near-en="shopping malls"><i class="fas fa-bag-shopping"></i> مولات</button>
+          </div>
+          <a id="nearOpenMaps" href="#" target="_blank" rel="noopener" style="display:inline-block; margin-top:10px; color:var(--primary-turquoise); font-size:13px; font-weight:800; text-decoration:none;" hidden><i class="fas fa-up-right-from-square"></i> افتح في خرائط جوجل</a>
         </div>
 
         <div class="info-section-card" id="secAmenities" style="display:none;">
@@ -670,12 +700,11 @@
           <p style="color:#334155; font-weight:700; font-size:12px; line-height:1.7;" id="propFullDesc"></p>
         </div>
 
-        <div class="info-section-card" id="secPlans" style="display:none;">
-          <div class="info-card-title">المخططات الطابقية 3D & 2D</div>
-          <div style="text-align:center; padding:10px; background:#f1f5f9; border-radius:8px;">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" style="max-width:100%; border-radius:6px; height:180px; object-fit:cover;" alt="المخطط الطابقي">
-            <p style="margin-top:8px; font-weight:800; font-size:12px; color:var(--dubizzle-navy);">عرض ثلاثي الأبعاد تفاعلي لمخطط الطابق</p>
-          </div>
+        <!-- المخطط الطابقي والجولة الافتراضية: يظهر فقط إن رفعهما الوسيط فعلًا -->
+        <div class="info-section-card" id="secPlans" hidden>
+          <div class="info-card-title" id="secPlansTitle">المخطط الطابقي</div>
+          <div class="plan-grid" id="planGrid"></div>
+          <a id="tourLink" class="tour-btn" href="#" target="_blank" rel="noopener nofollow" hidden><i class="fas fa-vr-cardboard"></i> شاهد الجولة الافتراضية</a>
         </div>
 
         <div class="info-section-card" id="secMortgage">
@@ -888,6 +917,37 @@
       'ليماسول':'قبرص','لارنكا':'قبرص',
       'أثينا':'اليونان','سانتوريني':'اليونان'
     };
+
+    // المخطط الطابقي الحقيقي الذي رفعه الوسيط + رابط جولته الافتراضية (لا يظهر القسم إن لم يوجد أي منهما)
+    function aqRenderPlans(p) {
+      const plans = (p.floorPlans || []).filter((u) => /^https:\/\/[a-z0-9.-]+\.supabase\.co\/storage\/v1\/object\/public\/property-images\//i.test(u));
+      const tour = /^https:\/\/[^\s<>"]+$/i.test(p.tourUrl || '') ? p.tourUrl : '';
+      if (!plans.length && !tour) return;
+      document.getElementById('secPlans').hidden = false;
+      document.getElementById('secPlansTitle').innerText = plans.length && tour ? 'المخطط الطابقي والجولة الافتراضية' : plans.length ? (plans.length > 1 ? 'المخططات الطابقية' : 'المخطط الطابقي') : 'الجولة الافتراضية';
+      document.getElementById('planGrid').innerHTML = plans.map((u, i) => `<img class="lightbox-img plan-img" src="${u.replace(/"/g, '')}" alt="المخطط الطابقي ${i + 1}" loading="lazy">`).join('');
+      if (tour) { const a = document.getElementById('tourLink'); a.href = tour; a.hidden = false; }
+    }
+    // الخدمات القريبة: تعرض الخريطة نفسها أقرب الخدمات حول العقار (بإحداثياته إن وُجدت، وإلا بمنطقته ومدينته)
+    function aqNearbyInit(p) {
+      const hasXY = p.lat != null && p.lng != null && isFinite(p.lat) && isFinite(p.lng);
+      const place = [p.area, p.city, cityToCountryAr[p.city] || ''].filter(Boolean).join(' ').trim() || 'دبي';
+      const frame = document.getElementById('propertyMapFrame'), openA = document.getElementById('nearOpenMaps');
+      const chips = document.getElementById('nearChips');
+      chips.onclick = (e) => {
+        const b = e.target.closest('button[data-near]'); if (!b) return;
+        const on = !b.classList.contains('on');
+        chips.querySelectorAll('button').forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+        if (!on) { frame.src = getMapEmbedSrc(p.city); openA.hidden = true; return; }
+        b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
+        const q = hasXY ? `${b.dataset.nearEn} near ${(+p.lat).toFixed(3)},${(+p.lng).toFixed(3)}` : `${b.dataset.near} قرب ${place}`;
+        frame.src = `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=14&output=embed`;
+        openA.href = hasXY ? `https://www.google.com/maps/search/${encodeURIComponent(b.dataset.nearEn)}/@${(+p.lat).toFixed(3)},${(+p.lng).toFixed(3)},15z` : `https://www.google.com/maps/search/${encodeURIComponent(b.dataset.near + ' قرب ' + place)}`;
+        openA.hidden = false;
+        document.getElementById('secLocation').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      };
+      chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+    }
 
     function getMapEmbedSrc(city) {
       const country = cityToCountryAr[city] || '';
@@ -1162,6 +1222,8 @@
           document.getElementById('refText').innerText = ref; const rc = document.getElementById('refCodeText'); if (rc) rc.innerText = ref.replace('AnaAqar-', '');
           if (property.createdAt) { document.getElementById('addedRow').hidden = false; document.getElementById('addedText').innerText = new Date(property.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); }
           if (DONE[property.completionStatus]) { document.getElementById('buildRow').hidden = false; document.getElementById('buildText').innerText = DONE[property.completionStatus]; }
+          if (property.developerName) { document.getElementById('devRow').hidden = false; document.getElementById('devText').innerText = property.developerName; }
+          aqRenderPlans(property);
           if (window.AQTrust) AQTrust.panel(document.getElementById('trustPanel'), property);
           const b0 = property.broker || {}, bl = document.getElementById('brokerAllLink');
           if (bl && b0.brokerId) bl.href = 'broker-profile.html?' + new URLSearchParams({ id: b0.brokerId, name: b0.name || '', agency: b0.agency || '', phone: b0.phone || '', avatar: b0.avatar || '' }).toString();
@@ -1170,6 +1232,7 @@
         const catEl = document.getElementById('propCategory');
         if (catEl) catEl.innerText = property.propertyType || 'شقة سكنية';
         document.getElementById('propertyMapFrame').src = getMapEmbedSrc(property.city);
+        aqNearbyInit(property);
 
         const verificationEl = document.getElementById('verificationStatusText');
         if (property.isVerified) {
@@ -1412,9 +1475,10 @@
   <script src="js/aq-trust.js?v=118" defer></script>
   <script src="js/aq-ads.js?v=118"></script>
   <script src="js/aq-public.js?v=118" defer></script>
-  <script src="js/aq-filters.js?v=118" defer></script>
+  <script src="js/aq-filters.js?v=119" defer></script>
   <script src="js/aq-ai.js?v=118" defer></script>
   <script src="js/aq-engage.js?v=118" defer></script>
   <script src="js/aq-back.js?v=118" defer></script>
+  <script src="js/image-lightbox.js?v=119" defer></script>
 </body>
 </html>
