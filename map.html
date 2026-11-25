@@ -139,6 +139,9 @@
       if (isDesk() && document.getElementById('autoMove').checked) { listBounds = map.getBounds(); renderList(); }
       else document.getElementById('hereBtn').classList.add('show');
     });
+    // إن فُتحت الصفحة في الخلفية تكون الخريطة بلا أبعاد؛ عند ظهورها نعيد حساب القائمة
+    map.on('resize', () => { if (lastShown.length) { listBounds = map.getBounds(); renderList(); } });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(() => map.invalidateSize(), 60); });
     document.getElementById('hereBtn').onclick = () => { listBounds = map.getBounds(); renderList(); if (!isDesk()) toggleList(true); };
     document.getElementById('autoMove').onchange = (e) => { if (e.target.checked) { listBounds = map.getBounds(); renderList(); } };
     function toggleList(show) {
