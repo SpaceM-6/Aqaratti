@@ -164,7 +164,7 @@
   let devNames = [];
   function loadDevNames() {
     if (devNames.length || typeof supabaseClient === 'undefined') return;
-    supabaseClient.from('developers').select('name_ar,name_en').eq('is_active', true).limit(1000).then(({ data }) => {
+    (async () => { let data = []; for (let off = 0; off < 5000; off += 1000) { const r = await supabaseClient.from('developers').select('name_ar,name_en').order('name_ar').range(off, off + 999); if (r.error || !r.data) break; data = data.concat(r.data); if (r.data.length < 1000) break; } return { data }; })().then(({ data }) => {
       const set = new Set(); (data || []).forEach((d) => { if (d.name_ar) set.add(d.name_ar.trim()); if (d.name_en) set.add(d.name_en.trim()); });
       devNames = [...set].sort((a, b) => a.localeCompare(b, 'ar'));
       const dl = document.getElementById('aqfDevList'); if (dl) dl.innerHTML = devNames.map((n) => `<option value="${esc(n)}"></option>`).join('');

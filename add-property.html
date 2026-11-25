@@ -1110,7 +1110,8 @@
     // ==================== قائمة المطوّرين ====================
     async function aqLoadDevelopers() {
       try {
-        const { data } = await supabaseClient.from('developers').select('name_ar,name_en').eq('is_active', true).limit(1000);
+        let data = [];
+        for (let off = 0; off < 5000; off += 1000) { const r = await supabaseClient.from('developers').select('name_ar,name_en').order('name_ar').range(off, off + 999); if (r.error || !r.data) break; data = data.concat(r.data); if (r.data.length < 1000) break; }
         const names = new Set();
         (data || []).forEach((d) => { if (d.name_ar) names.add(d.name_ar.trim()); if (d.name_en) names.add(d.name_en.trim()); });
         document.getElementById('developerList').innerHTML = [...names].sort((a, b) => a.localeCompare(b, 'ar')).map((n) => `<option value="${aqEsc(n)}"></option>`).join('');
