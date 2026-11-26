@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ملفات تغذية المكاتب | إدارة AnaAqar</title>
+  <link rel="icon" href="../favicon.ico" sizes="48x48">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../supabase-client.js?v=122"></script>
+  <style>
+    :root { --teal:#00857a; --navy:#192038; --muted:#64748b; --line:#e5e7eb; --bg:#f4f6f9; --red:#b91c1c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:#0f172a; }
+    header { background:#fff; border-bottom:1px solid var(--line); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    header b { color:var(--teal); font-size:20px; font-weight:900; }
+    header a { color:var(--teal); font-weight:800; text-decoration:none; font-size:14px; }
+    main { max-width:1000px; margin:0 auto; padding:20px 16px 40px; }
+    h1 { font-size:22px; margin:0 0 6px; color:var(--navy); }
+    .sub { color:var(--muted); margin:0 0 16px; font-size:14px; line-height:1.8; }
+    .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+    .pill { border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:7px 14px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; min-height:40px; }
+    .pill.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:12px; }
+    .row1 { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
+    .url { direction:ltr; text-align:left; overflow-wrap:anywhere; font-size:13px; color:var(--muted); margin-top:4px; }
+    .meta { display:flex; gap:14px; flex-wrap:wrap; margin:10px 0 0; font-size:14px; }
+    .badge { font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; }
+    .s-pending { background:#fef3c7; color:#92400e; } .s-approved { background:#dcfce7; color:#166534; } .s-rejected { background:#fee2e2; color:#991b1b; } .s-paused { background:#e2e8f0; color:#334155; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .actions button { border:0; border-radius:10px; padding:9px 13px; font-family:inherit; font-weight:800; font-size:13px; cursor:pointer; min-height:40px; }
+    .ok { background:var(--teal); color:#fff; } .no { background:#fee2e2; color:#991b1b; } .gh { background:#f1f5f9; color:#0f172a; }
+    .err { color:var(--red); font-size:13.5px; margin-top:8px; }
+    .empty, .gate { text-align:center; color:var(--muted); padding:40px 16px; font-weight:800; background:#fff; border:1px solid var(--line); border-radius:14px; }
+  </style>
+  <link rel="stylesheet" href="/css/aq-polish.css?v=118">
+</head>
+<body>
+  <header><b>أنا عقار — الإدارة</b><span style="display:flex;gap:14px;flex-wrap:wrap"><a href="index.html" style="font-weight:900">← لوحة التحكم</a><a href="properties.html">العقارات</a></span></header>
+  <main id="appRoot">
+    <h1>ملفات تغذية المكاتب (XML)</h1>
+    <p class="sub">يضيف الوسيط رابط ملف التغذية من نظامه، فلا يُستورد شيء حتى تعتمديه. بعد الاعتماد تُقرأ الإعلانات تلقائيًا كل يوم وتُنشر باسم صاحب الحساب. قبل الاعتماد: افتحي الرابط وتأكدي أنه ملف إعلانات لهذا المكتب نفسه.</p>
+    <div class="filters" id="filters">
+      <button class="pill active" data-f="pending">بانتظار الاعتماد</button>
+      <button class="pill" data-f="approved">مفعّلة</button>
+      <button class="pill" data-f="paused">موقوفة</button>
+      <button class="pill" data-f="rejected">مرفوضة</button>
+      <button class="pill" data-f="all">الكل</button>
+    </div>
+    <div id="list"><div class="empty">جاري التحميل…</div></div>
+  </main>
+  <script>
+    const ST = { pending: 'بانتظار الاعتماد', approved: 'مفعّل', paused: 'موقوف', rejected: 'مرفوض' };
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const when = (d) => d ? new Date(d).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+    let filter = 'pending';
+
+    async function load() {
+      const list = document.getElementById('list');
+      let q = supabaseClient.from('listing_feeds').select('*').order('created_at', { ascending: false }).limit(300);
+      if (filter !== 'all') q = q.eq('status', filter);
+      const { data, error } = await q;
+      if (error) { list.innerHTML = `<div class="empty">${/does not exist|schema cache/.test(error.message) ? 'شغّلي ملف supabase/listing_feeds.sql أولًا.' : 'تعذّر التحميل: ' + esc(error.message)}</div>`; return; }
+      if (!data.length) { list.innerHTML = '<div class="empty">لا توجد ملفات هنا.</div>'; return; }
+      const ids = [...new Set(data.map((f) => f.owner_id))];
+      const { data: owners } = await supabaseClient.from('profiles').select('id,full_name,company_name,license_no,verified').in('id', ids);
+      const O = {}; (owners || []).forEach((o) => O[o.id] = o);
+      list.innerHTML = data.map((f) => { const o = O[f.owner_id] || {};
+        return `<div class="card"><div class="row1"><div style="min-width:0"><b>${esc(o.company_name || o.full_name || 'حساب')}</b> ${o.verified ? '<i class="fas fa-circle-check" style="color:var(--teal)" title="موثّق"></i>' : ''} <span class="badge s-${f.status}">${ST[f.status] || esc(f.status)}</span>
+          <div class="url">${esc(f.url)}</div></div><small style="color:var(--muted)">${when(f.created_at)}</small></div>
+          <div class="meta"><span>الترخيص: <b dir="ltr">${esc(o.license_no || '—')}</b></span><span>الصيغة: <b>${esc(f.format || '—')}</b></span><span><b>${f.items_total}</b> في الملف</span><span style="color:#166534"><b>${f.items_live}</b> معروض</span><span>آخر قراءة: ${when(f.last_fetch_at)}</span></div>
+          ${f.last_error ? `<div class="err"><i class="fas fa-triangle-exclamation"></i> ${esc(f.last_error)}</div>` : ''}
+          ${f.rejection_reason ? `<div class="err">سبب الرفض: ${esc(f.rejection_reason)}</div>` : ''}
+          <div class="actions">
+            ${f.status !== 'approved' ? `<button class="ok" data-act="approve" data-id="${f.id}"><i class="fas fa-check"></i> اعتماد وبدء الاستيراد</button>` : `<button class="gh" data-act="sync" data-id="${f.id}"><i class="fas fa-rotate"></i> زامن الآن</button><button class="gh" data-act="pause" data-id="${f.id}">إيقاف</button>`}
+            ${f.status !== 'rejected' ? `<button class="no" data-act="reject" data-id="${f.id}">رفض</button>` : ''}
+          </div></div>`; }).join('');
+      list.querySelectorAll('[data-act]').forEach((b) => b.onclick = () => act(b.dataset.act, b.dataset.id, b));
+    }
+
+    async function act(a, id, btn) {
+      btn.disabled = true;
+      let r;
+      if (a === 'approve') r = await supabaseClient.from('listing_feeds').update({ status: 'approved' }).eq('id', id);
+      else if (a === 'pause') r = await supabaseClient.from('listing_feeds').update({ status: 'paused' }).eq('id', id);
+      else if (a === 'sync') r = await supabaseClient.rpc('request_feed_sync', { p_feed: id });
+      else if (a === 'reject') {
+        const why = prompt('سبب الرفض (يظهر للوسيط):', 'الرابط لا يعود لإعلانات هذا المكتب');
+        if (why === null) { btn.disabled = false; return; }
+        r = await supabaseClient.from('listing_feeds').update({ status: 'rejected', rejection_reason: why.slice(0, 300) || null }).eq('id', id);
+      }
+      btn.disabled = false;
+      if (r && r.error) { alert('تعذّر التنفيذ: ' + r.error.message); return; }
+      if (a === 'sync' && r && r.data === 'too_soon') alert('طُلبت المزامنة قبل أقل من 15 دقيقة.');
+      load();
+    }
+
+    document.querySelectorAll('#filters .pill').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('#filters .pill').forEach((x) => x.classList.remove('active'));
+      b.classList.add('active'); filter = b.dataset.f; load();
+    }));
+
+    (async function init() {
+      const user = await getCurrentAnaAqarUser();
+      const { data: isAdmin } = user ? await supabaseClient.rpc('is_app_admin') : { data: false };
+      if (!user || !isAdmin) {
+        document.getElementById('appRoot').innerHTML = `<div class="gate"><i class="fas fa-lock"></i>يجب تسجيل الدخول بحساب الإدارة.<br><a href="index.html" style="color:var(--teal)">تسجيل الدخول من لوحة التحكم</a></div>`;
+        return;
+      }
+      load();
+    })();
+  </script>
+  <script src="../js/aq-back.js?v=118" defer></script>
+</body>
+</html>

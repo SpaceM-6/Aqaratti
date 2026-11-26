@@ -213,6 +213,7 @@
       ['leads', 'العملاء', 'fa-address-book'],
       ['tasks', 'المهام', 'fa-list-check'],
       ['listings', 'عقاراتي', 'fa-building'],
+      ['feeds', 'ربط نظام المكتب', 'fa-plug'],
       ['bookings', 'الحجوزات', 'fa-calendar-check'],
       ...(me.account_type === 'developer' ? [['projects', 'مشاريعي', 'fa-city']] : []),
       ['requests', 'طلبات المشترين', 'fa-magnifying-glass-location'],
@@ -229,7 +230,7 @@
       route();
       loadTeam();
     }
-    const RENDER = { home: renderHome, leads: renderLeads, tasks: renderTasks, listings: renderListings, bookings: renderBookings, projects: renderProjects, requests: renderRequests, team: renderTeam, reports: renderReports, profile: renderProfile };
+    const RENDER = { home: renderHome, leads: renderLeads, tasks: renderTasks, listings: renderListings, feeds: renderFeeds, bookings: renderBookings, projects: renderProjects, requests: renderRequests, team: renderTeam, reports: renderReports, profile: renderProfile };
     function route() {
       const k = (location.hash || '#home').slice(1).split('/')[0];
       const valid = SECTIONS().some((s) => s[0] === k) ? k : 'home';
@@ -499,6 +500,68 @@
     }
 
     // ===================== عقاراتي =====================
+    // ===================== ربط نظام المكتب (ملف التغذية XML) =====================
+    const FSTATUS = { pending: ['بانتظار اعتماد الإدارة', '#b45309'], approved: ['مفعّل', '#15803d'], rejected: ['مرفوض', '#b91c1c'], paused: ['موقوف مؤقتًا', '#64748b'] };
+    const FERR = { price: 'السعر ناقص أو غير صحيح', city: 'الإمارة غير معروفة', photos: 'أقل من 3 صور', photos_unreachable: 'تعذّر تحميل الصور' };
+    async function renderFeeds() {
+      const m = $('main');
+      const { data: feeds, error } = await sb.from('listing_feeds').select('*').order('created_at');
+      if (error) { m.innerHTML = `<div class="empty">${setupErr(error)}</div>`; return; }
+      const ids = (feeds || []).map((f) => f.id);
+      const it = ids.length ? await sb.from('listing_feed_items').select('feed_id,ref,state,last_error').in('feed_id', ids).in('state', ['skipped', 'error']).limit(200) : { data: [] };
+      const issues = {}; (it.data || []).forEach((x) => (issues[x.feed_id] = issues[x.feed_id] || []).push(x));
+      const when = (d) => d ? new Date(d).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+      m.innerHTML = `<h1 class="pg">ربط نظام المكتب</h1>
+        <p class="pgsub">إن كنت تدير إعلاناتك من نظام مثل PropSpace أو Goyzer أو Propertybase، فأضف رابط ملف التغذية (XML) الذي يعطيك إياه النظام، فتصل إعلاناتك إلى أنا عقار وتتحدّث كل يوم تلقائيًا: الجديد يُضاف، وتغيّر السعر يُحدَّث، وما بيع أو سُحب من نظامك يتوقف عندنا.</p>
+        <div class="panel" style="line-height:1.9;margin-bottom:12px"><b><i class="fas fa-circle-info" style="color:var(--teal)"></i> قبل الإضافة</b><br>
+          • استعمل رابط ملف التغذية نفسه الذي يقرؤه Property Finder أو Bayut من نظامك (يبدأ بـ https).<br>
+          • تراجع الإدارة الرابط مرة واحدة قبل التفعيل، ثم يعمل تلقائيًا.<br>
+          • لكل إعلان: سعر، والإمارة، و3 صور على الأقل. الإعلانات التي ينقصها شيء تظهر لك هنا بسببها.<br>
+          • تُكتب لكل إعلان صياغة عربية، وتُحذف من الوصف أرقام الهواتف والروابط؛ يتواصل العملاء معك عبر زر إظهار رقمك في المنصة.</div>
+        ${(feeds || []).map((f) => { const st = FSTATUS[f.status] || [f.status, '#64748b']; const iss = issues[f.id] || [];
+          return `<div class="panel" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+            <div style="min-width:0"><b>${esc(f.label || 'ملف التغذية')}</b> <span class="pill2" style="color:${st[1]};font-weight:800">${st[0]}</span>
+            <div class="mut" dir="ltr" style="text-align:left;overflow-wrap:anywhere;font-size:12.5px">${esc(f.url)}</div></div>
+            <div class="ac">${f.status === 'approved' ? `<button class="btn btn-teal sm" data-sync="${f.id}"><i class="fas fa-rotate"></i> زامن الآن</button><button class="btn btn-ghost sm" data-fst="paused" data-id="${f.id}">إيقاف</button>` : ''}
+            ${f.status === 'paused' && f.reviewed_at ? `<button class="btn btn-teal sm" data-fst="approved" data-id="${f.id}">استئناف</button>` : ''}
+            <button class="btn btn-red sm" data-fdel="${f.id}"><i class="fas fa-trash"></i></button></div></div>
+            ${f.status === 'rejected' && f.rejection_reason ? `<p style="color:var(--red);margin:8px 0 0">سبب الرفض: ${esc(f.rejection_reason)}</p>` : ''}
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px">
+              <span><b>${f.items_total || 0}</b> إعلان في الملف</span><span style="color:#15803d"><b>${f.items_live || 0}</b> معروض الآن</span>
+              <span class="mut">آخر قراءة: ${when(f.last_fetch_at)}</span></div>
+            ${f.last_error ? `<p style="color:var(--red);margin:8px 0 0"><i class="fas fa-triangle-exclamation"></i> تعذّرت قراءة الملف في آخر محاولة (${esc(f.last_error)}). سنحاول مجددًا تلقائيًا.</p>` : ''}
+            ${iss.length ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:800;color:#b45309">${iss.length} إعلان لم يُنشر — اعرض الأسباب</summary><div style="margin-top:6px;font-size:13px;line-height:1.9">${iss.map((x) => `<div><span dir="ltr">${esc(x.ref)}</span>: ${esc(FERR[x.last_error] || x.last_error || 'خطأ')}</div>`).join('')}</div></details>` : ''}
+          </div>`; }).join('')}
+        ${(feeds || []).length < 3 ? `<div class="panel"><b>إضافة ملف تغذية</b>
+          <div class="fg" style="margin-top:8px"><label for="fdUrl">رابط الملف (XML)</label><input id="fdUrl" dir="ltr" inputmode="url" placeholder="https://..." maxlength="600"></div>
+          <div class="fg"><label for="fdLabel">اسم يميّزه (اختياري)</label><input id="fdLabel" maxlength="80" placeholder="مثال: إعلانات PropSpace"></div>
+          <button class="btn btn-teal" id="fdAdd"><i class="fas fa-plus"></i> أرسل للمراجعة</button></div>` : ''}`;
+      const add = $('fdAdd');
+      if (add) add.onclick = async () => {
+        const url = $('fdUrl').value.trim();
+        if (!/^https:\/\/[A-Za-z0-9.-]+\.[A-Za-z]{2,}(:[0-9]{2,5})?(\/\S*)?$/.test(url)) return toast('اكتب رابطًا صحيحًا يبدأ بـ https', true);
+        add.disabled = true;
+        const { error: e } = await sb.from('listing_feeds').insert({ url, label: $('fdLabel').value.trim() || null });
+        add.disabled = false;
+        if (e) return toast(/duplicate|unique/i.test(e.message) ? 'هذا الرابط مضاف من قبل' : /feed_limit/.test(e.message) ? 'الحد 3 ملفات لكل حساب' : setupErr(e), true);
+        toast('وصل الرابط، وسنراجعه ونفعّله قريبًا'); renderFeeds();
+      };
+      m.querySelectorAll('[data-sync]').forEach((b) => b.onclick = async () => {
+        const { data, error: e } = await sb.rpc('request_feed_sync', { p_feed: b.dataset.sync });
+        if (e) return toast(setupErr(e), true);
+        toast(data === 'too_soon' ? 'طلبت المزامنة قبل قليل؛ انتظر 15 دقيقة' : 'ستبدأ المزامنة خلال دقائق');
+      });
+      m.querySelectorAll('[data-fst]').forEach((b) => b.onclick = async () => {
+        const { error: e } = await sb.from('listing_feeds').update({ status: b.dataset.fst }).eq('id', b.dataset.id);
+        if (e) return toast(setupErr(e), true); renderFeeds();
+      });
+      m.querySelectorAll('[data-fdel]').forEach((b) => b.onclick = async () => {
+        if (!confirm('حذف الربط؟ ستتوقف إعلانات هذا الملف عن الظهور (لا تُحذف).')) return;
+        const { error: e } = await sb.from('listing_feeds').delete().eq('id', b.dataset.fdel);
+        if (e) return toast(setupErr(e), true); renderFeeds();
+      });
+    }
+
     async function renderListings() {
       const m = $('main');
       const [p, s, dq] = await Promise.all([sb.from('properties').select('*').eq('broker_id', user.id).order('created_at', { ascending: false }), sb.rpc('my_property_stats'), sb.from('property_docs').select('property_id,kind,status').eq('broker_id', user.id)]);
