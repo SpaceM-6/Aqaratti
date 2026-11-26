@@ -38,7 +38,7 @@ jobs:
         id: commit
         run: |
           # بعض المجلدات لا تُنشأ إلا عند وجود إعلانات حقيقية، فنضيف الموجود منها فقط
-          for p in s area property sitemap.xml; do
+          for p in s area property agency sitemap.xml; do
             if [ -e "$p" ] || git ls-files --error-unmatch -- "$p" >/dev/null 2>&1; then git add -A -- "$p"; fi
           done
           if git diff --cached --quiet; then

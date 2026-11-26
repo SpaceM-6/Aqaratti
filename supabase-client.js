@@ -346,7 +346,17 @@ function mapSupabasePropertyToAnaAqar(row) {
       mandate: row.check_mandate_at || null,
       available: row.available_at || null
     },
-    broker: {
+    // إعلان مكتب لم يستلم صفحته بعد: المكتب هو المعلن، ولا تُعرض بيانات الحساب الذي أدخل الإعلان
+    broker: row.agency_id ? {
+      brokerId: null,
+      agencyId: row.agency_id,
+      agencySlug: (row.listing_agencies && row.listing_agencies.slug) || null,
+      name: (row.listing_agencies && row.listing_agencies.name) || 'مكتب وساطة عقارية',
+      agency: 'مكتب وساطة عقارية مرخّص',
+      phone: null,
+      whatsapp: null,
+      avatar: '/icons/avatar.svg'
+    } : {
       brokerId: row.broker_id,
       name: p.full_name || 'وسيط AnaAqar',
       agency: p.agency || 'AnaAqar',
@@ -382,8 +392,16 @@ const _aqRevealCache = {};
 window.aqRevealContact = async function (kind, id) {
   const key = kind + ':' + id;
   if (_aqRevealCache[key]) return _aqRevealCache[key];
-  const fn = kind === 'service' ? 'get_service_provider_contacts' : 'get_directory_broker_contacts';
-  const { data, error } = await supabaseClient.rpc(fn, { p_ids: [kind === 'service' ? Number(id) : String(id)] });
+  let res;
+  if (kind === 'agency') {
+    // المعرّف: «رقم المكتب__رقم الإعلان» حتى يُعاد رقم الوسيط صاحب الإعلان نفسه
+    const [agency, prop] = String(id).split('__');
+    res = await supabaseClient.rpc('get_agency_contact', { p_agency: agency, p_property: prop || null });
+  } else {
+    const fn = kind === 'service' ? 'get_service_provider_contacts' : 'get_directory_broker_contacts';
+    res = await supabaseClient.rpc(fn, { p_ids: [kind === 'service' ? Number(id) : String(id)] });
+  }
+  const { data, error } = res;
   if (error) throw error;
   return (_aqRevealCache[key] = (data && data[0]) || {});
 };
@@ -427,7 +445,7 @@ async function fetchApprovedSupabaseProperties() {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
-      .select('*, profiles(' + (await aqProfileCols()) + ')')
+      .select('*, profiles(' + (await aqProfileCols()) + '), listing_agencies(id,slug,name)')
       .eq('status', 'approved');
     if (error || !data) return [];
     // الإقامات القصيرة (السعر بالليلة) لها صفحتها stays.html ولا تختلط بأسعار البيع والإيجار السنوي
@@ -442,7 +460,7 @@ async function fetchApprovedStays() {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
-      .select('*, profiles(' + (await aqProfileCols()) + ')')
+      .select('*, profiles(' + (await aqProfileCols()) + '), listing_agencies(id,slug,name)')
       .eq('status', 'approved').eq('rent_period', 'daily').limit(500);
     if (error || !data) return [];
     return aqMarkLocked(data.map(mapSupabasePropertyToAnaAqar));
@@ -456,7 +474,7 @@ async function fetchOneApprovedSupabaseProperty(rawId) {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
-      .select('*, profiles(' + (await aqProfileCols()) + ')')
+      .select('*, profiles(' + (await aqProfileCols()) + '), listing_agencies(id,slug,name)')
       .eq('id', rawId)
       .eq('status', 'approved')
       .single();

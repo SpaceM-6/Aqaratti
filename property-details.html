@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="currency.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=120"></script>
+  <script src="supabase-client.js?v=121"></script>
 
   <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
   <script type="text/javascript">
@@ -1232,7 +1232,8 @@
           aqRenderPlans(property);
           if (window.AQTrust) AQTrust.panel(document.getElementById('trustPanel'), property);
           const b0 = property.broker || {}, bl = document.getElementById('brokerAllLink');
-          if (bl && b0.brokerId) bl.href = 'broker-profile.html?' + new URLSearchParams({ id: b0.brokerId, name: b0.name || '', agency: b0.agency || '', phone: b0.phone || '', avatar: b0.avatar || '' }).toString();
+          if (bl && b0.agencySlug) { bl.href = 'agency.html?a=' + encodeURIComponent(b0.agencySlug); bl.innerHTML = '<i class="fas fa-building"></i> كل إعلانات المكتب'; }
+          else if (bl && b0.brokerId) bl.href = 'broker-profile.html?' + new URLSearchParams({ id: b0.brokerId, name: b0.name || '', agency: b0.agency || '', phone: b0.phone || '', avatar: b0.avatar || '' }).toString();
         } catch (e) {}
 
         const catEl = document.getElementById('propCategory');
@@ -1304,6 +1305,34 @@
         if (box && !document.getElementById('noPhoneNote')) box.insertAdjacentHTML('afterbegin', locked && window.aqUnlockContactHTML
           ? '<div id="noPhoneNote" style="margin:0 0 8px">' + aqUnlockContactHTML() + '<p style="font-size:12px;color:#64748b;font-weight:700;margin:6px 0 0">أو أرسل استفسارك الآن وسيصل للمعلن مباشرة.</p></div>'
           : '<p id="noPhoneNote" style="font-size:12px; color:#64748b; font-weight:700; margin:0 0 8px;">لم يضف المعلن رقم هاتف. أرسل استفسارك عبر البريد وسيصله مباشرة.</p>');
+      }
+
+      // إعلان مكتب: رقم الوسيط صاحب الإعلان يُجلب بضغطة «إظهار الرقم» للعضو المسجّل فقط
+      if (property && property.broker && property.broker.agencyId) {
+        const ab = property.broker, rid = ab.agencyId + '__' + String(property.rawId || '').replace(/[^\w-]/g, '');
+        const note = document.getElementById('noPhoneNote');
+        if (note && !ab.locked) note.remove();
+        const box = document.querySelector('.broker-contact-buttons');
+        if (box && !ab.locked && !document.getElementById('agencyReveal')) {
+          box.insertAdjacentHTML('afterbegin', '<div id="agencyReveal" style="display:contents">' + aqRevealButtonHTML('agency', { id: rid, has_contact: true }, 'btn-broker-action btn-call-bg') + '</div>');
+        }
+        const mobCall = document.getElementById('mobCallBtn'), bar = document.querySelector('.mobile-sticky-contact-bar');
+        if (!ab.locked && mobCall && bar) {
+          bar.style.removeProperty('display');
+          mobCall.removeAttribute('href'); mobCall.removeAttribute('target');
+          mobCall.setAttribute('role', 'button'); mobCall.dataset.aqReveal = 'agency'; mobCall.dataset.aqId = rid;
+          mobCall.innerHTML = '<i class="fas fa-phone"></i> إظهار رقم المعلن';
+          mobCall.style.setProperty('display', 'flex', 'important'); mobCall.style.flex = '1';
+          const mw = document.getElementById('mobWaBtn'); if (mw) mw.style.setProperty('display', 'none', 'important');
+        }
+        window.aqRevealRender = function (kind, c, btn) {
+          const ph = String(c.phone || '').replace(/[^\d+]/g, '');
+          if (!ph) return '';
+          const wa = ph.replace(/^\+/, '').replace(/^00/, '');
+          const who = c.agent ? ' — ' + String(c.agent).replace(/[<>&"']/g, '') : '';
+          if (btn.classList.contains('btn-mob-call')) return `<a href="tel:${ph}" class="btn-mobile-contact btn-mob-call" style="flex:1"><i class="fas fa-phone"></i> <span dir="ltr">${ph}</span></a><a href="https://api.whatsapp.com/send?phone=${wa}" target="_blank" rel="noopener" class="btn-mobile-contact btn-mob-wa" style="flex:1"><i class="fab fa-whatsapp"></i> واتساب</a>`;
+          return `<a href="tel:${ph}" class="btn-broker-action btn-call-bg" style="text-decoration:none"><i class="fas fa-phone-alt"></i> <span dir="ltr">${ph}</span>${who}</a><a href="https://api.whatsapp.com/send?phone=${wa}" target="_blank" rel="noopener" class="btn-broker-action btn-whatsapp-bg" style="text-decoration:none"><i class="fab fa-whatsapp" style="font-size:16px;"></i> واتساب</a>`;
+        };
       }
 
       calculateMortgage();

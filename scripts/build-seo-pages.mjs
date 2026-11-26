@@ -46,6 +46,8 @@ const [market, lands, projects, props] = await Promise.all([
 ]);
 // أدلة المدينة (اختيارية: إن لم تُرفع بعد تُترك أقسامها)
 const dbOk0 = dbOk;
+const agencies = await fetchAll('listing_agencies', 'select=id,slug,name,emirates');
+const agencyById = new Map(agencies.map((a) => [a.id, a]));
 const [schools, buildings] = await Promise.all([fetchAll('schools', 'select=id,name_en,name_ar,rating_en,rating_ar,curriculum_en,curriculum_ar,area_en,area_ar,students'), fetchAll('building_area_stats', 'select=*')]);
 dbOk = dbOk0;
 if (!dbOk || !market.length) { console.log('قاعدة البيانات غير متاحة الآن؛ تُترك الصفحات الحالية كما هي'); process.exit(0); }
@@ -197,6 +199,7 @@ for (const p of props) {
     ${imgs.length ? `<div class="gal">${imgs.map((u, i) => `<img src="${esc(u)}" alt="${esc(p.title)} — صورة ${i + 1}" loading="${i ? 'lazy' : 'eager'}">`).join('')}</div>` : ''}
     <div class="kpis">${kpi(esc(price), deal)}${facts.slice(0, 3).map((f) => kpi(esc(f), '')).join('')}</div>
     <div class="box"><h2>تفاصيل العقار</h2><p>${esc(p.description || '')}</p><p>${esc(facts.join(' · '))}${p.permit_number ? ` · رقم التصريح ${esc(p.permit_number)}` : ''}</p></div>
+    ${agencyById.get(p.agency_id) ? `<p style="margin:0 0 10px;font-weight:800">المعلن: <a href="/agency/${esc(agencyById.get(p.agency_id).slug)}.html">${esc(agencyById.get(p.agency_id).name)}</a></p>` : ''}
     <div class="acts" style="margin:0 0 14px"><a class="btn btn-teal" href="${target}"><i class="fas fa-phone"></i> تواصل مع المعلن واعرض كل الصور</a><a class="btn btn-soft" href="/areas.html?a=${encodeURIComponent(p.city || '')}">أسعار المنطقة</a></div>`;
   const jsonld = { '@context': 'https://schema.org', '@type': 'RealEstateListing', name: p.title, description: p.description || '', url: `${SITE}/property/${id}.html`, datePosted: (p.created_at || '').slice(0, 10) || undefined, image: imgs,
     offers: { '@type': 'Offer', price: Number(daily ? (p.nightly_price || p.price_aed) : p.price_aed) || undefined, priceCurrency: 'AED', businessFunction: p.deal_type === 'rent' ? 'https://schema.org/LeaseOut' : 'https://schema.org/Sell' } };
@@ -204,6 +207,25 @@ for (const p of props) {
   propUrls.push(`${SITE}/property/${id}.html`);
 }
 console.log('property pages:', propUrls.length);
+
+// ---------- صفحة لكل مكتب وساطة له إعلانات معتمدة ----------
+fs.rmSync(path.join(ROOT, 'agency'), { recursive: true, force: true });
+const agencyUrls = [];
+for (const a of agencies) {
+  const mine = props.filter((p) => p.agency_id === a.id && p.rent_period !== 'daily');
+  if (!mine.length || !/^[a-z0-9-]+$/.test(a.slug || '')) continue;
+  const ems = (a.emirates || []).join(' و');
+  const cards = mine.slice(0, 200).map((p) => `<li><a href="/property/sb-${esc(p.id)}.html">${esc(p.title)}</a> — ${num(p.price_aed)} درهم${p.area || p.city ? ` · ${esc([p.area, p.city].filter(Boolean).join('، '))}` : ''}</li>`).join('');
+  const body = `
+    <div class="kpis">${kpi(String(mine.length), 'عقار معروض')}${ems ? kpi(esc(ems), 'الإمارات') : ''}</div>
+    <div class="box"><h2>إعلانات ${esc(a.name)}</h2><ul>${cards}</ul></div>
+    <div class="acts" style="margin:0 0 14px"><a class="btn btn-teal" href="/agency.html?a=${encodeURIComponent(a.slug)}"><i class="fas fa-phone"></i> تواصل مع المكتب واعرض الصور</a><a class="btn btn-soft" href="/listings.html">كل العقارات</a></div>`;
+  const url = `${SITE}/agency/${a.slug}.html`;
+  const jsonld = { '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: a.name, url, areaServed: (a.emirates || []).map((e) => ({ '@type': 'City', name: e })) };
+  wr('agency', a.slug + '.html', page({ title: `${a.name} — مكتب وساطة عقارية | أنا عقار`, desc: `${mine.length} عقار من ${a.name}${ems ? ' في ' + ems : ''} على أنا عقار: الأسعار والمواقع وتفاصيل كل عقار.`, canonical: url, h1: a.name, sub: `مكتب وساطة عقارية${ems ? ' · ' + ems : ''}`, body, jsonld, crumbs: [['أنا عقار', '/index.html'], ['العقارات', '/listings.html'], [a.name]] }));
+  agencyUrls.push(url);
+}
+console.log('agency pages:', agencyUrls.length);
 
 // ---------- خريطة الموقع ----------
 const STATIC = [
@@ -215,6 +237,7 @@ const STATIC = [
 const urls = STATIC.map(([u, f, p]) => ({ loc: `${SITE}/${u}`, f, p }));
 areaIndex.forEach((x) => urls.push({ loc: `${SITE}/area/${x.slug}.html`, f: 'weekly', p: '0.7' }));
 propUrls.forEach((u) => urls.push({ loc: u, f: 'weekly', p: '0.6' }));
+agencyUrls.forEach((u) => urls.push({ loc: u, f: 'weekly', p: '0.5' }));
 // المركبات والمشاريع الحقيقية من صفحات المشاركة
 try {
   for (const k of JSON.parse(fs.readFileSync(path.join(ROOT, 's/index.json'), 'utf8'))) {

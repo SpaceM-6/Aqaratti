@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مكتب وساطة عقارية | أنا عقار AnaAqar</title>
+  <link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="icons/anaaqar-logo-v5-192.png">
+  <meta name="description" content="إعلانات مكتب الوساطة العقارية على أنا عقار: عقارات للبيع والإيجار في الإمارات.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" id="canon" href="https://anaaqar.com/agency.html">
+  <meta property="og:type" content="profile">
+  <meta property="og:image" content="https://anaaqar.com/icons/anaaqar-logo-v5-1024.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-client.js?v=121"></script>
+  <style>
+    :root { --teal:#00857a; --teal-dark:#006e64; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
+            --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --card:#ffffff; }
+    [data-theme="dark"] { --ink:#e2e8f0; --muted:#94a3b8; --line:#2b3654; --bg:#0f172a; --card:#162039; --teal-soft:#0f2e33; }
+    * { box-sizing:border-box; }
+    html, body { overflow-x:hidden; }
+    body { margin:0; font-family:'Tajawal',sans-serif; background:var(--bg); color:var(--ink); -webkit-tap-highlight-color:transparent; }
+    a { color:inherit; }
+    .topbar { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+    [data-theme="dark"] .topbar { background:rgba(15,23,42,.94); }
+    .topbar-in { max-width:1150px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .brand img { height:30px; width:auto; }
+    .brand b { color:var(--teal); font-size:20px; font-weight:900; }
+    .back { text-decoration:none; color:var(--teal); font-weight:800; font-size:14px; }
+
+    .head { background:linear-gradient(135deg, var(--navy), #24305a 60%, #0b5e63); color:#fff; }
+    .head-in { max-width:1150px; margin:0 auto; padding:22px 16px 20px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    .logo { width:72px; height:72px; border-radius:18px; background:#fff; color:var(--navy); display:grid; place-items:center; font-size:30px; font-weight:900; flex:0 0 auto; box-shadow:0 6px 18px rgba(0,0,0,.25); }
+    .who { flex:1 1 260px; min-width:0; }
+    .who small { color:#99f6e4; font-weight:800; font-size:13px; }
+    .who h1 { margin:2px 0 6px; font-size:clamp(22px, 4vw, 30px); font-weight:900; line-height:1.3; overflow-wrap:anywhere; }
+    .chips { display:flex; gap:6px; flex-wrap:wrap; }
+    .chip { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 11px; font-size:12.5px; font-weight:800; color:#e2e8f0; }
+    .acts { display:flex; gap:8px; flex-wrap:wrap; flex:1 1 100%; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:12px; padding:11px 16px; min-height:44px; font-family:inherit; font-weight:900; font-size:14px; cursor:pointer; text-decoration:none; }
+    .btn-teal { background:var(--teal); color:#fff; }
+    .btn-teal:hover { background:var(--teal-dark); }
+    .btn-ghost { background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.3); }
+    .btn-wa { background:#16a34a; color:#fff; }
+    .btn:focus-visible, .card:focus-visible { outline:3px solid #5eead4; outline-offset:2px; }
+    .acts .aq-unlock { width:auto !important; flex:0 1 auto; min-height:44px; }
+    .acts .aq-revealed { display:contents; }
+
+    main { max-width:1150px; margin:0 auto; padding:18px 16px 90px; }
+    .count { color:var(--muted); font-weight:800; font-size:14px; margin:0 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; text-decoration:none; color:var(--ink); display:flex; flex-direction:column; transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s; }
+    .card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(15,23,42,.08); }
+    .card img { width:100%; aspect-ratio:16/10; object-fit:cover; background:#e2e8f0; display:block; }
+    .card .in { padding:12px 14px 14px; display:flex; flex-direction:column; gap:5px; }
+    .price { color:var(--teal); font-weight:900; font-size:18px; font-variant-numeric:tabular-nums; }
+    [data-theme="dark"] .price { color:#5eead4; }
+    .ttl { font-weight:800; font-size:14.5px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .meta { color:var(--muted); font-size:12.5px; font-weight:700; display:flex; gap:10px; flex-wrap:wrap; }
+    .note { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; color:var(--muted); font-size:13.5px; font-weight:700; line-height:1.7; margin-top:18px; }
+    .empty { text-align:center; padding:50px 10px; color:var(--muted); font-weight:800; }
+    .skel { height:280px; border-radius:16px; background:linear-gradient(90deg, var(--line), var(--card), var(--line)); background-size:200% 100%; animation:sk 1.2s infinite; }
+    @keyframes sk { to { background-position:-200% 0; } }
+    @media (max-width: 960px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 600px) { .grid { grid-template-columns:minmax(0, 1fr); } .acts .btn, .acts .aq-unlock { flex:1 1 100%; } }
+    @media (prefers-reduced-motion: reduce) { .card, .skel { transition:none; animation:none; } }
+
+    .modal { position:fixed; inset:0; z-index:50; background:rgba(15,23,42,.55); display:none; align-items:flex-end; justify-content:center; }
+    .modal.open { display:flex; }
+    .sheet { background:var(--card); color:var(--ink); width:100%; max-width:520px; border-radius:20px 20px 0 0; padding:20px; position:relative; }
+    .sheet h3 { margin:0 0 6px; font-size:19px; }
+    .sheet p { margin:0 0 12px; color:var(--muted); font-size:13.5px; font-weight:700; line-height:1.7; }
+    .sheet textarea { width:100%; min-height:110px; border:1.5px solid var(--line); background:var(--bg); color:var(--ink); border-radius:12px; padding:10px 12px; font-family:inherit; font-size:15px; resize:vertical; }
+    .sheet textarea:focus { outline:none; border-color:var(--teal); }
+    .x { position:absolute; top:10px; left:12px; background:none; border:0; font-size:26px; color:var(--muted); cursor:pointer; min-width:44px; min-height:44px; }
+    @media (min-width: 700px) { .modal { align-items:center; } .sheet { border-radius:20px; } }
+  </style>
+  <link rel="stylesheet" href="css/aq-polish.css?v=118">
+  <script>try { if (localStorage.getItem('anaaqar_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="index.html"><img src="icons/logo.svg" width="98" height="30" alt=""><b>أنا عقار</b></a>
+      <a class="back" href="listings.html"><i class="fas fa-arrow-right"></i> كل العقارات</a>
+    </div>
+  </header>
+  <div class="head">
+    <div class="head-in">
+      <div class="logo" id="logo" aria-hidden="true"><i class="fas fa-building"></i></div>
+      <div class="who">
+        <small>مكتب وساطة عقارية</small>
+        <h1 id="name">…</h1>
+        <div class="chips" id="chips"></div>
+      </div>
+      <div class="acts" id="acts"></div>
+    </div>
+  </div>
+  <main>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="note" id="note" hidden>صفحة هذا المكتب يديرها فريق أنا عقار إلى أن يستلمها المكتب. إن كنت تعمل في هذا المكتب، اضغط «هذا مكتبي» لتدير إعلاناتك بنفسك بعد التحقق من رخصتك.</div>
+  </main>
+
+  <div class="modal" id="claimModal" role="dialog" aria-modal="true" aria-labelledby="claimTitle">
+    <div class="sheet">
+      <button class="x" type="button" data-close aria-label="إغلاق">&times;</button>
+      <div id="claimForm">
+        <h3 id="claimTitle">استلام صفحة المكتب</h3>
+        <p>اكتب رقم رخصة المكتب (ORN) أو رقم تسجيلك وسيطًا (BRN) وأي بيانات تساعدنا في التحقق. نراجع الطلب ونتواصل معك، ثم تنتقل الإعلانات إلى حسابك.</p>
+        <label for="claimNote" style="font-weight:800;font-size:14px;display:block;margin-bottom:6px">بيانات التحقق</label>
+        <textarea id="claimNote" maxlength="500" placeholder="مثال: ORN 12345، أنا مدير المكتب"></textarea>
+        <button class="btn btn-teal" type="button" id="claimSend" style="width:100%;margin-top:12px"><i class="fas fa-paper-plane"></i> أرسل الطلب</button>
+      </div>
+      <div id="claimOk" hidden style="text-align:center;padding:16px 0">
+        <i class="fas fa-circle-check" style="font-size:44px;color:var(--teal)"></i>
+        <h3>وصلنا طلبك</h3>
+        <p>سنتحقق من الترخيص ونتواصل معك قريبًا.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    const money = (n) => (Number(n) || 0).toLocaleString('en-US');
+    const EM = { 'دبي': 'دبي', 'عجمان': 'عجمان', 'الشارقة': 'الشارقة', 'أبوظبي': 'أبوظبي' };
+    const UNIT = { apartment: 'شقة', studio: 'استوديو', villa: 'فيلا', building: 'مبنى كامل', penthouse: 'بنتهاوس', townhouse: 'تاون هاوس', office: 'مكتب', shop: 'محل', land: 'أرض' };
+    const slug = (new URLSearchParams(location.search).get('a') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 80);
+    let agency = null;
+
+    function notFound() {
+      $('name').textContent = 'المكتب غير موجود';
+      $('grid').innerHTML = '<div class="empty" style="grid-column:1/-1"><i class="fas fa-building-circle-xmark" style="font-size:40px;display:block;margin-bottom:10px"></i>لم نجد هذا المكتب. <a href="listings.html" style="color:var(--teal)">تصفّح كل العقارات</a></div>';
+    }
+
+    function seo(list) {
+      const t = `${agency.name} — مكتب وساطة عقارية | أنا عقار`;
+      document.title = t;
+      const d = `${list.length} عقار من ${agency.name} على أنا عقار${agency.emirates.length ? ' في ' + agency.emirates.join(' و') : ''}: صور وأسعار وتفاصيل كل عقار.`;
+      document.querySelector('meta[name="description"]').setAttribute('content', d);
+      const url = 'https://anaaqar.com/agency.html?a=' + encodeURIComponent(agency.slug);
+      $('canon').setAttribute('href', url);
+      const ld = document.createElement('script'); ld.type = 'application/ld+json';
+      ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: agency.name, url, areaServed: agency.emirates.map((e) => ({ '@type': 'City', name: e })) });
+      document.head.appendChild(ld);
+    }
+
+    async function load() {
+      if (!slug) return notFound();
+      const signed = await aqIsSignedIn();
+      const { data: a } = await supabaseClient.from('listing_agencies').select('id,slug,name,emirates,claimed_at').eq('slug', slug).maybeSingle();
+      if (!a) return notFound();
+      agency = a; agency.emirates = Array.isArray(a.emirates) ? a.emirates : [];
+      $('name').textContent = a.name;
+      $('logo').textContent = (a.name.trim()[0] || 'A').toUpperCase();
+      $('chips').innerHTML = agency.emirates.map((e) => `<span class="chip"><i class="fas fa-location-dot"></i> ${esc(EM[e] || e)}</span>`).join('');
+
+      const acts = [];
+      acts.push(aqRevealButtonHTML('agency', { id: a.id, has_contact: true }, 'btn btn-teal'));
+      if (!a.claimed_at) acts.push('<button class="btn btn-ghost" type="button" id="claimBtn"><i class="fas fa-id-card"></i> هذا مكتبي</button>');
+      $('acts').innerHTML = acts.join('');
+      $('note').hidden = !!a.claimed_at;
+      const cb = $('claimBtn');
+      if (cb) cb.onclick = async () => {
+        if (!(await aqIsSignedIn())) { try { sessionStorage.setItem('aq_after_login', location.href); } catch (e) {} location.href = '/index.html#join'; return; }
+        $('claimModal').classList.add('open'); setTimeout(() => $('claimNote').focus(), 50);
+      };
+
+      const { data: rows } = await supabaseClient.from('properties')
+        .select('id,title,price_aed,deal_type,rent_period,city,area,unit_type,bedrooms,area_m2,image_urls,created_at')
+        .eq('agency_id', a.id).eq('status', 'approved').order('created_at', { ascending: false }).limit(300);
+      const list = rows || [];
+      $('count').textContent = list.length ? `${list.length} عقار معروض` : '';
+      $('grid').innerHTML = list.length ? list.map((p) => {
+        const img = (p.image_urls || [])[0];
+        const unit = UNIT[p.unit_type] || '';
+        const facts = [unit, p.bedrooms ? `${p.bedrooms} غرف` : '', p.area_m2 ? `${money(p.area_m2)} م²` : ''].filter(Boolean);
+        return `<a class="card" href="property-details.html?id=sb-${encodeURIComponent(p.id)}">
+          ${img ? `<img src="${esc(img)}" alt="${esc(p.title)}" loading="lazy">` : ''}
+          <div class="in"><span class="price">${money(p.price_aed)} درهم${p.deal_type === 'rent' ? ' / سنويًا' : ''}</span>
+          <span class="ttl">${esc(p.title)}</span>
+          <span class="meta"><span><i class="fas fa-location-dot"></i> ${esc([p.area, p.city].filter(Boolean).join('، '))}</span>${facts.length ? `<span>${esc(facts.join(' · '))}</span>` : ''}</span></div></a>`;
+      }).join('') : '<div class="empty" style="grid-column:1/-1">لا توجد إعلانات معروضة لهذا المكتب حاليًا.</div>';
+      seo(list);
+    }
+
+    // بعد «إظهار الرقم»: اتصال وواتساب برقم المكتب
+    window.aqRevealRender = function (kind, c) {
+      const ph = String(c.phone || '').replace(/[^\d+]/g, '');
+      if (!ph) return '';
+      const wa = ph.replace(/^\+/, '').replace(/^00/, '');
+      return `<a class="btn btn-teal" href="tel:${ph}"><i class="fas fa-phone"></i> <span dir="ltr">${ph}</span></a><a class="btn btn-wa" href="https://api.whatsapp.com/send?phone=${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a>`;
+    };
+
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-close]') || e.target === $('claimModal')) $('claimModal').classList.remove('open');
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('claimModal').classList.remove('open'); });
+    $('claimSend').onclick = async () => {
+      const btn = $('claimSend'); btn.disabled = true;
+      const note = $('claimNote').value.trim().slice(0, 500);
+      const { error } = await supabaseClient.from('agency_claims').insert({ agency_id: agency.id, note: note || null });
+      btn.disabled = false;
+      if (error && !/duplicate|unique/i.test(error.message || '')) { alert('تعذّر إرسال الطلب الآن. حاول مجددًا بعد قليل.'); return; }
+      $('claimForm').hidden = true; $('claimOk').hidden = false;
+    };
+
+    load();
+  })();
+  </script>
+  <script src="js/aq-engage.js?v=118" defer></script>
+  <script src="js/aq-back.js?v=118" defer></script>
+</body>
+</html>
