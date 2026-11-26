@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>AnaAqar | أنا عقار - المنصة العقارية العالمية</title>
 
   <!-- 🔎 SEO: وصف ووسوم مشاركة اجتماعية -->
@@ -33,11 +33,17 @@
   <link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="icons/anaaqar-logo-v5-192.png">
   <link rel="apple-touch-icon" href="icons/anaaqar-logo-v5-512.png">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <script src="currency.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=121"></script>
+  <link rel="preconnect" href="https://mejkpckkdbmczzypzkkr.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900" media="(max-width: 900px)" fetchpriority="high">
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600" media="(min-width: 901px)" fetchpriority="high">
+  <!-- الخطوط والأيقونات تُحمَّل دون أن توقف رسم الصفحة -->
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"></noscript>
 
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -49,7 +55,15 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script>
+    // أداة الترجمة ثقيلة: تُحمَّل فورًا فقط لمن اختار لغة أخرى، وإلا بعد اكتمال تحميل الصفحة
+    (function () {
+      function load() { if (window.__aqGT) return; window.__aqGT = 1; var s = document.createElement('script'); s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'; s.async = true; document.head.appendChild(s); }
+      if (/(^|;\s*)googtrans=\/ar\/(?!ar)/.test(document.cookie) || /googtrans/.test(location.hash)) load();
+      else window.addEventListener('load', function () { (window.requestIdleCallback || setTimeout)(load, 3000); });
+      window.aqLoadTranslate = load;
+    })();
+  </script>
 
   <style>
     /* ==================== 🚫 HIDE GOOGLE OVERLAY ==================== */
@@ -403,7 +417,7 @@
     .anaaqar-light-hero {
       position: relative;
       background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), 
-                        url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600');
+                        url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900');
       background-position: center 30%;
       background-size: cover;
       padding: 35px 20px 45px 20px;
@@ -412,6 +426,9 @@
       transition: background-image 0.5s ease;
     }
 
+    @media (min-width: 901px) {
+      .anaaqar-light-hero { background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600'); }
+    }
     .hero-light-container {
       max-width: 1250px;
       margin: 0 auto;
@@ -1889,6 +1906,11 @@
   }
   </script>
   <link rel="stylesheet" href="css/aq-polish.css?v=118">
+  <style>
+    /* روابط «عرض الكل» بتباين كافٍ للقراءة */
+    .aq-block-title > a, .aqad-h > a { color: #006e64 !important; }
+    #aqhElite .aqad-h > a, [data-theme="dark"] .aq-block-title > a, [data-theme="dark"] .aqad-h > a { color: #5eead4 !important; }
+  </style>
 </head>
 <body>
 
@@ -1973,40 +1995,40 @@
             <div class="instant-menu search-menu" id="fastLangList">
               <input type="text" placeholder="ابحث بين 34 لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
               <div class="instant-scroll notranslate" id="fastLangOptions" translate="no">
-                <a href="javascript:void(0)" onclick="applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('en', 'English', 'ltr')">English</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('fr', 'Français', 'ltr')">Français</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('es', 'Español', 'ltr')">Español</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('de', 'Deutsch', 'ltr')">Deutsch</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('ru', 'Русский', 'ltr')">Русский</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('zh-CN', '中文', 'ltr')">中文</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('tr', 'Türkçe', 'ltr')">Türkçe</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('fa', 'فارسی', 'rtl')">فارسی</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('ur', 'اردو', 'rtl')">اردو</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('hi', 'हिन्दी', 'ltr')">हिन्दी</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('it', 'Italiano', 'ltr')">Italiano</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('pt', 'Português', 'ltr')">Português</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('nl', 'Nederlands', 'ltr')">Nederlands</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('ja', '日本語', 'ltr')">日本語</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('ko', '한국어', 'ltr')">한국어</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('pl', 'Polski', 'ltr')">Polski</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('sv', 'Svenska', 'ltr')">Svenska</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('el', 'Ελληνικά', 'ltr')">Ελληνικά</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('cs', 'Čeština', 'ltr')">Čeština</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('sq', 'Shqip', 'ltr')">Shqip</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('bs', 'Bosanski', 'ltr')">Bosanski</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('bg', 'Български', 'ltr')">Български</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('hr', 'Hrvatski', 'ltr')">Hrvatski</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('da', 'Dansk', 'ltr')">Dansk</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('fil', 'Filipino', 'ltr')">Filipino</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('fi', 'Suomi', 'ltr')">Suomi</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('hu', 'Magyar', 'ltr')">Magyar</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('id', 'Bahasa Indonesia', 'ltr')">Bahasa Indonesia</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('no', 'Norsk', 'ltr')">Norsk</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('ro', 'Română', 'ltr')">Română</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('th', 'ไทย', 'ltr')">ไทย</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('uk', 'Українська', 'ltr')">Українська</a>
-                <a href="javascript:void(0)" onclick="applyAILanguage('vi', 'Tiếng Việt', 'ltr')">Tiếng Việt</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('en', 'English', 'ltr')">English</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('fr', 'Français', 'ltr')">Français</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('es', 'Español', 'ltr')">Español</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('de', 'Deutsch', 'ltr')">Deutsch</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('ru', 'Русский', 'ltr')">Русский</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('zh-CN', '中文', 'ltr')">中文</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('tr', 'Türkçe', 'ltr')">Türkçe</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('fa', 'فارسی', 'rtl')">فارسی</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('ur', 'اردو', 'rtl')">اردو</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('hi', 'हिन्दी', 'ltr')">हिन्दी</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('it', 'Italiano', 'ltr')">Italiano</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('pt', 'Português', 'ltr')">Português</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('nl', 'Nederlands', 'ltr')">Nederlands</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('ja', '日本語', 'ltr')">日本語</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('ko', '한국어', 'ltr')">한국어</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('pl', 'Polski', 'ltr')">Polski</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('sv', 'Svenska', 'ltr')">Svenska</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('el', 'Ελληνικά', 'ltr')">Ελληνικά</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('cs', 'Čeština', 'ltr')">Čeština</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('sq', 'Shqip', 'ltr')">Shqip</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('bs', 'Bosanski', 'ltr')">Bosanski</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('bg', 'Български', 'ltr')">Български</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('hr', 'Hrvatski', 'ltr')">Hrvatski</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('da', 'Dansk', 'ltr')">Dansk</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('fil', 'Filipino', 'ltr')">Filipino</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('fi', 'Suomi', 'ltr')">Suomi</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('hu', 'Magyar', 'ltr')">Magyar</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('id', 'Bahasa Indonesia', 'ltr')">Bahasa Indonesia</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('no', 'Norsk', 'ltr')">Norsk</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('ro', 'Română', 'ltr')">Română</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('th', 'ไทย', 'ltr')">ไทย</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('uk', 'Українська', 'ltr')">Українська</a>
+                <a href="#" onclick="event.preventDefault();applyAILanguage('vi', 'Tiếng Việt', 'ltr')">Tiếng Việt</a>
               </div>
             </div>
           </div>
@@ -2016,26 +2038,26 @@
             <button class="instant-btn" onclick="openInstantDropdown('fastCurrencyList', event)"><i class="fas fa-coins"></i> <span id="currentCurrency">AED (د.إ)</span></button>
             <div class="instant-menu" id="fastCurrencyList">
               <div class="instant-scroll">
-                <a href="javascript:void(0)" onclick="applyCurrency('AED', 'د.إ', 1)">AED (د.إ) - الدرهم الإماراتي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('USD', '$', 0.27)">USD ($) - الدولار الأمريكي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('SAR', 'ر.س', 1.02)">SAR (ر.س) - الريال السعودي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('EGP', 'ج.م', 13.1)">EGP (ج.م) - الجنيه المصري</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('EUR', '€', 0.25)">EUR (€) - اليورو الأوروبي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('GBP', '£', 0.21)">GBP (£) - الجنيه الاسترليني</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('QAR', 'ر.ق', 0.99)">QAR (ر.ق) - الريال القطري</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('KWD', 'د.ك', 0.083)">KWD (د.ك) - الدينار الكويتي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('BHD', 'د.ب', 0.10)">BHD (د.ب) - الدينار البحريني</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('OMR', 'ر.ع', 0.10)">OMR (ر.ع) - الريال العماني</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('TRY', '₺', 8.85)">TRY (₺) - الليرة التركية</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('CAD', 'CA$', 0.37)">CAD (CA$) - الدولار الكندي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('AUD', 'A$', 0.41)">AUD (A$) - الدولار الأسترالي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('CHF', 'CHF', 0.24)">CHF (CHF) - الفرنك السويسري</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('JPY', '¥', 42.5)">JPY (¥) - الين الياباني</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('CNY', '¥', 1.95)">CNY (¥) - اليوان الصيني</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('INR', '₹', 22.8)">INR (₹) - روبية هندية</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('RUB', '₽', 24.5)">RUB (₽) - الروبل الروسي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('MAD', 'د.م.', 2.71)">MAD (د.م.) - الدرهم المغربي</a>
-                <a href="javascript:void(0)" onclick="applyCurrency('JOD', 'د.ا', 0.19)">JOD (د.ا) - الدينار الأردني</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('AED', 'د.إ', 1)">AED (د.إ) - الدرهم الإماراتي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('USD', '$', 0.27)">USD ($) - الدولار الأمريكي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('SAR', 'ر.س', 1.02)">SAR (ر.س) - الريال السعودي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('EGP', 'ج.م', 13.1)">EGP (ج.م) - الجنيه المصري</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('EUR', '€', 0.25)">EUR (€) - اليورو الأوروبي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('GBP', '£', 0.21)">GBP (£) - الجنيه الاسترليني</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('QAR', 'ر.ق', 0.99)">QAR (ر.ق) - الريال القطري</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('KWD', 'د.ك', 0.083)">KWD (د.ك) - الدينار الكويتي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('BHD', 'د.ب', 0.10)">BHD (د.ب) - الدينار البحريني</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('OMR', 'ر.ع', 0.10)">OMR (ر.ع) - الريال العماني</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('TRY', '₺', 8.85)">TRY (₺) - الليرة التركية</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('CAD', 'CA$', 0.37)">CAD (CA$) - الدولار الكندي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('AUD', 'A$', 0.41)">AUD (A$) - الدولار الأسترالي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('CHF', 'CHF', 0.24)">CHF (CHF) - الفرنك السويسري</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('JPY', '¥', 42.5)">JPY (¥) - الين الياباني</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('CNY', '¥', 1.95)">CNY (¥) - اليوان الصيني</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('INR', '₹', 22.8)">INR (₹) - روبية هندية</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('RUB', '₽', 24.5)">RUB (₽) - الروبل الروسي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('MAD', 'د.م.', 2.71)">MAD (د.م.) - الدرهم المغربي</a>
+                <a href="#" onclick="event.preventDefault();applyCurrency('JOD', 'د.ا', 0.19)">JOD (د.ا) - الدينار الأردني</a>
               </div>
             </div>
           </div>
@@ -2080,7 +2102,7 @@
         <div class="pearl-inputs-grid">
           <div class="royal-input-box dynamic-field" data-tabs="!services">
             <span class="royal-label"><i class="fas fa-city"></i> المدينة</span>
-            <select class="royal-select" id="citySelector" onchange="updateLandmarksByCity(this.value)"></select>
+            <select class="royal-select" id="citySelector" aria-label="المدينة" onchange="updateLandmarksByCity(this.value)"></select>
           </div>
 
           <div class="royal-input-box dynamic-field" data-tabs="!services">
@@ -2113,7 +2135,7 @@
 
           <div class="royal-input-box dynamic-field" id="fieldLandmark" data-tabs="all,sale,rent,golden">
             <span class="royal-label"><i class="fas fa-map-marked-alt"></i> قريب من</span>
-            <select class="royal-select" id="landmarkSelector">
+            <select class="royal-select" id="landmarkSelector" aria-label="المنطقة أو المعلم">
               <option value="">اختر المعلم القريب...</option>
               <option value="mosque">🕌 قريب من مسجد</option>
               <option value="church">⛪ قريب من كنيسة</option>
@@ -2191,6 +2213,9 @@
       <h2 class="aq-block-title" style="margin-top:34px;"><i class="fas fa-house-chimney-user"></i> خدمات بيتك
         <a href="services-directory.html" style="margin-inline-start:auto; font-size:14px; color:var(--primary-turquoise); text-decoration:none; font-weight:800;">كل الأقسام ←</a></h2>
       <div class="aq-mini-grid" id="aqMiniServices"></div>
+      <script src="currency.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+      <script src="supabase-client.js?v=121"></script>
       <script>
         (function () {
           var list = [
@@ -2257,7 +2282,7 @@
             <i class="fas fa-bell-concierge" style="font-size: 28px; color: var(--primary-turquoise); margin-bottom: 8px;"></i>
             <div class="ad-title">تحتاج خدمة عقارية؟</div>
             <div class="ad-subtitle">قانونية، هندسية، مقاولات، ديكور، إدارة أملاك.</div>
-            <a href="javascript:void(0)" onclick="document.getElementById('exploreSection').scrollIntoView({behavior:'smooth'})" class="btn-ad-action">تصفّح الخدمات ❯</a>
+            <a href="#" onclick="event.preventDefault();document.getElementById('exploreSection').scrollIntoView({behavior:'smooth'})" class="btn-ad-action">تصفّح الخدمات ❯</a>
           </div>
         </div>
       </div>
@@ -2398,11 +2423,11 @@
       <img src="icons/logo.svg" alt="أنا عقار" width="96" height="30">
       <button class="aq-dr-x" onclick="aqDrawer(false)" aria-label="إغلاق القائمة"><i class="fas fa-xmark"></i></button>
     </div>
-    <a href="javascript:void(0)" onclick="aqDrawer(false); openLoginModal()" class="anaaqar-auth-link aq-dr-auth"><i class="fas fa-user-lock"></i> تسجيل الدخول أو إنشاء حساب</a>
+    <a href="#" onclick="event.preventDefault();aqDrawer(false); openLoginModal()" class="anaaqar-auth-link aq-dr-auth"><i class="fas fa-user-lock"></i> تسجيل الدخول أو إنشاء حساب</a>
     <nav class="aq-dr-body">
       <div class="aq-dr-label">تصفّح</div>
       <a href="index.html"><i class="fas fa-house"></i> الرئيسية</a>
-      <a href="javascript:void(0)" onclick="aqDrawerGo('resultsSectionTitle')"><i class="fas fa-building"></i> العقارات المتاحة</a>
+      <a href="#" onclick="event.preventDefault();aqDrawerGo('resultsSectionTitle')"><i class="fas fa-building"></i> العقارات المتاحة</a>
       <a href="stays.html"><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة: إيجار يومي وشهري</a>
       <a href="stays.html#mine"><i class="fas fa-calendar-check"></i> حجوزاتي</a>
       <a href="cars.html"><i class="fas fa-car-side"></i> موتورات: سيارات، دراجات نارية، يخوت</a>
@@ -2440,8 +2465,8 @@
       <a href="admin/index.html#s-market" data-admin-only hidden><i class="fas fa-chart-line"></i> بيانات السوق</a>
 
       <div class="aq-dr-label">المساعدة</div>
-      <a href="javascript:void(0)" data-open-chat><i class="fas fa-comment-dots"></i> تحدث معنا الآن</a>
-      <a href="javascript:void(0)" onclick="aqDrawer(false); openServiceRequest('general')"><i class="fas fa-headset"></i> أرسل طلبًا أو استفسارًا</a>
+      <a href="#" data-open-chat onclick="event.preventDefault()"><i class="fas fa-comment-dots"></i> تحدث معنا الآن</a>
+      <a href="#" onclick="event.preventDefault();aqDrawer(false); openServiceRequest('general')"><i class="fas fa-headset"></i> أرسل طلبًا أو استفسارًا</a>
       <a href="report.html"><i class="fas fa-flag"></i> إبلاغ عن مخالفة أو شكوى</a>
       <button type="button" onclick="toggleAnaaqarDarkMode()"><i class="fas fa-circle-half-stroke"></i> الوضع الليلي / النهاري</button>
       <a href="about.html"><i class="fas fa-circle-info"></i> من نحن</a>
@@ -3146,24 +3171,24 @@
     }
 
     const countryData = {
-      'uae': { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان'] },
-      'saudi': { bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=1600', cities: ['مكة المكرمة', 'المدينة المنورة', 'الرياض', 'جدة', 'الخبر'] },
-      'egypt': { bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600', cities: ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد'] },
-      'turkey': { bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1600', cities: ['إسطنبول', 'أنطاليا', 'بورصة'] },
-      'qatar': { bg: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1600', cities: ['الدوحة', 'اللؤلؤة', 'لوسيل'] },
-      'oman': { bg: 'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=1600', cities: ['مسقط', 'صلالة'] },
-      'uk': { bg: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1600', cities: ['لندن', 'مانشستر'] },
-      'usa': { bg: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=1600', cities: ['نيويورك', 'ميامي'] },
-      'france': { bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1600', cities: ['باريس', 'كان'] },
-      'spain': { bg: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=1600', cities: ['مدريد', 'برشلونة'] },
-      'cyprus': { bg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1600', cities: ['ليماسول', 'لارنكا'] },
-      'greece': { bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1600', cities: ['أثينا', 'سانتوريني'] }
+      'uae': { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=1200', cities: ['دبي', 'أبوظبي', 'الشارقة', 'عجمان'] },
+      'saudi': { bg: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fm=webp&q=60&w=1200', cities: ['مكة المكرمة', 'المدينة المنورة', 'الرياض', 'جدة', 'الخبر'] },
+      'egypt': { bg: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fm=webp&q=60&w=1200', cities: ['القاهرة الجديدة', 'العاصمة الإدارية', 'الشيخ زايد'] },
+      'turkey': { bg: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fm=webp&q=60&w=1200', cities: ['إسطنبول', 'أنطاليا', 'بورصة'] },
+      'qatar': { bg: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fm=webp&q=60&w=1200', cities: ['الدوحة', 'اللؤلؤة', 'لوسيل'] },
+      'oman': { bg: 'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?auto=format&fm=webp&q=60&w=1200', cities: ['مسقط', 'صلالة'] },
+      'uk': { bg: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fm=webp&q=60&w=1200', cities: ['لندن', 'مانشستر'] },
+      'usa': { bg: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fm=webp&q=60&w=1200', cities: ['نيويورك', 'ميامي'] },
+      'france': { bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fm=webp&q=60&w=1200', cities: ['باريس', 'كان'] },
+      'spain': { bg: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fm=webp&q=60&w=1200', cities: ['مدريد', 'برشلونة'] },
+      'cyprus': { bg: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fm=webp&q=60&w=1200', cities: ['ليماسول', 'لارنكا'] },
+      'greece': { bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fm=webp&q=60&w=1200', cities: ['أثينا', 'سانتوريني'] }
     };
 
     function updateCitiesAndBackground(countryKey) {
       const citySelect = document.getElementById('citySelector');
       const hero = document.getElementById('heroSection');
-      const data = countryData[countryKey] || { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600', cities: ['المدينة الرئيسية'] };
+      const data = countryData[countryKey] || { bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=1200', cities: ['المدينة الرئيسية'] };
       
       citySelect.innerHTML = '<option value="all">كل المدن</option>';
       let cities = data.cities.slice();
@@ -3172,7 +3197,8 @@
       cities.forEach(city => {
         citySelect.innerHTML += `<option value="${city}">${city}</option>`;
       });
-      hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${data.bg}')`;
+      const bgUrl = String(data.bg).replace(/([?&])q=\d+/, '$1q=' + (innerWidth > 900 ? 65 : 60)).replace(/([?&])w=\d+/, '$1w=' + (innerWidth > 900 ? 1600 : 900));
+      hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${bgUrl}')`;
       updateLandmarksByCity(citySelect.value);
     }
 
@@ -3341,7 +3367,7 @@ function renderPropertiesList(list) {
             <div class="card-swipe-track" id="card-track-${pid}" data-pid="${pid}">
               ${propertyImages.map((imgUrl, i) => `
                 <div class="card-swipe-slide" onclick="goToPropertyDetails('${pid}')">
-                  <img src="${E(imgUrl)}" alt="${E(prop.title)}" ${i === 0 ? '' : 'loading="lazy"'}>
+                  <img src="${E(imgUrl)}" alt="${E(prop.title)}" decoding="async" ${i === 0 && index < 2 ? 'fetchpriority="high"' : 'loading="lazy"'}>
                 </div>
               `).join('')}
             </div>
@@ -3384,7 +3410,7 @@ function renderPropertiesList(list) {
                 <button class="btn-card-cta btn-cta-share aq-icon-only" aria-label="مشاركة" title="مشاركة" onclick="openAffiliateModal('${pid}')"><i class="fas fa-share-nodes"></i></button>
                 ${brokerInfo.phone ? `<button class="btn-card-cta btn-cta-call" onclick="openBrokerCallModal('${E(String(brokerInfo.name).replace(/'/g, ''))}', '${E(String(brokerInfo.phone).replace(/[^\d+]/g, ''))}')"><i class="fas fa-phone-alt"></i> اتصال</button>
                 <a href="https://api.whatsapp.com/send?phone=${String(brokerInfo.phone).replace(/\D/g, '').replace(/^0/, '971')}" target="_blank" rel="noopener noreferrer" class="btn-card-cta btn-cta-whatsapp" aria-label="واتساب"><i class="fab fa-whatsapp"></i> واتساب</a>` : (brokerInfo.locked ? `<button class="btn-card-cta btn-cta-call" onclick="try{sessionStorage.setItem('aq_after_login', location.href)}catch(e){};openLoginModal();switchAuthTab('register')"><i class="fas fa-lock"></i> إظهار الرقم</button>` : '')}
-                <a href="javascript:void(0)" onclick="goToPropertyDetails('${pid}')" class="btn-card-cta btn-cta-view aq-pc-view">التفاصيل <i class="fas fa-arrow-left"></i></a>
+                <a href="#" onclick="event.preventDefault();goToPropertyDetails('${pid}')" class="btn-card-cta btn-cta-view aq-pc-view">التفاصيل <i class="fas fa-arrow-left"></i></a>
               </div>
             </div>
           </div>
