@@ -233,8 +233,11 @@
     if (sortMode === 'price_desc') return a.sort((x, y) => price(y) - price(x));
     if (sortMode === 'ppm') return a.sort((x, y) => ((price(x) / area(x)) || 1e15) - ((price(y) / area(y)) || 1e15));
     if (sortMode === 'area') return a.sort((x, y) => area(y) - area(x));
-    if (sortMode === 'new') return a;
-    const sc = fitScores(a, pool); return a.sort((x, y) => sc.get(y) - sc.get(x));
+    const ts = (p) => (p && p.createdAt ? Date.parse(p.createdAt) : 0) || 0;
+    if (sortMode === 'new') return a.sort((x, y) => ts(y) - ts(x));
+    // «الأنسب لك»: الإعلانات الجديدة أولًا، ثم حسب الملاءمة
+    const isNew = (p) => (typeof aqIsNew === 'function' ? aqIsNew(p) : false) ? 1 : 0;
+    const sc = fitScores(a, pool); return a.sort((x, y) => (isNew(y) - isNew(x)) || (sc.get(y) - sc.get(x)));
   }
   function setSort(m) { sortMode = SORTS[m] ? m : 'fit'; try { sessionStorage.setItem('aq_sort', sortMode); } catch (e) {} }
   function mountSort() {

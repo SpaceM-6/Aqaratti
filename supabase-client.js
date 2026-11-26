@@ -440,13 +440,21 @@ document.addEventListener('click', async (e) => {
   }
 }, true);
 
+// 🆕 الإعلان «جديد» خلال 14 يومًا من نشره (تظهر عليه الشارة ويتقدّم في الترتيب)
+const AQ_NEW_DAYS = 14;
+function aqIsNew(p) {
+  const t = p && p.createdAt ? Date.parse(p.createdAt) : NaN;
+  return !isNaN(t) && Date.now() - t < AQ_NEW_DAYS * 864e5;
+}
+
 // 📡 يجلب عقارات الوسطاء الحقيقيين المعتمدة فقط (status = approved) من Supabase
 async function fetchApprovedSupabaseProperties() {
   try {
     const { data, error } = await supabaseClient
       .from('properties')
       .select('*, profiles(' + (await aqProfileCols()) + '), listing_agencies(id,slug,name)')
-      .eq('status', 'approved');
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
     if (error || !data) return [];
     // الإقامات القصيرة (السعر بالليلة) لها صفحتها stays.html ولا تختلط بأسعار البيع والإيجار السنوي
     return aqMarkLocked(data.map(mapSupabasePropertyToAnaAqar)).filter((p) => p.rentPeriod !== 'daily');

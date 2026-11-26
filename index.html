@@ -1847,6 +1847,7 @@
     .aq-pc-tags { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; flex-wrap: wrap; z-index: 6; pointer-events: none; }
     .aq-pc-deal, .aq-pc-ok { font-size: 11.5px; font-weight: 900; padding: 5px 10px; border-radius: 999px; background: #00857a; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
     .aq-pc-deal.rent { background: #2563eb; }
+    .aq-pc-new { font-size: 11.5px; font-weight: 900; padding: 5px 10px; border-radius: 999px; background: #be123c; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
     .aq-pc-ok { background: rgba(255,255,255,.95); color: #166534; }
     .aq-pc-count { position: absolute; bottom: 12px; right: 12px; z-index: 6; background: rgba(2,8,23,.65); color: #fff; font-size: 11.5px; font-weight: 800; padding: 4px 9px; border-radius: 999px; display: flex; gap: 5px; align-items: center; pointer-events: none; }
     .aq-pc-compare { top: auto !important; bottom: 12px; left: 12px; z-index: 6; }
@@ -2215,7 +2216,7 @@
       <div class="aq-mini-grid" id="aqMiniServices"></div>
       <script src="currency.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-      <script src="supabase-client.js?v=121"></script>
+      <script src="supabase-client.js?v=122"></script>
       <script>
         (function () {
           var list = [
@@ -3372,7 +3373,7 @@ function renderPropertiesList(list) {
               `).join('')}
             </div>
             <div class="aq-pc-tags">
-              <span class="aq-pc-deal ${prop.dealType === 'rent' ? 'rent' : ''}">${dealLabel}</span>
+              ${typeof aqIsNew === 'function' && aqIsNew(prop) ? '<span class="aq-pc-new">جديد</span>' : ''}<span class="aq-pc-deal ${prop.dealType === 'rent' ? 'rent' : ''}">${dealLabel}</span>
               ${prop.isVerified ? `<span class="aq-pc-ok" title="رخصة الوسيط موثّقة"><i class="fas fa-circle-check"></i> موثّق</span>` : ''}
               ${prop.noCommission ? `<span class="aq-pc-ok">بدون عمولة</span>` : ''}
             </div>
@@ -3462,7 +3463,7 @@ function renderPropertiesList(list) {
 
       if (!demoListingsVisible) {
         // عقارات حقيقية فقط: الأحدث أولاً
-        renderPropertiesList([...supabaseProperties].reverse().slice(0, 60));
+        renderPropertiesList(supabaseProperties.slice(0, 60));
       } else if (loadedScrapedList.length > 0) {
         // 🏠 واجهة الموقع الافتراضية تعرض فقط العقارات المميزة (featured)؛ باقي القائمة الكبيرة
         // (بما فيها عقارات الوسطاء الحقيقيين) تظهر فقط كنتائج بحث/فلترة عبر executeSearch().
@@ -4007,7 +4008,7 @@ function renderPropertiesList(list) {
   <script src="js/aq-filters.js?v=120" defer></script>
   <script src="js/aq-areas.js?v=118" defer></script>
   <script src="js/service-categories.js?v=111" defer></script>
-  <script src="js/aq-ai.js?v=118" defer></script>
+  <script src="js/aq-ai.js?v=119" defer></script>
   <script src="js/aq-engage.js?v=118" defer></script>
   <script src="js/aq-back.js?v=118" defer></script>
   <script src="js/aq-stay.js?v=118" defer></script>

@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/aq-pages.css?v=118">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-client.js?v=121"></script>
+  <script src="supabase-client.js?v=122"></script>
   <script src="js/aq-public.js?v=118"></script>
   <link rel="stylesheet" href="css/aq-polish.css?v=118">
 </head>
@@ -37,7 +37,7 @@
     .card .img { cursor:pointer; } .card .img img { width:100%; height:100%; object-fit:cover; display:block; }
     .card .badges { position:absolute; top:10px; right:10px; display:flex; gap:6px; flex-wrap:wrap; }
     .card .badges span { background:rgba(25,32,56,.85); color:#fff; font-size:11.5px; font-weight:900; padding:4px 9px; border-radius:999px; }
-    .card .badges .g { background:#16a34a; } .card .badges .o { background:var(--red); } .card .badges .t { background:var(--teal); }
+    .card .badges .g { background:#16a34a; } .card .badges .o { background:var(--red); } .card .badges .t { background:var(--teal); } .card .badges .n { background:#be123c; }
     .specs { display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:13px; font-weight:700; }
     .card h3 a { text-decoration:none; } .cmpb { position:absolute; bottom:10px; left:10px; width:38px; height:38px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#192038; cursor:pointer; }
     .cmpb.on { background:var(--teal); color:#fff; }
@@ -67,7 +67,7 @@
     <div class="acts" style="justify-content:center;margin-top:22px"><a class="btn btn-soft" href="request.html"><i class="fas fa-paper-plane"></i> لم تجد ما تريد؟ اطلب عقارك</a><a class="btn btn-ghost" href="map.html"><i class="fas fa-map"></i> على الخريطة</a></div>
   </main>
   <script src="js/aq-filters.js?v=120"></script>
-  <script src="js/aq-ai.js?v=118"></script>
+  <script src="js/aq-ai.js?v=119"></script>
   <script src="js/aq-trust.js?v=118"></script>
   <script>
   (function () {
@@ -112,7 +112,7 @@
       const a = AQAI.attrs(p), f = AQAI.fairness(p, pool), img = p.image || (p.imagesList || [])[0] || '', inCmp = AQPublic.compare.get().includes(String(p.id));
       const url = 'property-details.html?id=' + encodeURIComponent(p.id);
       return `<article class="card"><div class="img" onclick="location.href='${url}'"><img src="${esc(img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-        <div class="badges"><span>${p.dealType === 'rent' ? 'للإيجار' : 'للبيع'}</span>${f && f.level === 'good' ? '<span class="g">سعر مناسب</span>' : ''}${p.hasOffer ? '<span class="o">عرض</span>' : ''}${p.isVerified ? '<span class="t">موثّق</span>' : ''}</div>
+        <div class="badges">${typeof aqIsNew === 'function' && aqIsNew(p) ? '<span class="n">جديد</span>' : ''}<span>${p.dealType === 'rent' ? 'للإيجار' : 'للبيع'}</span>${f && f.level === 'good' ? '<span class="g">سعر مناسب</span>' : ''}${p.hasOffer ? '<span class="o">عرض</span>' : ''}${p.isVerified ? '<span class="t">موثّق</span>' : ''}</div>
         ${''}<button type="button" class="aqsh-btn" data-share-url="${url}" data-share-title="${esc(p.title)}" data-share-imgs="${esc((p.imagesList && p.imagesList.length ? p.imagesList : [img]).slice(0, 6).join('|'))}" aria-label="مشاركة" title="مشاركة"><i class="fas fa-share-nodes"></i></button><button class="cmpb ${inCmp ? 'on' : ''}" data-cmp="${esc(p.id)}" aria-label="أضف للمقارنة" title="أضف للمقارنة" onclick="event.stopPropagation()"><i class="fas fa-code-compare"></i></button></div>
         <div class="in"><div class="price">${money(p.priceAED)}${p.dealType === 'rent' ? ` <small style="font-size:12px;color:var(--muted)">/ ${p.rentPeriod === 'monthly' ? 'شهريًا' : 'سنويًا'}</small>` : ''}</div>
         <h3><a href="${url}">${esc(p.title)}</a></h3><div class="meta"><i class="fas fa-location-dot"></i> ${esc(p.city || '')} · ${esc(AQAI.UNIT_AR[a.unit] || p.propertyType || '')}</div>
