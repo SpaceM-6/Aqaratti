@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list last_update="2026-11-27 01:00:00" listing_count="1">
+ <property>
+  <reference_number>TEST-beb9ad26c7f0</reference_number>
+  <offering_type>RS</offering_type><property_type>WB</property_type>
+  <price>45000000</price>
+  <city>Sharjah</city><community>Al Nahda</community>
+  <title_en>Test feed listing</title_en>
+  <description_en><![CDATA[Building test description. Call 0501234567 now.]]></description_en>
+  <size>20000</size>
+  <photo><url>https://static.shared.propertyfinder.ae/media/images/listing/HHSP694JS39HFSQ97DX4JD1VP8/8ab419be-a3fe-4d72-8232-d8faf03974a4/1312x894.jpg?v=7f60a2bc4ce968f04fb02936a0f09158</url><url>https://static.shared.propertyfinder.ae/media/images/listing/HHSP694JS39HFSQ97DX4JD1VP8/eeed70e5-a5f7-4b9f-a317-a99c72d16ed2/1312x894.jpg?v=f7f13bd7cbd79325158888feea6ef0e0</url><url>https://static.shared.propertyfinder.ae/media/images/listing/HHSP694JS39HFSQ97DX4JD1VP8/ba3dc735-7920-4a8f-b0eb-4a15c25fd640/1312x894.jpg?v=7c8b4f88e0bef9a6cbde39fc85d37b99</url><url>https://static.shared.propertyfinder.ae/media/images/listing/HHSP694JS39HFSQ97DX4JD1VP8/77a74abe-d666-4812-98ed-7c7cf39d8e94/1312x894.jpg?v=6b9d4eba3dbbf4c1842c2cd095ac07fc</url></photo>
+ </property>
+</list>
