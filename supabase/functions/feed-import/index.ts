@@ -394,7 +394,7 @@ async function processItem(row: any) {
     const key = it.photos.join('|');
     let urls: string[] = row.img_key === key && (row.img_urls || []).length >= 3 ? row.img_urls : [];
     if (!urls.length) {
-      const tag = itemHash({ p: it.photos }).split(':')[0];
+      const tag = hashStr(key).toString(36);
       const base = `${owner}/feeds/${String(row.feed_id).slice(0, 8)}/${safeSeg(row.ref)}`;
       const got = await Promise.all(it.photos.map((u: string, i: number) => copyImage(u, `${base}/${i + 1}-${tag}`).catch(() => null)));
       urls = got.filter(Boolean) as string[];
