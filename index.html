@@ -3365,7 +3365,8 @@ function renderPropertiesPage(list) {
         avatar: "/icons/avatar.svg" 
       };
 
-      const brokerProfileUrl = `broker-profile.html?id=${brokerInfo.brokerId || 'b1'}&name=${encodeURIComponent(brokerInfo.name)}&agency=${encodeURIComponent(brokerInfo.agency)}&phone=${brokerInfo.phone || ''}&avatar=${encodeURIComponent(brokerInfo.avatar)}`;
+      // إعلانات المكاتب تفتح صفحة المكتب، ولا رابط لملف وسيط غير موجود
+      const brokerProfileUrl = brokerInfo.agencySlug ? `agency.html?a=${encodeURIComponent(brokerInfo.agencySlug)}` : !brokerInfo.brokerId ? 'listings.html' : `broker-profile.html?id=${brokerInfo.brokerId}&name=${encodeURIComponent(brokerInfo.name)}&agency=${encodeURIComponent(brokerInfo.agency)}&phone=${brokerInfo.phone || ''}&avatar=${encodeURIComponent(brokerInfo.avatar)}`;
 
       const E = aqEscHtml;
       const pid = E(prop.id);
