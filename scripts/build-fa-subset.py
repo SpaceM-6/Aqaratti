@@ -64,7 +64,7 @@ def main():
         return ''
     css = icon_rx.sub(keep, css)
     # إبقاء خطوط Font Awesome 6 فقط، بصيغة woff2 ومن مجلدنا
-    css = re.sub(r'@font-face\s*\{[^}]*\}', lambda m: m.group(0) if '"Font Awesome 6' in m.group(0) else '', css)
+    css = re.sub(r'@font-face\s*\{[^}]*\}', lambda m: m.group(0) if re.search(r"font-family:\s*['\"]Font Awesome 6", m.group(0)) else '', css)
     def src(m):
         f = m.group(1)
         return f'src: url("{f}.woff2?v={FA_VERSION}-{len(cps)}") format("woff2")'
