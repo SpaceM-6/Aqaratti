@@ -229,7 +229,7 @@
     if (prof) setTimeout(function () { applyProfile(prof); }, 900);
     setTimeout(function () {
       if (document.querySelector('.aqe-ov')) return;
-      var choice = (prof && prof.intent && prof.intent !== 'all') ? prof.intent : '';
+      var choice = (prof && prof.intent && prof.intent !== 'all' && prof.intent !== 'broker') ? prof.intent : '';
       var ov = document.createElement('div'); ov.className = 'aqe-ov';
       var opt = function (v, ic, t) { return '<button type="button" data-v="' + v + '" class="' + (choice === v ? 'on' : '') + '"><i class="fas ' + ic + '"></i>' + t + '</button>'; };
       ov.innerHTML = '<div class="aqe-sheet" role="dialog" aria-modal="true" aria-labelledby="aqeWT">' +
@@ -238,7 +238,6 @@
         opt('golden', 'fa-passport', 'عقارات للجنسية أو الإقامة') + opt('invest', 'fa-chart-line', 'عائد الاستثمار ROI') +
         opt('stays', 'fa-umbrella-beach', 'الإقامات القصيرة: يومي وشهري') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
         '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('services', 'fa-screwdriver-wrench', 'خدمات') + '</div>' +
-        '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('broker', 'fa-user-tie', 'أنا وسيط أو مطوّر') + '</div>' +
         '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
         COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
         '<label class="aqe-field"><span>المدينة المفضّلة</span><select id="aqeWCity"></select></label>' +
