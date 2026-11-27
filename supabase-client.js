@@ -289,7 +289,8 @@ function mapSupabasePropertyToAnaAqar(row) {
     dealType: row.deal_type,
     isGolden: row.is_golden,
     roiPercent: row.roi_percent,
-    bedrooms: row.bedrooms,
+    // البنايات الكاملة والعقارات التجارية والأراضي لا غرف نوم لها (لا تظهر «استوديو»)
+    bedrooms: ['building', 'land', 'office', 'shop', 'warehouse', 'showroom'].includes(row.unit_type) ? null : row.bedrooms,
     bathrooms: row.bathrooms,
     area_m2: row.area_m2,
     propertyType: row.property_type,
