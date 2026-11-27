@@ -560,6 +560,38 @@
       modal.style.display = 'flex';
     }
 
+    // 🔎 البحث في قائمة اللغات: يطابق الاسم الأصلي للغة واسمها بالعربية ورمزها (مثل: انجليزي، English، en)
+    const AQ_LANG_AR_NAMES = {
+      ar: 'العربية عربي', en: 'الإنجليزية انجليزي إنجليزي', fr: 'الفرنسية فرنسي', es: 'الإسبانية اسباني إسباني', de: 'الألمانية الماني ألماني',
+      ru: 'الروسية روسي', 'zh-CN': 'الصينية صيني', tr: 'التركية تركي', fa: 'الفارسية فارسي', ur: 'الأردية اردو أوردو', hi: 'الهندية هندي',
+      it: 'الإيطالية ايطالي إيطالي', pt: 'البرتغالية برتغالي', ja: 'اليابانية ياباني', ko: 'الكورية كوري', id: 'الإندونيسية اندونيسي',
+      fil: 'الفلبينية فلبيني', th: 'التايلاندية تايلندي', vi: 'الفيتنامية فيتنامي', nl: 'الهولندية هولندي', sv: 'السويدية سويدي',
+      no: 'النرويجية نرويجي', da: 'الدنماركية دنماركي', fi: 'الفنلندية فنلندي', pl: 'البولندية بولندي', cs: 'التشيكية تشيكي',
+      hu: 'المجرية مجري', ro: 'الرومانية روماني', bg: 'البلغارية بلغاري', hr: 'الكرواتية كرواتي', bs: 'البوسنية بوسني',
+      sq: 'الألبانية الباني ألباني', el: 'اليونانية يوناني', uk: 'الأوكرانية اوكراني أوكراني'
+    };
+    function filterFastLanguages() {
+      const input = document.getElementById('langSearchInput');
+      const box = document.getElementById('fastLangOptions');
+      if (!input || !box) return;
+      const norm = (t) => String(t || '').toLowerCase().replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').trim();
+      const q = norm(input.value);
+      let shown = 0;
+      box.querySelectorAll('a').forEach((a) => {
+        const m = (a.getAttribute('onclick') || '').match(/applyAILanguage\('([^']+)'/);
+        const code = m ? m[1] : '';
+        const hay = norm(a.textContent + ' ' + code + ' ' + (AQ_LANG_AR_NAMES[code] || ''));
+        const ok = !q || hay.includes(q);
+        a.style.display = ok ? '' : 'none';
+        if (ok) shown++;
+      });
+      let empty = box.querySelector('.aq-lang-empty');
+      if (!shown) {
+        if (!empty) { empty = document.createElement('div'); empty.className = 'aq-lang-empty'; empty.style.cssText = 'padding:10px 12px;color:#64748b;font-size:13px;'; empty.textContent = 'لا توجد لغة بهذا الاسم'; box.appendChild(empty); }
+        empty.hidden = false;
+      } else if (empty) empty.hidden = true;
+    }
+
     function updateBrandNameForLanguage(langCode) {
       const brandEl = document.getElementById('brandNameText');
       if (brandEl) brandEl.innerText = (langCode === 'ar') ? 'أنا عقار' : 'AnaAqar';

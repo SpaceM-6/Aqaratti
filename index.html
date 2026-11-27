@@ -183,7 +183,7 @@
           <div class="instant-dropdown">
             <button class="instant-btn" onclick="openInstantDropdown('fastLangList', event)"><i class="fas fa-globe"></i> <span id="currentLang" class="notranslate" translate="no">العربية</span></button>
             <div class="instant-menu search-menu" id="fastLangList">
-              <input type="text" placeholder="ابحث بين 34 لغة..." id="langSearchInput" onkeyup="filterFastLanguages()">
+              <input type="text" placeholder="ابحث بين 34 لغة..." id="langSearchInput" oninput="filterFastLanguages()" aria-label="ابحث عن لغة">
               <div class="instant-scroll notranslate" id="fastLangOptions" translate="no">
                 <a href="#" onclick="event.preventDefault();applyAILanguage('ar', 'العربية', 'rtl')">العربية</a>
                 <a href="#" onclick="event.preventDefault();applyAILanguage('en', 'English', 'ltr')">English</a>
@@ -405,7 +405,7 @@
         <a href="services-directory.html" style="margin-inline-start:auto; font-size:14px; color:var(--primary-turquoise); text-decoration:none; font-weight:800;">كل الأقسام ←</a></h2>
       <div class="aq-mini-grid" id="aqMiniServices"></div>
       <!-- defer: تُنفَّذ بالترتيب قبل DOMContentLoaded، فلا توقف رسم الصفحة؛ كل استعمالاتها في الصفحة داخل دوال أو معالجات DOMContentLoaded -->
-      <script src="js/home.js?v=1" defer></script>
+      <script src="js/home.js?v=2" defer></script>
       <script src="currency.js?v=2" defer></script>
       <script src="js/vendor/supabase-2.119.2.js" defer></script>
       <script src="supabase-client.js?v=125" defer></script>
