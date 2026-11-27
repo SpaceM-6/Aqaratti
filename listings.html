@@ -63,11 +63,12 @@
     <div data-aq-ads="listings" data-title="إعلانات"></div>
     <div class="cnt" id="cnt"></div>
     <div class="grid" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
-    <button class="btn btn-ghost more" id="more" hidden>عرض المزيد</button>
+    <div id="pager"></div>
     <div class="acts" style="justify-content:center;margin-top:22px"><a class="btn btn-soft" href="request.html"><i class="fas fa-paper-plane"></i> لم تجد ما تريد؟ اطلب عقارك</a><a class="btn btn-ghost" href="map.html"><i class="fas fa-map"></i> على الخريطة</a></div>
   </main>
   <script src="js/aq-filters.js?v=120"></script>
   <script src="js/aq-ai.js?v=119"></script>
+  <script src="js/aq-pager.js?v=1"></script>
   <script src="js/aq-trust.js?v=118"></script>
   <script>
   (function () {
@@ -97,7 +98,7 @@
     $('hT').innerHTML = `<i class="fas ${C[0]}"></i> ${esc(C[1])}${qs.get('q') ? ' — ' + esc(qs.get('q')) : ''}`; $('hP').textContent = C[2];
     if (qs.get('deal')) $('deal').value = qs.get('deal'); if (qs.get('max')) $('maxPriceInput').value = qs.get('max'); if (qs.get('min')) $('minPriceInput').value = qs.get('min');
     if (['sale', 'rent', 'monthly'].includes(key)) $('deal').closest('select').hidden = true;
-    let pool = [], shown = 24, rows = [];
+    let pool = [], page = AQPager.page(), rows = [];
     try { $('sort').value = sessionStorage.getItem('aq_sort') || 'fit'; } catch (e) {}
     const pred = () => {
       const d = $('deal').value, c = $('city').value, mn = +$('minPriceInput').value || 0, mx = +$('maxPriceInput').value || Infinity;
@@ -107,7 +108,7 @@
     // ما يحتاجه زر «الفلاتر» المشترك مع الصفحة الرئيسية
     window.getAllProperties = () => pool;
     window.aqBuildSearchPredicate = pred;
-    window.executeSearch = () => { shown = 24; draw(); };
+    window.executeSearch = () => { page = 1; AQPager.setUrl(1); draw(); };
     const card = (p) => {
       const a = AQAI.attrs(p), f = AQAI.fairness(p, pool), img = p.image || (p.imagesList || [])[0] || '', inCmp = AQPublic.compare.get().includes(String(p.id));
       const url = 'property-details.html?id=' + encodeURIComponent(p.id);
@@ -121,14 +122,15 @@
     };
     function draw() {
       rows = AQAI.sortList(pool.filter(pred()));
-      $('cnt').textContent = rows.length ? `${rows.length.toLocaleString('en-US')} عقار` : '';
-      $('list').innerHTML = rows.slice(0, shown).map(card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas ${C[0]}"></i><h2>لا توجد عقارات هنا حاليًا</h2><p>نضيف عقارات جديدة باستمرار. اترك طلبك ونبلغك عند توفر ما يناسبك.</p><a class="btn btn-teal" href="request.html">اطلب عقارك</a> <a class="btn btn-ghost" href="listings.html">كل العقارات</a></div>`;
-      $('more').hidden = rows.length <= shown;
+      page = Math.min(page, AQPager.pages(rows.length));
+      $('cnt').textContent = rows.length ? (rows.length > AQPager.PER ? `${AQPager.range(rows.length, page)} عقار` : `${rows.length.toLocaleString('en-US')} عقار`) : '';
+      $('list').innerHTML = AQPager.slice(rows, page).map(card).join('') || `<div class="empty" style="grid-column:1/-1"><i class="fas ${C[0]}"></i><h2>لا توجد عقارات هنا حاليًا</h2><p>نضيف عقارات جديدة باستمرار. اترك طلبك ونبلغك عند توفر ما يناسبك.</p><a class="btn btn-teal" href="request.html">اطلب عقارك</a> <a class="btn btn-ghost" href="listings.html">كل العقارات</a></div>`;
+      AQPager.render($('pager'), rows.length, page, (n) => { page = n; draw(); const top = $('cnt').getBoundingClientRect().top + scrollY - 90; window.scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
       $('list').querySelectorAll('[data-cmp]').forEach((b) => b.onclick = (e) => { e.stopPropagation(); const on = AQPublic.compare.toggle(b.dataset.cmp); if (on === null) return AQPublic.toast('يمكن مقارنة 4 عقارات كحد أقصى'); b.classList.toggle('on', on); AQPublic.toast(on ? 'أضيف للمقارنة — افتح «المقارنة» من القائمة' : 'أزيل من المقارنة'); });
     }
-    $('more').onclick = () => { shown += 24; draw(); };
-    ['deal', 'city', 'minPriceInput', 'maxPriceInput'].forEach((id) => $(id).addEventListener('change', () => { shown = 24; draw(); }));
-    $('sort').onchange = () => { AQAI.setSort($('sort').value); shown = 24; draw(); };
+    const reset = () => { page = 1; AQPager.setUrl(1); draw(); };
+    ['deal', 'city', 'minPriceInput', 'maxPriceInput'].forEach((id) => $(id).addEventListener('change', reset));
+    $('sort').onchange = () => { AQAI.setSort($('sort').value); reset(); };
     Promise.all([AQPublic.loadListings(), ['off_plan', 'under_construction'].includes(key) ? AQPublic.loadProjects() : []]).then(([l, prj]) => {
       pool = l;
       const cities = {}; pool.filter(C[3]).forEach((p) => { if (p.city) cities[p.city] = (cities[p.city] || 0) + 1; });

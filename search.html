@@ -22,6 +22,7 @@
     <script src="currency.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="supabase-client.js?v=122"></script>
+    <script src="js/aq-pager.js?v=1"></script>
 
     <!-- 🌐 دعم ترجمة الموقع: نفس لغة الموقع المختارة من الصفحة الرئيسية تُطبَّق هنا تلقائياً -->
     <script type="text/javascript">
@@ -209,16 +210,22 @@
         }
 
         // دالة عرض البطاقات في الشبكة
-      function displayResults(data) {
+      let searchPage = AQPager.page(), searchFirst = true;
+      function displayResults(data, keepPage) {
             const grid = document.getElementById('search-grid');
             grid.innerHTML = '';
+            if (!keepPage && !searchFirst) { searchPage = 1; AQPager.setUrl(1); }
+            searchFirst = false;
+            let pg = document.getElementById('search-pager');
+            if (!pg) { pg = document.createElement('div'); pg.id = 'search-pager'; grid.insertAdjacentElement('afterend', pg); }
+            AQPager.render(pg, data.length, searchPage, (n) => { searchPage = n; displayResults(data, true); window.scrollTo({ top: grid.getBoundingClientRect().top + scrollY - 90, behavior: 'smooth' }); });
 
             if(data.length === 0) {
                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; font-size: 16px;">عذراً، لا توجد عقارات تطابق خيارات البحث الحالية.</p>';
                 return;
             }
 
-            data.slice(0, 60).forEach(item => {
+            AQPager.slice(data, searchPage).forEach(item => {
                 const img = item.image || (item.imagesList && item.imagesList[0]) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=600';
                 // قمنا بتغليف الكارت برابط ينتقل لصفحة تفاصيل العقار ويمرر الـ ID الخاص به
                 grid.innerHTML += `

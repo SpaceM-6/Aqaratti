@@ -16,6 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="supabase-client.js?v=122"></script>
+  <script src="js/aq-pager.js?v=1"></script>
   <style>
     :root { --teal:#00857a; --teal-dark:#006e64; --teal-soft:#e6f7f5; --navy:#192038; --gold:#d4af37;
             --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --card:#ffffff; }
@@ -103,6 +104,7 @@
   <main>
     <div class="count" id="count"></div>
     <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div id="pager"></div>
     <div class="note" id="note" hidden>صفحة هذا المكتب يديرها فريق أنا عقار إلى أن يستلمها المكتب. إن كنت تعمل في هذا المكتب، اضغط «هذا مكتبي» لتدير إعلاناتك بنفسك بعد التحقق من رخصتك.</div>
   </main>
 
@@ -174,10 +176,13 @@
 
       const { data: rows } = await supabaseClient.from('properties')
         .select('id,title,price_aed,deal_type,rent_period,city,area,unit_type,bedrooms,area_m2,image_urls,created_at')
-        .eq('agency_id', a.id).eq('status', 'approved').order('created_at', { ascending: false }).limit(300);
+        .eq('agency_id', a.id).eq('status', 'approved').order('created_at', { ascending: false }).limit(1000);
       const list = rows || [];
-      $('count').textContent = list.length ? `${list.length} عقار معروض` : '';
-      $('grid').innerHTML = list.length ? list.map((p) => {
+      let page = AQPager.page();
+      const draw = () => {
+      page = Math.min(page, AQPager.pages(list.length));
+      $('count').textContent = list.length ? (list.length > AQPager.PER ? `${AQPager.range(list.length, page)} عقار معروض` : `${list.length} عقار معروض`) : '';
+      $('grid').innerHTML = list.length ? AQPager.slice(list, page).map((p) => {
         const img = (p.image_urls || [])[0];
         const unit = UNIT[p.unit_type] || '';
         const facts = [unit, p.bedrooms ? `${p.bedrooms} غرف` : '', p.area_m2 ? `${money(p.area_m2)} م²` : ''].filter(Boolean);
@@ -187,6 +192,9 @@
           <span class="ttl">${esc(p.title)}</span>
           <span class="meta"><span><i class="fas fa-location-dot"></i> ${esc([p.area, p.city].filter(Boolean).join('، '))}</span>${facts.length ? `<span>${esc(facts.join(' · '))}</span>` : ''}</span></div></a>`;
       }).join('') : '<div class="empty" style="grid-column:1/-1">لا توجد إعلانات معروضة لهذا المكتب حاليًا.</div>';
+      AQPager.render($('pager'), list.length, page, (n) => { page = n; draw(); window.scrollTo({ top: $('count').getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); });
+      };
+      draw();
       seo(list);
     }
 

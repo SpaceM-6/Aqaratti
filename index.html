@@ -2217,6 +2217,7 @@
       <script src="currency.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
       <script src="supabase-client.js?v=122"></script>
+      <script src="js/aq-pager.js?v=1"></script>
       <script>
         (function () {
           var list = [
@@ -3326,7 +3327,20 @@ document.addEventListener('scroll', (ev) => {
   if (el) el.textContent = idx + 1;
   if (typeof propertyCardImageIndices !== 'undefined') propertyCardImageIndices[t.dataset.pid] = idx;
 }, true);
+// ترقيم الصفحات: 24 عقارًا في الصفحة (مثل Bayut)
+let aqHomeList = [], aqHomePage = 1;
 function renderPropertiesList(list) {
+  aqHomeList = list || []; aqHomePage = 1;
+  aqRenderHomePage();
+}
+function aqRenderHomePage() {
+  const container = document.getElementById('properties-container');
+  let pg = document.getElementById('aqHomePager');
+  if (!pg) { pg = document.createElement('div'); pg.id = 'aqHomePager'; container.insertAdjacentElement('afterend', pg); }
+  if (window.AQPager) AQPager.render(pg, aqHomeList.length, aqHomePage, (n) => { aqHomePage = n; aqRenderHomePage(); window.scrollTo({ top: container.getBoundingClientRect().top + scrollY - 110, behavior: 'smooth' }); });
+  renderPropertiesPage(window.AQPager ? AQPager.slice(aqHomeList, aqHomePage) : aqHomeList.slice(0, 24));
+}
+function renderPropertiesPage(list) {
   const container = document.getElementById('properties-container');
   container.innerHTML = '';
   if (list && list.length > 0) {
@@ -3463,7 +3477,7 @@ function renderPropertiesList(list) {
 
       if (!demoListingsVisible) {
         // عقارات حقيقية فقط: الأحدث أولاً
-        renderPropertiesList(supabaseProperties.slice(0, 60));
+        renderPropertiesList(supabaseProperties);
       } else if (loadedScrapedList.length > 0) {
         // 🏠 واجهة الموقع الافتراضية تعرض فقط العقارات المميزة (featured)؛ باقي القائمة الكبيرة
         // (بما فيها عقارات الوسطاء الحقيقيين) تظهر فقط كنتائج بحث/فلترة عبر executeSearch().
@@ -3570,12 +3584,11 @@ function renderPropertiesList(list) {
         return words.some(w => w.length > 2 && fullText.includes(w));
       });
       closeRoyalModal('aiSearchModal');
-      const RESULTS_CAP = 60;
       if (filtered.length > 0) {
-        renderPropertiesList(filtered.slice(0, RESULTS_CAP));
+        renderPropertiesList(filtered);
         document.getElementById('resultsSectionTitle').innerText = `🔎 نتائج البحث الذكي عن: "${raw}" (${filtered.length} نتيجة)`;
       } else {
-        renderPropertiesList(allProps.slice(0, RESULTS_CAP));
+        renderPropertiesList(allProps);
         showAnaAqarToast('لم نجد تطابقًا دقيقًا، فعرضنا لك أحدث العقارات. يمكنك ترك طلبك في «اطلب عقارك».', 'info');
       }
       const propSection = document.querySelector('.properties-section');
@@ -3674,8 +3687,7 @@ function renderPropertiesList(list) {
       // ترتيب النتائج (الأنسب لك، الأحدث، السعر، سعر المتر، المساحة) قبل اقتطاع أول 60
       if (window.AQAI && window.AQAI.sortList) { try { filtered = window.AQAI.sortList(filtered); } catch (e) {} }
 
-      const RESULTS_CAP = 60;
-      renderPropertiesList(filtered.slice(0, RESULTS_CAP));
+      renderPropertiesList(filtered);
       if (!filtered.length) {
         const kw = (document.getElementById('searchInput').value || '').trim();
         const c = document.getElementById('properties-container');
@@ -3697,11 +3709,7 @@ function renderPropertiesList(list) {
       else if (currentTabType === 'roi') titleEl.innerText = 'أعلى فرص الاستثمار العقاري عائداً (ROI) 📈';
       else if (CATEGORY_TITLES[currentTabType]) titleEl.innerText = CATEGORY_TITLES[currentTabType];
 
-      if (filtered.length > RESULTS_CAP) {
-        titleEl.innerText += ` — عرض ${RESULTS_CAP} من أصل ${filtered.length} نتيجة، ضيّق البحث لعرض الأنسب لك`;
-      } else {
-        titleEl.innerText += ` (${filtered.length} نتيجة)`;
-      }
+      titleEl.innerText += ` (${filtered.length.toLocaleString('en-US')} نتيجة)`;
 
       const propSection = document.querySelector('.properties-section');
       if (propSection && noScroll !== true) {
