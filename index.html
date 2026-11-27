@@ -37,6 +37,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preload" as="script" href="js/vendor/supabase-2.119.2.js">
+  <link rel="preload" as="font" type="font/woff2" href="/css/fa/fa-solid-900.woff2?v=6.4.0-264" crossorigin>
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900" media="(max-width: 900px)" fetchpriority="high">
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600" media="(min-width: 901px)" fetchpriority="high">
   <!-- الخطوط والأيقونات تُحمَّل دون أن توقف رسم الصفحة -->
@@ -59,7 +60,11 @@
     (function () {
       function load() { if (window.__aqGT) return; window.__aqGT = 1; var s = document.createElement('script'); s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'; s.async = true; document.head.appendChild(s); }
       if (/(^|;\s*)googtrans=\/ar\/(?!ar)/.test(document.cookie) || /googtrans/.test(location.hash)) load();
-      else window.addEventListener('load', function () { if (window.requestIdleCallback) requestIdleCallback(load, { timeout: 3000 }); else setTimeout(load, 3000); });
+      else {
+        // لا تُحمَّل إلا عند أول تفاعل من الزائر (لمس، تمرير، كتابة) حتى لا تثقل التحميل الأول
+        var first = function () { ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (e) { window.removeEventListener(e, first, true); }); load(); };
+        ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (e) { window.addEventListener(e, first, { capture: true, passive: true, once: true }); });
+      }
       window.aqLoadTranslate = load;
     })();
   </script>
@@ -4021,11 +4026,11 @@ function renderPropertiesPage(list) {
   <script src="js/aq-areas.js?v=118" defer></script>
   <script src="js/service-categories.js?v=111" defer></script>
   <script src="js/aq-ai.js?v=120" defer></script>
-  <script src="js/aq-engage.js?v=123" defer></script>
+  <script src="js/aq-engage.js?v=124" defer></script>
   <script src="js/aq-back.js?v=118" defer></script>
   <script src="js/aq-stay.js?v=118" defer></script>
   <script src="js/aq-cars.js?v=118" defer></script>
-  <script src="js/aq-ads.js?v=119" defer></script>
+  <script src="js/aq-ads.js?v=120" defer></script>
   <script src="js/aq-home.js?v=118" defer></script>
 </body>
 </html>

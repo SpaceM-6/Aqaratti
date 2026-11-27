@@ -102,7 +102,7 @@
       '.aqr-c .im .tg{position:absolute;top:8px;right:8px;background:rgba(25,32,56,.85);color:#fff;font-size:11px;font-weight:900;padding:3px 8px;border-radius:999px}',
       '.aqr-c .tx{padding:9px 11px 11px}.aqr-c .pr{color:#e11d48;font-weight:900;font-size:17px}',
       '.aqr-c .t1{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aqr-c .t2{color:#475569;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-      '.aqr-dark{background:#111827;border-radius:20px;padding:16px;color:#fff}.aqr-dark .aqad-h h2{color:#fff}.aqr-dark .aqr-c{background:#1f2937;border-color:#374151;color:#fff}.aqr-dark .aqr-c .pr{color:#fff}',
+      '.aqr-dark{background:#111827;border-radius:20px;padding:16px;color:#fff}.aqr-dark .aqad-h h2{color:#fff}.aqr-dark .aqr-c{background:#1f2937;border-color:#374151;color:#fff}.aqr-dark .aqr-c .pr{color:#fff}.aqr-dark .aqr-c .t2{color:#cbd5e1}',
       '.aqr-s{flex:0 0 auto;scroll-snap-align:start;display:flex;align-items:center;gap:10px;background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:14px;padding:10px 12px;text-decoration:none;color:inherit;max-width:300px}',
       '.aqr-s i{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#e6f7f5;color:#006e64}.aqr-s b{display:block;font-size:14.5px}.aqr-s small{color:var(--muted,#64748b);font-weight:700;font-size:12.5px}',
       '.aqr-bud{flex:0 0 auto;scroll-snap-align:start;padding:12px 18px;border-radius:14px;border:1.5px solid var(--line,#e2e8f0);background:var(--card,#fff);text-decoration:none;color:inherit;font-weight:900;font-size:15px}',
@@ -284,6 +284,8 @@
   // صف أفقي عام: items = [{url,img,price,t1,t2,tag}]
   function rail(el, title, items, opts) {
     css(); opts = opts || {};
+    // صور Unsplash تُطلب بحجم البطاقة وبصيغة أخف بدل الحجم الأصلي
+    var thumb = function (u) { u = u || ''; return /^https:\/\/images\.unsplash\.com\//.test(u) ? u.replace(/\?.*$/, '') + '?auto=format&fm=webp&q=60&w=420' : u; };
     if (!items || !items.length) { el.hidden = true; return; }
     el.hidden = false;
     var rowId = 'aqadr' + (++uid);
@@ -292,7 +294,7 @@
       '<div class="aqad-row" id="' + rowId + '">' + items.map(function (x) {
         if (opts.kind === 'search') return '<a class="aqr-s" href="' + esc(x.url) + '"><i class="fas ' + esc(x.icon || 'fa-magnifying-glass') + '"></i><span><b>' + esc(x.title) + '</b><small>' + esc(x.sub || '') + '</small></span></a>';
         if (opts.kind === 'budget') return '<a class="aqr-bud" href="' + esc(x.url) + '">' + esc(x.t1) + '<small>' + esc(x.t2 || '') + '</small></a>';
-        return '<a class="aqr-c" href="' + esc(x.url) + '"><div class="im" style="background-image:url(\'' + esc(x.img || '') + '\')">' + (x.tag ? '<span class="tg">' + esc(x.tag) + '</span>' : '') + '</div><div class="tx">' +
+        return '<a class="aqr-c" href="' + esc(x.url) + '"><div class="im" style="background-image:url(\'' + esc(thumb(x.img)) + '\')">' + (x.tag ? '<span class="tg">' + esc(x.tag) + '</span>' : '') + '</div><div class="tx">' +
           (x.price ? '<div class="pr">' + esc(x.price) + '</div>' : '') + '<div class="t1">' + esc(x.t1 || '') + '</div><div class="t2">' + esc(x.t2 || '') + '</div></div></a>';
       }).join('') + '</div>';
     wire(el);
