@@ -235,8 +235,8 @@
       ov.innerHTML = '<div class="aqe-sheet" role="dialog" aria-modal="true" aria-labelledby="aqeWT">' +
         '<h3 id="aqeWT">' + (prof ? 'أهلًا بعودتك إلى أنا عقار 👋' : 'أهلًا بك في أنا عقار 👋') + '</h3><p class="sub">' + (prof ? 'ماذا تريد أن نعرض لك هذه المرة؟' : 'أخبرنا بما تبحث عنه لنعرض لك الأنسب أولًا') + '</p>' +
         '<div class="aqe-choices">' + opt('sale', 'fa-key', 'عقارات للبيع') + opt('rent', 'fa-building', 'عقارات للإيجار') +
-        opt('golden', 'fa-passport', 'عقارات للجنسية أو الإقامة') + opt('stays', 'fa-umbrella-beach', 'الإقامات القصيرة: يومي وشهري') +
-        opt('invest', 'fa-chart-line', 'عائد الاستثمار ROI') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
+        opt('invest', 'fa-chart-line', 'عائد الاستثمار ROI') + opt('stays', 'fa-umbrella-beach', 'الإقامات القصيرة: يومي وشهري') +
+        opt('golden', 'fa-passport', 'عقارات للجنسية أو الإقامة') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
         '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('services', 'fa-screwdriver-wrench', 'خدمات') + '</div>' +
         '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
         COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
