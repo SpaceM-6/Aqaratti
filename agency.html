@@ -41,6 +41,7 @@
     .who h1 { margin:2px 0 6px; font-size:clamp(22px, 4vw, 30px); font-weight:900; line-height:1.3; overflow-wrap:anywhere; }
     .chips { display:flex; gap:6px; flex-wrap:wrap; }
     .chip { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 11px; font-size:12.5px; font-weight:800; color:#e2e8f0; }
+    .chip.lic { background:#ecfdf5; border-color:#a7f3d0; color:#065f46; }
     .acts { display:flex; gap:8px; flex-wrap:wrap; flex:1 1 100%; }
     .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:12px; padding:11px 16px; min-height:44px; font-family:inherit; font-weight:900; font-size:14px; cursor:pointer; text-decoration:none; }
     .btn-teal { background:var(--teal); color:#fff; }
@@ -149,19 +150,21 @@
       const url = 'https://anaaqar.com/agency.html?a=' + encodeURIComponent(agency.slug);
       $('canon').setAttribute('href', url);
       const ld = document.createElement('script'); ld.type = 'application/ld+json';
-      ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: agency.name, url, areaServed: agency.emirates.map((e) => ({ '@type': 'City', name: e })) });
+      ld.textContent = JSON.stringify(Object.assign({ '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: agency.name, url, areaServed: agency.emirates.map((e) => ({ '@type': 'City', name: e })) },
+        agency.dld_orn ? { identifier: { '@type': 'PropertyValue', propertyID: 'DLD ORN', value: agency.dld_orn } } : {}));
       document.head.appendChild(ld);
     }
 
     async function load() {
       if (!slug) return notFound();
       const signed = await aqIsSignedIn();
-      const { data: a } = await supabaseClient.from('listing_agencies').select('id,slug,name,emirates,claimed_at').eq('slug', slug).maybeSingle();
+      const { data: a } = await supabaseClient.from('listing_agencies').select('id,slug,name,emirates,claimed_at,dld_orn,dld_office_name').eq('slug', slug).maybeSingle();
       if (!a) return notFound();
       agency = a; agency.emirates = Array.isArray(a.emirates) ? a.emirates : [];
       $('name').textContent = a.name;
       $('logo').textContent = (a.name.trim()[0] || 'A').toUpperCase();
-      $('chips').innerHTML = agency.emirates.map((e) => `<span class="chip"><i class="fas fa-location-dot"></i> ${esc(EM[e] || e)}</span>`).join('');
+      $('chips').innerHTML = (a.dld_orn ? `<span class="chip lic" title="${esc(a.dld_office_name || '')}"><i class="fas fa-circle-check"></i> مرخّص من دائرة الأراضي والأملاك · <span dir="ltr">ORN ${esc(a.dld_orn)}</span></span>` : '') +
+        agency.emirates.map((e) => `<span class="chip"><i class="fas fa-location-dot"></i> ${esc(EM[e] || e)}</span>`).join('');
 
       const acts = [];
       acts.push(aqRevealButtonHTML('agency', { id: a.id, has_contact: true }, 'btn btn-teal'));

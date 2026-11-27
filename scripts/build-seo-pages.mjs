@@ -47,7 +47,7 @@ const [market, lands, projects, props] = await Promise.all([
 ]);
 // أدلة المدينة (اختيارية: إن لم تُرفع بعد تُترك أقسامها)
 const dbOk0 = dbOk;
-const agencies = await fetchAll('listing_agencies', 'select=id,slug,name,emirates&order=id');
+const agencies = await fetchAll('listing_agencies', 'select=id,slug,name,emirates,dld_orn&order=id');
 const agencyById = new Map(agencies.map((a) => [a.id, a]));
 const [schools, buildings] = await Promise.all([fetchAll('schools', 'select=id,name_en,name_ar,rating_en,rating_ar,curriculum_en,curriculum_ar,area_en,area_ar,students'), fetchAll('building_area_stats', 'select=*')]);
 dbOk = dbOk0;
@@ -218,7 +218,7 @@ for (const a of agencies) {
   const ems = (a.emirates || []).join(' و');
   const cards = mine.slice(0, 200).map((p) => `<li><a href="/property/sb-${esc(p.id)}.html">${esc(p.title)}</a> — ${num(p.price_aed)} درهم${p.area || p.city ? ` · ${esc([p.area, p.city].filter(Boolean).join('، '))}` : ''}</li>`).join('');
   const body = `
-    <div class="kpis">${kpi(String(mine.length), 'عقار معروض')}${ems ? kpi(esc(ems), 'الإمارات') : ''}</div>
+    <div class="kpis">${kpi(String(mine.length), 'عقار معروض')}${ems ? kpi(esc(ems), 'الإمارات') : ''}${a.dld_orn ? kpi('ORN ' + esc(a.dld_orn), 'مرخّص من دائرة الأراضي والأملاك') : ''}</div>
     <div class="box"><h2>إعلانات ${esc(a.name)}</h2><ul>${cards}</ul></div>
     <div class="acts" style="margin:0 0 14px"><a class="btn btn-teal" href="/agency.html?a=${encodeURIComponent(a.slug)}"><i class="fas fa-phone"></i> تواصل مع المكتب واعرض الصور</a><a class="btn btn-soft" href="/listings.html">كل العقارات</a></div>`;
   const url = `${SITE}/agency/${a.slug}.html`;
