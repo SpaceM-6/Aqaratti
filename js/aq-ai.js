@@ -42,7 +42,7 @@
 
   // ---------- أنماط ----------
   const css = `
-  .aq-pc-deal.aqi-good{background:#16a34a!important;color:#fff!important}
+  .aq-pc-deal.aqi-good{background:#15803d!important;color:#fff!important}
   .aqi-card{background:var(--aqi-c,#fff);border:1px solid var(--aqi-l,#e2e8f0);border-radius:16px;padding:16px;margin:14px 0;font-family:Tajawal,sans-serif}
   [data-theme="dark"] .aqi-card{--aqi-c:#162039;--aqi-l:#2b3654;color:#e2e8f0}
   .aqi-card h3{margin:0 0 8px;font-size:16px;font-weight:900;display:flex;gap:8px;align-items:center}

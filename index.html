@@ -34,10 +34,10 @@
   <link rel="apple-touch-icon" href="icons/anaaqar-logo-v5-512.png">
 
   <link rel="preconnect" href="https://mejkpckkdbmczzypzkkr.supabase.co" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preload" as="script" href="js/vendor/supabase-2.119.2.js">
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900" media="(max-width: 900px)" fetchpriority="high">
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600" media="(min-width: 901px)" fetchpriority="high">
   <!-- الخطوط والأيقونات تُحمَّل دون أن توقف رسم الصفحة -->
@@ -60,7 +60,7 @@
     (function () {
       function load() { if (window.__aqGT) return; window.__aqGT = 1; var s = document.createElement('script'); s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'; s.async = true; document.head.appendChild(s); }
       if (/(^|;\s*)googtrans=\/ar\/(?!ar)/.test(document.cookie) || /googtrans/.test(location.hash)) load();
-      else window.addEventListener('load', function () { (window.requestIdleCallback || setTimeout)(load, 3000); });
+      else window.addEventListener('load', function () { if (window.requestIdleCallback) requestIdleCallback(load, { timeout: 3000 }); else setTimeout(load, 3000); });
       window.aqLoadTranslate = load;
     })();
   </script>
@@ -606,7 +606,7 @@
     .flag-img {
       width: 22px;
       height: 15px;
-      object-fit: fill;
+      object-fit: cover;
       border-radius: 2px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.25);
       border: 1px solid rgba(0,0,0,0.08);
@@ -1840,6 +1840,10 @@
       .royal-title { font-size: 22px !important; margin-bottom: 22px !important; }
       .pearl-search-card { border-radius: 18px !important; padding: 16px 14px !important; }
     }
+    /* حجز سطرين للعنوان في الجوال الضيق حتى لا يدفع تحميلُ الخط بطاقةَ البحث إلى الأسفل */
+    @media (max-width: 480px) {
+      .royal-title { min-height: 2.9em; display: flex; align-items: center; justify-content: center; text-wrap: balance; }
+    }
 
     /* 🏠 بطاقة العقار المحسّنة */
     .aq-pcard { border-radius: 18px !important; border-color: #e8edf3 !important; box-shadow: 0 4px 18px rgba(15,23,42,.06) !important; }
@@ -1918,7 +1922,7 @@
   <!-- 📲 بنر دعوة تثبيت تطبيق AnaAqar (يظهر تلقائياً عند توفر إمكانية التثبيت) -->
   <div id="pwaInstallBanner" class="pwa-install-banner">
     <div class="pwa-install-content">
-      <div class="pwa-install-icon"><img src="icons/anaaqar-logo-v5-512.png" alt="أيقونة تطبيق AnaAqar"></div>
+      <div class="pwa-install-icon"><img src="icons/anaaqar-logo-v5-48.png" width="24" height="24" alt="أيقونة تطبيق AnaAqar"></div>
       <div class="pwa-install-text">
         <strong>ثبّت تطبيق AnaAqar على هاتفك</strong>
         <span>تجربة أسرع وتصفح دون إنترنت، بنقرة واحدة فقط!</span>
@@ -2215,8 +2219,8 @@
         <a href="services-directory.html" style="margin-inline-start:auto; font-size:14px; color:var(--primary-turquoise); text-decoration:none; font-weight:800;">كل الأقسام ←</a></h2>
       <div class="aq-mini-grid" id="aqMiniServices"></div>
       <script src="currency.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-      <script src="supabase-client.js?v=124"></script>
+      <script src="js/vendor/supabase-2.119.2.js"></script>
+      <script src="supabase-client.js?v=125"></script>
       <script src="js/aq-pager.js?v=1"></script>
       <script>
         (function () {
@@ -3383,7 +3387,7 @@ function renderPropertiesPage(list) {
             <div class="card-swipe-track" id="card-track-${pid}" data-pid="${pid}">
               ${propertyImages.map((imgUrl, i) => `
                 <div class="card-swipe-slide" onclick="goToPropertyDetails('${pid}')">
-                  <img src="${E(imgUrl)}" alt="${E(prop.title)}" decoding="async" ${i === 0 && index < 2 ? 'fetchpriority="high"' : 'loading="lazy"'}>
+                  <img src="${E(/^https:\/\/images\.unsplash\.com\//.test(imgUrl) ? imgUrl.replace(/\?.*$/, '') + '?auto=format&fm=webp&q=60&w=640' : imgUrl)}" alt="${E(prop.title)}" decoding="async" loading="lazy">
                 </div>
               `).join('')}
             </div>
@@ -4017,12 +4021,12 @@ function renderPropertiesPage(list) {
   <script src="js/aq-filters.js?v=120" defer></script>
   <script src="js/aq-areas.js?v=118" defer></script>
   <script src="js/service-categories.js?v=111" defer></script>
-  <script src="js/aq-ai.js?v=119" defer></script>
+  <script src="js/aq-ai.js?v=120" defer></script>
   <script src="js/aq-engage.js?v=123" defer></script>
   <script src="js/aq-back.js?v=118" defer></script>
   <script src="js/aq-stay.js?v=118" defer></script>
   <script src="js/aq-cars.js?v=118" defer></script>
-  <script src="js/aq-ads.js?v=118" defer></script>
+  <script src="js/aq-ads.js?v=119" defer></script>
   <script src="js/aq-home.js?v=118" defer></script>
 </body>
 </html>

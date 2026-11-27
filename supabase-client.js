@@ -180,10 +180,16 @@ const ANAAQAR_GA4_ID = 'G-5B1K0BZWLY';
   if (!/^G-[A-Z0-9]+$/.test(ANAAQAR_GA4_ID)) return;
   if (location.pathname.indexOf('/admin/') !== -1) return;
   if (!/(^|\.)anaaqar\.com$/.test(location.hostname)) return; // لا قياس أثناء التجربة المحلية
-  const s = document.createElement('script');
-  s.async = true;
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANAAQAR_GA4_ID;
-  document.head.appendChild(s);
+  // كود القياس ثقيل (~180KB): يُحمَّل بعد اكتمال الصفحة وفراغ المتصفح حتى لا يبطئ ظهورها؛ الأحداث قبل ذلك تُحفظ في الطابور ولا تضيع
+  const loadTag = function () {
+    if (window.__aqGtag) return; window.__aqGtag = 1;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANAAQAR_GA4_ID;
+    document.head.appendChild(s);
+  };
+  const later = function () { if (window.requestIdleCallback) requestIdleCallback(loadTag, { timeout: 4000 }); else setTimeout(loadTag, 2500); };
+  if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };
   // وضع الموافقة: لا تُحفظ ملفات تعريف الارتباط الخاصة بالإحصاءات إلا بعد موافقة الزائر، ولا إعلانات مخصّصة أبدًا
