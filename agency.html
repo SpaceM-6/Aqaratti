@@ -57,7 +57,16 @@
     .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; }
     .card { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; text-decoration:none; color:var(--ink); display:flex; flex-direction:column; transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s; }
     .card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(15,23,42,.08); }
-    .card img { width:100%; aspect-ratio:16/10; object-fit:cover; background:#e2e8f0; display:block; }
+    .sl { position:relative; aspect-ratio:16/10; background:#e2e8f0; }
+    .sl-t { display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; overscroll-behavior-x:contain; }
+    .sl-t::-webkit-scrollbar { display:none; }
+    .sl-t img { flex:0 0 100%; width:100%; height:100%; object-fit:cover; scroll-snap-align:center; display:block; user-select:none; -webkit-user-drag:none; }
+    .sl-b { position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#0f172a; display:grid; place-items:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.2); opacity:0; transition:opacity .15s; z-index:2; }
+    .sl-b.prev { right:8px; } .sl-b.next { left:8px; }
+    .card:hover .sl-b, .sl-b:focus-visible { opacity:1; }
+    @media (hover: none) { .sl-b { opacity:.9; } }
+    .sl-b:active { transform:translateY(-50%) scale(.94); }
+    .sl-n { position:absolute; bottom:8px; right:8px; background:rgba(2,8,23,.65); color:#fff; font-size:11.5px; font-weight:800; padding:3px 9px; border-radius:999px; pointer-events:none; font-variant-numeric:tabular-nums; }
     .card .in { padding:12px 14px 14px; display:flex; flex-direction:column; gap:5px; }
     .price { color:var(--teal); font-weight:900; font-size:18px; font-variant-numeric:tabular-nums; }
     [data-theme="dark"] .price { color:#5eead4; }
@@ -186,19 +195,38 @@
       page = Math.min(page, AQPager.pages(list.length));
       $('count').textContent = list.length ? (list.length > AQPager.PER ? `${AQPager.range(list.length, page)} عقار معروض` : `${list.length} عقار معروض`) : '';
       $('grid').innerHTML = list.length ? AQPager.slice(list, page).map((p) => {
-        const img = (p.image_urls || [])[0];
+        const imgs = (p.image_urls || []).slice(0, 10);
         const unit = UNIT[p.unit_type] || '';
         const facts = [unit, p.bedrooms ? `${p.bedrooms} غرف` : '', p.area_m2 ? `${money(p.area_m2)} م²` : ''].filter(Boolean);
         return `<a class="card" href="property-details.html?id=sb-${encodeURIComponent(p.id)}">
-          ${img ? `<img src="${esc(img)}" alt="${esc(p.title)}" loading="lazy">` : ''}
+          ${imgs.length ? `<div class="sl"><div class="sl-t" data-sl>${imgs.map((u, i) => `<img src="${esc(u)}" alt="${i ? '' : esc(p.title)}" ${i ? 'loading="lazy"' : ''} decoding="async" draggable="false">`).join('')}</div>
+            ${imgs.length > 1 ? `<button type="button" class="sl-b prev" data-dir="prev" aria-label="الصورة السابقة"><i class="fas fa-chevron-right"></i></button><button type="button" class="sl-b next" data-dir="next" aria-label="الصورة التالية"><i class="fas fa-chevron-left"></i></button><span class="sl-n"><i class="fas fa-camera"></i> <b>1</b>/${imgs.length}</span>` : ''}</div>` : ''}
           <div class="in"><span class="price">${money(p.price_aed)} درهم${p.deal_type === 'rent' ? ' / سنويًا' : ''}</span>
           <span class="ttl">${esc(p.title)}</span>
           <span class="meta"><span><i class="fas fa-location-dot"></i> ${esc([p.area, p.city].filter(Boolean).join('، '))}</span>${facts.length ? `<span>${esc(facts.join(' · '))}</span>` : ''}</span></div></a>`;
       }).join('') : '<div class="empty" style="grid-column:1/-1">لا توجد إعلانات معروضة لهذا المكتب حاليًا.</div>';
+      wireSliders();
       AQPager.render($('pager'), list.length, page, (n) => { page = n; draw(); window.scrollTo({ top: $('count').getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); });
       };
       draw();
       seo(list);
+    }
+
+    // سلايدر الصور في البطاقات: سحب بالإصبع أو أسهم، دون فتح الإعلان
+    function wireSliders() {
+      document.querySelectorAll('#grid .sl').forEach((sl) => {
+        const t = sl.querySelector('[data-sl]'), n = sl.querySelector('.sl-n b');
+        const rtl = getComputedStyle(t).direction === 'rtl';
+        const idx = () => Math.round(Math.abs(t.scrollLeft) / Math.max(1, t.clientWidth));
+        t.addEventListener('scroll', () => { if (n) n.textContent = idx() + 1; }, { passive: true });
+        sl.querySelectorAll('.sl-b').forEach((b) => b.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          const count = t.children.length, cur = idx();
+          let to = b.dataset.dir === 'next' ? cur + 1 : cur - 1;
+          if (to >= count) to = 0; if (to < 0) to = count - 1;
+          t.scrollTo({ left: (rtl ? -1 : 1) * to * t.clientWidth, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }));
+      });
     }
 
     // بعد «إظهار الرقم»: اتصال وواتساب برقم المكتب
