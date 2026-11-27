@@ -207,7 +207,7 @@
   function countryOf(k) { for (var i = 0; i < COUNTRIES.length; i++) if (COUNTRIES[i][0] === k) return COUNTRIES[i]; return COUNTRIES[0]; }
   function applyProfile(p, withCountry) {
     if (!isIndex || !p) return;
-    var tab = { all: 'all', sale: 'sale', rent: 'rent', invest: 'roi' }[p.intent];
+    var tab = { all: 'all', sale: 'sale', rent: 'rent', invest: 'roi', golden: 'golden', services: 'services' }[p.intent];
     if (tab && typeof window.switchRoyalTab === 'function') {
       var b = document.querySelector('.royal-tab[data-type="' + tab + '"]');
       if (b) window.switchRoyalTab(b);
@@ -229,14 +229,15 @@
     if (prof) setTimeout(function () { applyProfile(prof); }, 900);
     setTimeout(function () {
       if (document.querySelector('.aqe-ov')) return;
-      var choice = (prof && prof.intent) || '';
+      var choice = (prof && prof.intent && prof.intent !== 'all') ? prof.intent : '';
       var ov = document.createElement('div'); ov.className = 'aqe-ov';
       var opt = function (v, ic, t) { return '<button type="button" data-v="' + v + '" class="' + (choice === v ? 'on' : '') + '"><i class="fas ' + ic + '"></i>' + t + '</button>'; };
       ov.innerHTML = '<div class="aqe-sheet" role="dialog" aria-modal="true" aria-labelledby="aqeWT">' +
         '<h3 id="aqeWT">' + (prof ? 'أهلًا بعودتك إلى أنا عقار 👋' : 'أهلًا بك في أنا عقار 👋') + '</h3><p class="sub">' + (prof ? 'ماذا تريد أن نعرض لك هذه المرة؟' : 'أخبرنا بما تبحث عنه لنعرض لك الأنسب أولًا') + '</p>' +
-        '<div class="aqe-choices">' + opt('all', 'fa-border-all', 'الكل: شراء وإيجار') + opt('sale', 'fa-key', 'أبحث عن شراء') + opt('rent', 'fa-building', 'أبحث عن إيجار') +
-        opt('invest', 'fa-chart-line', 'أبحث عن استثمار') + '</div>' +
-        '<div class="aqe-choices">' + opt('stays', 'fa-umbrella-beach', 'الإقامات القصيرة: يومي وشهري') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
+        '<div class="aqe-choices">' + opt('sale', 'fa-key', 'عقارات للبيع') + opt('rent', 'fa-building', 'عقارات للإيجار') +
+        opt('golden', 'fa-passport', 'عقارات للجنسية أو الإقامة') + opt('invest', 'fa-chart-line', 'عائد الاستثمار ROI') +
+        opt('stays', 'fa-umbrella-beach', 'الإقامات القصيرة: يومي وشهري') + opt('cars', 'fa-car-side', 'موتورات') + '</div>' +
+        '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('services', 'fa-screwdriver-wrench', 'خدمات') + '</div>' +
         '<div class="aqe-choices" style="grid-template-columns:1fr">' + opt('broker', 'fa-user-tie', 'أنا وسيط أو مطوّر') + '</div>' +
         '<label class="aqe-field"><span>الدولة</span><select id="aqeWCountry">' +
         COUNTRIES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select></label>' +
