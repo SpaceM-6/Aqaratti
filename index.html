@@ -38,8 +38,6 @@
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preload" as="script" href="js/vendor/supabase-2.119.2.js">
   <link rel="preload" as="font" type="font/woff2" href="/css/fa/fa-solid-900.woff2?v=6.4.0-264" crossorigin>
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900" media="(max-width: 900px)" fetchpriority="high">
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600" media="(min-width: 901px)" fetchpriority="high">
   <!-- الخطوط والأيقونات تُحمَّل دون أن توقف رسم الصفحة -->
   <link rel="preload" as="style" href="/css/fa/fa.css?v=2" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -420,19 +418,16 @@
     /* 2. HERO SECTION */
     .anaaqar-light-hero {
       position: relative;
-      background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), 
-                        url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900');
-      background-position: center 30%;
-      background-size: cover;
+      background: #1e293b;
+      overflow: hidden;
+      isolation: isolate;
       padding: 35px 20px 45px 20px;
       color: #ffffff;
       text-align: center;
-      transition: background-image 0.5s ease;
     }
-
-    @media (min-width: 901px) {
-      .anaaqar-light-hero { background-image: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600'); }
-    }
+    /* صورة الخلفية عنصر <img> حقيقي (أسرع اكتشافًا للمتصفح من background-image) وفوقها طبقة التعتيم */
+    .anaaqar-light-hero .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; z-index: -2; transition: opacity .5s ease; }
+    .anaaqar-light-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)); pointer-events: none; }
     .hero-light-container {
       max-width: 1250px;
       margin: 0 auto;
@@ -2086,6 +2081,7 @@
   </div>
 
   <section class="anaaqar-light-hero" id="heroSection">
+    <img class="hero-bg" id="heroBg" src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900" srcset="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=60&w=900 900w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fm=webp&q=65&w=1600 1600w" sizes="100vw" alt="" fetchpriority="high" decoding="async">
     <div class="hero-light-container">
       <nav class="aq-verticals" aria-label="أقسام أنا عقار"><a class="on" href="index.html"><i class="fas fa-building"></i> العقارات</a><a href="stays.html"><i class="fas fa-umbrella-beach"></i> الإقامات القصيرة</a><a href="cars.html" class="aq-v-motors"><span class="aq-v-ic"><i class="fas fa-car-side"></i><i class="fas fa-motorcycle"></i><i class="fas fa-ship"></i></span> موتورات</a></nav>
       <h1 class="royal-title">استكشف عقارك مع أسلوب حياة متكامل</h1>
@@ -3208,8 +3204,13 @@
       cities.forEach(city => {
         citySelect.innerHTML += `<option value="${city}">${city}</option>`;
       });
-      const bgUrl = String(data.bg).replace(/([?&])q=\d+/, '$1q=' + (innerWidth > 900 ? 65 : 60)).replace(/([?&])w=\d+/, '$1w=' + (innerWidth > 900 ? 1600 : 900));
-      hero.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)), url('${bgUrl}')`;
+      const bgImg = document.getElementById('heroBg');
+      const base = String(data.bg).replace(/\?.*$/, '') + '?auto=format&fm=webp';
+      if (bgImg && bgImg.dataset.base !== base && !(countryKey === 'uae' && !bgImg.dataset.base)) {
+        bgImg.dataset.base = base;
+        bgImg.srcset = base + '&q=60&w=900 900w, ' + base + '&q=65&w=1600 1600w';
+        bgImg.src = base + '&q=60&w=900';
+      } else if (bgImg && !bgImg.dataset.base) bgImg.dataset.base = base;
       updateLandmarksByCity(citySelect.value);
     }
 
