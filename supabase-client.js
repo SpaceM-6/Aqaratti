@@ -450,12 +450,17 @@ function aqIsNew(p) {
 // 📡 يجلب عقارات الوسطاء الحقيقيين المعتمدة فقط (status = approved) من Supabase
 async function fetchApprovedSupabaseProperties() {
   try {
-    const { data, error } = await supabaseClient
-      .from('properties')
-      .select('*, profiles(' + (await aqProfileCols()) + '), listing_agencies(id,slug,name)')
-      .eq('status', 'approved')
-      .order('created_at', { ascending: false });
-    if (error || !data) return [];
+    // الخادم يعيد 200 صف كحد أقصى في كل طلب، فنقرأ على دفعات حتى نهاية النتائج
+    const cols = '*, profiles(' + (await aqProfileCols()) + '), listing_agencies(id,slug,name)';
+    let data = [], error = null;
+    for (let off = 0; off < 20000;) {
+      const r = await supabaseClient.from('properties').select(cols).eq('status', 'approved')
+        .order('created_at', { ascending: false }).order('id').range(off, off + 999);
+      if (r.error) { error = r.error; break; }
+      const part = r.data || []; data = data.concat(part);
+      if (!part.length) break; off += part.length;
+    }
+    if (error && !data.length) return [];
     // الإقامات القصيرة (السعر بالليلة) لها صفحتها stays.html ولا تختلط بأسعار البيع والإيجار السنوي
     return aqMarkLocked(data.map(mapSupabasePropertyToAnaAqar)).filter((p) => p.rentPeriod !== 'daily');
   } catch (e) {
