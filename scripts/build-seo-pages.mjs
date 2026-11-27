@@ -23,11 +23,12 @@ let dbOk = true;
 async function fetchAll(table, query, max = 60000) {
   if (!SB_URL || !SB_KEY) { dbOk = false; return []; }
   let out = [];
-  for (let off = 0; off < max; off += 1000) {
+  // الخادم قد يعيد أقل من المطلوب في كل صفحة (حد أقصى للصفوف)، فنتقدّم بعدد ما وصل حتى تفرغ النتائج
+  for (let off = 0; off < max;) {
     try {
       const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}&offset=${off}&limit=1000`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } });
       if (!r.ok) { console.warn(table, r.status); if (r.status >= 500) dbOk = false; return out; }
-      const part = await r.json(); out = out.concat(part); if (part.length < 1000) break;
+      const part = await r.json(); out = out.concat(part); if (!part.length) break; off += part.length;
     } catch (e) { console.warn(table, e.message); dbOk = false; return out; }
   }
   return out;
@@ -42,11 +43,11 @@ const [market, lands, projects, props] = await Promise.all([
   fetchAll('area_market_stats', 'select=*&usage=in.(residential,all)&order=area_en,month'),
   fetchAll('land_area_stats', 'select=*'),
   fetchAll('dld_projects', 'select=*&status=neq.CANCELLED&order=cnt_unit.desc'),
-  fetchAll('properties', 'select=*&status=eq.approved')
+  fetchAll('properties', 'select=*&status=eq.approved&order=id')
 ]);
 // أدلة المدينة (اختيارية: إن لم تُرفع بعد تُترك أقسامها)
 const dbOk0 = dbOk;
-const agencies = await fetchAll('listing_agencies', 'select=id,slug,name,emirates');
+const agencies = await fetchAll('listing_agencies', 'select=id,slug,name,emirates&order=id');
 const agencyById = new Map(agencies.map((a) => [a.id, a]));
 const [schools, buildings] = await Promise.all([fetchAll('schools', 'select=id,name_en,name_ar,rating_en,rating_ar,curriculum_en,curriculum_ar,area_en,area_ar,students'), fetchAll('building_area_stats', 'select=*')]);
 dbOk = dbOk0;
